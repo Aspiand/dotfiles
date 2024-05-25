@@ -104,6 +104,5 @@
 
     # Development
     git.enable = true;
-    vscode.enable = true;
   };
 }
