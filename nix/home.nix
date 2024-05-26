@@ -1,29 +1,16 @@
 { config, pkgs, ... }:
 
 {
-
   home = {
-    # Home Manager needs a bit of information about you and the paths it should
-    # manage.
+    # Linux Mint
     username = "aspian";
     homeDirectory = "/home/aspian";
 
-    # This value determines the Home Manager release that your configuration is
-    # compatible with. This helps avoid breakage when a new Home Manager release
-    # introduces backwards incompatible changes.
-    #
-    # You should not change this value, even if you update Home Manager. If you do
-    # want to update the value, then make sure to first check the Home Manager
-    # release notes.
     stateVersion = "23.11"; # Please read the comment before changing.
 
     # The home.packages option allows you to install Nix packages into your
     # environment.
     packages = [
-      # # Adds the 'hello' command to your environment. It prints a friendly
-      # # "Hello, world!" when run.
-      # pkgs.hello
-
       # # It is sometimes useful to fine-tune packages, for example, by applying
       # # overrides. You can do that directly here, just don't forget the
       # # parentheses. Maybe you want to install Nerd Fonts with a limited number of
@@ -38,8 +25,10 @@
       # '')
 
       pkgs.bottom
-      pkgs.neofetch
       pkgs.htop
+      pkgs.neofetch
+      pkgs.pass
+      pkgs.rsync
     ];
 
     # Home Manager is pretty good at managing dotfiles. The primary way to manage
@@ -55,24 +44,6 @@
       #   org.gradle.console=verbose
       #   org.gradle.daemon.idletimeout=3600000
       # '';
-
-      ".bashrc".text = ''
-        [[ $- != *i* ]] && return
-
-        alias ls='ls --color=auto'
-        alias la="ls -a"
-        alias l="ls -lh"
-        alias lah="ls -lha"
-        alias grep='grep --color=auto'
-        PS1='[\u@\h \W]\$ '
-
-        . $HOME/.nix-profile/etc/profile.d/nix.sh
-
-        # Home Manager
-        . "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh"
-
-        export NIXPKGS_ALLOW_UNFREE=1      
-      '';
     };
 
     # Home Manager can also manage your environment variables through
@@ -103,6 +74,9 @@
     home-manager.enable = true;
 
     # Development
-    git.enable = true;
+    git = {
+      enable = true;
+      userName = "Aspian";
+    };
   };
 }
