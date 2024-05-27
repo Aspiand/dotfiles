@@ -78,5 +78,13 @@
       enable = true;
       userName = "Aspian";
     };
+
+    # Tool
+    tmux = {
+      enable = true;
+      extraConfig = ''
+        set -g prefix C-a
+      ''
+    };
   };
 }
