@@ -1,12 +1,17 @@
 { config, pkgs, ... }:
 
-{
-  home = {
-    # Linux Mint
-    username = "aspian";
-    homeDirectory = "/home/aspian";
+let
+  USER = builtins.getEnv "USER";
+in
 
-    stateVersion = "23.11"; # Please read the comment before changing.
+{
+  # nixpkgs.config.allowUnfree = true;
+
+  home = {
+    username = USER;
+    homeDirectory = "/home/${USER}";
+
+    stateVersion = "23.11";
 
     # The home.packages option allows you to install Nix packages into your
     # environment.
@@ -23,12 +28,22 @@
       # (pkgs.writeShellScriptBin "my-hello" ''
       #   echo "Hello, ${config.home.username}!"
       # '')
+      
+      # Programming Language
+      pkgs.python3
+      pkgs.python3Packages.pip
 
+      # Tool
+      # pkgs.aria2
       pkgs.bottom
+      # pkgs.curl
       pkgs.htop
       pkgs.neofetch
-      pkgs.pass
+      # pkgs.pass
+      pkgs.tree
       pkgs.rsync
+      pkgs.speedtest-cli
+      pkgs.wget
     ];
 
     # Home Manager is pretty good at managing dotfiles. The primary way to manage
@@ -45,46 +60,53 @@
       #   org.gradle.daemon.idletimeout=3600000
       # '';
     };
-
-    # Home Manager can also manage your environment variables through
-    # 'home.sessionVariables'. These will be explicitly sourced when using a
-    # shell provided by Home Manager. If you don't want to manage your shell
-    # through Home Manager then you have to manually source 'hm-session-vars.sh'
-    # located at either
-    #
-    #  ~/.nix-profile/etc/profile.d/hm-session-vars.sh
-    #
-    # or
-    #
-    #  ~/.local/state/nix/profiles/profile/etc/profile.d/hm-session-vars.sh
-    #
-    # or
-    #
-    #  /etc/profiles/per-user/aspian/etc/profile.d/hm-session-vars.sh
-    #
-
-    sessionVariables = {
-      EDITOR = "code";
-    };
   };
 
-
   programs = {
-    # Let Home Manager install and manage itself.
     home-manager.enable = true;
 
-    # Development
+    # Programming Language
+    java.enable = false;
+
+    # Tool
+    neovim.enable = true;
+    # ssh.enable = true;
+
     git = {
       enable = true;
       userName = "Aspian";
+      extraConfig = {
+        init.defaultBranch = "main";
+      };
     };
 
-    # Tool
     tmux = {
       enable = true;
       extraConfig = ''
         set -g prefix C-a
-      ''
+        set -g base-index 1
+        set -g mouse on
+        setw -g pane-base-index 1
+      '';
+    };
+
+    zsh = {
+      enable = false;
+      autosuggestion.enable = true;
+      syntaxHighlighting.enable = true;
+
+      oh-my-zsh = {
+        enable = true;
+        theme = "robbyrussell";
+      };
+
+      history = {
+        ignoreDups = true;
+        extended = true;
+        path = "${config.home.homeDirectory}/.local/zsh_history";
+        save = -1;
+        size = -1;
+      };
     };
   };
 }
