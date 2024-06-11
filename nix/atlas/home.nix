@@ -3,7 +3,9 @@
 let
   USER = builtins.getEnv "USER";
   starship_session_key = builtins.getEnv "STARSHIP_SESSION_KEY";
-  yt_dest = "/home/${USER}/Share/youtube/raw/";
+  yt_dest = "${config.home.homeDirectory}/Share/youtube/raw/";
+
+  env = import ./env.nix;
 in
 
 {
@@ -86,11 +88,6 @@ in
       pkgs.python3
       pkgs.python3Packages.pip
 
-      # pkgs.pyright
-      # pkgs.ruff-lsp
-
-      # pkgs.nodePackages.intelephense
-
       # Security
       # pkgs.gnupg
       # pkgs.pass
@@ -115,12 +112,11 @@ in
       #   org.gradle.daemon.idletimeout=3600000
       # '';
 
-      # ".config/nixpkgs/config.nix".text = "{ allowUnfree = true; }";
     };
   };
+  programs.home-manager.enable = true;
 
   programs = {
-    home-manager.enable = true;
 
 
     git = {
@@ -203,6 +199,12 @@ in
       # ];
     };
 
+    ssh = {
+      enable = true;
+      # programs.ssh.addKeysToAgent = [];
+      matchBlocks = env.ssh.matchBlocks;
+    };
+
     starship = {
       enable = false;
       enableZshIntegration = true;
@@ -235,7 +237,6 @@ in
           # https://draculatheme.com/tmux
           plugin = dracula;
           extraConfig = ''
-            # set -g @dracula-plugins "git ssh-session network-bandwidth ram-usage time"
             set -g @dracula-plugins "git ssh-session network-bandwidth time"
 
             set -g @dracula-border-contrast true
@@ -292,7 +293,7 @@ in
         --external-downloader "aria2c"
         --external-downloader-args "-x 16 -s 16"
 
-        #--verbose
+        # --verbose
       '';
     };
 
@@ -340,6 +341,7 @@ in
           clean = "nix-collect-garbage -d";
           hmg = "home-manager generations";
           sl = "ls";
+          nano = "nvim";
         };
       };
     };
