@@ -3,7 +3,6 @@
 let
   USER = builtins.getEnv "USER";
   starship_session_key = builtins.getEnv "STARSHIP_SESSION_KEY";
-  yt_dest = "${config.home.homeDirectory}/Share/youtube/raw/";
 
   env = import ./env.nix;
 in
@@ -60,6 +59,7 @@ in
       # Files
       pkgs.bat
       pkgs.ffmpeg
+      pkgs.fzf
       pkgs.rsync
       pkgs.trash-cli
       pkgs.tree
@@ -74,7 +74,7 @@ in
       # Network
       pkgs.aria2
       pkgs.curl
-      # pkgs.ngrok
+      pkgs.ngrok
       pkgs.nmap
       pkgs.speedtest-cli
       pkgs.wget
@@ -91,33 +91,33 @@ in
       # Security
       # pkgs.gnupg
       # pkgs.pass
-      # pkgs.steghide
+      pkgs.steghide
 
       pkgs.neofetch
       # pkgs.nerdfonts #x!
       # pkgs.ollama
-      # pkgs.ventoy-full
-      # pkgs.media-downloader
+      pkgs.media-downloader
     ];
 
     file = {
-      # # Building this configuration will create a copy of 'dotfiles/screenrc' in
-      # # the Nix store. Activating the configuration will then make '~/.screenrc' a
-      # # symlink to the Nix store copy.
-      # ".screenrc".source = dotfiles/screenrc;
-
-      # # You can also set the file content immediately.
-      # ".gradle/gradle.properties".text = ''
-      #   org.gradle.console=verbose
-      #   org.gradle.daemon.idletimeout=3600000
-      # '';
-
+      ".config/ngrok/ngrok.yml".text = env.ngrok.config;
+      ".config/nixpkgs/config.nix".text = "{ allowUnfree = true; }";
     };
   };
+
   programs.home-manager.enable = true;
 
   programs = {
 
+    fzf = {
+      enable = true;
+      enableZshIntegration = true;
+      # tmux.enableShellIntegration = true;
+      defaultOptions = [
+        "--border"
+        "--height 60%"
+      ];
+    };
 
     git = {
       enable = true;
@@ -244,7 +244,7 @@ in
             set -g @dracula-refresh-rate 5
             set -g @dracula-show-battery false
             set -g @dracula-show-powerline true
-            set -g @dracula-show-left-icon N
+            set -g @dracula-show-left-icon $
 
             # Device
             set -g @dracula-ram-usage-label ""
@@ -273,28 +273,23 @@ in
 
     yt-dlp = {
       enable = true;
-      extraConfig = ''
-        --paths ${yt_dest}
-        -o %(title)s.%(ext)s
+      settings = {
+        paths = env.yt_dest;
+        output = "%(title)s.%(ext)s";
 
-        --sub-langs all,-live_chat
+        embed-chapters = true;
+        embed-metadata = true;
+        embed-subs = true;
+        embed-thumbnail = true;
 
-        --embed-thumbnail
-        --embed-metadata
-        --embed-chapters
-        --embed-subs
+        format = "bestvideo*+bestaudio/best";
+        merge-output-format = "mkv";
 
-        --no-overwrites
+        downloader = "aria2c";
+        downloader-args = "aria2c:'-x16 -s16 -c'";
+      };
 
-        -f bestvideo*+bestaudio/best
-
-        --merge-output-format mkv
-
-        --external-downloader "aria2c"
-        --external-downloader-args "-x 16 -s 16"
-
-        # --verbose
-      '';
+      extraConfig = "--sub-langs all, -live_chat";
     };
 
     zoxide = {
@@ -327,11 +322,13 @@ in
       # '';
 
       history = {
-        ignoreDups = true;
+        share = true;
         extended = true;
-        path = "${config.home.homeDirectory}/.local/zsh_history";
-        save = 10000000000000000;
-        size = 10000000000000000;
+        ignoreDups = true;
+        ignorePatterns = [];
+        save = 100000;
+        size = config.programs.zsh.history.save;
+        path = "${config.home.homeDirectory}/.local/history/zsh";
       };
 
       zsh-abbr = {
@@ -340,8 +337,9 @@ in
           cat = "bat";
           clean = "nix-collect-garbage -d";
           hmg = "home-manager generations";
-          sl = "ls";
           nano = "nvim";
+          nfim = "nvim $(fzf)";
+          sl = "ls";
         };
       };
     };
