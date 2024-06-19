@@ -21,19 +21,7 @@ in
 
     stateVersion = "23.11";
 
-    # activation = {
-    #   onActivation = ''
-    #     mkdir -p .local/data
-    #   '';
-
-    #   # script = ''
-    #   #   mkdir -p .local/123
-    #   # '';
-    # };
-
     sessionVariables = {
-      # STARSHIP_CONFIG = ".config/starship/config.toml";
-      # STARSHIP_CACHE = ".cache/starship/session_${starship_session_key}.log";
       EDITOR = "nvim";
     };
 
@@ -77,13 +65,14 @@ in
       pkgs.ngrok
       pkgs.nmap
       pkgs.speedtest-cli
+      pkgs.tor
       pkgs.wget
       # pkgs.zerotierone
 
       # Programming
       pkgs.nodejs
-      pkgs.jdk_headless
-      pkgs.jre_headless
+      # pkgs.jdk_headless
+      # pkgs.jre_headless
       pkgs.php
       pkgs.python3
       pkgs.python3Packages.pip
@@ -100,15 +89,21 @@ in
     ];
 
     file = {
-      ".config/ngrok/ngrok.yml".text = env.ngrok.config;
+      # config.lib.file.mkOutOfStoreSymlink
+
       ".config/nixpkgs/config.nix".text = "{ allowUnfree = true; }";
+
+      # Network
+      ".config/ngrok/ngrok.yml".source = ../../ngrok/ngrok.yml;
+
+      # Tor
+      ".local/tor/config/torrc".source = ../../tor/torrc;
     };
   };
 
   programs.home-manager.enable = true;
 
   programs = {
-
     fzf = {
       enable = true;
       enableZshIntegration = true;
@@ -135,7 +130,6 @@ in
     };
 
     neovim = {
-      # https://www.youtube.com/live/lZshGG4Mcws?si=RYcPcNlWpn_RVC0E 1:33:00
       enable = true;
       viAlias = true;
       vimAlias = true;
@@ -197,12 +191,13 @@ in
       # extraPackages = with pkgs; [
       #   lua-language-server
       # ];
+      # https://www.youtube.com/live/lZshGG4Mcws?si=RYcPcNlWpn_RVC0E 1:33:00
     };
 
     ssh = {
       enable = true;
-      # programs.ssh.addKeysToAgent = [];
       matchBlocks = env.ssh.matchBlocks;
+      # programs.ssh.addKeysToAgent = [];
     };
 
     starship = {
@@ -214,12 +209,11 @@ in
 
     tmux = {
       enable = true;
-      mouse = true;
       clock24 = true;
+      mouse = true;
       baseIndex = 1;
       shortcut = "a";
       shell = "${pkgs.zsh}/bin/zsh";
-      # terminal = "screen-256color";
 
       plugins = with pkgs.tmuxPlugins; [
         better-mouse-mode
@@ -299,6 +293,7 @@ in
 
     zsh = {
       enable = true;
+      enableCompletion = true;
       autosuggestion.enable = true;
       syntaxHighlighting.enable = true;
 
@@ -340,6 +335,7 @@ in
           nano = "nvim";
           nfim = "nvim $(fzf)";
           sl = "ls";
+          tor = "tor -f ~/.local/tor/config/torrc";
         };
       };
     };
