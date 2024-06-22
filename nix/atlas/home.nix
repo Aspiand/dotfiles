@@ -74,8 +74,9 @@ in
       # pkgs.jdk_headless
       # pkgs.jre_headless
       pkgs.php
-      pkgs.python3
+      pkgs.python312
       pkgs.python3Packages.pip
+      pkgs.podman-compose
 
       # Security
       # pkgs.gnupg
@@ -196,6 +197,9 @@ in
 
     ssh = {
       enable = true;
+      controlMaster = "auto";
+      controlPath = "~/.ssh/control/%r@%n:%p";
+      controlPersist = "30m";
       matchBlocks = env.ssh.matchBlocks;
       # programs.ssh.addKeysToAgent = [];
     };
