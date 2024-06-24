@@ -17,6 +17,9 @@ readonly FOLDERS=(
     # SSH
     "$HOME/.ssh 700"
     "$HOME/.ssh/control u+rwx,go-rwx"
+
+    # GnuPG
+    "$HOME/.gnupg 700"
 )
 readonly FILES=(
     # "/path/to/file permission"
@@ -26,6 +29,9 @@ readonly FILES=(
     "$HOME/.local/tor/log/debug.log 600"
     "$HOME/.local/tor/log/notices.log 600"
 )
+
+# Parsing argument
+# https://stackoverflow.com/questions/192249/how-do-i-parse-command-line-arguments-in-bash
 
 echo "Folders:"
 
@@ -59,5 +65,33 @@ for file in "${FILES[@]}"; do
         echo "[ok]"
     fi
 done
+
+
+# readonly SYMLINKS=(
+#     # "/path/to/source /path/to/destination"
+
+#     "$(dirname $0)/../tor/torrc $(dirname $0)/test/torrrh"
+# )
+# echo "Symlinks:"
+
+# for symlinks in "${SYMLINKS[@]}"; do
+#     read -r source destination <<< "$symlinks"
+#     echo -n "  $source -> $destination: "
+
+#     # echo "  from $source"
+#     # echo "  to   $destination"
+#     # echo -n "  "
+
+#     if [ ! -f $source ]; then
+#         echo "[source not found]"
+#     elif [ $(readlink -f $destination) != $source ]; then
+#         ln -s $source $destination
+#         echo "[create link]"
+#     elif [ -e $destination ]; then
+#         echo "[destination is available]"
+#     else
+#         echo "[ok]"
+#     fi
+# done
 
 echo -n ""

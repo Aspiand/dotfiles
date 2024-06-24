@@ -23,6 +23,7 @@ in
 
     sessionVariables = {
       EDITOR = "nvim";
+      HM = "${config.home.homeDirectory}/.config/home-manager/home.nix";
     };
 
     packages = [
@@ -64,6 +65,7 @@ in
       pkgs.curl
       pkgs.ngrok
       pkgs.nmap
+      pkgs.proxychains
       pkgs.speedtest-cli
       pkgs.tor
       pkgs.wget
@@ -74,8 +76,9 @@ in
       # pkgs.jdk_headless
       # pkgs.jre_headless
       pkgs.php
+      pkgs.phpPackages.composer
       pkgs.python312
-      pkgs.python3Packages.pip
+      pkgs.python312Packages.virtualenv
       pkgs.podman-compose
 
       # Security
@@ -85,8 +88,9 @@ in
 
       pkgs.neofetch
       # pkgs.nerdfonts #x!
-      # pkgs.ollama
-      pkgs.media-downloader
+      # pkgs.media-downloader
+      pkgs.ollama
+      pkgs.xorg.xrandr
     ];
 
     file = {
@@ -104,7 +108,7 @@ in
 
   programs.home-manager.enable = true;
 
-  programs = {
+  programs = {  
     fzf = {
       enable = true;
       enableZshIntegration = true;
@@ -340,6 +344,7 @@ in
           nfim = "nvim $(fzf)";
           sl = "ls";
           tor = "tor -f ~/.local/tor/config/torrc";
+          cbright="xrandr --output VGA-1 --brightness";
         };
       };
     };
