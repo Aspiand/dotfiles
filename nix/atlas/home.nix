@@ -41,6 +41,7 @@ in
       pkgs.unzip
       pkgs.xz
       pkgs.zip
+      pkgs.zstd
 
       # Database
       pkgs.sqlite
@@ -59,12 +60,14 @@ in
       pkgs.htop
       # pkgs.iftop
       # pkgs.iotop
+      # pkgs.nyx
 
       # Network
       pkgs.aria2
       pkgs.curl
       pkgs.ngrok
       pkgs.nmap
+      pkgs.onionshare
       pkgs.proxychains
       pkgs.speedtest-cli
       pkgs.tor
@@ -87,6 +90,7 @@ in
       pkgs.steghide
 
       pkgs.neofetch
+      pkgs.onioncircuits
       # pkgs.nerdfonts #x!
       # pkgs.media-downloader
       pkgs.ollama
@@ -291,7 +295,7 @@ in
         downloader-args = "aria2c:'-x16 -s16 -c'";
       };
 
-      extraConfig = "--sub-langs all, -live_chat";
+      # extraConfig = "--sub-langs all, -live_chat";
     };
 
     zoxide = {
