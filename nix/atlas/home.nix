@@ -1,13 +1,11 @@
 { config, pkgs, ... }:
 
-let
-  USER = builtins.getEnv "USER";
-  starship_session_key = builtins.getEnv "STARSHIP_SESSION_KEY";
-
-  env = import ./env.nix;
-in
-
 {
+
+  imports = [
+    ./private.nix
+  ];
+
   nix = {
     package = pkgs.nix;
     settings.experimental-features = [ "nix-command" "flakes" ];
@@ -16,7 +14,7 @@ in
   nixpkgs.config.allowUnfree = true;
 
   home = {
-    username = USER;
+    username = "sinon";
     homeDirectory = "/home/${USER}";
 
     stateVersion = "23.11";
@@ -89,11 +87,13 @@ in
       # pkgs.pass
       pkgs.steghide
 
+      pkgs.android-tools
       pkgs.neofetch
       pkgs.onioncircuits
       # pkgs.nerdfonts #x!
       # pkgs.media-downloader
       pkgs.ollama
+      pkgs.scrcpy
       pkgs.xorg.xrandr
     ];
 
@@ -104,19 +104,17 @@ in
 
       # Network
       ".config/ngrok/ngrok.yml".source = ../../ngrok/ngrok.yml;
-
-      # Tor
-      ".local/tor/config/torrc".source = ../../tor/torrc;
     };
   };
 
   programs.home-manager.enable = true;
 
-  programs = {  
+  programs = {
     fzf = {
       enable = true;
       enableZshIntegration = true;
-      # tmux.enableShellIntegration = true;
+      enableBashIntegration = true;
+      tmux.enableShellIntegration = true;
       defaultOptions = [
         "--border"
         "--height 60%"
@@ -159,12 +157,6 @@ in
         vim-gitgutter
         vim-indent-guides
 
-        # {
-        #   plugin = cmp-nvim-lsp;
-        #   type = "lua";
-        #   config = ''
-        #   '';
-        # }
         {
           plugin = dracula-nvim;
           config = ''
@@ -208,13 +200,13 @@ in
       controlMaster = "auto";
       controlPath = "~/.ssh/control/%r@%n:%p";
       controlPersist = "30m";
-      matchBlocks = env.ssh.matchBlocks;
       # programs.ssh.addKeysToAgent = [];
     };
 
     starship = {
-      enable = false;
+      enable = true;
       enableZshIntegration = true;
+      enableBashIntegration = true;
       # settings = {};
       # https://starship.rs/config/
     };
@@ -280,7 +272,7 @@ in
     yt-dlp = {
       enable = true;
       settings = {
-        paths = env.yt_dest;
+        paths = "${config.home.homeDirectory}/Share/youtube/raw/";
         output = "%(title)s.%(ext)s";
 
         embed-chapters = true;
@@ -341,13 +333,10 @@ in
       zsh-abbr = {
         enable = true;
         abbreviations = {
-          cat = "bat";
-          clean = "nix-collect-garbage -d";
-          hmg = "home-manager generations";
-          nano = "nvim";
-          nfim = "nvim $(fzf)";
           sl = "ls";
-          tor = "tor -f ~/.local/tor/config/torrc";
+          cat = "bat";
+          hmg = "home-manager generations";
+          clean = "nix-collect-garbage -d";
           cbright="xrandr --output VGA-1 --brightness";
         };
       };

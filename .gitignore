@@ -1,2 +1,3 @@
 ngrok/ngrok.yml
 nix/atlas/env.nix
+nix/**/private.nix
