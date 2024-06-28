@@ -15,7 +15,7 @@
 
   home = {
     username = "sinon";
-    homeDirectory = "/home/${USER}";
+    homeDirectory = "/home/${config.home.username}";
 
     stateVersion = "23.11";
 
@@ -79,6 +79,8 @@
       pkgs.php
       pkgs.phpPackages.composer
       pkgs.python312
+      pkgs.python312Packages.face-recognition
+      pkgs.python312Packages.insightface
       pkgs.python312Packages.virtualenv
       pkgs.podman-compose
 
@@ -110,6 +112,52 @@
   programs.home-manager.enable = true;
 
   programs = {
+    bash = {
+      enable = true;
+      enableCompletion = true;
+      historyControl = [ "ignoreboth" ];
+      historyFile = "${config.home.homeDirectory}/.local/history/bash";
+
+      shellAliases = {
+        rm = "trash-put";
+        reload = "source ~/.zshrc";
+        hmbs = "home-manager build switch";
+      };
+
+      bashrcExtra = ''
+        . ${config.home.homeDirectory}/.nix-profile/etc/profile.d/nix.sh
+
+        case "$TERM" in
+            xterm-color|*-256color) color_prompt=yes;;
+        esac
+
+        if [ -n "$force_color_prompt" ]; then
+            if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
+                color_prompt=yes
+            else
+                color_prompt=
+            fi
+        fi
+
+        if [ -x /usr/bin/dircolors ]; then
+            test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+            alias ls='ls --color=auto'
+
+            alias grep='grep --color=auto'
+            alias fgrep='fgrep --color=auto'
+            alias egrep='egrep --color=auto'
+        fi
+
+        if ! shopt -oq posix; then
+          if [ -f /usr/share/bash-completion/bash_completion ]; then
+            . /usr/share/bash-completion/bash_completion
+          elif [ -f /etc/bash_completion ]; then
+            . /etc/bash_completion
+          fi
+        fi
+      '';
+    };
+
     fzf = {
       enable = true;
       enableZshIntegration = true;
@@ -140,7 +188,6 @@
       enable = true;
       viAlias = true;
       vimAlias = true;
-      withPython3 = false;
 
       plugins = with pkgs.vimPlugins; [
         coc-nvim
@@ -189,17 +236,14 @@
         set scrolloff=5
       '';
 
-      # extraPackages = with pkgs; [
-      #   lua-language-server
-      # ];
       # https://www.youtube.com/live/lZshGG4Mcws?si=RYcPcNlWpn_RVC0E 1:33:00
     };
 
     ssh = {
       enable = true;
       controlMaster = "auto";
-      controlPath = "~/.ssh/control/%r@%n:%p";
       controlPersist = "30m";
+      controlPath = "~/.ssh/control/%r@%n:%p";
       # programs.ssh.addKeysToAgent = [];
     };
 
@@ -207,9 +251,30 @@
       enable = true;
       enableZshIntegration = true;
       enableBashIntegration = true;
-      # settings = {};
-      # https://starship.rs/config/
-    };
+      settings = {
+        add_newline = false;
+        character.error_symbol = "[✗](bold red) ";
+
+        cmd_duration = {
+          min_time = 1000;
+          format = "[$duration](bold yellow)";
+        };
+
+        nix_shell = {
+          disabled = false;
+          impure_msg = "[impure shell](bold red)";
+          pure_msg = "[pure shell](bold green)";
+          unknown_msg = "[unknown shell](bold yellow)";
+          format = "via [☃️ $state( \($name\))](bold blue) ";
+        };
+
+        sudo = {
+          disabled = true;
+          style = "bold red";
+          # symbol = 	"🧙 ";
+        };
+      };
+    }; #https://starship.rs/config/
 
     tmux = {
       enable = true;
@@ -272,7 +337,6 @@
     yt-dlp = {
       enable = true;
       settings = {
-        paths = "${config.home.homeDirectory}/Share/youtube/raw/";
         output = "%(title)s.%(ext)s";
 
         embed-chapters = true;
@@ -334,7 +398,6 @@
         enable = true;
         abbreviations = {
           sl = "ls";
-          cat = "bat";
           hmg = "home-manager generations";
           clean = "nix-collect-garbage -d";
           cbright="xrandr --output VGA-1 --brightness";
