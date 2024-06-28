@@ -92,6 +92,7 @@
       pkgs.android-tools
       pkgs.neofetch
       pkgs.onioncircuits
+      # pkgs.opensnitch
       # pkgs.nerdfonts #x!
       # pkgs.media-downloader
       pkgs.ollama
@@ -253,7 +254,7 @@
       enableBashIntegration = true;
       settings = {
         add_newline = false;
-        character.error_symbol = "[✗](bold red) ";
+        character.error_symbol = "[✗](bold red)";
 
         cmd_duration = {
           min_time = 1000;
