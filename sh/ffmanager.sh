@@ -2,7 +2,7 @@
 
 set -eu
 
-readonly VERSION=1.1
+readonly VERSION=1.2
 readonly FOLDERS=(
     # "/path/to/directory permission"
 
@@ -28,6 +28,9 @@ readonly FILES=(
     "$HOME/.local/history/zsh 600"
     "$HOME/.local/tor/log/debug.log 600"
     "$HOME/.local/tor/log/notices.log 600"
+)
+readonly SYMLINKS=(
+    # "/path/to/source /path/to/destination"
 )
 
 # Parsing argument
@@ -66,32 +69,24 @@ for file in "${FILES[@]}"; do
     fi
 done
 
+echo "Symlinks:"
 
-# readonly SYMLINKS=(
-#     # "/path/to/source /path/to/destination"
+for symlinks in "${SYMLINKS[@]}"; do
+    read -r source destination <<< "$symlinks"
+    echo -n "  $source -> $destination: "
 
-#     "$(dirname $0)/../tor/torrc $(dirname $0)/test/torrrh"
-# )
-# echo "Symlinks:"
-
-# for symlinks in "${SYMLINKS[@]}"; do
-#     read -r source destination <<< "$symlinks"
-#     echo -n "  $source -> $destination: "
-
-#     # echo "  from $source"
-#     # echo "  to   $destination"
-#     # echo -n "  "
-
-#     if [ ! -f $source ]; then
-#         echo "[source not found]"
-#     elif [ $(readlink -f $destination) != $source ]; then
-#         ln -s $source $destination
-#         echo "[create link]"
-#     elif [ -e $destination ]; then
-#         echo "[destination is available]"
-#     else
-#         echo "[ok]"
-#     fi
-# done
+    if [ -e $destination ] && [ $(readlink -f $destination) == $source ]; then
+        echo "[ok]"
+    elif [ ! -e $source ]; then
+        echo "[source not found]"
+    elif [ -e $destination ]; then
+        echo "[destination is available]"
+    elif [ ! -e $destination ] && [ $(readlink -f $destination) != $source ]; then
+        ln -s $source $destination
+        echo "[create link]"
+    else
+        echo "[ok]"
+    fi
+done
 
 echo -n ""
