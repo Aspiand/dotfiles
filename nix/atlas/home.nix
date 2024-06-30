@@ -121,7 +121,7 @@
 
       shellAliases = {
         rm = "trash-put";
-        reload = "source ~/.zshrc";
+        reload = "source ~/.bashrc";
         hmbs = "home-manager build switch";
       };
 
@@ -250,7 +250,7 @@
 
     starship = {
       enable = true;
-      enableZshIntegration = true;
+      enableZshIntegration = false;
       enableBashIntegration = true;
       settings = {
         add_newline = false;
@@ -279,8 +279,8 @@
 
     tmux = {
       enable = true;
-      clock24 = true;
       mouse = true;
+      clock24 = true;
       baseIndex = 1;
       shortcut = "a";
       shell = "${pkgs.zsh}/bin/zsh";
@@ -288,8 +288,6 @@
       plugins = with pkgs.tmuxPlugins; [
         better-mouse-mode
         logging
-        # net-speed
-        # nord
         pain-control
         prefix-highlight
         sensible
