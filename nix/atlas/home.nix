@@ -104,9 +104,6 @@
       # config.lib.file.mkOutOfStoreSymlink
 
       ".config/nixpkgs/config.nix".text = "{ allowUnfree = true; }";
-
-      # Network
-      ".config/ngrok/ngrok.yml".source = ../../ngrok/ngrok.yml;
     };
   };
 
