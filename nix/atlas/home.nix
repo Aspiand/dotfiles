@@ -3,7 +3,7 @@
 {
 
   imports = [
-    ./private.nix
+    ../../../files.private/nix/atlas/private.nix
   ];
 
   nix = {
