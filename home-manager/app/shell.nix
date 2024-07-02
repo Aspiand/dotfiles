@@ -65,14 +65,6 @@
         rm = "trash-put";
       };
 
-      # loginShellInit = ''
-      #   echo "Login"
-      # '';
-
-      # shellInit = ''
-      #   echo "Init!"
-      # '';
-
       history = {
         share = true;
         extended = true;
