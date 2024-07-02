@@ -1,7 +1,0 @@
-version: "2"
-authtoken: MyToken123
-
-tunnels:
-    koneksi_php:
-        proto: http
-        addr: 8000
