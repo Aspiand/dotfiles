@@ -16,13 +16,16 @@
   home = {
     username = "sinon";
     homeDirectory = "/home/${config.home.username}";
-
     stateVersion = "23.11";
 
     file = {
       # config.lib.file.mkOutOfStoreSymlink
       ".config/nixpkgs/config.nix".text = "{ allowUnfree = true; }";
     };
+
+    packages = with pkgs; [
+      (writeShellScriptBin "ffm" (builtins.readFile ../sh/ffm.sh)) # https://discourse.nixos.org/t/link-scripts-to-bin-home-manager/41774
+    ];
   };
 
   programs.home-manager.enable = true;
