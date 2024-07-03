@@ -1,11 +1,6 @@
 { config, pkgs, ... }:
 
 {
-  imports = [
-    ./shell/all.nix
-    ./editor/all.nix
-  ];
-
   home.packages = [
     (pkgs.nerdfonts.override { fonts = [ "FantasqueSansMono" "0xProto" ]; })
 

@@ -3,6 +3,8 @@
 {
   imports = [
     ./app/full.nix
+    ./app/shell/all.nix
+    ./app/editor/all.nix
     ../../files.private/nix/atlas/private.nix
   ];
 
