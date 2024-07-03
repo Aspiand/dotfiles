@@ -36,6 +36,7 @@
     # Network
     pkgs.aria2
     pkgs.curl
+    pkgs.dnsutils
     pkgs.ngrok
     pkgs.nmap
     pkgs.onionshare
@@ -66,11 +67,13 @@
     pkgs.android-tools
     pkgs.clamav
     pkgs.coreutils
+    pkgs.gnumake
     # pkgs.media-downloader
     pkgs.neofetch
     pkgs.onioncircuits
     pkgs.ollama
     pkgs.scrcpy
+    pkgs.usbutils
     pkgs.xorg.xrandr
   ];
 
@@ -126,7 +129,7 @@
         downloader-args = "aria2c:'-x16 -s16 -c'";
       };
 
-      # extraConfig = "--sub-langs all, -live_chat";
+      extraConfig = "--sub-langs all,-live_chat";
     };
 
     zoxide = {
