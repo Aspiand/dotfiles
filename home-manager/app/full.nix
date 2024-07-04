@@ -1,6 +1,10 @@
 { config, pkgs, ... }:
 
 {
+  imports = [
+    ./core.nix
+  ];
+
   home.packages = [
     (pkgs.nerdfonts.override { fonts = [ "FantasqueSansMono" "0xProto" ]; })
 
@@ -21,30 +25,24 @@
     # Files
     pkgs.bat
     pkgs.ffmpeg
-    pkgs.rsync
-    pkgs.trash-cli
-    pkgs.tree
 
     # Monitor
     pkgs.bottom
     # pkgs.gotop
-    pkgs.htop
     # pkgs.iftop
     # pkgs.iotop
     # pkgs.nyx
 
     # Network
     pkgs.aria2
-    pkgs.curl
     pkgs.dnsutils
-    pkgs.nettools
     pkgs.ngrok
     pkgs.nmap
+    pkgs.onioncircuits
     pkgs.onionshare
     pkgs.proxychains
     pkgs.speedtest-cli
     pkgs.tor
-    pkgs.wget
 
     # Programming
     pkgs.nodejs
@@ -67,15 +65,14 @@
     # System
     pkgs.android-tools
     pkgs.clamav
-    pkgs.coreutils
     pkgs.gnumake
-    # pkgs.media-downloader
-    pkgs.neofetch
-    pkgs.onioncircuits
-    pkgs.ollama
     pkgs.scrcpy
     pkgs.usbutils
     pkgs.xorg.xrandr
+
+    # Other
+    pkgs.ollama
+    # pkgs.media-downloader
   ];
 
   programs = {
@@ -88,29 +85,6 @@
         "--border"
         "--height 60%"
       ];
-    };
-
-    git = {
-      enable = true;
-      userName = "Aspian";
-      extraConfig.init.defaultBranch = "main";
-
-      ignores = [
-        ".venv/"
-        ".vscode/"
-        "__pycache__/"
-        "*.pyc"
-      ];
-
-      # includes = [];
-    };
-
-    ssh = {
-      enable = true;
-      controlMaster = "auto";
-      controlPersist = "30m";
-      controlPath = "~/.ssh/control/%r@%n:%p";
-      # programs.ssh.addKeysToAgent = [];
     };
 
     yt-dlp = {

@@ -2,10 +2,7 @@
 
 {
   imports = [
-    ./app/minimal.nix
-    ./app/shell/ts.nix
-    ./app/shell/bash.nix
-    ./app/editor/neovim.nix
+    ./app/nod.nix
   ];
 
   nix = {
@@ -16,11 +13,7 @@
   nixpkgs.config.allowUnfree = true;
 
   home = {
-    # username = "sinon";
-    # homeDirectory = "/home/${config.home.username}";
     stateVersion = "23.11";
-
-    # file = { # config.lib.file.mkOutOfStoreSymlink };
 
     packages = with pkgs; [
       (writeShellScriptBin "ffm" (builtins.readFile ../sh/ffm.sh)) # https://discourse.nixos.org/t/link-scripts-to-bin-home-manager/41774
