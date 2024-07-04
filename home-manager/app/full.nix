@@ -37,6 +37,7 @@
     pkgs.aria2
     pkgs.curl
     pkgs.dnsutils
+    pkgs.nettools
     pkgs.ngrok
     pkgs.nmap
     pkgs.onionshare

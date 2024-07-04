@@ -5,7 +5,7 @@
     ./app/full.nix
     ./app/shell/all.nix
     ./app/editor/all.nix
-    ../../files.private/nix/atlas/private.nix
+    ../../files.private/home-manager/private.nix
   ];
 
   nix = {
@@ -18,7 +18,7 @@
   home = {
     username = "sinon";
     homeDirectory = "/home/${config.home.username}";
-    stateVersion = "23.11";
+    stateVersion = "24.05";
 
     # file = { # config.lib.file.mkOutOfStoreSymlink };
 
