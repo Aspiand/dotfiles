@@ -2,10 +2,10 @@
 
 {
   imports = [
-    ./app/full.nix
-    ./app/shell/all.nix
-    ./app/editor/all.nix
-    ../../files.private/home-manager/private.nix
+    ./app/minimal.nix
+    ./app/shell/ts.nix
+    ./app/shell/bash.nix
+    ./app/editor/neovim.nix
   ];
 
   nix = {
@@ -16,9 +16,9 @@
   nixpkgs.config.allowUnfree = true;
 
   home = {
-    username = "sinon";
-    homeDirectory = "/home/${config.home.username}";
-    stateVersion = "24.11";
+    # username = "sinon";
+    # homeDirectory = "/home/${config.home.username}";
+    stateVersion = "23.11";
 
     # file = { # config.lib.file.mkOutOfStoreSymlink };
 

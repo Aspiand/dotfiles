@@ -1,4 +1,4 @@
-{ config, pkgs }:
+{ config, pkgs, ... }:
 
 {
   home.packages = [
@@ -15,6 +15,7 @@
     pkgs.wget
 
     # System
+    pkgs.util-linux
     pkgs.coreutils
     pkgs.neofetch
     pkgs.usbutils
@@ -43,5 +44,5 @@
       controlPath = "~/.ssh/control/%r@%n:%p";
       # programs.ssh.addKeysToAgent = [];
     };
-  }
+  };
 }
