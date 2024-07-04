@@ -18,7 +18,7 @@
   home = {
     username = "sinon";
     homeDirectory = "/home/${config.home.username}";
-    stateVersion = "24.05";
+    stateVersion = "24.11";
 
     # file = { # config.lib.file.mkOutOfStoreSymlink };
 
