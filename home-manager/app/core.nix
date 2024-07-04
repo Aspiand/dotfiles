@@ -1,29 +1,25 @@
-{ config, pkgs }:
+{ pkgs, ... }:
 
 {
-  home.packages = [
-    # Files
-    pkgs.rsync
-    pkgs.trash-cli
-    pkgs.tree
-
-    # Monitor
-    pkgs.htop
-
-    # Network
-    pkgs.curl
-    pkgs.wget
-
-    # System
-    pkgs.coreutils
-    pkgs.neofetch
-    pkgs.usbutils
+  home.packages = with pkgs; [
+    coreutils
+    curl
+    htop
+    nano
+    neofetch
+    nettools
+    openssh
+    rsync
+    trash-cli
+    tree
+    wget
   ];
 
   programs = {
     git = {
       enable = true;
       userName = "Aspian";
+      userEmail = "p.aspian1738@gmail.com";
       extraConfig.init.defaultBranch = "main";
 
       ignores = [
@@ -43,5 +39,5 @@
       controlPath = "~/.ssh/control/%r@%n:%p";
       # programs.ssh.addKeysToAgent = [];
     };
-  }
+  };
 }
