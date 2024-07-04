@@ -4,7 +4,7 @@
   programs.bash = {
     enable = true;
     enableCompletion = true;
-    historyControl = [ "ignoreboth" ];
+    # historyControl = [ "ignoreboth" ];
     historyFile = "${config.home.homeDirectory}/.local/history/bash";
 
     shellAliases = {
