@@ -3,8 +3,8 @@
 {
   imports = [
     ./../../home-manager/app/core.nix
+    ./../../home-manager/app/other.nix
     ./../../home-manager/app/shell/bash.nix
-    ./../../home-manager/app/shell/zsh.nix
     ./../../home-manager/app/shell/starship.nix
     ./../../home-manager/app/editor/neovim.nix
 
@@ -14,11 +14,66 @@
   home = {
     stateVersion = "24.11";
     packages = with pkgs; [
-      apt
-      dpkg
+      (nerdfonts.override { fonts = [ "FantasqueSansMono" "0xProto" ]; })
+
+      # Archive
+      bzip2
+      bzip3
+      gzip
+      unrar
+      unzip
+      gnutar
+      xz
+      zip
+      zstd
+
+      # Database
+      sqlite
+
+      # Files
+      bat
+      ffmpeg
+
+      # Monitor
+      bottom
+      # gotop
+      iftop
+      iotop
+      nyx
+
+      # Network
+      aria2
+      dnsutils
+      ngrok
+      nmap
+      proxychains
+      speedtest-cli
+      tor
+
+      # Programming
+      nodejs
+      # jdk_headless
+      # jre_headless
+      php
+      phpPackages.composer
+      python312
+      python312Packages.pip
+      python312Packages.virtualenv
+
+      # Security
+      gnupg
+      pass
+      steghide
+
+      # System
+      clamav
+      gnumake
+      which
+
+      # Other
       nano
       ncurses
-      which
+      ollama
     ];
 
     file = {
@@ -44,4 +99,6 @@
   };
 
   programs.home-manager.enable = true;
+
+  # lib.mkForce
 }
