@@ -2,9 +2,10 @@
 
 {
   imports = [
-    ./../../home-manager/app/shell/all.nix
-    ./../../home-manager/app/editor/neovim.nix
     ./../../home-manager/app/core.nix
+    ./../../home-manager/app/shell/bash.nix
+    ./../../home-manager/app/shell/starship.nix
+    ./../../home-manager/app/editor/neovim.nix
 
     ./reconfigure.nix
   ];
@@ -16,6 +17,7 @@
       dpkg
       nano
       ncurses
+      which
     ];
 
     file = {

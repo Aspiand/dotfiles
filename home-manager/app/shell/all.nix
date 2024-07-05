@@ -2,6 +2,8 @@
   imports = [
     ./bash.nix
     ./zsh.nix
-    ./ts.nix
+
+    ./tmux.nix
+    ./starship.nix
   ];
 }
