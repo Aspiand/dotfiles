@@ -16,7 +16,6 @@
     # file = { # config.lib.file.mkOutOfStoreSymlink };
 
     packages = with pkgs; [
-      (writeShellScriptBin "ffm" (builtins.readFile ../sh/ffm.sh)) # https://discourse.nixos.org/t/link-scripts-to-bin-home-manager/41774
       (nerdfonts.override { fonts = [ "FantasqueSansMono" "0xProto" ]; })
 
       # Archive
@@ -82,7 +81,6 @@
       xorg.xrandr
 
       # Other
-      nano
       ollama
       # media-downloader
     ];

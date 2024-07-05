@@ -35,10 +35,6 @@
       ffmpeg
 
       # Monitor
-      bottom
-      # gotop
-      iftop
-      iotop
       nyx
 
       # Network
@@ -71,7 +67,6 @@
       which
 
       # Other
-      nano
       ncurses
       ollama
     ];

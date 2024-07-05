@@ -2,36 +2,12 @@
 
 set -eu
 
-readonly VERSION=1.2
-readonly FOLDERS=(
-    # "/path/to/directory permission"
+readonly VERSION=1.3
+readonly ROOT=$(dirname $BASH_SOURCE)
 
-    # Tor
-    "$HOME/.local/tor 700"
-    "$HOME/.local/tor/config 700"
-    "$HOME/.local/tor/log 700"
-    "$HOME/.local/tor/service 700"
-
-    "$HOME/.local/history 700"
-
-    # SSH
-    "$HOME/.ssh 700"
-    "$HOME/.ssh/control u+rwx,go-rwx"
-
-    # GnuPG
-    "$HOME/.gnupg 700"
-)
-readonly FILES=(
-    # "/path/to/file permission"
-
-    # Log
-    "$HOME/.local/history/zsh 600"
-    "$HOME/.local/tor/log/debug.log 600"
-    "$HOME/.local/tor/log/notices.log 600"
-)
-readonly SYMLINKS=(
-    # "/path/to/source /path/to/destination"
-)
+if [ -f "$ROOT/env.sh" ]; then
+    source $ROOT/env.sh
+fi
 
 # Parsing argument
 # https://stackoverflow.com/questions/192249/how-do-i-parse-command-line-arguments-in-bash
