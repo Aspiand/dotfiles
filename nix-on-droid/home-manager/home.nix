@@ -2,20 +2,20 @@
 
 {
   imports = [
-    ./../../home-manager/app/shell/ts.nix
-    ./../../home-manager/app/shell/bash.nix
-    ./../../home-manager/app/shell/zsh.nix
+    ./../../home-manager/app/shell/all.nix
     ./../../home-manager/app/editor/neovim.nix
     ./../../home-manager/app/core.nix
+
+    ./reconfigure.nix
   ];
 
   home = {
     stateVersion = "23.11";
     packages = with pkgs; [
       apt
-      # busybox
       dpkg
       nano
+      ncurses
     ];
 
     file = {
