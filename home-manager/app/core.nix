@@ -2,7 +2,7 @@
 
 {
   home.packages = with pkgs; [
-    # coreutils
+    coreutils
     curl
     htop
     nano
