@@ -4,13 +4,14 @@
   programs.bash = {
     enable = true;
     enableCompletion = true;
-    historyControl = [ "ignoreboth" ];
+    # historyControl = [ "ignoreboth" ];
     historyFile = "${config.home.homeDirectory}/.local/history/bash";
 
     shellAliases = {
       rm = "trash-put";
       reload = "source ~/.bashrc";
       hmbs = "home-manager build switch";
+      sshd = "$(which sshd) -f ~/.ssh/sshd_config";
     };
 
     bashrcExtra = ''
