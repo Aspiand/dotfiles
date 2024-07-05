@@ -2,6 +2,7 @@
 
 {
   imports = [
+    ./app/core.nix
     ./app/other.nix
     ./app/shell/all.nix
     ./app/editor/all.nix
