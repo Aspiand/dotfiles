@@ -4,6 +4,7 @@
   imports = [
     ./../../home-manager/app/core.nix
     ./../../home-manager/app/shell/bash.nix
+    ./../../home-manager/app/shell/zsh.nix
     ./../../home-manager/app/shell/starship.nix
     ./../../home-manager/app/editor/neovim.nix
 
@@ -11,7 +12,7 @@
   ];
 
   home = {
-    stateVersion = "23.11";
+    stateVersion = "24.11";
     packages = with pkgs; [
       apt
       dpkg
@@ -21,6 +22,18 @@
     ];
 
     file = {
+      ".config/nixpkgs/config.nix".text = "{ allowUnfree = true; }";
+
+      ".nix-channels".text = ''
+        # https://github.com/nix-community/home-manager/archive/release-23.11.tar.gz home-manager
+        # https://github.com/nix-community/nix-on-droid/archive/release-23.11.tar.gz nix-on-droid
+        # https://nixos.org/channels/nixos-23.11 nixpkgs
+
+        https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
+        https://github.com/nix-community/nix-on-droid/archive/master.tar.gz nix-on-droid
+        https://nixos.org/channels/nixos-unstable nixpkgs
+      '';
+
       ".ssh/sshd_config".text = ''
         Port 3022
         PrintMotd yes
@@ -29,4 +42,6 @@
       '';
     };
   };
+
+  programs.home-manager.enable = true;
 }
