@@ -63,7 +63,10 @@
 
       # System
       clamav
+      gawk
       gnumake
+      gnused
+      procps
       which
 
       # Other
