@@ -4,18 +4,25 @@
   programs.zsh = {
     enable = true;
     enableCompletion = true;
-    # autosuggestion.enable = true;
+    autosuggestion.enable = true;
     syntaxHighlighting.enable = true;
+    dotDir = ".config/zsh";
 
     oh-my-zsh = {
       enable = true;
       theme = "robbyrussell";
     };
 
+    zplug = {
+      enable = false;
+      plugins = [
+        { name = "zsh-users/zsh-autosuggestions"; }
+        { name = "romkatv/powerlevel10k"; tags = [ as:theme depth:1 ]; }
+      ];
+    };
+
     shellAliases = {
-      hmbs = "home-manager build switch";
-      reload = "source ~/.zshrc";
-      rm = "trash-put";
+      reload = "source ${config.programs.zsh.dotDir}/.zshrc";
     };
 
     history = {

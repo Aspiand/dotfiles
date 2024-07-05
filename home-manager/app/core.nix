@@ -1,6 +1,12 @@
 { pkgs, ... }:
 
 {
+  home.shellAliases = {
+    hmbs = "home-manager build switch";
+    rm = "trash-put";
+    sl = "ls";
+  };
+
   home.packages = with pkgs; [
     coreutils
     curl

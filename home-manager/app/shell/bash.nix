@@ -4,14 +4,11 @@
   programs.bash = {
     enable = true;
     enableCompletion = true;
-    # historyControl = [ "ignoreboth" ];
+    historyControl = [ "ignoreboth" ];
     historyFile = "${config.home.homeDirectory}/.local/history/bash";
 
     shellAliases = {
-      rm = "trash-put";
       reload = "source ~/.bashrc";
-      hmbs = "home-manager build switch";
-      sshd = "$(which sshd) -f ~/.ssh/sshd_config";
     };
 
     bashrcExtra = ''
@@ -29,7 +26,7 @@
           fi
       fi
 
-      if [ -x /usr/bin/dircolors ]; then
+      if [ -x "$(command -v dircolors)" ]; then
           test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
           alias ls='ls --color=auto'
 
