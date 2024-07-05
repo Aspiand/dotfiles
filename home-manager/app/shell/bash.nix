@@ -11,6 +11,7 @@
       rm = "trash-put";
       reload = "source ~/.bashrc";
       hmbs = "home-manager build switch";
+      sshd = "$(which sshd) -f ~/.ssh/sshd_config";
     };
 
     bashrcExtra = ''
