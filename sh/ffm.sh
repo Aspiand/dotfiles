@@ -2,12 +2,19 @@
 
 set -eu
 
-readonly VERSION=1.3
+readonly VERSION=1.4
 readonly ROOT=$(dirname $BASH_SOURCE)
 
 if [ -f "$ROOT/env.sh" ]; then
     source $ROOT/env.sh
 fi
+
+get_permission() {
+    local path=$1
+
+    read -r user group permission <<< "$(stat -c "%U %G %a" $path)"
+    echo $user $group $permission
+}
 
 # Parsing argument
 # https://stackoverflow.com/questions/192249/how-do-i-parse-command-line-arguments-in-bash
@@ -63,6 +70,18 @@ for symlinks in "${SYMLINKS[@]}"; do
     else
         echo "[ok]"
     fi
+done
+
+echo "Recursive:"
+for recursive in "${RECURSIVE[@]}"; do
+    read -r path folder file <<< "$recursive"
+    echo "  $path > $folder | $file"
+
+    # find $path -type d -not -perm $folder -exec \
+    #     echo "$path ($(stat -c "%a" "$path")): " \;
+
+    find $path -type d -not -perm $folder -exec chmod --verbose $folder {} \;
+    find $path -type f -not -perm $file -exec chmod --verbose $file {} \;
 done
 
 echo -n ""

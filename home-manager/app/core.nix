@@ -8,7 +8,7 @@
   };
 
   home.packages = with pkgs; [
-    (writeShellScriptBin "ffm" (builtins.readFile ../sh/ffm.sh)) # https://discourse.nixos.org/t/link-scripts-to-bin-home-manager/41774    
+    (writeShellScriptBin "ffm" (builtins.readFile ../../sh/ffm.sh)) # https://discourse.nixos.org/t/link-scripts-to-bin-home-manager/41774
 
     coreutils
     curl
