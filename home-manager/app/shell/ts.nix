@@ -46,7 +46,6 @@
         prefix-highlight
         sensible
         sidebar
-        t-smart-tmux-session-manager
         yank
 
         {
