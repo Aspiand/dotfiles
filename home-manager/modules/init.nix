@@ -2,7 +2,8 @@
 
 {
   imports = [
-    ./shell
     ./editor
+    ./shell
+    ./utils
   ];
 }
