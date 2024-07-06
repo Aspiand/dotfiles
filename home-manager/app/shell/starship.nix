@@ -1,8 +1,6 @@
 {
   programs.starship = {
     enable = true;
-    enableZshIntegration = false;
-    enableBashIntegration = true;
     settings = {
       add_newline = false;
       character.error_symbol = "[✗](bold red)";
