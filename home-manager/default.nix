@@ -6,7 +6,6 @@
 
     ./app/core.nix
     ./app/other.nix
-    ./app/editor/all.nix
     ./app/shell/starship.nix
     ../../files.private/home-manager/private.nix
   ];
@@ -107,7 +106,8 @@
     zsh.enable = true;
   };
 
-  util = {
+  utils = {
     tmux.enable = true;
+    neovim.enable = true;
   };
 }

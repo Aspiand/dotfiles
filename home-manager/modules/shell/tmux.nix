@@ -3,11 +3,11 @@
 with lib;
 
 let
-  cfg = config.util.tmux;
+  cfg = config.utils.tmux;
 in
 
 {
-  options.util.tmux = {
+  options.utils.tmux = {
     enable = mkEnableOption "Tmux";
     shell = mkOption {
       type = types.str;
