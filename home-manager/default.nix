@@ -2,11 +2,12 @@
 
 {
   imports = [
+    ./modules
+
     ./app/core.nix
     ./app/other.nix
-    ./app/shell/all.nix
     ./app/editor/all.nix
-    ./app/browser/firefox.nix
+    ./app/shell/starship.nix
     ../../files.private/home-manager/private.nix
   ];
 
@@ -96,8 +97,13 @@
     package = pkgs.nix;
     settings.experimental-features = [ "nix-command" "flakes" ];
   };
-
   nixpkgs.config.allowUnfree = true;
 
   programs.home-manager.enable = true;
+  programs.git.extraConfig.core.editor = "code --wait";
+
+  shell = {
+    bash.enable = true;
+    zsh.enable = true;
+  };
 }
