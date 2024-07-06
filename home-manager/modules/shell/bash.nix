@@ -61,7 +61,6 @@ in
       '';
     };
 
-    # programs.starship.enableBashIntegration = true if shell.bash = true
-    programs.starship.enableBashIntegration = mkIf cfg.enable cfg.starship;
+    programs.starship.enableBashIntegration = cfg.starship;
   };
 }

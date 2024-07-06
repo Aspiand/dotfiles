@@ -106,4 +106,8 @@
     bash.enable = true;
     zsh.enable = true;
   };
+
+  util = {
+    tmux.enable = true;
+  };
 }
