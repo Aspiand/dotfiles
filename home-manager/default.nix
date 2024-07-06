@@ -2,11 +2,9 @@
 
 {
   imports = [
-    ./modules
+    ./modules/init.nix
 
-    ./app/core.nix
-    ./app/other.nix
-    ./app/shell/starship.nix
+    ./core.nix
     ../../files.private/home-manager/private.nix
   ];
 
@@ -107,7 +105,14 @@
   };
 
   utils = {
-    tmux.enable = true;
+    fzf.enable = true;
     neovim.enable = true;
+    starship.enable = true;
+    tmux.enable = true;
+    yt-dlp = {
+      enable = true;
+      path = "${config.home.homeDirectory}/Downloads/";
+    };
+    zoxide.enable = true;
   };
 }
