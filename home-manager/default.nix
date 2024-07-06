@@ -6,6 +6,7 @@
     ./app/other.nix
     ./app/shell/all.nix
     ./app/editor/all.nix
+    ./app/browser/firefox.nix
     ../../files.private/home-manager/private.nix
   ];
 
@@ -13,6 +14,10 @@
     username = "sinon";
     homeDirectory = "/home/${config.home.username}";
     stateVersion = "24.11";
+
+    shellAliases = {
+      hmbs = "home-manager build switch";
+    };
 
     # file = { # config.lib.file.mkOutOfStoreSymlink };
 

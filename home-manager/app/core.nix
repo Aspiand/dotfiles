@@ -2,7 +2,6 @@
 
 {
   home.shellAliases = {
-    hmbs = "home-manager build switch";
     rm = "trash-put";
     sl = "ls";
   };
