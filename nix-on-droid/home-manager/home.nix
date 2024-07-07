@@ -91,8 +91,14 @@
   programs.home-manager.enable = true;
 
   shell.bash.enable = true;
+  shell.variable = {
+    SYMLINKS = [
+      "/storage/emulated/0 /data/data/com.termux.nix/files/home/storage"
+    ];
+  };
 
   utils = {
+    ffm.enable = true;
     neovim.enable = true;
     starship.enable = true;
     yt-dlp = {
