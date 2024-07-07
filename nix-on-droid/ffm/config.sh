@@ -5,6 +5,10 @@ readonly FOLDERS=(
     "$HOME/.local/share/clamav 700"
     "$HOME/.local/share/clamav/log 700"
     "$HOME/.local/share/clamav/database 700"
+
+    # SSH
+    "$HOME/.ssh 700"
+    "$HOME/.ssh/control 700"
 )
 readonly FILES=(
     # "/path/to/file permission"
@@ -18,4 +22,5 @@ readonly RECURSIVE=(
     # "/path/to/folder (folder permission) (file permission)"
 
     "$HOME/.local/share/clamav 700 600"
+    "$HOME/.ssh 700 600"
 )
