@@ -105,6 +105,7 @@
   };
 
   utils = {
+    ffm.enable = true;
     fzf.enable = true;
     neovim.enable = true;
     starship.enable = true;
@@ -115,4 +116,4 @@
     };
     zoxide.enable = true;
   };
-}
+} # xdg.configFile

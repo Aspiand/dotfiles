@@ -2,12 +2,16 @@
 
 set -eu
 
-readonly VERSION=1.4
+readonly VERSION=1.5
 readonly ROOT=$(dirname $BASH_SOURCE)
+readonly CONFIG_PATH=(
+    "$ROOT/env.sh"
+    "$HOME/.config/ffm/config.sh"
+)
 
-if [ -f "$ROOT/env.sh" ]; then
-    source $ROOT/env.sh
-fi
+for config_path in "${CONFIG_PATH[@]}"; do
+    [ -f $config_path ] && source $config_path
+done
 
 get_permission() {
     local path=$1
