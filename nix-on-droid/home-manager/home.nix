@@ -2,13 +2,10 @@
 
 {
   imports = [
-    ./../../home-manager/app/core.nix
-    ./../../home-manager/app/other.nix
-    ./../../home-manager/app/shell/bash.nix
-    ./../../home-manager/app/shell/starship.nix
-    ./../../home-manager/app/editor/neovim.nix
+    ./../../home-manager/modules/init.nix
+    ./../../home-manager/core.nix
 
-    ./reconfigure.nix
+    ./core.nix
   ];
 
   home = {
@@ -26,9 +23,6 @@
       xz
       zip
       zstd
-
-      # Database
-      sqlite
 
       # Files
       bat
@@ -63,19 +57,16 @@
 
       # System
       clamav
-      gawk
       gnumake
-      gnused
       procps
-      which
+      # proot
 
       # Other
-      ncurses
       ollama
     ];
 
     file = {
-      ".config/nixpkgs/config.nix".text = "{ allowUnfree = true; }";
+      ".config/nixpkgs/config.nix".source = ../nixpkgs/config.nix;
 
       ".nix-channels".text = ''
         # https://github.com/nix-community/home-manager/archive/release-23.11.tar.gz home-manager
@@ -87,16 +78,26 @@
         https://nixos.org/channels/nixos-unstable nixpkgs
       '';
 
-      ".ssh/sshd_config".text = ''
-        Port 3022
-        PrintMotd yes
-        PasswordAuthentication no
-        HostKey /data/data/com.termux.nix/files/home/.ssh/ssh_host_rsa_key
-      '';
+      ".ssh/sshd_config".source = ../ssh/sshd_config;
+    };
+
+    shellAliases = {
+      cat = "bat";
+      nods = "nix-on-droid build switch";
+      sshd = "$(which sshd) -f ~/.ssh/sshd_config";
     };
   };
 
   programs.home-manager.enable = true;
 
-  # lib.mkForce
+  shell.bash.enable = true;
+
+  utils = {
+    neovim.enable = true;
+    starship.enable = true;
+    yt-dlp = {
+      enable = true;
+      path = "${config.home.homeDirectory}/Downloads/";
+    };
+  };
 }

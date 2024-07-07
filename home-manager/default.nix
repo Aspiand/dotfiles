@@ -2,11 +2,9 @@
 
 {
   imports = [
-    ./app/core.nix
-    ./app/other.nix
-    ./app/shell/all.nix
-    ./app/editor/all.nix
-    ./app/browser/firefox.nix
+    ./modules/init.nix
+
+    ./core.nix
     ../../files.private/home-manager/private.nix
   ];
 
@@ -96,8 +94,25 @@
     package = pkgs.nix;
     settings.experimental-features = [ "nix-command" "flakes" ];
   };
-
   nixpkgs.config.allowUnfree = true;
 
   programs.home-manager.enable = true;
+  programs.git.extraConfig.core.editor = "code --wait";
+
+  shell = {
+    bash.enable = true;
+    zsh.enable = true;
+  };
+
+  utils = {
+    fzf.enable = true;
+    neovim.enable = true;
+    starship.enable = true;
+    tmux.enable = true;
+    yt-dlp = {
+      enable = true;
+      path = "${config.home.homeDirectory}/Downloads/";
+    };
+    zoxide.enable = true;
+  };
 }
