@@ -66,10 +66,11 @@
     ];
 
     file = {
+      ".config/ffm/config.nix".source = ../ffm/config.nix;
       ".config/nixpkgs/config.nix".source = ../nixpkgs/config.nix;
 
       ".local/share/clamav/clamd.conf".source = ../clamav/clamd.conf;
-      ".local/share/clamav/freshcalm.conf".source = ../clamav/freshcalm.conf;
+      ".local/share/clamav/freshclam.conf".source = ../clamav/freshclam.conf;
 
       ".nix-channels".text = ''
         # https://github.com/nix-community/home-manager/archive/release-23.11.tar.gz home-manager
@@ -96,21 +97,6 @@
   programs.home-manager.enable = true;
 
   shell.bash.enable = true;
-  shell.variable = {
-    FOLDERS = [
-      "$HOME/.local/share/clamav 700"
-      "$HOME/.local/share/clamav/log 700"
-      "$HOME/.local/share/clamav/database 700"
-    ];
-
-    SYMLINKS = [
-      "/storage/emulated/0 /data/data/com.termux.nix/files/home/storage"
-    ];
-
-    RECURSIVE = [
-      "$HOME/.local/share/clamav 700 600"
-    ];
-  };
 
   utils = {
     ffm.enable = true;
