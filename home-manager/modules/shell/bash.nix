@@ -28,7 +28,9 @@ in
       };
 
       bashrcExtra = ''
-        . ${config.home.homeDirectory}/.nix-profile/etc/profile.d/nix.sh
+        source ${config.home.homeDirectory}/.nix-profile/etc/profile.d/nix.sh
+
+        [ -f ~/.profile ] && source ~/.profile
 
         case "$TERM" in
             xterm-color|*-256color) color_prompt=yes;;

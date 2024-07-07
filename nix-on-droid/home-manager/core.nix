@@ -1,8 +1,9 @@
 { pkgs, ... }:
 
 {
-  home.packages = [
+  home.packages = with pkgs; [
     gawk
+    gnugrep
     gnused
     ncurses
     which
