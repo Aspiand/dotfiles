@@ -51,7 +51,6 @@
       python312Packages.virtualenv
 
       # Security
-      gnupg
       pass
       steghide
 
@@ -68,6 +67,8 @@
     file = {
       ".config/ffm/config.sh".source = ../ffm/config.sh;
       ".config/nixpkgs/config.nix".source = ../nixpkgs/config.nix;
+
+      ".gnupg/gpg-agent.conf".source = ../gnupg/gpg-agent.conf
 
       ".local/share/clamav/clamd.conf".source = ../clamav/clamd.conf;
       ".local/share/clamav/freshclam.conf".source = ../clamav/freshclam.conf;
@@ -86,7 +87,6 @@
     };
 
     shellAliases = {
-      cat = "bat";
       nods = "nix-on-droid build switch";
       sshd = "$(which sshd) -f ~/.ssh/sshd_config";
       clamd = "clamd --config-file ~/.local/share/clamav/clamd.conf";

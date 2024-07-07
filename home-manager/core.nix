@@ -14,6 +14,7 @@
     neofetch
     nettools
     openssh
+    pinentry-tty
     rsync
     trash-cli
     tree
@@ -36,6 +37,8 @@
 
       # includes = [];
     };
+
+    # gpg.enable = true;
 
     ssh = {
       enable = true;

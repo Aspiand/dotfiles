@@ -72,7 +72,6 @@
       podman-compose
 
       # Security
-      # gnupg
       # pass
       steghide
 
