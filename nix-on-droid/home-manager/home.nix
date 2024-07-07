@@ -66,7 +66,7 @@
     ];
 
     file = {
-      ".config/ffm/config.nix".source = ../ffm/config.sh;
+      ".config/ffm/config.sh".source = ../ffm/config.sh;
       ".config/nixpkgs/config.nix".source = ../nixpkgs/config.nix;
 
       ".local/share/clamav/clamd.conf".source = ../clamav/clamd.conf;
