@@ -24,6 +24,7 @@ in
       autosuggestion.enable = true;
       syntaxHighlighting.enable = true;
       dotDir = ".config/zsh";
+      initExtra = "source ${config.home.homeDirectory}/.nix-profile/etc/profile.d/nix.sh";
 
       oh-my-zsh = {
         enable = true;
