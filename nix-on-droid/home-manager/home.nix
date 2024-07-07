@@ -68,6 +68,9 @@
     file = {
       ".config/nixpkgs/config.nix".source = ../nixpkgs/config.nix;
 
+      ".local/share/clamav/clamd.conf".source = ../clamav/clamd.conf;
+      ".local/share/clamav/freshcalm.conf".source = ../clamav/freshcalm.conf;
+
       ".nix-channels".text = ''
         # https://github.com/nix-community/home-manager/archive/release-23.11.tar.gz home-manager
         # https://github.com/nix-community/nix-on-droid/archive/release-23.11.tar.gz nix-on-droid
@@ -85,6 +88,8 @@
       cat = "bat";
       nods = "nix-on-droid build switch";
       sshd = "$(which sshd) -f ~/.ssh/sshd_config";
+      clamd = "clamd --config-file ~/.local/share/clamav/clamd.conf";
+      freshclam = "freshclam --config-file ~/.local/share/clamav/freshclam.conf";
     };
   };
 
@@ -92,8 +97,18 @@
 
   shell.bash.enable = true;
   shell.variable = {
+    FOLDERS = [
+      "$HOME/.local/share/clamav 700"
+      "$HOME/.local/share/clamav/log 700"
+      "$HOME/.local/share/clamav/database 700"
+    ];
+
     SYMLINKS = [
       "/storage/emulated/0 /data/data/com.termux.nix/files/home/storage"
+    ];
+
+    RECURSIVE = [
+      "$HOME/.local/share/clamav 700 600"
     ];
   };
 
@@ -103,7 +118,7 @@
     starship.enable = true;
     yt-dlp = {
       enable = true;
-      path = "${config.home.homeDirectory}/Downloads/";
+      path = "/data/data/com.termux.nix/files/home/storage/Share/YouTube/";
     };
   };
 }

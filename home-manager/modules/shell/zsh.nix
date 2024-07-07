@@ -64,6 +64,6 @@ in
       };
     };
 
-    programs.starship.enableZshIntegration = mkIf cfg.enable cfg.starship;
+    programs.starship.enableZshIntegration = cfg.starship;
   };
 }
