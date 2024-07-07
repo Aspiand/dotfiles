@@ -1,0 +1,4 @@
+Port 3022
+PrintMotd yes
+PasswordAuthentication no
+HostKey /data/data/com.termux.nix/files/home/.ssh/ssh_host_rsa_key
