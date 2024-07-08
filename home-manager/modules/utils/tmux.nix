@@ -20,6 +20,7 @@ in
       enable = true;
       mouse = true;
       clock24 = true;
+      newSession = true;
       baseIndex = 1;
       shortcut = "a";
       shell = cfg.shell;

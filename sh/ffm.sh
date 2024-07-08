@@ -2,11 +2,12 @@
 
 set -eu
 
-readonly VERSION=1.5
+readonly VERSION=1.6
 readonly ROOT=$(dirname $BASH_SOURCE)
 readonly CONFIG_PATH=(
     "$ROOT/env.sh"
     "$HOME/.config/ffm/config.sh"
+    /etc/ffm/config.sh
 )
 
 for config_path in "${CONFIG_PATH[@]}"; do
