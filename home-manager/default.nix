@@ -5,7 +5,7 @@
     ./modules/init.nix
 
     ./core.nix
-    ../../files.private/home-manager/private.nix
+    ../../piles/home-manager/private.nix
   ];
 
   home = {
@@ -64,11 +64,11 @@
       jre_headless
       php
       phpPackages.composer
-      python312
-      # python312Packages.face-recognition
-      # python312Packages.insightface
-      python312Packages.pip
-      python312Packages.virtualenv
+      python3
+      python3Packages.pip
+      python3Packages.virtualenv
+      # python3Packages.face-recognition
+      # python3Packages.insightface
       podman-compose
 
       # Security
