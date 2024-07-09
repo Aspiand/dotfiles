@@ -105,7 +105,7 @@
     neovim.enable = true;
     starship.enable = true;
     tmux.enable = true;
-    tmux.plugins = true;
+    tmux.plugins = false;
     yt-dlp.enable = true;
     yt-dlp.path = "/data/data/com.termux.nix/files/home/storage/Share/YouTube/";
   };
