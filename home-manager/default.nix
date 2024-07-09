@@ -57,6 +57,7 @@
       proxychains
       speedtest-cli
       tor
+      torsocks
 
       # Programming
       nodejs
