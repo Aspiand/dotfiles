@@ -13,6 +13,10 @@ in
       type = types.str;
       default = "${pkgs.zsh}/bin/zsh";
     };
+    plugins = mkOption {
+      type = types.bool;
+      default = true;
+    };
   };
 
   config = mkIf cfg.enable {
@@ -25,18 +29,18 @@ in
       shortcut = "a";
       shell = cfg.shell;
 
-      plugins = with pkgs.tmuxPlugins; [
-        better-mouse-mode
-        logging
-        pain-control
-        prefix-highlight
-        sensible
-        sidebar
-        yank
+      plugins = mkIf cfg.plugins [
+        pkgs.tmuxPlugins.better-mouse-mode
+        pkgs.tmuxPlugins.logging
+        pkgs.tmuxPlugins.pain-control
+        pkgs.tmuxPlugins.prefix-highlight
+        pkgs.tmuxPlugins.sensible
+        pkgs.tmuxPlugins.sidebar
+        pkgs.tmuxPlugins.yank
 
         {
           # https://draculatheme.com/tmux
-          plugin = dracula;
+          plugin = pkgs.tmuxPlugins.dracula;
           extraConfig = ''
             set -g @dracula-plugins "git ssh-session network-bandwidth time"
 
