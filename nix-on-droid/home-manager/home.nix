@@ -8,8 +8,23 @@
     ./core.nix
   ];
 
+  # Nix Channel
+
+  # Original
+  # https://github.com/nix-community/home-manager/archive/release-23.11.tar.gz home-manager
+  # https://github.com/nix-community/nix-on-droid/archive/release-23.11.tar.gz nix-on-droid
+  # https://nixos.org/channels/nixos-23.11 nixpkgs
+
+  # https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
+  # https://github.com/nix-community/nix-on-droid/archive/master.tar.gz nix-on-droid
+  # https://nixos.org/channels/nixos-unstable nixpkgs
+
+  # https://github.com/nix-community/home-manager/archive/release-24.05.tar.gz home-manager
+  # https://github.com/nix-community/nix-on-droid/archive/release-24.05.tar.gz nix-on-droid
+  # https://nixos.org/channels/nixos-24.05 nixpkgs
+
   home = {
-    stateVersion = "24.11";
+    stateVersion = "24.05";
     packages = with pkgs; [
       (nerdfonts.override { fonts = [ "FantasqueSansMono" "0xProto" ]; })
 
@@ -74,16 +89,6 @@
       ".local/share/clamav/clamd.conf".source = ../clamav/clamd.conf;
       ".local/share/clamav/freshclam.conf".source = ../clamav/freshclam.conf;
 
-      ".nix-channels".text = ''
-        # https://github.com/nix-community/home-manager/archive/release-23.11.tar.gz home-manager
-        # https://github.com/nix-community/nix-on-droid/archive/release-23.11.tar.gz nix-on-droid
-        # https://nixos.org/channels/nixos-23.11 nixpkgs
-
-        https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
-        https://github.com/nix-community/nix-on-droid/archive/master.tar.gz nix-on-droid
-        https://nixos.org/channels/nixos-unstable nixpkgs
-      '';
-
       ".ssh/sshd_config".source = ../ssh/sshd_config;
     };
 
@@ -106,6 +111,7 @@
     starship.enable = true;
     tmux.enable = true;
     tmux.plugins = false;
+    tmux.shell = "${pkgs.bash}/bin/bash";
     yt-dlp.enable = true;
     yt-dlp.path = "/data/data/com.termux.nix/files/home/storage/Share/YouTube/";
   };

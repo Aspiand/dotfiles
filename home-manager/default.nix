@@ -8,10 +8,17 @@
     ../../piles/home-manager/private.nix
   ];
 
+  # Nix Channel
+  # https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
+  # https://nixos.org/channels/nixpkgs-unstable nixpkgs
+
+  # https://github.com/nix-community/home-manager/archive/release-24.05.tar.gz home-manager
+  # https://nixos.org/channels/nixpkgs-24.05-darwin nixpkgs
+
   home = {
     username = "sinon";
     homeDirectory = "/home/${config.home.username}";
-    stateVersion = "24.11";
+    stateVersion = "24.05";
 
     shellAliases = {
       hmbs = "home-manager build switch";
@@ -116,4 +123,4 @@
     };
     zoxide.enable = true;
   };
-} # xdg.configFile
+}
