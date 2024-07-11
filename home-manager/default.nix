@@ -59,8 +59,6 @@
       dnsutils
       ngrok
       nmap
-      onioncircuits
-      onionshare
       proxychains
       speedtest-cli
       tor
@@ -117,10 +115,8 @@
     neovim.enable = true;
     starship.enable = true;
     tmux.enable = true;
-    yt-dlp = {
-      enable = true;
-      path = "${config.home.homeDirectory}/Downloads/";
-    };
+    yt-dlp.enable = true;
+    yt-dlp.path = "${config.home.homeDirectory}/Downloads/";
     zoxide.enable = true;
   };
 }

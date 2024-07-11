@@ -19,9 +19,10 @@
   # https://github.com/nix-community/nix-on-droid/archive/master.tar.gz nix-on-droid
   # https://nixos.org/channels/nixos-unstable nixpkgs
 
+  # Active
   # https://github.com/nix-community/home-manager/archive/release-24.05.tar.gz home-manager
   # https://github.com/nix-community/nix-on-droid/archive/release-24.05.tar.gz nix-on-droid
-  # https://nixos.org/channels/nixos-24.05 nixpkgs
+  # https://nixos.org/channels/nixos-24.05-small nixpkgs
 
   home = {
     stateVersion = "24.05";
@@ -94,11 +95,16 @@
 
     shellAliases = {
       nods = "nix-on-droid build switch";
-      sshd = "$(which sshd) -f ~/.ssh/sshd_config";
+      sshd = "$(which sshd) -4f ~/.ssh/sshd_config";
       clamd = "clamd --config-file ~/.local/share/clamav/clamd.conf";
-      clamscan = "clamscan --database .local/share/clamav/database/";
+      clamscan = "clamscan --database ~/.local/share/clamav/database/";
       freshclam = "freshclam --config-file ~/.local/share/clamav/freshclam.conf";
     };
+  };
+
+  nix = {
+    package = pkgs.nix;
+    settings.experimental-features = [ "nix-command" "flakes" ];
   };
 
   programs.home-manager.enable = true;
