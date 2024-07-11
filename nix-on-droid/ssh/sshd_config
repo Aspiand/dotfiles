@@ -1,4 +1,11 @@
-Port 3022
-PrintMotd yes
-PasswordAuthentication no
+PidFile /data/data/com.termux.nix/files/home/.ssh/sshd.pid
 HostKey /data/data/com.termux.nix/files/home/.ssh/ssh_host_rsa_key
+
+PrintMotd yes
+PrintLastLog yes
+
+Port 3022
+AddressFamily inet
+ListenAddress 192.168.1.0
+ListenAddress 192.168.100.0
+PasswordAuthentication no
