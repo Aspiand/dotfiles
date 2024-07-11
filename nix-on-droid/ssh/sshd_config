@@ -1,3 +1,4 @@
+Banner /data/data/com.termux.nix/files/home/.ssh/banner
 PidFile /data/data/com.termux.nix/files/home/.ssh/sshd.pid
 HostKey /data/data/com.termux.nix/files/home/.ssh/ssh_host_rsa_key
 
