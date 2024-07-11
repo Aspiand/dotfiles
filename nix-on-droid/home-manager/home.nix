@@ -90,6 +90,7 @@
       ".local/share/clamav/clamd.conf".source = ../clamav/clamd.conf;
       ".local/share/clamav/freshclam.conf".source = ../clamav/freshclam.conf;
 
+      ".ssh/banner".source = ../ssh/banner;
       ".ssh/sshd_config".source = ../ssh/sshd_config;
     };
 
