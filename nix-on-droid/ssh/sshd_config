@@ -1,6 +1,11 @@
+# Generate Host Key
+# ssh-keygen -t rsa -f ~/.ssh/ssh_host_rsa_key -N ""
+# ssh-keygen -t ed25519 -f ~/.ssh/ssh_host_ed25519_key -N ""
+
 Banner /data/data/com.termux.nix/files/home/.ssh/banner
 PidFile /data/data/com.termux.nix/files/home/.ssh/sshd.pid
 HostKey /data/data/com.termux.nix/files/home/.ssh/ssh_host_rsa_key
+HostKey /data/data/com.termux.nix/files/home/.ssh/ssh_host_ed25519_key
 
 PrintMotd yes
 PrintLastLog yes

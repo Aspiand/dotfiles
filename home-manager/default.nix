@@ -22,6 +22,8 @@
 
     shellAliases = {
       hmbs = "home-manager build switch";
+      rm = "trash-put";
+      sl = "ls";
     };
 
     # file = { # config.lib.file.mkOutOfStoreSymlink };
