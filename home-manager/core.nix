@@ -1,11 +1,6 @@
 { pkgs, ... }:
 
 {
-  home.shellAliases = {
-    rm = "trash-put";
-    sl = "ls";
-  };
-
   home.packages = with pkgs; [
     coreutils
     curl
