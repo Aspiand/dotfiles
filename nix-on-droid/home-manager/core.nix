@@ -19,8 +19,8 @@
   programs.password-store = {
     enable = true;
     settings = {
-      PASSWORD_STORE_CLIP_TIME = 120;
-      PASSWORD_STORE_GENERATED_LENGTH = 30;
+      PASSWORD_STORE_CLIP_TIME = "120";
+      PASSWORD_STORE_GENERATED_LENGTH = "30";
       PASSWORD_STORE_DIR = "$HOME/.local/data/password_store/";
     };
   };
