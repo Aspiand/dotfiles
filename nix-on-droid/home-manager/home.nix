@@ -117,9 +117,6 @@
     ffm.enable = true;
     neovim.enable = true;
     starship.enable = true;
-    tmux.enable = true;
-    tmux.plugins = false;
-    tmux.shell = "${pkgs.bash}/bin/bash";
     yt-dlp.enable = true;
     yt-dlp.path = "/data/data/com.termux.nix/files/home/storage/Share/YouTube/";
   };
