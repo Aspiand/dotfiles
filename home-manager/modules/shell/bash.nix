@@ -20,8 +20,7 @@ in
     programs.bash = {
       enable = true;
       enableCompletion = true;
-      # historyControl = [ "ignoreboth" ];
-      historyControl = [ "ignorespace" ];
+      historyControl = [ "ignoreboth" ];
       historyFile = "${config.home.homeDirectory}/.local/history/bash";
 
       shellAliases = {
