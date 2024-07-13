@@ -85,7 +85,7 @@
       ".config/ffm/config.sh".source = ../ffm/config.sh;
       ".config/nixpkgs/config.nix".source = ../nixpkgs/config.nix;
 
-      ".gnupg/gpg-agent.conf".source = ../gnupg/gpg-agent.conf;
+      ".local/data/gnupg/gpg-agent.conf".source = ../gnupg/gpg-agent.conf;
 
       ".local/share/clamav/clamd.conf".source = ../clamav/clamd.conf;
       ".local/share/clamav/freshclam.conf".source = ../clamav/freshclam.conf;
