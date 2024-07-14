@@ -15,14 +15,10 @@
   # https://github.com/nix-community/nix-on-droid/archive/release-23.11.tar.gz nix-on-droid
   # https://nixos.org/channels/nixos-23.11 nixpkgs
 
+  # Active
   # https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
   # https://github.com/nix-community/nix-on-droid/archive/master.tar.gz nix-on-droid
   # https://nixos.org/channels/nixos-unstable nixpkgs
-
-  # Active
-  # https://github.com/nix-community/home-manager/archive/release-24.05.tar.gz home-manager
-  # https://github.com/nix-community/nix-on-droid/archive/release-24.05.tar.gz nix-on-droid
-  # https://nixos.org/channels/nixos-24.05-small nixpkgs
 
   home = {
     stateVersion = "24.05";

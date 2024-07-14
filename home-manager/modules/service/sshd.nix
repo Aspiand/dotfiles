@@ -12,7 +12,7 @@ with lib; let cfg = config.service.sshd; in
     };
 
     banner = mkOption {
-      type = types.nullOr types.port;
+      type = types.nullOr types.path;
       example = "/etc/banner";
     };
 
