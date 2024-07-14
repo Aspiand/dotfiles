@@ -21,7 +21,7 @@
   # https://nixos.org/channels/nixos-unstable nixpkgs
 
   home = {
-    stateVersion = "24.05";
+    stateVersion = "24.11";
     packages = with pkgs; [
       (nerdfonts.override { fonts = [ "FantasqueSansMono" "0xProto" ]; })
 
@@ -68,7 +68,7 @@
       steghide
 
       # System
-      clamav
+      # clamav
       gnumake
       procps
       # proot
