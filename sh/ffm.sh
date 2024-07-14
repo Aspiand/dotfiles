@@ -2,23 +2,14 @@
 
 set -eu
 
-readonly VERSION=1.6
-readonly ROOT=$(dirname $BASH_SOURCE)
-readonly CONFIG_PATH=(
-    "$ROOT/env.sh"
-    "$HOME/.config/ffm/config.sh"
-    /etc/ffm/config.sh
-)
-
-for config_path in "${CONFIG_PATH[@]}"; do
-    [ -f $config_path ] && source $config_path
-done
+readonly VERSION=2.0
+readonly ROOT=$(dirname "${BASH_SOURCE[0]}")
 
 get_permission() {
     local path=$1
 
-    read -r user group permission <<< "$(stat -c "%U %G %a" $path)"
-    echo $user $group $permission
+    read -r user group permission <<< "$(stat -c "%U %G %a" "$path")"
+    echo "$user" "$group" "$permission"
 }
 
 # Parsing argument
@@ -26,16 +17,16 @@ get_permission() {
 
 echo "Folders:"
 
-for folder in "${FOLDERS[@]}"; do
+for folder in "${FFM_FOLDERS[@]}"; do
     read -r path permission <<< "$folder"
     echo -n "  $path/ ($permission): "
 
     if [ ! -d "$path" ]; then
         echo "[mkdir]"
-        mkdir -p -m $permission $path
-    elif [ $(stat -c "%a" $path) != $permission ]; then
-        echo "[chmod($(stat -c "%a" $path))]"
-        chmod $permission $path
+        mkdir -pm "$permission" "$path"
+    elif [ "$(stat -c "%a" "$path")" != "$permission" ]; then
+        echo "[chmod($(stat -c "%a" "$path"))]"
+        chmod "$permission" "$path"
     else
         echo "[ok]"
     fi
@@ -43,15 +34,15 @@ done
 
 echo "Files:"
 
-for file in "${FILES[@]}"; do
+for file in "${FFM_FILES[@]}"; do
     read -r path permission <<< "$file"
     echo -n "  $path ($permission): "
 
-    if [ ! -f $path ]; then
+    if [ ! -f "$path" ]; then
         echo "[not found]"
-    elif [ $(stat -c "%a" $path) != $permission ]; then
-        echo "[chmod($(stat -c "%a" $path))]"
-        chmod $permission $path
+    elif [ "$(stat -c "%a" "$path")" != "$permission" ]; then
+        echo "[chmod($(stat -c "%a" "$path"))]"
+        chmod "$permission" "$path"
     else
         echo "[ok]"
     fi
@@ -59,18 +50,18 @@ done
 
 echo "Symlinks:"
 
-for symlinks in "${SYMLINKS[@]}"; do
+for symlinks in "${FFM_SYMLINKS[@]}"; do
     read -r source destination <<< "$symlinks"
     echo -n "  $source -> $destination: "
 
-    if [ -e $destination ] && [ $(readlink -f $destination) == $source ]; then
+    if [ -e "$destination" ] && [ "$(readlink -f "$destination")" == "$source" ]; then
         echo "[ok]"
-    elif [ ! -e $source ]; then
+    elif [ ! -e "$source" ]; then
         echo "[source not found]"
-    elif [ -e $destination ]; then
+    elif [ -e "$destination" ]; then
         echo "[destination is available]"
-    elif [ ! -e $destination ] && [ $(readlink -f $destination) != $source ]; then
-        ln -s $source $destination
+    elif [ ! -e "$destination" ] && [ "$(readlink -f "$destination")" != "$source" ]; then
+        ln -s "$source" "$destination"
         echo "[create link]"
     else
         echo "[ok]"
@@ -78,15 +69,15 @@ for symlinks in "${SYMLINKS[@]}"; do
 done
 
 echo "Recursive:"
-for recursive in "${RECURSIVE[@]}"; do
+for recursive in "${FFM_RECURSIVE[@]}"; do
     read -r path folder file <<< "$recursive"
     echo "  $path > $folder | $file"
 
     # find $path -type d -not -perm $folder -exec \
     #     echo "$path ($(stat -c "%a" "$path")): " \;
 
-    find $path -type d -not -perm $folder -exec chmod --verbose $folder {} \;
-    find $path -type f -not -perm $file -exec chmod --verbose $file {} \;
+    find "$path" -type d -not -perm "$folder" -exec chmod --verbose "$folder" {} \;
+    find "$path" -type f -not -perm "$file" -exec chmod --verbose "$file" {} \;
 done
 
 echo -n ""
