@@ -1,0 +1,3 @@
+[submodule "private"]
+	path = private
+	url = nod:/data/data/com.termux.nix/files/home/.local/data/git/piles.git

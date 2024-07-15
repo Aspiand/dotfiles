@@ -5,7 +5,7 @@
     ./modules/init.nix
 
     ./core.nix
-    ../../piles/home-manager/private.nix
+    ../private/home-manager/private.nix
   ];
 
   # Nix Channel
@@ -23,7 +23,9 @@
       sl = "ls";
     };
 
-    # file = { # config.lib.file.mkOutOfStoreSymlink };
+    sessionVariables = {
+      TORSOCKS_CONF_FILE = ../tor/torsocks.conf;
+    };
 
     packages = with pkgs; [
       (nerdfonts.override { fonts = [ "FantasqueSansMono" "0xProto" ]; })
@@ -77,7 +79,6 @@
       podman-compose
 
       # Security
-      # pass
       steghide
 
       # System
@@ -119,3 +120,5 @@
     zoxide.enable = true;
   };
 }
+
+# file = { # config.lib.file.mkOutOfStoreSymlink };
