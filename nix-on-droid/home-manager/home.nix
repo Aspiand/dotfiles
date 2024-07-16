@@ -93,6 +93,7 @@
     shellAliases = {
       tp = "trash-put";
       nods = "nix-on-droid build switch";
+      nog = "nix-on-droid generations";
       sshd = "$(which sshd) -4f ~/.ssh/sshd_config";
       clamd = "clamd --config-file ~/.local/share/clamav/clamd.conf";
       clamscan = "clamscan --database ~/.local/share/clamav/database/";

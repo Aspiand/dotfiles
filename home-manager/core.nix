@@ -1,6 +1,13 @@
 { pkgs, ... }:
 
 {
+  home.shellAliases = {
+    sl = "ls";
+    ncu = "nix-channel --update";
+    ncl = "nix-channel --list";
+    nclg = "nix-channel --list-generations";
+  };
+
   home.packages = with pkgs; [
     coreutils
     curl

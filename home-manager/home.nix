@@ -19,8 +19,8 @@
 
     shellAliases = {
       hmbs = "home-manager build switch";
+      hmg = "home-manager generations";
       rm = "trash-put";
-      sl = "ls";
     };
 
     sessionVariables = {
@@ -95,19 +95,15 @@
     ];
   };
 
-  nix = {
-    package = pkgs.nix;
-    settings.experimental-features = [ "nix-command" "flakes" ];
-  };
+  nix.package = pkgs.nix;
+  nix.settings.experimental-features = [ "nix-command" "flakes" ];
   nixpkgs.config.allowUnfree = true;
 
   programs.home-manager.enable = true;
   programs.git.extraConfig.core.editor = "code --wait";
 
-  shell = {
-    bash.enable = true;
-    zsh.enable = true;
-  };
+  shell.bash.enable = true;
+  shell.zsh.enable = true;
 
   utils = {
     ffm.enable = true;
