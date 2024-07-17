@@ -13,3 +13,6 @@ PrintLastLog yes
 Port 3022
 AddressFamily inet
 PasswordAuthentication no
+PubkeyAuthentication yes
+PermitRootLogin no
+TCPKeepAlive yes
