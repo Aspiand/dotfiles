@@ -86,8 +86,6 @@
       clamav
       gnumake
       scrcpy
-      usbutils
-      xorg.xrandr
 
       # Other
       ollama

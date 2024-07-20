@@ -2,9 +2,7 @@
 
 {
   imports = [
-    ./../../home-manager/modules/init.nix
-    ./../../home-manager/core.nix
-
+    ./modules/init.nix
     ./core.nix
   ];
 
@@ -19,6 +17,11 @@
   # https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
   # https://github.com/nix-community/nix-on-droid/archive/master.tar.gz nix-on-droid
   # https://nixos.org/channels/nixos-unstable nixpkgs
+
+  nix.package = pkgs.nix;
+  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+
+  programs.home-manager.enable = true;
 
   home = {
     stateVersion = "24.11";
@@ -35,13 +38,6 @@
       xz
       zip
       zstd
-
-      # Files
-      bat
-      ffmpeg
-
-      # Monitor
-      nyx
 
       # Network
       aria2
@@ -64,36 +60,44 @@
       python312Packages.virtualenv
 
       # Security
+      gnupg
       pass
       steghide
 
-      # System
-      # clamav
+      # Utils
+      bat
+      clamav
+      findutils
+      ffmpeg
       gnumake
+      gawk
+      gnugrep
+      gnused
+      ncurses
       procps
-      # proot
+      which
 
       # Other
       ollama
     ];
 
     file = {
-      ".config/ffm/config.sh".source = ../ffm/config.sh;
-      ".config/nixpkgs/config.nix".source = ../nixpkgs/config.nix;
+      ".config/nixpkgs/config.nix".text = "{ allowUnfree = true; }";
 
-      ".local/data/gnupg/gpg-agent.conf".source = ../gnupg/gpg-agent.conf;
+      ".local/data/gnupg/gpg-agent.conf".source = ../nix-on-droid/gnupg/gpg-agent.conf;
 
-      ".local/share/clamav/clamd.conf".source = ../clamav/clamd.conf;
-      ".local/share/clamav/freshclam.conf".source = ../clamav/freshclam.conf;
+      ".local/share/clamav/clamd.conf".source = ../nix-on-droid/clamav/clamd.conf;
+      ".local/share/clamav/freshclam.conf".source = ../nix-on-droid/clamav/freshclam.conf;
 
-      ".ssh/banner".source = ../ssh/banner;
-      ".ssh/sshd_config".source = ../ssh/sshd_config;
+      ".ssh/banner".source = ../nix-on-droid/ssh/banner;
+      ".ssh/sshd_config".source = ../nix-on-droid/ssh/sshd_config;
     };
 
     shellAliases = {
       tp = "trash-put";
+      nodg = "nix-on-droid generations";
+      nodr = "nix-on-droid rollback";
       nods = "nix-on-droid build switch";
-      nog = "nix-on-droid generations";
       sshd = "$(which sshd) -4f ~/.ssh/sshd_config";
       clamd = "clamd --config-file ~/.local/share/clamav/clamd.conf";
       clamscan = "clamscan --database ~/.local/share/clamav/database/";
@@ -101,15 +105,23 @@
     };
   };
 
-  nix = {
-    package = pkgs.nix;
-    settings.experimental-features = [ "nix-command" "flakes" ];
+  programs = {
+    gpg = {
+      enable = true;
+      homedir = "$HOME/.local/data/gnupg";
+    };
+
+    password-store = {
+      enable = true;
+      settings = {
+        PASSWORD_STORE_CLIP_TIME = "120";
+        PASSWORD_STORE_GENERATED_LENGTH = "30";
+        PASSWORD_STORE_DIR = "$HOME/.local/data/password_store/";
+      };
+    };
   };
 
-  programs.home-manager.enable = true;
-
   shell.bash.enable = true;
-
   utils = {
     ffm.enable = true;
     neovim.enable = true;
