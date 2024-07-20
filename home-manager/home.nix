@@ -83,7 +83,7 @@
 
       # System
       android-tools
-      # clamav
+      clamav
       gnumake
       scrcpy
       usbutils
