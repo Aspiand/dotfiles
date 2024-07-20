@@ -126,6 +126,8 @@
     ffm.enable = true;
     neovim.enable = true;
     starship.enable = true;
+    ssh.enable = true;
+    ssh.control = false;
     yt-dlp.enable = true;
     yt-dlp.path = "/data/data/com.termux.nix/files/home/storage/Share/YouTube/";
   };
