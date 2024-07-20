@@ -1,4 +1,4 @@
-readonly FOLDERS=(
+readonly FFM_FOLDERS=(
     # "/path/to/directory permission"
 
     # ClamAV
@@ -10,15 +10,15 @@ readonly FOLDERS=(
     "$HOME/.ssh 700"
     "$HOME/.ssh/control 700"
 )
-readonly FILES=(
+readonly FFM_FILES=(
     # "/path/to/file permission"
 )
-readonly SYMLINKS=(
+readonly FFM_SYMLINKS=(
     # "/path/to/source /path/to/destination"
 
     "/storage/emulated/0 /data/data/com.termux.nix/files/home/storage"
 )
-readonly RECURSIVE=(
+readonly FFM_RECURSIVE=(
     # "/path/to/folder (folder permission) (file permission)"
 
     "$HOME/.local/share/clamav 700 600"
