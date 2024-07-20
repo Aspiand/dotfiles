@@ -12,6 +12,13 @@
   # https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
   # https://nixos.org/channels/nixpkgs-unstable nixpkgs
 
+  nix.package = pkgs.nix;
+  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nixpkgs.config.allowUnfree = true;
+
+  shell.bash.enable = true;
+  shell.zsh.enable = true;
+
   home = {
     username = "sinon";
     homeDirectory = "/home/${config.home.username}";
@@ -86,8 +93,6 @@
       clamav
       gnumake
       scrcpy
-      usbutils
-      xorg.xrandr
 
       # Other
       ollama
@@ -95,21 +100,15 @@
     ];
   };
 
-  nix.package = pkgs.nix;
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
-  nixpkgs.config.allowUnfree = true;
-
   programs.home-manager.enable = true;
   programs.git.extraConfig.core.editor = "code --wait";
-
-  shell.bash.enable = true;
-  shell.zsh.enable = true;
 
   utils = {
     ffm.enable = true;
     fzf.enable = true;
     neovim.enable = true;
     starship.enable = true;
+    ssh.enable = true;
     tmux.enable = true;
     yt-dlp.enable = true;
     yt-dlp.path = "${config.home.homeDirectory}/Downloads/";
