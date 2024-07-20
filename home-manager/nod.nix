@@ -108,7 +108,7 @@
   programs = {
     gpg = {
       enable = true;
-      homedir = "$HOME/.local/data/gnupg";
+      homedir = "${config.home.homeDirectory}/.local/data/gnupg";
     };
 
     password-store = {
