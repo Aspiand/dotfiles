@@ -2,8 +2,8 @@
 
 {
   imports = [
-    ./modules/init.nix
-    ./core.nix
+    ../modules/init.nix
+    ../core.nix
   ];
 
   # Nix Channel
@@ -61,7 +61,6 @@
 
       # Security
       gnupg
-      pass
       steghide
 
       # Utils
@@ -84,17 +83,18 @@
     file = {
       ".config/nixpkgs/config.nix".text = "{ allowUnfree = true; }";
 
-      ".local/data/gnupg/gpg-agent.conf".source = ../nix-on-droid/gnupg/gpg-agent.conf;
+      ".local/data/gnupg/gpg-agent.conf".source = ../../nix-on-droid/gnupg/gpg-agent.conf;
 
-      ".local/share/clamav/clamd.conf".source = ../nix-on-droid/clamav/clamd.conf;
-      ".local/share/clamav/freshclam.conf".source = ../nix-on-droid/clamav/freshclam.conf;
+      ".local/share/clamav/clamd.conf".source = ../../nix-on-droid/clamav/clamd.conf;
+      ".local/share/clamav/freshclam.conf".source = ../../nix-on-droid/clamav/freshclam.conf;
 
-      ".ssh/banner".source = ../nix-on-droid/ssh/banner;
-      ".ssh/sshd_config".source = ../nix-on-droid/ssh/sshd_config;
+      ".ssh/banner".source = ../../nix-on-droid/ssh/banner;
+      ".ssh/sshd_config".source = ../../nix-on-droid/ssh/sshd_config;
     };
 
     shellAliases = {
       tp = "trash-put";
+      more = "less";
       nodg = "nix-on-droid generations";
       nodr = "nix-on-droid rollback";
       nods = "nix-on-droid build switch";
