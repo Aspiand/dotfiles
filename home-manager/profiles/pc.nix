@@ -2,10 +2,10 @@
 
 {
   imports = [
-    ./modules/init.nix
+    ../modules/init.nix
 
-    ./core.nix
-    ../private/home-manager/private.nix
+    ../core.nix
+    ../../private/home-manager/private.nix
   ];
 
   # Nix Channel
