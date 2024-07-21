@@ -1,11 +1,30 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
+
+with lib;
+
+let
+  cfg = config.editor.vscode;
+in
 
 {
-  programs.vscode = {
-    enable = false;
-    package = pkgs.vscodium;
+  options.editor.vscode = {
+    enable = mkEnableOption "VSCode";
   };
 
-  # https://nixos.wiki/wiki/Visual_Studio_Code
-  # https://github.com/nix-community/home-manager/blob/master/modules/programs/vscode.nix
+  config = mkIf cfg.enable {
+    programs.vscode = {
+      enable = true;
+      enableUpdateCheck = false;
+      enableExtensionUpdateCheck = false;
+      package = pkgs.vscodium;
+      extensions = with pkgs.vscode-extensions; [
+        dracula-theme.theme-dracula
+      ];
+
+      userSettings = {
+        "files.autoSave" = "off";
+        "[nix]"."editor.tabSize" = 2;
+      };
+    };
+  };
 }

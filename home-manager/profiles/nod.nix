@@ -122,9 +122,9 @@
   };
 
   shell.bash.enable = true;
+  editor.neovim.enable = true;
   utils = {
     ffm.enable = true;
-    neovim.enable = true;
     starship.enable = true;
     ssh.enable = true;
     ssh.control = false;
