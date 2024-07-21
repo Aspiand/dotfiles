@@ -3,11 +3,11 @@
 with lib;
 
 let
-  cfg = config.utils.neovim;
+  cfg = config.editor.neovim;
 in
 
 {
-  options.utils.neovim = {
+  options.editor.neovim = {
     enable = mkEnableOption "Neovim";
   };
 
