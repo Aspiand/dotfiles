@@ -2,6 +2,8 @@
 
 {
   imports = [
+    ../../private/home-manager/private.nix
+
     ../modules/init.nix
     ../core.nix
   ];
@@ -88,7 +90,7 @@
 
   programs = {
     gpg = {
-      enable = true;
+      enable = false;
       homedir = "${config.home.homeDirectory}/.local/data/gnupg";
     };
 
@@ -100,6 +102,12 @@
         PASSWORD_STORE_DIR = "$HOME/.local/data/password_store/";
       };
     };
+
+    # bash.bashrcExtra = ''
+    #   if [ -f "/home/aspian/.profile" ]; then
+    #     source /home/aspian/.profile
+    #   fi
+    # '';
   };
 
   editor.neovim.enable = true;
