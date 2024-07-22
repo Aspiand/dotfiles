@@ -86,6 +86,22 @@
   programs.home-manager.enable = true;
   programs.git.extraConfig.core.editor = "code --wait";
 
+  programs = {
+    gpg = {
+      enable = true;
+      homedir = "${config.home.homeDirectory}/.local/data/gnupg";
+    };
+
+    password-store = {
+      enable = true;
+      settings = {
+        PASSWORD_STORE_CLIP_TIME = "120";
+        PASSWORD_STORE_GENERATED_LENGTH = "30";
+        PASSWORD_STORE_DIR = "$HOME/.local/data/password_store/";
+      };
+    };
+  };
+
   utils = {
     ffm.enable = true;
     fzf.enable = true;
@@ -93,7 +109,7 @@
     starship.enable = true;
     ssh.enable = true;
     tmux.enable = true;
-    yt-dlp.enable = true;
+    yt-dlp.enable = false;
     yt-dlp.path = "${config.home.homeDirectory}/Downloads/";
     zoxide.enable = true;
   };

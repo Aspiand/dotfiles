@@ -15,13 +15,17 @@ in
     };
   };
 
-  config = mkIf cfg.enable {
-    programs.ssh = {
-      enable = true;
-      controlMaster = mkIf cfg.control "auto";
-      controlPersist = mkIf cfg.control "30m";
-      controlPath = mkIf cfg.control "~/.ssh/control/%r@%n:%p";
-    };
-    # programs.ssh.addKeysToAgent = [];
-  };
+  config = mkMerge [
+    (mkIf cfg.enable {
+      programs.ssh.enable = true;
+    })
+
+    (mkIf cfg.control {
+      programs.ssh = {
+        controlMaster = "auto";
+        controlPersist = "30m";
+        controlPath = "~/.ssh/control/%r@%n:%p";
+      };
+    })
+  ];
 }
