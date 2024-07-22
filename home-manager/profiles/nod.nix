@@ -73,6 +73,7 @@
       gnugrep
       gnused
       ncurses
+      pinentry-tty
       procps
       which
 
