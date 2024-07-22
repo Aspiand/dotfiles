@@ -102,10 +102,12 @@
     };
   };
 
+  editor.neovim.enable = true;
+  editor.vscode.enable = true;
+
   utils = {
     ffm.enable = true;
     fzf.enable = true;
-    neovim.enable = true;
     starship.enable = true;
     ssh.enable = true;
     tmux.enable = true;
