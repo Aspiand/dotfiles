@@ -87,7 +87,7 @@
     ];
 
     sessionVariables = {
-      GNUPGHOME = "${config.home.homeDirectory}/.local/data/gnupg.old";
+      # GNUPGHOME = "${config.home.homeDirectory}/.local/data/gnupg.old";
     };
   };
 
