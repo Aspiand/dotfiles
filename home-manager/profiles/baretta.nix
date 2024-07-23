@@ -39,6 +39,7 @@
 
       # Database
       sqlite
+      mysql
 
       # Files
       bat
@@ -82,7 +83,6 @@
       scrcpy
 
       # Other
-      qemu
       ollama
     ];
 
@@ -103,12 +103,6 @@
         PASSWORD_STORE_DIR = "$HOME/.local/data/password_store/";
       };
     };
-
-    # bash.bashrcExtra = ''
-    #   if [ -f "/home/aspian/.profile" ]; then
-    #     source /home/aspian/.profile
-    #   fi
-    # '';
   };
 
   editor.neovim.enable = true;
@@ -117,7 +111,7 @@
   utils = {
     ffm.enable = true;
     fzf.enable = true;
-    # gpg.enable = true;
+    gpg.enable = true;
     starship.enable = true;
     ssh.enable = true;
     tmux.enable = true;
