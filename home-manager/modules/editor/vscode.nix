@@ -24,6 +24,7 @@ in
       userSettings = {
         "files.autoSave" = "off";
         "[nix]"."editor.tabSize" = 2;
+        "workbench.startupEditor" = "none";
       };
     };
   };

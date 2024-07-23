@@ -17,6 +17,7 @@
     stateVersion = "24.11";
 
     shellAliases = {
+      code = "codium";
       hmbs = "home-manager build switch";
       hmg = "home-manager generations";
       rm = "trash-put";
@@ -61,8 +62,8 @@
 
       # Programming
       nodejs
-      # jdk_headless
-      # jre_headless
+      jdk_headless
+      jre_headless
       php
       phpPackages.composer
       # python3
@@ -81,19 +82,19 @@
       scrcpy
 
       # Other
+      qemu
       ollama
     ];
+
+    sessionVariables = {
+      GNUPGHOME = "${config.home.homeDirectory}/.local/data/gnupg.old";
+    };
   };
 
   programs.home-manager.enable = true;
   programs.git.extraConfig.core.editor = "code --wait";
 
   programs = {
-    gpg = {
-      enable = false;
-      homedir = "${config.home.homeDirectory}/.local/data/gnupg";
-    };
-
     password-store = {
       enable = true;
       settings = {
@@ -116,10 +117,11 @@
   utils = {
     ffm.enable = true;
     fzf.enable = true;
+    # gpg.enable = true;
     starship.enable = true;
     ssh.enable = true;
     tmux.enable = true;
-    yt-dlp.enable = false;
+    yt-dlp.enable = true;
     yt-dlp.path = "${config.home.homeDirectory}/Downloads/";
     zoxide.enable = true;
   };
