@@ -23,7 +23,7 @@ in
     };
 
     home.file."${homeDir}/gpg-agent.conf".text = ''
-      pinentry-program ${pkgs.pinentry-tty}
+      pinentry-program ${config.home.homeDirectory}/.nix-profile/bin/pinentry-tty
       enable-ssh-support
     '';
   };
