@@ -73,12 +73,10 @@
       gnugrep
       gnused
       ncurses
+      ollama
       pinentry-tty
       procps
       which
-
-      # Other
-      ollama
     ];
 
     file = {
