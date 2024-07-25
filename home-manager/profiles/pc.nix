@@ -115,6 +115,14 @@
     yt-dlp.path = "${config.home.homeDirectory}/Downloads/";
     zoxide.enable = true;
   };
+
+  services.syncthing = {
+    enable = true;
+
+    tray = {
+      enable = true;
+    };
+  };
 }
 
 # file = { # config.lib.file.mkOutOfStoreSymlink };
