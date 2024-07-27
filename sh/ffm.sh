@@ -2,7 +2,7 @@
 
 set -eu
 
-readonly VERSION=2.0
+readonly VERSION=2.1
 readonly ROOT=$(dirname "${BASH_SOURCE[0]}")
 
 get_permission() {
@@ -11,6 +11,17 @@ get_permission() {
     read -r user group permission <<< "$(stat -c "%U %G %a" "$path")"
     echo "$user" "$group" "$permission"
 }
+
+readonly CONFIG_PATH=(
+    "/etc/ffm/config.sh"
+    "/etc/ffm.conf"
+    "$ROOT/env.sh"
+    "$HOME/.config/ffm/config.sh"
+)
+
+for config_path in "${CONFIG_PATH[@]}"; do
+    [ -f "$config_path" ] && source "$config_path"
+done
 
 # Parsing argument
 # https://stackoverflow.com/questions/192249/how-do-i-parse-command-line-arguments-in-bash
