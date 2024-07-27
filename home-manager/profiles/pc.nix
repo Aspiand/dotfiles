@@ -28,6 +28,10 @@
       hmbs = "home-manager build switch";
       hmg = "home-manager generations";
       rm = "trash-put";
+      l = "ls -lah";
+      la = "ls -lAh";
+      ll = "ls -lh";
+      ls = "ls --color=tty";
     };
 
     sessionVariables = {
