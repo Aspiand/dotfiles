@@ -124,7 +124,7 @@
     enable = true;
 
     tray = {
-      enable = true;
+      enable = false;
     };
   };
 }
