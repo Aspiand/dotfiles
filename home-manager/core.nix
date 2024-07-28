@@ -6,6 +6,7 @@
     ncu = "nix-channel --update";
     ncl = "nix-channel --list";
     nclg = "nix-channel --list-generations";
+    duh = "du -h";
   };
 
   home.packages = with pkgs; [
