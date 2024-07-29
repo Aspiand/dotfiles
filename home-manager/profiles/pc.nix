@@ -25,6 +25,8 @@
     stateVersion = "24.11";
 
     shellAliases = {
+      dh = "df -h";
+      dt = "df -Th";
       hmbs = "home-manager build switch";
       hmg = "home-manager generations";
       rm = "trash-put";
@@ -32,6 +34,7 @@
       la = "ls -lAh";
       ll = "ls -lh";
       ls = "ls --color=tty";
+      lsblkf = "lsblk -f";
     };
 
     sessionVariables = {
