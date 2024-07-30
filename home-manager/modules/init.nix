@@ -4,7 +4,7 @@
   imports = [
     ./editor
     ./shell
-    ./service
+    ./services
     ./utils
   ];
 }
