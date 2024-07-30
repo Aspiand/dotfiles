@@ -2,6 +2,7 @@
 
 {
   imports = [
+    ../../private/home-manager/private.nix
     ../modules/init.nix
     ../core.nix
   ];
@@ -97,7 +98,7 @@
       nodg = "nix-on-droid generations";
       nodr = "nix-on-droid rollback";
       nods = "nix-on-droid build switch";
-      sshd = "$(which sshd) -4f ~/.ssh/sshd_config";
+      # sshd = "$(which sshd) -4f ~/.ssh/sshd_config";
       clamd = "clamd --config-file ~/.local/share/clamav/clamd.conf";
       clamscan = "clamscan --database ~/.local/share/clamav/database/";
       freshclam = "freshclam --config-file ~/.local/share/clamav/freshclam.conf";
@@ -130,4 +131,9 @@
     yt-dlp.enable = true;
     yt-dlp.path = "/data/data/com.termux.nix/files/home/storage/Share/YouTube/";
   };
+
+  services.ssh = {
+    enable = true;
+    dir = "${config.home.homeDirectory}/.ssh/sshd/";
+  }
 }
