@@ -132,8 +132,9 @@
     yt-dlp.path = "/data/data/com.termux.nix/files/home/storage/Share/YouTube/";
   };
 
-  services.ssh = {
+  services.sshd = {
     enable = true;
-    dir = "${config.home.homeDirectory}/.ssh/sshd/";
-  }
+    port = 3022;
+    dir = "${config.home.homeDirectory}/.ssh/sshd";
+  };
 }

@@ -17,6 +17,7 @@ with lib; let cfg = config.services.sshd; in
 
     banner = mkOption {
       type = with types; either str path;
+      default = "";
       example = ''
   ___   _                           _    
  / _ \ | |                         | |   
@@ -61,32 +62,31 @@ with lib; let cfg = config.services.sshd; in
       fi
 
       if [ ! -f "${cfg.dir}/ssh_host_rsa_key" ]; then
-        ssh-keygen -t rsa -f ${cfg.dir}/ssh_host_rsa_key -N ""
+        ${pkgs.openssh}/bin/ssh-keygen -t rsa -f ${cfg.dir}/ssh_host_rsa_key -N ""
       fi
 
-      if [ ! -f "${cfg.dir}/ssh_host_rsa_key" ]; then
-        ssh-keygen -t ed25519 -f ${cfg.dir}/ssh_host_ed25519_key -N ""
+      if [ ! -f "${cfg.dir}/ssh_host_ed25519_key" ]; then
+        ${pkgs.openssh}/bin/ssh-keygen -t ed25519 -f ${cfg.dir}/ssh_host_ed25519_key -N ""
       fi
 
       cat <<EOF > ${cfg.dir}/sshd_config
-        ${if cfg.banner then "Banner ${cfg.dir}/banner" else "asd"}
-        PidFile ${cfg.dir}/sshd.pid
-        HostKey ${cfg.dir}/ssh_host_rsa_key
-        HostKey ${cfg.dir}/ssh_host_ed25519_key
+      PidFile ${cfg.dir}/sshd.pid
+      HostKey ${cfg.dir}/ssh_host_rsa_key
+      HostKey ${cfg.dir}/ssh_host_ed25519_key
 
-        PrintMotd yes
-        PrintLastLog yes
+      PrintMotd yes
+      PrintLastLog yes
 
-        Port ${cfg.port}
-        AddressFamily ${cfg.addressFamily}
-        PasswordAuthentication ${ if cfg.passwordLogin then "yes" else "no"}
-        PubkeyAuthentication ${if cfg.keyAuthentication then "yes" else "no"}
-        PermitRootLogin ${if cfg.rootLogin then "yes" else "no"}
-        TCPKeepAlive yes
+      Port ${toString cfg.port}
+      AddressFamily ${cfg.addressFamily}
+      PasswordAuthentication ${ if cfg.passwordLogin then "yes" else "no"}
+      PubkeyAuthentication ${if cfg.keyAuthentication then "yes" else "no"}
+      PermitRootLogin ${if cfg.rootLogin then "yes" else "no"}
+      TCPKeepAlive yes
       EOF
 
-      find ${cfg.dir} -type d -exec chmod -v 700 {} \;
-      find ${cfg.dir} -type f -exec chmod -v 600 {} \;
+      find ${cfg.dir} -type d -not -perm "700" -exec chmod -v 700 {} \;
+      find ${cfg.dir} -type f -not -perm "600" -exec chmod -v 600 {} \;
     '';
   };
 }
