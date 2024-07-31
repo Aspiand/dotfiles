@@ -130,12 +130,6 @@
       enable = false;
     };
   };
-
-  services.sshd = {
-    enable = true;
-    port = 2222;
-    dir = "${config.home.homeDirectory}/.ssh/sshd";
-  };
 }
 
 # file = { # config.lib.file.mkOutOfStoreSymlink };

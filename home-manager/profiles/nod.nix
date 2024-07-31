@@ -133,8 +133,9 @@
   };
 
   services.sshd = {
-    enable = true;
+    enable = false;
     port = 3022;
+    addressFamily = "inet";
     dir = "${config.home.homeDirectory}/.ssh/sshd";
   };
 }
