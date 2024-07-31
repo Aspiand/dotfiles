@@ -16,16 +16,8 @@ with lib; let cfg = config.services.sshd; in
     };
 
     banner = mkOption {
-      type = with types; either str path;
-      default = "";
-      example = ''
-  ___   _                           _    
- / _ \ | |                         | |   
-/ /_\ \| |  __ _  _ __ ___    __ _ | | __
-|  _  || | / _` || '_ ` _ \  / _` || |/ /
-| | | || || (_| || | | | | || (_| ||   < 
-\_| |_/|_| \__,_||_| |_| |_| \__,_||_|\_\
-      '';
+      type = types.path;
+      default = "${cfg.dir}/banner";
     };
 
     addressFamily = mkOption {
@@ -69,10 +61,15 @@ with lib; let cfg = config.services.sshd; in
         ${pkgs.openssh}/bin/ssh-keygen -t ed25519 -f ${cfg.dir}/ssh_host_ed25519_key -N ""
       fi
 
+      if [ ! -f "${cfg.dir}/banner" ]; then
+        echo "Welcome!" > ${cfg.dir}/banner
+      fi
+
       cat <<EOF > ${cfg.dir}/sshd_config
       PidFile ${cfg.dir}/sshd.pid
       HostKey ${cfg.dir}/ssh_host_rsa_key
       HostKey ${cfg.dir}/ssh_host_ed25519_key
+      Banner ${cfg.banner}
 
       PrintMotd yes
       PrintLastLog yes
