@@ -93,6 +93,10 @@
     };
 
     shellAliases = {
+      l = "ls -lah";
+      la = "ls -lAh";
+      ll = "ls -lh";
+      ls = "ls --color=tty";
       tp = "trash-put";
       more = "less";
       nodg = "nix-on-droid generations";

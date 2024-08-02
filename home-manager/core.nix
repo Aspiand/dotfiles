@@ -7,6 +7,7 @@
     ncl = "nix-channel --list";
     nclg = "nix-channel --list-generations";
     duh = "du -h";
+    tp = "trash-put";
   };
 
   home.packages = with pkgs; [

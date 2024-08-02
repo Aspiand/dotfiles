@@ -102,7 +102,7 @@
       scrcpy
 
       # Other
-      ollama
+      # ollama
       # media-downloader
     ];
   };
