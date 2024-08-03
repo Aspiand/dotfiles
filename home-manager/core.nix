@@ -13,6 +13,7 @@
   home.packages = with pkgs; [
     coreutils
     curl
+    gitui
     htop
     nano
     neofetch

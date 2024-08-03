@@ -29,7 +29,6 @@
       dt = "df -Th";
       hmbs = "home-manager build switch";
       hmg = "home-manager generations";
-      rm = "trash-put";
       l = "ls -lah";
       la = "ls -lAh";
       ll = "ls -lh";
@@ -42,6 +41,7 @@
     };
 
     packages = with pkgs; [
+      nerdfix
       (nerdfonts.override { fonts = [ "FantasqueSansMono" "0xProto" ]; })
 
       # Archive
