@@ -88,8 +88,8 @@
       ".local/share/clamav/clamd.conf".source = ../../nix-on-droid/clamav/clamd.conf;
       ".local/share/clamav/freshclam.conf".source = ../../nix-on-droid/clamav/freshclam.conf;
 
-      ".ssh/banner".source = ../../nix-on-droid/ssh/banner;
-      ".ssh/sshd_config".source = ../../nix-on-droid/ssh/sshd_config;
+      # ".ssh/banner".source = ../../nix-on-droid/ssh/banner;
+      # ".ssh/sshd_config".source = ../../nix-on-droid/ssh/sshd_config;
     };
 
     shellAliases = {
