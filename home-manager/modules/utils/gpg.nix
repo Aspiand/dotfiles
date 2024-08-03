@@ -8,10 +8,6 @@ let
 in
 
 {
-  # options.utils.gpg = {
-  #   enable = mkEnableOption "GnuPG";
-  # };
-
   options.utils.gpg.enable = mkEnableOption "GnuPG";
 
   config = mkIf cfg.enable {

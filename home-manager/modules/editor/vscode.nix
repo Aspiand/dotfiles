@@ -1,10 +1,6 @@
 { config, pkgs, lib, ... }:
 
-with lib;
-
-let
-  cfg = config.editor.vscode;
-in
+with lib; let cfg = config.editor.vscode; in
 
 {
   options.editor.vscode = {
