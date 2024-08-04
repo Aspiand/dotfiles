@@ -7,12 +7,13 @@ with lib; let cfg = config.services.sshd; in
     enable = mkEnableOption "sshd";
     dir = mkOption {
       type = types.path;
-      example = "${config.home.homeDirectory}/.ssh/sshd/";
+      default = "${config.home.homeDirectory}/.ssh/sshd";
+      example = "${config.home.homeDirectory}/.ssh";
     };
 
     port = mkOption {
       type = types.port;
-      example = "2222";
+      default = 2222;
     };
 
     banner = mkOption {
@@ -38,6 +39,14 @@ with lib; let cfg = config.services.sshd; in
     keyAuthentication = mkOption {
       type = types.bool;
       default = true;
+    };
+
+    extraConfig = mkOption {
+      type = types.str;
+      default = "";
+      example = ''
+        ListenAddress 0.0.0.0
+      '';
     };
   };
 
@@ -80,6 +89,7 @@ with lib; let cfg = config.services.sshd; in
       PubkeyAuthentication ${if cfg.keyAuthentication then "yes" else "no"}
       PermitRootLogin ${if cfg.rootLogin then "yes" else "no"}
       TCPKeepAlive yes
+      ${if cfg.extraConfig != "" then cfg.extraConfig else ""}
       EOF
 
       find ${cfg.dir} -type d -not -perm "700" -exec chmod -v 700 {} \;
