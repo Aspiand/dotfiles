@@ -102,7 +102,6 @@
       nodg = "nix-on-droid generations";
       nodr = "nix-on-droid rollback";
       nods = "nix-on-droid build switch";
-      # sshd = "$(which sshd) -4f ~/.ssh/sshd_config";
       clamd = "clamd --config-file ~/.local/share/clamav/clamd.conf";
       clamscan = "clamscan --database ~/.local/share/clamav/database/";
       freshclam = "freshclam --config-file ~/.local/share/clamav/freshclam.conf";
