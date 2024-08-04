@@ -1,10 +1,6 @@
 { config, pkgs, lib, ... }:
 
-with lib;
-
-let
-  cfg = config.utils.yt-dlp;
-in
+with lib; let cfg = config.utils.yt-dlp; in
 
 {
   options.utils.yt-dlp = {
@@ -21,7 +17,10 @@ in
   };
 
   config = mkIf cfg.enable {
-    home.packages = [ pkgs.aria2 ];
+    home.packages = with pkgs; mkMerge [
+      (mkIf (cfg.downloader == "aria2") aria2 )
+      (mkIf (cfg.downloader == "wget") wget )
+    ];
 
     programs.yt-dlp = {
       enable = true;
