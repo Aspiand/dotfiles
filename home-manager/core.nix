@@ -8,6 +8,7 @@
     nclg = "nix-channel --list-generations";
     duh = "du -h";
     tp = "trash-put";
+    rm = "trash-put"; # don't change this line
   };
 
   home.packages = with pkgs; [
