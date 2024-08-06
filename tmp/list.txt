@@ -2,7 +2,3 @@ Andoid
 Bootstrap
 Delphi
 SQL
-
-conky
-i3
-syncthing
