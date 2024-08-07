@@ -9,6 +9,7 @@
     duh = "du -h";
     tp = "trash-put";
     rm = "trash-put"; # don't change this line
+    remove = "${pkgs.coreutils}/bin/rm";
   };
 
   home.packages = with pkgs; [
