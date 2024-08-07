@@ -81,14 +81,8 @@
       clamav
       gnumake
       scrcpy
-
-      # Other
       ollama
     ];
-
-    sessionVariables = {
-      # GNUPGHOME = "${config.home.homeDirectory}/.local/data/gnupg.old";
-    };
   };
 
   programs.home-manager.enable = true;
@@ -116,7 +110,12 @@
     ssh.enable = true;
     tmux.enable = true;
     yt-dlp.enable = true;
-    yt-dlp.path = "${config.home.homeDirectory}/Downloads/";
     zoxide.enable = true;
+  };
+
+  services = {
+    syncthing.enable = true;
+    sshd.enable = true;
+    sshd.dir = "${config.home.homeDirectory}/.ssh";
   };
 }
