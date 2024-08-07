@@ -6,12 +6,13 @@ with lib; let cfg = config.utils.yt-dlp; in
   options.utils.yt-dlp = {
     enable = mkEnableOption "yt-dlp";
     downloader = mkOption {
-      type = types.str;
-      default = "aria2c";
+      type = with types; nullOr str;
+      default = null;
     };
+
     path = mkOption {
       type = types.str;
-      default = "$HOME/Downloads";
+      default = "${config.home.homeDirectory}/Downloads/";
       description = "The paths where the files should be downloaded";
     };
   };
