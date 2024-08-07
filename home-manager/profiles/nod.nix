@@ -132,6 +132,7 @@
     ssh.enable = true;
     ssh.control = false;
     yt-dlp.enable = true;
+    yt-dlp.downloader = "wget";
     yt-dlp.path = "/data/data/com.termux.nix/files/home/storage/Share/YouTube/";
   };
 

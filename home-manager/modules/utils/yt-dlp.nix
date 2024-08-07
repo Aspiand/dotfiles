@@ -18,8 +18,8 @@ with lib; let cfg = config.utils.yt-dlp; in
 
   config = mkIf cfg.enable {
     home.packages = with pkgs; mkMerge [
-      (mkIf (cfg.downloader == "aria2") aria2 )
-      (mkIf (cfg.downloader == "wget") wget )
+      (mkIf (cfg.downloader == "aria2") [ aria2 ] )
+      (mkIf (cfg.downloader == "wget") [ wget ] )
     ];
 
     programs.yt-dlp = {
