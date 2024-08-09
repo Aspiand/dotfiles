@@ -6,7 +6,8 @@
     ncu = "nix-channel --update";
     ncl = "nix-channel --list";
     nclg = "nix-channel --list-generations";
-    duh = "du -h";
+    dh = "du -h";
+    dt = "df -Th";
     tp = "trash-put";
     rm = "trash-put"; # don't change this line
     remove = "${pkgs.coreutils}/bin/rm";
