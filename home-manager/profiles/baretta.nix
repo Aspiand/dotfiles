@@ -21,6 +21,7 @@
       hmbs = "home-manager build switch";
       hmg = "home-manager generations";
       rm = "trash-put";
+      rmas = "rm ~/.var/app/com.google.AndroidStudio/config/Google/AndroidStudio2024.1/.lock";
     };
 
     packages = with pkgs; [
