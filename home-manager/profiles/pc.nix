@@ -29,10 +29,6 @@
       dt = "df -Th";
       hmbs = "home-manager build switch";
       hmg = "home-manager generations";
-      l = "ls -lah";
-      la = "ls -lAh";
-      ll = "ls -lh";
-      ls = "ls --color=tty";
       lsblkf = "lsblk -f";
     };
 

@@ -2,13 +2,16 @@
 
 {
   home.shellAliases = {
+    l = "ls -lah";
+    la = "ls -lAh";
+    ll = "ls -lh";
+    ls = "ls --color=tty";
     sl = "ls";
     ncu = "nix-channel --update";
     ncl = "nix-channel --list";
     nclg = "nix-channel --list-generations";
     dh = "du -h";
     dt = "df -Th";
-    tp = "trash-put";
     rm = "trash-put"; # don't change this line
     remove = "${pkgs.coreutils}/bin/rm";
   };
