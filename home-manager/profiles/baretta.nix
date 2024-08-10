@@ -80,9 +80,12 @@
 
   programs = {
     utils = {
+      enable = true;
+      additional = true;
       gnupg.enable = true;
       pass.enable = true;
       tmux.enable = true;
+      yt-dlp.downloader = "aria2c";
     };
   };
 
