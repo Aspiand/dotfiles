@@ -2,12 +2,11 @@
 
 {
   imports = [
-    # ../../private/home-manager/private.nix
-
     ../modules/init.nix
     ../core.nix
   ];
 
+  shell.starship.enable = true;
   shell.bash.enable = true;
   shell.zsh.enable = true;
 
@@ -26,17 +25,6 @@
 
     packages = with pkgs; [
       (nerdfonts.override { fonts = [ "FantasqueSansMono" "0xProto" ]; })
-
-      # Archive
-      bzip2
-      bzip3
-      gzip
-      unrar
-      unzip
-      gnutar
-      xz
-      zip
-      zstd
 
       # Database
       sqlite
@@ -88,31 +76,21 @@
 
   programs.home-manager.enable = true;
   programs.git.extraConfig.core.editor = "code --wait";
+  programs.ssh.control = true;
 
   programs = {
-    password-store = {
+    utils = {
       enable = true;
-      settings = {
-        PASSWORD_STORE_CLIP_TIME = "120";
-        PASSWORD_STORE_GENERATED_LENGTH = "30";
-        PASSWORD_STORE_DIR = "$HOME/.local/data/password_store/";
-      };
+      additional = true;
+      gnupg.enable = true;
+      pass.enable = true;
+      tmux.enable = true;
+      yt-dlp.downloader = "aria2c";
     };
   };
 
   editor.neovim.enable = true;
   editor.vscode.enable = true;
-
-  utils = {
-    ffm.enable = true;
-    fzf.enable = true;
-    gpg.enable = true;
-    starship.enable = true;
-    ssh.enable = true;
-    tmux.enable = true;
-    yt-dlp.enable = true;
-    zoxide.enable = true;
-  };
 
   services = {
     syncthing.enable = true;

@@ -1,10 +1,6 @@
 { config, pkgs, lib, ... }:
 
-with lib;
-
-let
-  cfg = config.editor.neovim;
-in
+with lib; let cfg = config.editor.neovim; in
 
 {
   options.editor.neovim = {
@@ -12,6 +8,7 @@ in
   };
 
   config = mkIf cfg.enable {
+    home.packages = [ pkgs.nodejs ];
     programs.neovim = {
       enable = true;
       viAlias = true;
