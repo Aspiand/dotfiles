@@ -10,17 +10,22 @@ with lib; let cfg = config.editor.vscode; in
   config = mkIf cfg.enable {
     programs.vscode = {
       enable = true;
+      package = pkgs.vscodium;
       enableUpdateCheck = false;
       enableExtensionUpdateCheck = false;
-      package = pkgs.vscodium;
       extensions = with pkgs.vscode-extensions; [
-        dracula-theme.theme-dracula
+        # dracula-theme.theme-dracula
       ];
 
       userSettings = {
         "files.autoSave" = "off";
-        "[nix]"."editor.tabSize" = 2;
         "workbench.startupEditor" = "none";
+
+        "[nix]"."editor.tabSize" = 2;
+        "[python]" = {
+          "editor.tabSize" = 4;
+          "editor.insertSpaces" = true;
+        };
       };
     };
   };

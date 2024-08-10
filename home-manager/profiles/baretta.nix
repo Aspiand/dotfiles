@@ -2,7 +2,7 @@
 
 {
   imports = [
-    ../../private/home-manager/private.nix
+    # ../../private/home-manager/private.nix
 
     ../modules/init.nix
     ../core.nix
