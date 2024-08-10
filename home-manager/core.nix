@@ -19,11 +19,10 @@
   home.packages = with pkgs; [
     coreutils
     curl
-    gitui
+    gnupg
     htop
     nano
     neofetch
-    nettools
     openssh
     pinentry-tty
     rsync
@@ -46,6 +45,7 @@
     ];
   };
 
+  programs.ssh.enable = true;
   programs.ssh.matchBlocks = {
     github = {
       host = "github.com";
