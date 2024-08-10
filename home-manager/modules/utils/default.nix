@@ -78,7 +78,7 @@ with lib; let cfg = config.programs.utils; in
     (mkIf cfg.enable {
       home.packages = with pkgs; mkMerge [
         ## ffm
-        (pkgs.writeShellScriptBin "ffm" (builtins.readFile ../../../sh/ffm.sh)) 
+        [ (pkgs.writeShellScriptBin "ffm" (builtins.readFile ../../../sh/ffm.sh)) ]
         ## https://discourse.nixos.org/t/link-scripts-to-bin-home-manager/41774
 
         ## yt-dlp
@@ -143,7 +143,7 @@ with lib; let cfg = config.programs.utils; in
 
     (mkIf cfg.gnupg.agent.config {
       home.packages = [ pkgs.pinentry-tty ];
-      home.file."${homeDir}/gpg-agent.conf".text = ''
+      home.file."${config.programs.gpg.homedir}/gpg-agent.conf".text = ''
         pinentry-program ${config.home.homeDirectory}/.nix-profile/bin/pinentry-tty
         enable-ssh-support
       '';

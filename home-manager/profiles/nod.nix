@@ -54,9 +54,6 @@
 
     file = {
       ".config/nixpkgs/config.nix".text = "{ allowUnfree = true; }";
-
-      ".local/data/gnupg/gpg-agent.conf".source = ../../nix-on-droid/gnupg/gpg-agent.conf;
-
       ".local/share/clamav/clamd.conf".source = ../../nix-on-droid/clamav/clamd.conf;
       ".local/share/clamav/freshclam.conf".source = ../../nix-on-droid/clamav/freshclam.conf;
     };
@@ -85,16 +82,6 @@
   shell.bash.enable = true;
   shell.starship.enable = true;
   editor.neovim.enable = true;
-
-  utils = {
-    ffm.enable = true;
-    starship.enable = true;
-    ssh.enable = true;
-    ssh.control = false;
-    yt-dlp.enable = true;
-    yt-dlp.downloader = "wget";
-    
-  };
 
   services.sshd = {
     enable = true;
