@@ -5,7 +5,7 @@
     ../modules/init.nix
 
     ../core.nix
-    ../../private/home-manager/private.nix
+    # ../../private/home-manager/private.nix
   ];
 
   # Nix Channel
@@ -20,20 +20,13 @@
   shell.zsh.enable = true;
 
   home = {
-    username = "sinon";
+    username = "aspian";
     homeDirectory = "/home/${config.home.username}";
     stateVersion = "24.11";
 
     shellAliases = {
-      dh = "df -h";
-      dt = "df -Th";
       hmbs = "home-manager build switch";
       hmg = "home-manager generations";
-      lsblkf = "lsblk -f";
-    };
-
-    sessionVariables = {
-      TORSOCKS_CONF_FILE = ../tor/torsocks.conf;
     };
 
     packages = with pkgs; [

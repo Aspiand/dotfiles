@@ -44,7 +44,46 @@
       "__pycache__/"
       "*.pyc"
     ];
+  };
 
-    # includes = [];
+  programs.ssh.matchBlocks = {
+    github = {
+      host = "github.com";
+      user = "git";
+      forwardAgent = true;
+      identityFile = "~/.ssh/id_rsa";
+    };
+
+    dalet = {
+      hostname = "192.168.100.2";
+      host = "dalet";
+      user = "u0_a251";
+      port = 8022;
+      identityFile = "~/.ssh/id_rsa";
+    };
+
+    nix-dalet = {
+      hostname = "192.168.100.2";
+      host = "dnod";
+      user = "nix-on-droid";
+      port = 3022;
+      identityFile = "~/.ssh/id_rsa";
+    };
+
+    san = {
+      hostname = "192.168.100.10";
+      host = "san";
+      user = "root";
+      port = 22;
+      identityFile = "~/.ssh/id_rsa";
+    };
+
+    lsan = {
+      hostname = "192.168.1.1";
+      host = "lsan";
+      user = "root";
+      port = 22;
+      identityFile = "~/.ssh/id_rsa";
+    };
   };
 }
