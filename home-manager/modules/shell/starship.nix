@@ -2,12 +2,10 @@
 
 with lib;
 
-let
-  cfg = config.utils.starship;
-in
+let cfg = config.shell.starship; in
 
 {
-  options.utils.starship = {
+  options.shell.starship = {
     enable = mkEnableOption "Starship";
   };
 

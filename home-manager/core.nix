@@ -46,6 +46,7 @@
     ];
   };
 
+  programs.ssh.enable = true;
   programs.ssh.matchBlocks = {
     github = {
       host = "github.com";
