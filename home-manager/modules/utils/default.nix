@@ -8,11 +8,8 @@ with lib; let cfg = config.programs.utils; in
   ];
 
   options.programs.utils = {
-    enable = mkEnableOption "Common programs";
-    archive = mkOption {
-      type = types.bool;
-      default = true;
-    };
+    enable = mkEnableOption "Common package";
+    additional = mkEnableOption "Additional package";
 
     gnupg = {
       enable = mkEnableOption "GnuPG";
@@ -49,18 +46,32 @@ with lib; let cfg = config.programs.utils; in
 
   config = mkMerge [
     {
-      home.packages = with pkgs; mkMerge [
-        (mkIf cfg.archive [
-          bzip2
-          bzip3
-          gzip
-          unrar
-          unzip
-          gnutar
-          xz
-          zip
-          zstd
-        ])
+      home.packages = with pkgs; mkIf cfg.additional [
+        # Archive
+        bzip2
+        bzip3
+        gzip
+        unrar
+        unzip
+        gnutar
+        xz
+        zip
+        zstd
+
+        # Other          
+        bat
+        findutils
+        ffmpeg
+        gitui
+        gnumake
+        gawk
+        gnugrep
+        gnused
+        ncurses
+        nettools
+        steghide
+        procps
+        which
       ];
     }
 

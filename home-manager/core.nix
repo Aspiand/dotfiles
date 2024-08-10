@@ -19,11 +19,10 @@
   home.packages = with pkgs; [
     coreutils
     curl
-    gitui
+    gnupg
     htop
     nano
     neofetch
-    nettools
     openssh
     pinentry-tty
     rsync

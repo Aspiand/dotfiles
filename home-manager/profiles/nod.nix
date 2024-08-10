@@ -2,7 +2,7 @@
 
 {
   imports = [
-    ../../private/home-manager/private.nix
+    # ../../private/home-manager/private.nix
     ../modules/init.nix
     ../core.nix
   ];
@@ -22,23 +22,10 @@
   nix.package = pkgs.nix;
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
-  programs.home-manager.enable = true;
-
   home = {
     stateVersion = "24.11";
     packages = with pkgs; [
       (nerdfonts.override { fonts = [ "FantasqueSansMono" "0xProto" ]; })
-
-      # Archive
-      bzip2
-      bzip3
-      gzip
-      unrar
-      unzip
-      gnutar
-      xz
-      zip
-      zstd
 
       # Network
       aria2
@@ -60,24 +47,9 @@
       python312Packages.pip
       python312Packages.virtualenv
 
-      # Security
-      gnupg
-      steghide
-
       # Utils
-      bat
       clamav
-      findutils
-      ffmpeg
-      gnumake
-      gawk
-      gnugrep
-      gnused
-      ncurses
       ollama
-      pinentry-tty
-      procps
-      which
     ];
 
     file = {
@@ -87,9 +59,6 @@
 
       ".local/share/clamav/clamd.conf".source = ../../nix-on-droid/clamav/clamd.conf;
       ".local/share/clamav/freshclam.conf".source = ../../nix-on-droid/clamav/freshclam.conf;
-
-      # ".ssh/banner".source = ../../nix-on-droid/ssh/banner;
-      # ".ssh/sshd_config".source = ../../nix-on-droid/ssh/sshd_config;
     };
 
     shellAliases = {
@@ -103,24 +72,20 @@
     };
   };
 
-  programs = {
-    gpg = {
-      enable = true;
-      homedir = "${config.home.homeDirectory}/.local/data/gnupg";
-    };
-
-    password-store = {
-      enable = true;
-      settings = {
-        PASSWORD_STORE_CLIP_TIME = "120";
-        PASSWORD_STORE_GENERATED_LENGTH = "30";
-        PASSWORD_STORE_DIR = "$HOME/.local/data/password_store/";
-      };
-    };
+  programs.home-manager.enable = true;
+  programs.utils = {
+    enable = true;
+    additional = true;
+    gnupg.enable = true;
+    gnupg.agent.config = true;
+    pass.enable = true;
+    yt-dlp.path = "/data/data/com.termux.nix/files/home/storage/Share/YouTube/";
   };
 
   shell.bash.enable = true;
+  shell.starship.enable = true;
   editor.neovim.enable = true;
+
   utils = {
     ffm.enable = true;
     starship.enable = true;
@@ -128,7 +93,7 @@
     ssh.control = false;
     yt-dlp.enable = true;
     yt-dlp.downloader = "wget";
-    yt-dlp.path = "/data/data/com.termux.nix/files/home/storage/Share/YouTube/";
+    
   };
 
   services.sshd = {
