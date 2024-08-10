@@ -5,7 +5,6 @@
     ../modules/init.nix
 
     ../core.nix
-    # ../../private/home-manager/private.nix
   ];
 
   # Nix Channel
@@ -32,17 +31,6 @@
     packages = with pkgs; [
       nerdfix
       (nerdfonts.override { fonts = [ "FantasqueSansMono" "0xProto" ]; })
-
-      # Archive
-      bzip2
-      bzip3
-      gzip
-      unrar
-      unzip
-      gnutar
-      xz
-      zip
-      zstd
 
       # Database
       sqlite
@@ -101,16 +89,16 @@
 
   editor.neovim.enable = true;
 
-  utils = {
-    ffm.enable = true;
-    fzf.enable = true;
-    starship.enable = true;
-    ssh.enable = true;
-    tmux.enable = true;
-    yt-dlp.enable = true;
-    yt-dlp.path = "${config.home.homeDirectory}/Downloads/";
-    zoxide.enable = true;
-  };
+  # utils = {
+  #   ffm.enable = true;
+  #   fzf.enable = true;
+  #   starship.enable = true;
+  #   ssh.enable = true;
+  #   tmux.enable = true;
+  #   yt-dlp.enable = true;
+  #   yt-dlp.path = "${config.home.homeDirectory}/Downloads/";
+  #   zoxide.enable = true;
+  # };
 
   services.syncthing = {
     enable = true;
