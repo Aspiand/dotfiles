@@ -3,7 +3,6 @@
 {
   imports = [
     ../modules/init.nix
-
     ../core.nix
   ];
 
@@ -15,6 +14,7 @@
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
   nixpkgs.config.allowUnfree = true;
 
+  shell.starship.enable = true;
   shell.bash.enable = true;
   shell.zsh.enable = true;
 
@@ -34,10 +34,7 @@
 
       # Database
       sqlite
-
-      # Files
-      bat
-      ffmpeg
+      mysql
 
       # Monitor
       bottom
@@ -69,18 +66,11 @@
       # python3Packages.insightface
       podman-compose
 
-      # Security
-      steghide
-
       # System
       android-tools
       clamav
       gnumake
       scrcpy
-
-      # Other
-      # ollama
-      # media-downloader
     ];
   };
 
@@ -88,25 +78,9 @@
   programs.git.extraConfig.core.editor = "code --wait";
 
   editor.neovim.enable = true;
+  editor.vscode.enable = true;
 
-  # utils = {
-  #   ffm.enable = true;
-  #   fzf.enable = true;
-  #   starship.enable = true;
-  #   ssh.enable = true;
-  #   tmux.enable = true;
-  #   yt-dlp.enable = true;
-  #   yt-dlp.path = "${config.home.homeDirectory}/Downloads/";
-  #   zoxide.enable = true;
-  # };
-
-  services.syncthing = {
-    enable = true;
-
-    tray = {
-      enable = false;
-    };
-  };
+  services.syncthing.enable = true;
 }
 
 # file = { # config.lib.file.mkOutOfStoreSymlink };
