@@ -22,7 +22,7 @@ in
   config = mkIf cfg.enable {
     programs.tmux = {
       enable = true;
-      mouse = false;
+      mouse = true;
       clock24 = true;
       newSession = true;
       baseIndex = 1;
