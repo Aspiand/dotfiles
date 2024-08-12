@@ -76,7 +76,7 @@
 
   programs = {
     home-manager.enable = true;
-    git.extraConfig.core.editor = "code --wait";
+    git.extraConfig.core.editor = "codium --wait";
     utils = {
       enable = true;
       additional = true;
@@ -87,26 +87,29 @@
       yt-dlp.downloader = "aria2c";
     };
 
-    librewolf.enable = true;
-    librewolf.settings = {
-      "browser.safebrowsing.malware.enabled" = true;
-      "browser.safebrowsing.phishing.enabled" = true;
-      "browser.safebrowsing.blockedURIs.enabled" = true;
-      "browser.safebrowsing.downloads.enabled" = true;
-      "browser.sessionstore.resume_from_crash" = true;
+    librewolf = {
+      enable = true;
+      settings = {
+        "browser.safebrowsing.malware.enabled" = true;
+        "browser.safebrowsing.phishing.enabled" = true;
+        "browser.safebrowsing.blockedURIs.enabled" = true;
+        "browser.safebrowsing.downloads.enabled" = true;
+        "browser.sessionstore.resume_from_crash" = true;
 
-      "privacy.clearOnShutdown.history" = false;
-      "privacy.clearOnShutdown.downloads" = false;
-      "privacy.resistFingerprinting" = true;
-      "privacy.resistFingerprinting.letterboxing" = true;
+        "privacy.clearOnShutdown.history" = false;
+        "privacy.clearOnShutdown.downloads" = false;
+        "privacy.resistFingerprinting" = true;
+        "privacy.resistFingerprinting.letterboxing" = true;
 
-      "identity.fxaccounts.enabled" = false;
+        "identity.fxaccounts.enabled" = false;
 
-      "security.OCSP.require" = true;
+        "security.OCSP.require" = true;
+      };
     };
   };
 
   editor.neovim.enable = true;
+  editor.vscode.enable = true;
   services.syncthing.enable = true;
 }
 
