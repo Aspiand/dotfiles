@@ -4,6 +4,7 @@ with lib; let cfg = config.programs.utils; in
 
 {
   imports = [
+    ./clamav.nix
     ./tmux.nix
   ];
 
