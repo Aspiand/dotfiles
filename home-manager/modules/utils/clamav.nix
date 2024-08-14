@@ -13,8 +13,8 @@ with lib; let cfg = config.programs.utils.clamav; in
 
   config = let
     dir = "${cfg.dir}";
-    log_dir = "${cfg.dir}/log";
-    db_dir = "${cfg.dir}/database";
+    log_dir = "${dir}/log";
+    db_dir = "${dir}/database";
   in {
     home.shellAliases = {
       clamscan = "clamscan --database ${db_dir}";
