@@ -71,6 +71,7 @@
       clamav
       gnumake
       scrcpy
+      wine
     ];
   };
 

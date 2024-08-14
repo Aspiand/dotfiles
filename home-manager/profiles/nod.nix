@@ -21,6 +21,7 @@
 
   nix.package = pkgs.nix;
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nixpkgs.config.allowUnfree = true;
 
   home = {
     stateVersion = "24.11";
@@ -46,26 +47,17 @@
       python312
       python312Packages.pip
       python312Packages.virtualenv
-
-      # Utils
-      clamav
-      ollama
     ];
 
-    file = {
-      ".config/nixpkgs/config.nix".text = "{ allowUnfree = true; }";
-      ".local/share/clamav/clamd.conf".source = ../../nix-on-droid/clamav/clamd.conf;
-      ".local/share/clamav/freshclam.conf".source = ../../nix-on-droid/clamav/freshclam.conf;
-    };
+    # file = {
+    #   ".config/nixpkgs/config.nix".text = "{ allowUnfree = true; }";
+    # };
 
     shellAliases = {
       more = "less";
       nodg = "nix-on-droid generations";
       nodr = "nix-on-droid rollback";
       nods = "nix-on-droid build switch";
-      clamd = "clamd --config-file ~/.local/share/clamav/clamd.conf";
-      clamscan = "clamscan --database ~/.local/share/clamav/database/";
-      freshclam = "freshclam --config-file ~/.local/share/clamav/freshclam.conf";
     };
   };
 
@@ -73,6 +65,7 @@
   programs.utils = {
     enable = true;
     additional = true;
+    clamav.enable = true;
     gnupg.enable = true;
     gnupg.agent.config = true;
     pass.enable = true;
