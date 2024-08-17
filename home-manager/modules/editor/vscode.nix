@@ -20,6 +20,7 @@ with lib; let cfg = config.editor.vscode; in
       userSettings = {
         "files.autoSave" = "off";
         "workbench.startupEditor" = "none";
+        "editor.minimap.renderCharacters" = false;
 
         "[nix]"."editor.tabSize" = 2;
         "[python]" = {

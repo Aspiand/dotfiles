@@ -15,7 +15,9 @@ with lib; let cfg = config.programs.utils.clamav; in
     dir = "${cfg.dir}";
     log_dir = "${dir}/log";
     db_dir = "${dir}/database";
-  in {
+  in mkIf cfg.enable {
+    home.packages = [ pkgs.clamav ];
+    
     home.shellAliases = {
       clamscan = "clamscan --database ${db_dir}";
       clamd = "clamd --config-file ${dir}/clamd.conf";
