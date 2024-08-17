@@ -29,7 +29,6 @@
     };
 
     packages = with pkgs; [
-      nerdfix
       (nerdfonts.override { fonts = [ "FantasqueSansMono" "0xProto" ]; })
 
       # Database
@@ -68,7 +67,6 @@
 
       # System
       android-tools
-      clamav
       gnumake
       scrcpy
       wine
@@ -78,10 +76,11 @@
   programs = {
     home-manager.enable = true;
     git.extraConfig.core.editor = "codium --wait";
+    gpg.package = pkgs.gnupg22;
     utils = {
       enable = true;
       additional = true;
-      clamav.enable = true;
+      clamav.enable = false;
       gnupg.enable = false;
       pass.enable = true;
       pass.dir = "${config.home.homeDirectory}/.local/share/password_store";

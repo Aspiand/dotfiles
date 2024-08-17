@@ -67,7 +67,6 @@
       steghide
 
       # System
-      clamav
       gnumake
       scrcpy
       ollama
