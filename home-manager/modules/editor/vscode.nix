@@ -29,5 +29,16 @@ with lib; let cfg = config.editor.vscode; in
         };
       };
     };
+
+    home.file.".local/share/applications/vscode.desktop".text = ''
+      [Desktop Entry]
+      Name=VSCodium
+      Comment=Free/Libre Open Source Software Binaries of VSCode
+      Exec=${config.programs.vscode.package}
+      Icon=codium
+      Terminal=false
+      Type=Application
+      Categories=Development;IDE;
+    '';
   };
 }
