@@ -26,6 +26,7 @@
     shellAliases = {
       hmbs = "home-manager build switch";
       hmg = "home-manager generations";
+      db = "distrobox";
     };
 
     packages = with pkgs; [
@@ -65,8 +66,9 @@
       # python3Packages.insightface
       podman-compose
 
-      # System
+      # Utils
       android-tools
+      distrobox
       gnumake
       scrcpy
       wine
