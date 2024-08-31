@@ -75,6 +75,7 @@
     ];
   };
 
+  programs.ssh.control = true;
   programs = {
     home-manager.enable = true;
     git.extraConfig.core.editor = "codium --wait";
