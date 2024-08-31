@@ -34,7 +34,7 @@
 
       # Database
       sqlite
-      mysql
+      mycli
 
       # Monitor
       bottom
