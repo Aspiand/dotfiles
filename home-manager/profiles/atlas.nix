@@ -29,10 +29,6 @@
       db = "distrobox";
     };
 
-    file = {
-      ".config/xfce4/xfconf/xfce-perchannel-xml/xfce4-panel.xml".source = ../../xfce/panel.xml;
-    };
-
     packages = with pkgs; [
       (nerdfonts.override { fonts = [ "FantasqueSansMono" "0xProto" ]; })
 
