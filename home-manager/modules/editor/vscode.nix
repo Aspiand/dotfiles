@@ -1,9 +1,9 @@
 { config, pkgs, lib, ... }:
 
-with lib; let cfg = config.editor.vscode; in
+with lib; let cfg = config.programs.utils.vscode; in
 
 {
-  options.editor.vscode.enable = mkEnableOption "VSCodium";
+  options.programs.utils.vscode.enable = mkEnableOption "VSCodium";
 
   config = mkIf cfg.enable {
     programs.vscode = {

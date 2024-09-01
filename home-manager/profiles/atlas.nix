@@ -75,19 +75,21 @@
     ];
   };
 
-  programs.ssh.control = true;
   programs = {
+    ssh.control = true;
     home-manager.enable = true;
-    git.extraConfig.core.editor = "codium --wait";
     gpg.package = pkgs.gnupg22;
+    git.extraConfig.core.editor = "codium --wait";
+
     utils = {
-      enable = true;
       additional = true;
       clamav.enable = true;
       gnupg.enable = false;
+      neovim.enable = true;
       pass.enable = true;
       pass.dir = "${config.home.homeDirectory}/.local/share/password_store";
       tmux.enable = true;
+      vscode.enable = true;
       yt-dlp.downloader = "aria2c";
     };
 
@@ -112,9 +114,8 @@
     };
   };
 
-  editor.neovim.enable = true;
-  editor.vscode.enable = true;
-  services.syncthing.enable = true;
+  services.syncthing.enable = false;
+  services.glance.enable = false;
 }
 
 # file = { # config.lib.file.mkOutOfStoreSymlink };

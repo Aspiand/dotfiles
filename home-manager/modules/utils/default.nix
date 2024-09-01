@@ -9,7 +9,6 @@ with lib; let cfg = config.programs.utils; in
   ];
 
   options.programs.utils = {
-    enable = mkEnableOption "Common package";
     additional = mkEnableOption "Additional package";
 
     gnupg = {
@@ -46,37 +45,8 @@ with lib; let cfg = config.programs.utils; in
   };
 
   config = mkMerge [
-    {
-      home.packages = with pkgs; mkIf cfg.additional [
-        # Archive
-        bzip2
-        bzip3
-        gzip
-        unrar
-        unzip
-        gnutar
-        xz
-        zip
-        zstd
 
-        # Other          
-        bat
-        findutils
-        ffmpeg
-        gitui
-        gnumake
-        gawk
-        gnugrep
-        gnused
-        ncurses
-        nettools
-        steghide
-        procps
-        which
-      ];
-    }
-
-    (mkIf cfg.enable {
+    (mkIf cfg.additional {
       home.packages = with pkgs; mkMerge [
         ## ffm
         [ (pkgs.writeShellScriptBin "ffm" (builtins.readFile ../../../sh/ffm.sh)) ]
@@ -85,6 +55,34 @@ with lib; let cfg = config.programs.utils; in
         ## yt-dlp
         (mkIf (cfg.yt-dlp.downloader == "aria2") [ aria2 ] )
         (mkIf (cfg.yt-dlp.downloader == "wget") [ wget ] )
+
+        [
+          # Archive
+          bzip2
+          bzip3
+          gzip
+          unrar
+          unzip
+          gnutar
+          xz
+          zip
+          zstd
+
+          # Other          
+          bat
+          findutils
+          ffmpeg
+          gitui
+          gnumake
+          gawk
+          gnugrep
+          gnused
+          ncurses
+          nettools
+          steghide
+          procps
+          which
+        ]
       ];
 
       programs.fzf = {
