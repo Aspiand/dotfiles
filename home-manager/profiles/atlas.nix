@@ -83,7 +83,7 @@
     utils = {
       enable = true;
       additional = true;
-      clamav.enable = false;
+      clamav.enable = true;
       gnupg.enable = false;
       pass.enable = true;
       pass.dir = "${config.home.homeDirectory}/.local/share/password_store";
