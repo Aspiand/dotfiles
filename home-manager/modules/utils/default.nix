@@ -47,6 +47,12 @@ with lib; let cfg = config.programs.utils; in
   config = mkMerge [
 
     (mkIf cfg.additional {
+      home.shellAliases = {
+        sl = "exa";
+        s  = "ls -lah";
+        sa = "ls -lAh";
+      };
+
       home.packages = with pkgs; mkMerge [
         ## ffm
         [ (pkgs.writeShellScriptBin "ffm" (builtins.readFile ../../../sh/ffm.sh)) ]
@@ -70,6 +76,7 @@ with lib; let cfg = config.programs.utils; in
 
           # Other          
           bat
+          eza
           findutils
           ffmpeg
           gitui
@@ -79,6 +86,7 @@ with lib; let cfg = config.programs.utils; in
           gnused
           ncurses
           nettools
+          rm-improved
           steghide
           procps
           which
