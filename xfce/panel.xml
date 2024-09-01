@@ -15,11 +15,14 @@
       <property name="plugin-ids" type="array">
         <value type="int" value="1"/>
         <value type="int" value="14"/>
-        <value type="int" value="3"/>
-        <value type="int" value="4"/>
         <value type="int" value="5"/>
+        <value type="int" value="17"/>
         <value type="int" value="6"/>
         <value type="int" value="7"/>
+        <value type="int" value="16"/>
+        <value type="int" value="3"/>
+        <value type="int" value="15"/>
+        <value type="int" value="11"/>
         <value type="int" value="8"/>
         <value type="int" value="9"/>
         <value type="int" value="10"/>
@@ -38,9 +41,7 @@
       </property>
     </property>
     <property name="plugin-4" type="empty">
-      <property name="items" type="array">
-        <value type="string" value="17251712682.desktop"/>
-      </property>
+      <property name="items" type="empty"/>
     </property>
     <property name="plugin-5" type="empty">
       <property name="items" type="array">
@@ -70,7 +71,21 @@
     </property>
     <property name="plugin-9" type="empty"/>
     <property name="plugin-10" type="empty"/>
-    <property name="plugin-11" type="empty"/>
+    <property name="plugin-11" type="string" value="systemload">
+      <property name="cpu" type="empty">
+        <property name="label" type="string" value=""/>
+      </property>
+      <property name="memory" type="empty">
+        <property name="label" type="string" value=""/>
+      </property>
+      <property name="swap" type="empty">
+        <property name="label" type="string" value=""/>
+      </property>
+      <property name="network" type="empty">
+        <property name="label" type="string" value=""/>
+        <property name="enabled" type="bool" value="false"/>
+      </property>
+    </property>
     <property name="plugin-12" type="empty">
       <property name="enable-keyboard-shortcuts" type="empty"/>
       <property name="enable-mpris" type="empty"/>
@@ -85,5 +100,32 @@
       <property name="digital-time-font" type="empty"/>
     </property>
     <property name="plugin-14" type="empty"/>
+    <property name="plugin-15" type="string" value="actions">
+      <property name="button-title" type="uint" value="3"/>
+      <property name="custom-title" type="string" value="  Atlas  "/>
+      <property name="items" type="array">
+        <value type="string" value="+lock-screen"/>
+        <value type="string" value="+switch-user"/>
+        <value type="string" value="+separator"/>
+        <value type="string" value="+suspend"/>
+        <value type="string" value="-hibernate"/>
+        <value type="string" value="-hybrid-sleep"/>
+        <value type="string" value="-separator"/>
+        <value type="string" value="+shutdown"/>
+        <value type="string" value="+restart"/>
+        <value type="string" value="+separator"/>
+        <value type="string" value="-logout"/>
+        <value type="string" value="+logout-dialog"/>
+      </property>
+    </property>
+    <property name="plugin-16" type="string" value="separator">
+      <property name="style" type="uint" value="1"/>
+      <property name="expand" type="bool" value="false"/>
+    </property>
+    <property name="plugin-17" type="string" value="launcher">
+      <property name="items" type="array">
+        <value type="string" value="17251907811.desktop"/>
+      </property>
+    </property>
   </property>
 </channel>
