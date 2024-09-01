@@ -157,6 +157,11 @@ with lib; let cfg = config.programs.utils; in
           PASSWORD_STORE_DIR = cfg.pass.dir;
         };
       };
+
+      home.activation.pass_setup = lib.hm.dag.entryAfter ["writeBoundary"] ''
+        find ${cfg.pass.dir} -type d -not -perm "700" -exec chmod -v 700 {} \;
+        find ${cfg.pass.dir} -type f -not -perm "600" -exec chmod -v 600 {} \;
+      '';
     })
   ];
 }

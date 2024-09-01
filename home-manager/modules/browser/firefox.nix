@@ -1,15 +1,9 @@
 { lib, config, pkgs, ... }:
 
-with lib;
-
-let
-  cfg = config.programs.firefox;
-in
+with lib; let cfg = config.programs.utils.firefox; in
 
 {
-  option.programs.firefox = {
-    enable = mkEnableOption "Firefox";
-  };
+  options.programs.utils.firefox.enable = mkEnableOption "Firefox";
 
   config = mkIf cfg.enable {
     programs.firefox = {
