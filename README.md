@@ -1,5 +1,5 @@
 # App
-## List
+## Repository
 - https://github.com/EliverLara/candy-icons
 - https://github.com/evilsocket/opensnitch
 

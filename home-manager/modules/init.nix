@@ -6,6 +6,7 @@ with lib; let cfg = config.programs; in
 
 {
   imports = [
+    ./browser
     ./editor
     ./shell
     ./services

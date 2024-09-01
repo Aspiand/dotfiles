@@ -85,6 +85,7 @@
       additional = true;
       clamav.enable = true;
       gnupg.enable = false;
+      librewolf.enable = true;
       neovim.enable = true;
       pass.enable = true;
       pass.dir = "${config.home.homeDirectory}/.local/share/password_store";
@@ -92,30 +93,12 @@
       vscode.enable = true;
       yt-dlp.downloader = "aria2c";
     };
-
-    librewolf = {
-      enable = true;
-      settings = {
-        "browser.safebrowsing.malware.enabled" = true;
-        "browser.safebrowsing.phishing.enabled" = true;
-        "browser.safebrowsing.blockedURIs.enabled" = true;
-        "browser.safebrowsing.downloads.enabled" = true;
-        "browser.sessionstore.resume_from_crash" = true;
-
-        "privacy.clearOnShutdown.history" = false;
-        "privacy.clearOnShutdown.downloads" = false;
-        "privacy.resistFingerprinting" = true;
-        "privacy.resistFingerprinting.letterboxing" = true;
-
-        "identity.fxaccounts.enabled" = false;
-
-        "security.OCSP.require" = true;
-      };
-    };
   };
 
   services.syncthing.enable = false;
   services.glance.enable = false;
+
+  # xfconf.settings
 }
 
 # file = { # config.lib.file.mkOutOfStoreSymlink };
