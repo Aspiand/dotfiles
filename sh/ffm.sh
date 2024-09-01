@@ -17,6 +17,7 @@ readonly CONFIG_PATH=(
     "/etc/ffm.conf"
     "$ROOT/env.sh"
     "$HOME/.config/ffm/config.sh"
+    "$HOME/.config/ffm.d/*.sh"
 )
 
 for config_path in "${CONFIG_PATH[@]}"; do

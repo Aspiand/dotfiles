@@ -3,9 +3,7 @@
 with lib; let cfg = config.editor.vscode; in
 
 {
-  options.editor.vscode = {
-    enable = mkEnableOption "VSCode";
-  };
+  options.editor.vscode.enable = mkEnableOption "VSCodium";
 
   config = mkIf cfg.enable {
     programs.vscode = {
@@ -14,7 +12,11 @@ with lib; let cfg = config.editor.vscode; in
       enableUpdateCheck = false;
       enableExtensionUpdateCheck = false;
       extensions = with pkgs.vscode-extensions; [
-        # dracula-theme.theme-dracula
+        waderyan.gitblame
+        mhutchie.git-graph
+        donjayamanne.githistory
+        codezombiech.gitignore
+        # felipecaputo.git-project-manager
       ];
 
       userSettings = {
