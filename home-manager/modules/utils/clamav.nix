@@ -24,7 +24,7 @@ with lib; let cfg = config.programs.utils.clamav; in
       freshclam = "freshclam --config-file ${dir}/freshclam.conf";
     };
 
-    home.activation.clam_setup = lib.hm.dag.entryAfter ["writeBoundary"] ''
+    home.activation.clamav_setup = lib.hm.dag.entryAfter ["writeBoundary"] ''
       for dir in "${cfg.dir}" "${db_dir}" "${log_dir}"; do
         [ ! -d "$dir" ] && mkdir -vp "$dir"
       done

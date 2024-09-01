@@ -1,11 +1,9 @@
 { config, pkgs, lib, ... }:
 
-with lib; let cfg = config.editor.neovim; in
+with lib; let cfg = config.programs.utils.neovim; in
 
 {
-  options.editor.neovim = {
-    enable = mkEnableOption "Neovim";
-  };
+  options.programs.utils.neovim.enable = mkEnableOption "Neovim";
 
   config = mkIf cfg.enable {
     home.packages = [ pkgs.nodejs ];
