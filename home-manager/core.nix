@@ -6,7 +6,6 @@
     la = "ls -lAh";
     ll = "ls -lh";
     ls = "ls --color=tty";
-    sl = "ls";
     ncu = "nix-channel --update";
     ncl = "nix-channel --list";
     nclg = "nix-channel --list-generations";
