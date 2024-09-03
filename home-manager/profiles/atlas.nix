@@ -97,7 +97,6 @@
 
   services.syncthing.enable = false;
   services.glance.enable = false;
-
   # xfconf.settings
 }
 
