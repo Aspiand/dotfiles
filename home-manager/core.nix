@@ -5,7 +5,6 @@
     l = "ls -lah";
     la = "ls -lAh";
     ll = "ls -lh";
-    ls = "ls --color=tty";
     ncu = "nix-channel --update";
     ncl = "nix-channel --list";
     nclg = "nix-channel --list-generations";
@@ -35,6 +34,7 @@
     userName = "Aspian";
     userEmail = "p.aspian1738@gmail.com";
     extraConfig.init.defaultBranch = "main";
+    extraConfig.core.fileMode = true;
 
     ignores = [
       ".venv/"
