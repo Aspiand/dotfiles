@@ -10,7 +10,7 @@ with lib; let cfg = config.programs.utils.librewolf; in
       [Desktop Entry]
       Actions=new-private-window;new-window;profile-manager-window
       Categories=Network;WebBrowser
-      Exec=${config.programs.librewolf.package} --name librewolf %U
+      Exec=${config.home.homeDirectory}.nix-profile/bin/librewolf --name librewolf %U
       GenericName=Web Browser
       Icon=librewolf
       MimeType=text/html;text/xml;application/xhtml+xml;application/vnd.mozilla.xul+xml;x-scheme-handler/http;x-scheme-handler/https
@@ -22,15 +22,15 @@ with lib; let cfg = config.programs.utils.librewolf; in
       Version=1.4
 
       [Desktop Action new-private-window]
-      Exec=${config.programs.librewolf.package} --private-window %U
+      Exec=${config.home.homeDirectory}.nix-profile/bin/librewolf --private-window %U
       Name=New Private Window
 
       [Desktop Action new-window]
-      Exec=${config.programs.librewolf.package} --new-window %U
+      Exec=${config.home.homeDirectory}.nix-profile/bin/librewolf --new-window %U
       Name=New Window
 
       [Desktop Action profile-manager-window]
-      Exec=${config.programs.librewolf.package} --ProfileManager
+      Exec=${config.home.homeDirectory}.nix-profile/bin/librewolf --ProfileManager
       Name=Profile Manager
     '';
     
