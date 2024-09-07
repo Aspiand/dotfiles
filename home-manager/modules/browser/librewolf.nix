@@ -1,16 +1,14 @@
 { lib, config, pkgs, ... }:
 
-with lib; let cfg = config.programs.utils.librewolf; in
-
-{
+with lib; {
   options.programs.utils.librewolf.enable = mkEnableOption "librewolf";
 
-  config = mkIf cfg.enable {
+  config = mkIf config.programs.utils.librewolf.enable {
     home.file.".local/share/applications/librewolf.desktop".text = ''
       [Desktop Entry]
       Actions=new-private-window;new-window;profile-manager-window
       Categories=Network;WebBrowser
-      Exec=${config.home.homeDirectory}.nix-profile/bin/librewolf --name librewolf %U
+      Exec=${config.home.homeDirectory}/.nix-profile/bin/librewolf --name librewolf %U
       GenericName=Web Browser
       Icon=librewolf
       MimeType=text/html;text/xml;application/xhtml+xml;application/vnd.mozilla.xul+xml;x-scheme-handler/http;x-scheme-handler/https
@@ -22,18 +20,18 @@ with lib; let cfg = config.programs.utils.librewolf; in
       Version=1.4
 
       [Desktop Action new-private-window]
-      Exec=${config.home.homeDirectory}.nix-profile/bin/librewolf --private-window %U
+      Exec=${config.home.homeDirectory}/.nix-profile/bin/librewolf --private-window %U
       Name=New Private Window
 
       [Desktop Action new-window]
-      Exec=${config.home.homeDirectory}.nix-profile/bin/librewolf --new-window %U
+      Exec=${config.home.homeDirectory}/.nix-profile/bin/librewolf --new-window %U
       Name=New Window
 
       [Desktop Action profile-manager-window]
-      Exec=${config.home.homeDirectory}.nix-profile/bin/librewolf --ProfileManager
+      Exec=${config.home.homeDirectory}/.nix-profile/bin/librewolf --ProfileManager
       Name=Profile Manager
     '';
-    
+
     programs.librewolf = {
       enable = true;
       settings = {

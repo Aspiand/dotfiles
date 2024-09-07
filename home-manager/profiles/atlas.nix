@@ -79,7 +79,7 @@
     ssh.control = true;
     home-manager.enable = true;
     gpg.package = pkgs.gnupg22;
-    git.extraConfig.core.editor = "codium --wait";
+    git.extraConfig.core.editor = "nvim";
 
     utils = {
       additional = true;

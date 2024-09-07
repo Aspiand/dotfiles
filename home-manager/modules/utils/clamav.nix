@@ -21,6 +21,7 @@ with lib; let cfg = config.programs.utils.clamav; in
     home.shellAliases = {
       clamscan = "clamscan --database ${db_dir}";
       clamd = "clamd --config-file ${dir}/clamd.conf";
+      clamdscan = "clamdscan --config-file ${dir}/clamd.conf";
       freshclam = "freshclam --config-file ${dir}/freshclam.conf";
     };
 
@@ -47,10 +48,6 @@ with lib; let cfg = config.programs.utils.clamav; in
       ReadTimeout 180
       MaxThreads 12
       MaxConnectionQueueLength 15
-      LogRotate true
-      LogFacility LOG_LOCAL6
-      LogClean false
-      LogVerbose false
       PreludeEnable no
       PreludeAnalyzerName ClamAV
       DatabaseDirectory ${db_dir}
@@ -106,10 +103,14 @@ with lib; let cfg = config.programs.utils.clamav; in
       ScanHWP3 true
       MaxRecHWP3 16
       StreamMaxLength 25M
-      LogFile ${log_dir}clamd.log
+      LogFile ${log_dir}/clamd.log
       LogTime true
       LogFileUnlock false
       LogFileMaxSize 10M
+      LogRotate true
+      LogFacility LOG_LOCAL6
+      LogClean false
+      LogVerbose false
       Bytecode true
       BytecodeSecurity TrustSigned
       BytecodeTimeout 60000
@@ -136,8 +137,8 @@ with lib; let cfg = config.programs.utils.clamav; in
       ScriptedUpdates yes
       CompressLocalDatabase yes
       Bytecode true
-      # NotifyClamd /etc/clamav/clamd.conf
-      # NotifyClamd yes
+      NotifyClamd yes
+      NotifyClamd ${dir}/clamd.conf
       Checks 24
       DatabaseMirror db.local.clamav.net
       DatabaseMirror database.clamav.net
