@@ -22,6 +22,9 @@
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
   nixpkgs.config.allowUnfree = true;
 
+  shell.bash.enable = true;
+  shell.starship.enable = true;
+
   home = {
     stateVersion = "24.11";
     packages = with pkgs; [
@@ -49,10 +52,6 @@
       python312Packages.virtualenv
     ];
 
-    # file = {
-    #   ".config/nixpkgs/config.nix".text = "{ allowUnfree = true; }";
-    # };
-
     shellAliases = {
       more = "less";
       nodg = "nix-on-droid generations";
@@ -61,19 +60,21 @@
     };
   };
 
-  programs.home-manager.enable = true;
-  programs.utils = {
-    enable = true;
-    additional = true;
-    clamav.enable = true;
-    gnupg.enable = true;
-    pass.enable = true;
-    yt-dlp.path = "/data/data/com.termux.nix/files/home/storage/Share/YouTube/";
-  };
+  programs = {
+    ssh.control = true;
+    home-manager.enable = true;
+    git.extraConfig.core.editor = "nvim";
 
-  shell.bash.enable = true;
-  shell.starship.enable = true;
-  editor.neovim.enable = true;
+    utils = {
+      additional = true;
+      clamav.enable = true;
+      gnupg.enable = false;
+      neovim.enable = true;
+      pass.enable = true;
+      yt-dlp.downloader = "aria2c";
+      yt-dlp.path = "/data/data/com.termux.nix/files/home/storage/Share/YouTube/";
+    };
+  };
 
   services.sshd = {
     enable = true;
