@@ -2,7 +2,6 @@
 
 {
   imports = [
-    # ../../private/home-manager/private.nix
     ../modules/init.nix
     ../core.nix
   ];
@@ -44,6 +43,7 @@
       # jre_headless
       php
       phpPackages.composer
+      php82Extensions.pdo
       python312
       python312Packages.pip
       python312Packages.virtualenv
@@ -67,7 +67,6 @@
     additional = true;
     clamav.enable = true;
     gnupg.enable = true;
-    gnupg.agent.config = true;
     pass.enable = true;
     yt-dlp.path = "/data/data/com.termux.nix/files/home/storage/Share/YouTube/";
   };
@@ -81,5 +80,15 @@
     port = 3022;
     addressFamily = "inet";
     dir = "${config.home.homeDirectory}/.ssh";
+  };
+
+  services.gpg-agent = {
+    enable = true;
+    enableSshSupport = true;
+    enableZshIntegration = true;
+    enableBashIntegration = true;
+    pinentryPackage = pkgs.pinentry-tty;
+    defaultCacheTtl = 600;
+    defaultCacheTtlSsh = 600;
   };
 }
