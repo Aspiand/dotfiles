@@ -32,10 +32,6 @@
     packages = with pkgs; [
       (nerdfonts.override { fonts = [ "FantasqueSansMono" "0xProto" ]; })
 
-      # Database
-      sqlite
-      mycli
-
       # Monitor
       bottom
       # gotop
@@ -59,18 +55,22 @@
       jre_headless
       php
       phpPackages.composer
+      php82Extensions.pdo
+      php82Extensions.sqlite3
       python3
       python3Packages.pip
       python3Packages.virtualenv
       # python3Packages.face-recognition
       # python3Packages.insightface
-      podman-compose
 
       # Utils
       android-tools
       distrobox
       gnumake
+      mycli
+      podman-compose
       scrcpy
+      sqlite
       wine
     ];
   };

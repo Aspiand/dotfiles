@@ -2,7 +2,6 @@
 
 {
   imports = [
-    # ../../private/home-manager/private.nix
     ../modules/init.nix
     ../core.nix
   ];
@@ -22,6 +21,9 @@
   nix.package = pkgs.nix;
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
   nixpkgs.config.allowUnfree = true;
+
+  shell.bash.enable = true;
+  shell.starship.enable = true;
 
   home = {
     stateVersion = "24.11";
@@ -44,14 +46,11 @@
       # jre_headless
       php
       phpPackages.composer
+      php82Extensions.pdo
       python312
       python312Packages.pip
       python312Packages.virtualenv
     ];
-
-    # file = {
-    #   ".config/nixpkgs/config.nix".text = "{ allowUnfree = true; }";
-    # };
 
     shellAliases = {
       more = "less";
@@ -61,25 +60,36 @@
     };
   };
 
-  programs.home-manager.enable = true;
-  programs.utils = {
-    enable = true;
-    additional = true;
-    clamav.enable = true;
-    gnupg.enable = true;
-    gnupg.agent.config = true;
-    pass.enable = true;
-    yt-dlp.path = "/data/data/com.termux.nix/files/home/storage/Share/YouTube/";
-  };
+  programs = {
+    ssh.control = true;
+    home-manager.enable = true;
+    git.extraConfig.core.editor = "nvim";
 
-  shell.bash.enable = true;
-  shell.starship.enable = true;
-  editor.neovim.enable = true;
+    utils = {
+      additional = true;
+      clamav.enable = true;
+      gnupg.enable = false;
+      neovim.enable = true;
+      pass.enable = true;
+      yt-dlp.downloader = "aria2c";
+      yt-dlp.path = "/data/data/com.termux.nix/files/home/storage/Share/YouTube/";
+    };
+  };
 
   services.sshd = {
     enable = true;
     port = 3022;
     addressFamily = "inet";
     dir = "${config.home.homeDirectory}/.ssh";
+  };
+
+  services.gpg-agent = {
+    enable = true;
+    enableSshSupport = true;
+    enableZshIntegration = true;
+    enableBashIntegration = true;
+    pinentryPackage = pkgs.pinentry-tty;
+    defaultCacheTtl = 600;
+    defaultCacheTtlSsh = 600;
   };
 }
