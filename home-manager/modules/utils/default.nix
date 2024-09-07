@@ -47,11 +47,7 @@ with lib; let cfg = config.programs.utils; in
   config = mkMerge [
 
     (mkIf cfg.additional {
-      home.shellAliases = {
-        sl = "exa";
-        s  = "exa -lah";
-        sa = "exa -lAh";
-      };
+      home.shellAliases.ls = "exa";
 
       home.packages = with pkgs; mkMerge [
         ## ffm
