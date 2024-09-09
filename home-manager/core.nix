@@ -57,7 +57,7 @@
       hostname = "192.168.100.2";
       host = "dalet";
       user = "u0_a251";
-      port = 8022;
+      port = 2222;
       identityFile = "~/.ssh/id_rsa";
     };
 

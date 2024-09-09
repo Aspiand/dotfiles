@@ -1,10 +1,6 @@
 { config, pkgs, lib, ... }:
 
-with lib;
-
-let
-  cfg = config.shell.zsh;
-in
+with lib; let cfg = config.shell.zsh; in
 
 {
   options.shell.zsh = {
@@ -20,10 +16,12 @@ in
 
     programs.zsh = {
       enable = true;
+      autocd = true;
       enableCompletion = true;
       autosuggestion.enable = true;
       syntaxHighlighting.enable = true;
       dotDir = ".config/zsh";
+      shellAliases.reload = "source ${config.programs.zsh.dotDir}/.zshrc";
       initExtra = "source ${config.home.homeDirectory}/.nix-profile/etc/profile.d/nix.sh";
 
       oh-my-zsh = {
@@ -37,10 +35,6 @@ in
           { name = "zsh-users/zsh-autosuggestions"; }
           { name = "romkatv/powerlevel10k"; tags = [ as:theme depth:1 ]; }
         ];
-      };
-
-      shellAliases = {
-        reload = "source ${config.programs.zsh.dotDir}/.zshrc";
       };
 
       history = {

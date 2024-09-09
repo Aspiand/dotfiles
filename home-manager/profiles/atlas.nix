@@ -29,6 +29,10 @@
       db = "distrobox";
     };
 
+    file = {
+      ".myclirc".source = ../../.myclirc;
+    };
+
     packages = with pkgs; [
       (nerdfonts.override { fonts = [ "FantasqueSansMono" "0xProto" ]; })
 
