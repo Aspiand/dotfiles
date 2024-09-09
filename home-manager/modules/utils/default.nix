@@ -84,6 +84,7 @@ with lib; let cfg = config.programs.utils; in
           nettools
           rm-improved
           steghide
+          sshfs
           procps
           which
         ]
