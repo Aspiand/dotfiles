@@ -29,13 +29,9 @@
       db = "distrobox";
     };
 
-    file = {
-      ".myclirc".source = ../../.myclirc;
-    };
+    file.".myclirc".source = ../../.myclirc;
 
     packages = with pkgs; [
-      (nerdfonts.override { fonts = [ "FantasqueSansMono" "0xProto" ]; })
-
       # Monitor
       bottom
       # gotop
@@ -71,11 +67,11 @@
       android-tools
       distrobox
       gnumake
+      qemu
       mycli
       podman-compose
       scrcpy
       sqlite
-      wine
     ];
   };
 
