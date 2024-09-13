@@ -66,10 +66,12 @@
       # Utils
       android-tools
       distrobox
+      glow
       gnumake
-      qemu
+      mkp224o
       mycli
       podman-compose
+      qemu
       scrcpy
       sqlite
     ];
