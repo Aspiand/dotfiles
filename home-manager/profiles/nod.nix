@@ -61,7 +61,7 @@
   };
 
   programs = {
-    ssh.control = true;
+    ssh.control = false;
     home-manager.enable = true;
     git.extraConfig.core.editor = "nvim";
 
@@ -71,7 +71,6 @@
       gnupg.enable = false;
       neovim.enable = true;
       pass.enable = true;
-      yt-dlp.downloader = "aria2c";
       yt-dlp.path = "/data/data/com.termux.nix/files/home/storage/Share/YouTube/";
     };
   };
