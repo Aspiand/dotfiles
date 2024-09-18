@@ -68,6 +68,7 @@
       distrobox
       glow
       gnumake
+      litecli
       mkp224o
       mycli
       podman-compose

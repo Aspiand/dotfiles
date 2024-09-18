@@ -10,7 +10,7 @@
     nclg = "nix-channel --list-generations";
     dh = "du -h";
     dt = "df -Th";
-    rm = "trash-put"; # don't change this line
+    rm = "${pkgs.trash-cli}/bin/trash-put"; # don't change this line
     remove = "${pkgs.coreutils}/bin/rm";
   };
 
@@ -72,7 +72,7 @@
     san = {
       hostname = "192.168.100.10";
       host = "san";
-      user = "root";
+      user = "aspian";
       port = 22;
       identityFile = "~/.ssh/id_rsa";
     };
@@ -80,7 +80,7 @@
     lsan = {
       hostname = "192.168.1.1";
       host = "lsan";
-      user = "root";
+      user = "aspian";
       port = 22;
       identityFile = "~/.ssh/id_rsa";
     };

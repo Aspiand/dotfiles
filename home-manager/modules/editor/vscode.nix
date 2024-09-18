@@ -23,6 +23,8 @@ with lib; let cfg = config.programs.utils.vscode; in
         "files.autoSave" = "off";
         "workbench.startupEditor" = "none";
         "editor.minimap.renderCharacters" = false;
+        "extensions.autoCheckUpdates" = false;
+        "workbench.sideBar.location" = "right";
 
         "[nix]"."editor.tabSize" = 2;
         "[python]" = {

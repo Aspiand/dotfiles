@@ -40,6 +40,7 @@ with lib; {
         "browser.safebrowsing.blockedURIs.enabled" = true;
         "browser.safebrowsing.downloads.enabled" = true;
         "browser.sessionstore.resume_from_crash" = true;
+        "browser.startup.restoreTabs" = true;
 
         "privacy.clearOnShutdown.history" = false;
         "privacy.clearOnShutdown.downloads" = false;
