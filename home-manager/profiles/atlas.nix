@@ -26,8 +26,10 @@
     shellAliases = {
       hmbs = "home-manager build switch";
       hmg = "home-manager generations";
-      db = "distrobox";
+      sql = "PYTHONWARNINGS='ignore' MYCLI_HISTFILE='~/.local/share/mycli/history.txt' mycli mysql://root:'uh'@localhost";
     };
+
+    # sessionVariables.MYCLI_HISTFILE="~/.local/share/mycli/history.txt";
 
     file.".myclirc".source = ../../.myclirc;
 

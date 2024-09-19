@@ -44,7 +44,7 @@ with lib; let cfg = config.programs.utils.tmux; in
             set -g @dracula-refresh-rate 5
             set -g @dracula-show-battery false
             set -g @dracula-show-powerline true
-            set -g @dracula-show-left-icon $
+            set -g @dracula-show-left-icon ☪
 
             # Device
             set -g @dracula-ram-usage-label ""
