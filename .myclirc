@@ -17,7 +17,7 @@ multi_line = True
 destructive_warning = True
 
 # log_file location.
-log_file = ~/.mycli.log
+log_file = ~/.local/share/mycli/log.txt
 
 # Default log level. Possible values: "CRITICAL", "ERROR", "WARNING", "INFO"
 # and "DEBUG". "NONE" disables logging.
@@ -70,12 +70,11 @@ wider_completion_menu = False
 # \A - DSN alias name (from the [alias_dsn] section)
 # \u - Username
 # \x1b[...m - insert ANSI escape sequence
-prompt = '\t ❯ '
-# prompt_continuation = '->'
+prompt = '《\d》❯ '
 prompt_continuation = '>'
 
 # Skip intro info on startup and outro info on exit
-less_chatty = False
+less_chatty = True
 
 # Use alias from --login-path instead of host name in prompt
 login_path_as_host = False
@@ -91,7 +90,7 @@ keyword_casing = upper
 enable_pager = True
 
 # Choose a specific pager
-pager = 'less'
+pager = 'less -SRXF'
 
 # Custom colors for the completion menu, toolbar, etc.
 [colors]
