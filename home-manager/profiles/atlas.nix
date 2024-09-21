@@ -26,23 +26,19 @@
     shellAliases = {
       hmbs = "home-manager build switch";
       hmg = "home-manager generations";
-      sql = "PYTHONWARNINGS='ignore' MYCLI_HISTFILE='~/.local/share/mycli/history.txt' mycli mysql://root:'uh'@localhost";
+      sql = "PYTHONWARNINGS='ignore' mycli mysql://root:'uh'@localhost";
     };
 
-    # sessionVariables.MYCLI_HISTFILE="~/.local/share/mycli/history.txt";
+    sessionVariables = {
+      MYCLI_HISTFILE="~/.local/share/mycli/history.txt";
+    };
 
-    file.".myclirc".source = ../../.myclirc;
+    file = {
+      ".myclirc".source = ../../.myclirc;
+    };
 
     packages = with pkgs; [
-      # Monitor
-      bottom
-      # gotop
-      # iftop
-      # iotop
-      # nyx
-
       # Network
-      aria2
       dnsutils
       ngrok
       nmap
@@ -57,8 +53,10 @@
       jre_headless
       php
       phpPackages.composer
-      php82Extensions.pdo
-      php82Extensions.sqlite3
+      phpExtensions.pdo
+      phpExtensions.sqlite3
+      phpExtensions.pdo_mysql
+      phpExtensions.pdo_sqlite
       python3
       python3Packages.pip
       python3Packages.virtualenv
@@ -89,14 +87,26 @@
     utils = {
       additional = true;
       clamav.enable = true;
-      gnupg.enable = false;
       librewolf.enable = true;
       neovim.enable = true;
       pass.enable = true;
-      pass.dir = "${config.home.homeDirectory}/.local/share/password_store";
       tmux.enable = true;
       vscode.enable = true;
       yt-dlp.downloader = "aria2c";
+    };
+
+    yambar.enable = false;
+    yambar.settings.bar = {
+      location = "top";
+      height = 26;
+      background = "00000066";
+      right = [
+        {
+          clock.content = [
+            { string.text = "{time}"; }
+          ];
+        }
+      ];
     };
   };
 
