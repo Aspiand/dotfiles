@@ -2,14 +2,15 @@
 
 {
   home.shellAliases = {
+    dh = "du -h";
+    dt = "df -Th";
+    durl = "curl -O --progress-bar";
     l = "ls -lah";
     la = "ls -lAh";
     ll = "ls -lh";
     ncu = "nix-channel --update";
     ncl = "nix-channel --list";
     nclg = "nix-channel --list-generations";
-    dh = "du -h";
-    dt = "df -Th";
     rm = "${pkgs.trash-cli}/bin/trash-put"; # don't change this line
     remove = "${pkgs.coreutils}/bin/rm";
   };
@@ -17,16 +18,12 @@
   home.packages = with pkgs; [
     coreutils
     curl
-    gnupg
     htop
     nano
-    neofetch
     openssh
-    pinentry-tty
     rsync
     trash-cli
     tree
-    wget
   ];
 
   programs.git = {
