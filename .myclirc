@@ -70,7 +70,8 @@ wider_completion_menu = False
 # \A - DSN alias name (from the [alias_dsn] section)
 # \u - Username
 # \x1b[...m - insert ANSI escape sequence
-prompt = '《\d》❯ '
+# prompt = '《\d》❯ '
+prompt = '『\d』❯ '
 prompt_continuation = '>'
 
 # Skip intro info on startup and outro info on exit
@@ -157,4 +158,3 @@ output.null = "#808080"
 # Special characters in passwords and other strings can be escaped with URL encoding.
 [alias_dsn]
 # example_dsn = mysql://[user[:password]@][host][:port][/dbname]
-dsn = mysql://root:ehe@localhost:3306/aspihan
