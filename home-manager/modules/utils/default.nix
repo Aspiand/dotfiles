@@ -118,7 +118,7 @@ with lib; let cfg = config.programs.utils; in
             embed-thumbnail = true;
 
             format = "bestvideo*+bestaudio/best";
-            merge-output-format = "mkv";
+            merge-output-format = "mkv/mp4";
           }
 
           (mkIf (cfg.yt-dlp.downloader == "aria2c") {

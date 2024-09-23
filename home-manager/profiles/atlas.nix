@@ -26,7 +26,7 @@
     shellAliases = {
       hmbs = "home-manager build switch";
       hmg = "home-manager generations";
-      sql = "PYTHONWARNINGS='ignore' mycli mysql://root:'uh'@localhost";
+      sql = "PYTHONWARNINGS='ignore' mycli mysql://root:'uh'@localhost/tugas_dbs_aspian";
     };
 
     sessionVariables = {
@@ -40,6 +40,7 @@
     packages = with pkgs; [
       # Network
       dnsutils
+      ipcalc
       ngrok
       nmap
       proxychains
@@ -65,6 +66,7 @@
 
       # Utils
       android-tools
+      dirb
       distrobox
       glow
       gnumake
