@@ -83,7 +83,6 @@
   programs = {
     ssh.control = true;
     home-manager.enable = true;
-    gpg.package = pkgs.gnupg22;
     git.extraConfig.core.editor = "nvim";
 
     utils = {
@@ -95,20 +94,6 @@
       tmux.enable = true;
       vscode.enable = true;
       yt-dlp.downloader = "aria2c";
-    };
-
-    yambar.enable = false;
-    yambar.settings.bar = {
-      location = "top";
-      height = 26;
-      background = "00000066";
-      right = [
-        {
-          clock.content = [
-            { string.text = "{time}"; }
-          ];
-        }
-      ];
     };
   };
 
