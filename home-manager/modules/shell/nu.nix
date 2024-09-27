@@ -9,7 +9,5 @@ with lib; let cfg = config.shell.nu; in
     programs.nushell = {
       enable = true;
     };
-
-    programs.oh-my-posh.enableNushellIntegration = true;
   };
 }

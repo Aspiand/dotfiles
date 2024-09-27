@@ -22,21 +22,21 @@
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
   nixpkgs.config.allowUnfree = true;
 
-  shell.bash.enable = true;
-  shell.starship.enable = true;
+  shell = {
+    ohmyposh.enable = false;
+
+    nu.enable = false;
+    zsh.enable = false;
+    bash.enable = true;
+  };
 
   home = {
     stateVersion = "24.11";
     packages = with pkgs; [
-      (nerdfonts.override { fonts = [ "FantasqueSansMono" "0xProto" ]; })
-
       # Network
-      aria2
       dnsutils
       ngrok
-      nmap
       proxychains
-      speedtest-cli
       tor
       torsocks
 
@@ -46,7 +46,7 @@
       # jre_headless
       php
       phpPackages.composer
-      php82Extensions.pdo
+      phpExtensions.pdo
       python312
       python312Packages.pip
       python312Packages.virtualenv
@@ -61,16 +61,13 @@
   };
 
   programs = {
-    ssh.control = false;
     home-manager.enable = true;
     git.extraConfig.core.editor = "nvim";
 
     utils = {
       additional = true;
       clamav.enable = true;
-      gnupg.enable = false;
       neovim.enable = true;
-      pass.enable = true;
       yt-dlp.path = "/data/data/com.termux.nix/files/home/storage/Share/YouTube/";
     };
   };

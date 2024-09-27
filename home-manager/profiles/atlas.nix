@@ -15,7 +15,6 @@
   nixpkgs.config.allowUnfree = true;
 
   shell = {
-    starship.enable = true;
     ohmyposh.enable = true;
 
     nu.enable = true;

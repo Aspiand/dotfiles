@@ -3,9 +3,7 @@
 with lib; let cfg = config.shell.bash; in
 
 {
-  options.shell.bash = {
-    enable = mkEnableOption "Bash Shell";
-  };
+  options.shell.bash.enable = mkEnableOption "Bash Shell";
 
   config = mkIf cfg.enable {
     programs.bash = {
@@ -50,7 +48,5 @@ with lib; let cfg = config.shell.bash; in
         fi
       '';
     };
-
-    programs.starship.enableBashIntegration = true;
   };
 }
