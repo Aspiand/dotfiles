@@ -5,11 +5,6 @@ with lib; let cfg = config.shell.bash; in
 {
   options.shell.bash = {
     enable = mkEnableOption "Bash Shell";
-    starship = mkOption {
-      type = types.bool;
-      default = true;
-      description = "Enable starship for bash";
-    };
   };
 
   config = mkIf cfg.enable {
@@ -56,6 +51,6 @@ with lib; let cfg = config.shell.bash; in
       '';
     };
 
-    programs.starship.enableBashIntegration = cfg.starship;
+    programs.starship.enableBashIntegration = true;
   };
 }

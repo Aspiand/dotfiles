@@ -14,9 +14,14 @@
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
   nixpkgs.config.allowUnfree = true;
 
-  shell.starship.enable = true;
-  shell.bash.enable = true;
-  shell.zsh.enable = true;
+  shell = {
+    starship.enable = true;
+    ohmyposh.enable = true;
+
+    nu.enable = true;
+    zsh.enable = true;
+    bash.enable = true;
+  };
 
   home = {
     username = "aspian";
@@ -92,6 +97,7 @@
       neovim.enable = true;
       pass.enable = true;
       tmux.enable = true;
+      tmux.shell = "${pkgs.nushell}/bin/nu";
       vscode.enable = true;
       yt-dlp.downloader = "aria2c";
     };

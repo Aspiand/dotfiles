@@ -78,7 +78,6 @@ with lib; let cfg = config.programs.utils; in
 
           # Other          
           bat
-          eza
           findutils
           ffmpeg
           gitui
@@ -93,6 +92,20 @@ with lib; let cfg = config.programs.utils; in
           which
         ]
       ];
+
+      programs.eza = {
+        enable = true;
+        git = true;
+        enableZshIntegration = true;
+        enableBashIntegration = true;
+        enableNushellIntegration = true;
+        extraOptions = [
+          "--group"
+          "--group-directories-first"
+          "--mounts"
+          "--no-quotes"
+        ];
+      };
 
       programs.fzf = {
         enable = true;
@@ -139,6 +152,7 @@ with lib; let cfg = config.programs.utils; in
         enable = true;
         enableZshIntegration = true;
         enableBashIntegration = true;
+        enableNushellIntegration = true;
       };
     })
 

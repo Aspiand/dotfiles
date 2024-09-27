@@ -26,6 +26,7 @@ log_level = INFO
 # Log every query and its results to a file. Enable this by uncommenting the
 # line below.
 # audit_log = ~/.mycli-audit.log
+audit_log = ~/.local/share/mycli/audit.log
 
 # Timing of sql statements and table rendering.
 timing = True
