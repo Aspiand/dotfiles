@@ -25,6 +25,7 @@ with lib; let cfg = config.programs.utils.vscode; in
         "editor.minimap.renderCharacters" = false;
         "extensions.autoCheckUpdates" = false;
         "workbench.sideBar.location" = "right";
+        "git.openRepositoryInParentFolders" = "always";
 
         "[nix]"."editor.tabSize" = 2;
         "[python]" = {

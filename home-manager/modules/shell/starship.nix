@@ -26,9 +26,9 @@ with lib; let cfg = config.shell.starship; in
         };
 
         sudo = {
-          disabled = true;
+          disabled = false;
           style = "bold red";
-          # symbol = 	"🧙 ";
+          symbol = 	"ɫ";
         };
       };
     }; #https://starship.rs/config/
