@@ -13,7 +13,6 @@ with lib; let cfg = config.programs.utils; in
 
     gnupg = {
       enable = mkEnableOption "GnuPG";
-      agent.config = mkEnableOption "GnuPG Agent";
       dir = mkOption {
         type = types.str;
         default = "${config.home.homeDirectory}/.local/data/gnupg";
@@ -25,7 +24,7 @@ with lib; let cfg = config.programs.utils; in
       enable = mkEnableOption "password-store";
       dir = mkOption {
         type = types.str;
-        default = "$HOME/.local/data/password_store/";
+        default = "$HOME/.local/share/password_store/";
       };
     };
 
@@ -47,16 +46,12 @@ with lib; let cfg = config.programs.utils; in
   config = mkMerge [
 
     (mkIf cfg.additional {
-      home.shellAliases.ls = "exa";
+      home.shellAliases.ls = "eza";
 
       home.packages = with pkgs; mkMerge [
         ## ffm
         [ (pkgs.writeShellScriptBin "ffm" (builtins.readFile ../../../sh/ffm.sh)) ]
         ## https://discourse.nixos.org/t/link-scripts-to-bin-home-manager/41774
-
-        ## yt-dlp
-        (mkIf (cfg.yt-dlp.downloader == "aria2") [ aria2 ] )
-        (mkIf (cfg.yt-dlp.downloader == "wget") [ wget ] )
 
         [
           # Archive
@@ -70,6 +65,17 @@ with lib; let cfg = config.programs.utils; in
           zip
           zstd
 
+          # Monitor
+          bottom
+          gotop
+          # nyx
+
+          # Network
+          aria2
+          nettools
+          sshfs
+          wget
+
           # Other          
           bat
           eza
@@ -81,7 +87,6 @@ with lib; let cfg = config.programs.utils; in
           gnugrep
           gnused
           ncurses
-          nettools
           rm-improved
           steghide
           procps
@@ -113,7 +118,7 @@ with lib; let cfg = config.programs.utils; in
             embed-thumbnail = true;
 
             format = "bestvideo*+bestaudio/best";
-            merge-output-format = "mkv";
+            merge-output-format = "mkv/mp4";
           }
 
           (mkIf (cfg.yt-dlp.downloader == "aria2c") {
@@ -142,14 +147,6 @@ with lib; let cfg = config.programs.utils; in
         enable = true;
         homedir = cfg.gnupg.dir;
       };
-    })
-
-    (mkIf cfg.gnupg.agent.config {
-      home.packages = [ pkgs.pinentry-tty ];
-      home.file."${config.programs.gpg.homedir}/gpg-agent.conf".text = ''
-        pinentry-program ${config.home.homeDirectory}/.nix-profile/bin/pinentry-tty
-        enable-ssh-support
-      '';
     })
 
     (mkIf cfg.pass.enable {

@@ -26,22 +26,21 @@
     shellAliases = {
       hmbs = "home-manager build switch";
       hmg = "home-manager generations";
-      db = "distrobox";
+      sql = "PYTHONWARNINGS='ignore' mycli mysql://root:'uh'@localhost/tugas_dbs_aspian";
+    };
+
+    sessionVariables = {
+      MYCLI_HISTFILE="~/.local/share/mycli/history.txt";
+    };
+
+    file = {
+      ".myclirc".source = ../../.myclirc;
     };
 
     packages = with pkgs; [
-      (nerdfonts.override { fonts = [ "FantasqueSansMono" "0xProto" ]; })
-
-      # Monitor
-      bottom
-      # gotop
-      # iftop
-      # iotop
-      # nyx
-
       # Network
-      aria2
       dnsutils
+      ipcalc
       ngrok
       nmap
       proxychains
@@ -55,8 +54,10 @@
       jre_headless
       php
       phpPackages.composer
-      php82Extensions.pdo
-      php82Extensions.sqlite3
+      phpExtensions.pdo
+      phpExtensions.sqlite3
+      phpExtensions.pdo_mysql
+      phpExtensions.pdo_sqlite
       python3
       python3Packages.pip
       python3Packages.virtualenv
@@ -65,30 +66,31 @@
 
       # Utils
       android-tools
+      dirb
       distrobox
+      glow
       gnumake
+      litecli
+      mkp224o
       mycli
       podman-compose
+      qemu
       scrcpy
       sqlite
-      wine
     ];
   };
 
   programs = {
     ssh.control = true;
     home-manager.enable = true;
-    gpg.package = pkgs.gnupg22;
     git.extraConfig.core.editor = "nvim";
 
     utils = {
       additional = true;
       clamav.enable = true;
-      gnupg.enable = false;
       librewolf.enable = true;
       neovim.enable = true;
       pass.enable = true;
-      pass.dir = "${config.home.homeDirectory}/.local/share/password_store";
       tmux.enable = true;
       vscode.enable = true;
       yt-dlp.downloader = "aria2c";

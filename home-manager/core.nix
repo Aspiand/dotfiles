@@ -2,31 +2,28 @@
 
 {
   home.shellAliases = {
+    dh = "du -h";
+    dt = "df -Th";
+    durl = "curl -O --progress-bar";
     l = "ls -lah";
     la = "ls -lAh";
     ll = "ls -lh";
     ncu = "nix-channel --update";
     ncl = "nix-channel --list";
     nclg = "nix-channel --list-generations";
-    dh = "du -h";
-    dt = "df -Th";
-    rm = "trash-put"; # don't change this line
+    rm = "${pkgs.trash-cli}/bin/trash-put"; # don't change this line
     remove = "${pkgs.coreutils}/bin/rm";
   };
 
   home.packages = with pkgs; [
     coreutils
     curl
-    gnupg
     htop
     nano
-    neofetch
     openssh
-    pinentry-tty
     rsync
     trash-cli
     tree
-    wget
   ];
 
   programs.git = {
@@ -57,7 +54,7 @@
       hostname = "192.168.100.2";
       host = "dalet";
       user = "u0_a251";
-      port = 8022;
+      port = 2222;
       identityFile = "~/.ssh/id_rsa";
     };
 
@@ -72,7 +69,7 @@
     san = {
       hostname = "192.168.100.10";
       host = "san";
-      user = "root";
+      user = "aspian";
       port = 22;
       identityFile = "~/.ssh/id_rsa";
     };
@@ -80,7 +77,7 @@
     lsan = {
       hostname = "192.168.1.1";
       host = "lsan";
-      user = "root";
+      user = "aspian";
       port = 22;
       identityFile = "~/.ssh/id_rsa";
     };

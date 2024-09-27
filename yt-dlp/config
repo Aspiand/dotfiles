@@ -1,0 +1,11 @@
+--downloader aria2c
+--downloader-args aria2c:'-x16 -s16 -c'
+--embed-chapters
+--embed-metadata
+--embed-subs
+--embed-thumbnail
+--format bestvideo*+bestaudio/best
+--merge-output-format mp4/mkv
+--output %(title)s.%(ext)s
+--paths /home/aspian/Downloads/
+--sub-langs all,-live_chat

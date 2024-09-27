@@ -23,6 +23,8 @@ with lib; let cfg = config.programs.utils.vscode; in
         "files.autoSave" = "off";
         "workbench.startupEditor" = "none";
         "editor.minimap.renderCharacters" = false;
+        "extensions.autoCheckUpdates" = false;
+        "workbench.sideBar.location" = "right";
 
         "[nix]"."editor.tabSize" = 2;
         "[python]" = {
@@ -31,16 +33,5 @@ with lib; let cfg = config.programs.utils.vscode; in
         };
       };
     };
-
-    home.file.".local/share/applications/vscode.desktop".text = ''
-      [Desktop Entry]
-      Name=VSCodium
-      Comment=Free/Libre Open Source Software Binaries of VSCode
-      Exec=${config.programs.vscode.package}
-      Icon=codium
-      Terminal=false
-      Type=Application
-      Categories=Development;IDE;
-    '';
   };
 }
