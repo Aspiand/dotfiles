@@ -98,7 +98,7 @@ with lib; let cfg = config.programs.utils; in
         git = true;
         enableZshIntegration = true;
         enableBashIntegration = true;
-        enableNushellIntegration = true;
+        enableNushellIntegration = false;
         extraOptions = [
           "--group"
           "--group-directories-first"
@@ -174,8 +174,10 @@ with lib; let cfg = config.programs.utils; in
       };
 
       home.activation.pass_setup = lib.hm.dag.entryAfter ["writeBoundary"] ''
-        find ${cfg.pass.dir} -type d -not -perm "700" -exec chmod -v 700 {} \;
-        find ${cfg.pass.dir} -type f -not -perm "600" -exec chmod -v 600 {} \;
+        if [ -d ${cfg.pass.dir} ]; then
+          find ${cfg.pass.dir} -type d -not -perm "700" -exec chmod -v 700 {} \;
+          find ${cfg.pass.dir} -type f -not -perm "600" -exec chmod -v 600 {} \;
+        fi
       '';
     })
   ];

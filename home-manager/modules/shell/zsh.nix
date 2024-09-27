@@ -3,14 +3,7 @@
 with lib; let cfg = config.shell.zsh; in
 
 {
-  options.shell.zsh = {
-    enable = mkEnableOption "Z Shell";
-    starship = mkOption {
-      type = types.bool;
-      default = false;
-      description = "Enable starship for zsh";
-    };
-  };
+  options.shell.zsh.enable = mkEnableOption "Z Shell";
 
   config = mkIf cfg.enable {
 
@@ -50,14 +43,10 @@ with lib; let cfg = config.shell.zsh; in
       zsh-abbr = {
         enable = true;
         abbreviations = {
-          sl = "ls";
-          hmg = "home-manager generations";
           clean = "nix-collect-garbage -d";
           cbright="xrandr --output VGA-1 --brightness";
         };
       };
     };
-
-    programs.starship.enableZshIntegration = cfg.starship;
   };
 }

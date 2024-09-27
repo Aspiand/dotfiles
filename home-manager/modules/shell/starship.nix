@@ -1,13 +1,14 @@
 { config, pkgs, lib, ... }:
 
-with lib; let cfg = config.shell.starship; in
+with lib; let cfg = config.shell.bash; in
 
 {
-  options.shell.starship.enable = mkEnableOption "Starship";
-
   config = mkIf cfg.enable {
     programs.starship = {
       enable = true;
+      enableZshIntegration = false;
+      enableBashIntegration = true;
+      enableNushellIntegration = false;
       settings = {
         add_newline = false;
         character.error_symbol = "[✗](bold red)";

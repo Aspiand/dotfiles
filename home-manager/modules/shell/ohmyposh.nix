@@ -14,7 +14,10 @@ in # https://ohmyposh.dev/
   config = mkIf cfg.enable {
     programs.oh-my-posh = {
       enable = true;
-      useTheme = "night-owl";
+      useTheme = "blueish";
+      enableZshIntegration = false;
+      enableBashIntegration = false;
+      enableNushellIntegration = true;
     };
   };
 }
