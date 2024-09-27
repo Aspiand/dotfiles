@@ -1,10 +1,6 @@
 { config, pkgs, lib, ... }:
 
-with lib;
-
-let
-  cfg = config.programs.utils.tmux;
-in
+with lib; let cfg = config.programs.utils.tmux; in
 
 {
   options.programs.utils.tmux = {
@@ -12,10 +8,6 @@ in
     shell = mkOption {
       type = types.str;
       default = "${pkgs.zsh}/bin/zsh";
-    };
-    plugins = mkOption {
-      type = types.bool;
-      default = true;
     };
   };
 
@@ -29,33 +21,37 @@ in
       shortcut = "a";
       shell = cfg.shell;
 
-      plugins = mkIf cfg.plugins [
-        pkgs.tmuxPlugins.better-mouse-mode
-        pkgs.tmuxPlugins.logging
-        pkgs.tmuxPlugins.pain-control
-        pkgs.tmuxPlugins.prefix-highlight
-        pkgs.tmuxPlugins.sensible
-        pkgs.tmuxPlugins.sidebar
-        pkgs.tmuxPlugins.yank
+      plugins = with pkgs.tmuxPlugins; [
+        better-mouse-mode
+        continuum
+        copycat
+        logging
+        pain-control
+        prefix-highlight
+        resurrect
+        sensible
+        # sidebar
+        yank
 
         {
           # https://draculatheme.com/tmux
-          plugin = pkgs.tmuxPlugins.dracula;
+          plugin = dracula;
           extraConfig = ''
-            set -g @dracula-plugins "git ssh-session network-bandwidth time"
+            set -g @dracula-plugins "ssh-session network-bandwidth time"
 
             set -g @dracula-border-contrast true
             set -g @dracula-left-icon-padding 0
             set -g @dracula-refresh-rate 5
             set -g @dracula-show-battery false
             set -g @dracula-show-powerline true
-            set -g @dracula-show-left-icon $
+            set -g @dracula-show-left-icon ☪
 
             # Device
             set -g @dracula-ram-usage-label ""
 
             # Network
-            set -g @dracula-network-bandwidth-interval 0
+            # set -g @dracula-network-bandwidth eth0
+            set -g @dracula-network-bandwidth-interval 0.5
             set -g @dracula-show-ssh-session-port true
 
             # Time
@@ -66,7 +62,7 @@ in
 
             # Git
             set -g @dracula-git-disable-status true
-            set -g @dracula-git-show-current-symbol $
+            set -g @dracula-git-show-current-symbol ✓
             set -g @dracula-git-show-diff-symbol !
             set -g @dracula-git-no-repo-message "-"
             set -g @dracula-git-no-untracked-files true

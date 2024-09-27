@@ -1,10 +1,6 @@
 { config, pkgs, lib, ... }:
 
-with lib;
-
-let
-  cfg = config.shell.bash;
-in
+with lib; let cfg = config.shell.bash; in
 
 {
   options.shell.bash = {
@@ -22,10 +18,7 @@ in
       enableCompletion = true;
       historyControl = [ "ignoreboth" ];
       historyFile = "${config.home.homeDirectory}/.local/history/bash";
-
-      shellAliases = {
-        reload = "source ~/.bashrc";
-      };
+      shellAliases.reload = "source ~/.bashrc";
 
       bashrcExtra = ''
         source ${config.home.homeDirectory}/.nix-profile/etc/profile.d/nix.sh
