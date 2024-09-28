@@ -3,9 +3,12 @@
 - https://github.com/evilsocket/opensnitch
 
 ## Flatpak
+- ```com.github.marktext.marktext```
+- ```com.google.AndroidStudio```
 - ```com.vscodium.codium```
 - ```com.github.tchx84.Flatseal```
 - ```io.podman_desktop.PodmanDesktop```
+- ```org.gnome.Boxes```
 - ```org.sqlitebrowser.sqlitebrowser```
 - ```org.torproject.torbrowser-launcher```
 
