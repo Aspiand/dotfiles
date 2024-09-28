@@ -118,6 +118,21 @@ with lib; let cfg = config.programs.utils; in
         ];
       };
 
+      programs.yazi = {
+        enable = true;
+        enableBashIntegration = true;
+        settings = {
+          log.enable = true;
+          manager = {
+            show_hidden = true;
+            sort_by = "alphabetical";
+            sort_dir_first = true;
+            sort_reverse = false;
+            show_symlink = true;
+          };
+        };
+      };
+
       programs.yt-dlp = {
         enable = true;
         settings = mkMerge [
@@ -174,7 +189,7 @@ with lib; let cfg = config.programs.utils; in
       };
 
       home.activation.pass_setup = lib.hm.dag.entryAfter ["writeBoundary"] ''
-        if [ -d ${cfg.pass.dir} ]; then
+        if [ -d '${cfg.pass.dir}' ]; then
           find ${cfg.pass.dir} -type d -not -perm "700" -exec chmod -v 700 {} \;
           find ${cfg.pass.dir} -type f -not -perm "600" -exec chmod -v 600 {} \;
         fi

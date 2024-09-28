@@ -73,7 +73,7 @@ wider_completion_menu = False
 # \x1b[...m - insert ANSI escape sequence
 # prompt = '《\d》❯ '
 prompt = '『\d』❯ '
-prompt_continuation = '>'
+prompt_continuation = '→'
 
 # Skip intro info on startup and outro info on exit
 less_chatty = True
