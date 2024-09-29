@@ -93,81 +93,85 @@ with lib; let cfg = config.programs.utils; in
         ]
       ];
 
-      programs.eza = {
-        enable = true;
-        git = true;
-        enableZshIntegration = true;
-        enableBashIntegration = true;
-        enableNushellIntegration = false;
-        extraOptions = [
-          "--group"
-          "--group-directories-first"
-          "--mounts"
-          "--no-quotes"
-        ];
-      };
+      programs = {
+        eza = {
+          enable = true;
+          git = true;
+          enableZshIntegration = true;
+          enableBashIntegration = true;
+          enableNushellIntegration = false;
+          extraOptions = [
+            "--group"
+            "--group-directories-first"
+            "--mounts"
+            "--no-quotes"
+          ];
+        };
 
-      programs.fzf = {
-        enable = true;
-        enableZshIntegration = true;
-        enableBashIntegration = true;
-        tmux.enableShellIntegration = true;
-        defaultOptions = [
-          "--border"
-          "--height 60%"
-        ];
-      };
+        fzf = {
+          enable = true;
+          enableZshIntegration = true;
+          enableBashIntegration = true;
+          tmux.enableShellIntegration = true;
+          defaultOptions = [
+            "--border"
+            "--height 60%"
+          ];
+        };
 
-      programs.yazi = {
-        enable = true;
-        enableBashIntegration = true;
-        settings = {
-          log.enable = true;
-          manager = {
-            show_hidden = true;
-            sort_by = "alphabetical";
-            sort_dir_first = true;
-            sort_reverse = false;
-            show_symlink = true;
+        mpv.enable = false;
+
+        yazi = {
+          enable = true;
+          enableBashIntegration = true;
+          settings = {
+            log.enable = true;
+            manager = {
+              show_hidden = true;
+              sort_by = "alphabetical";
+              sort_dir_first = true;
+              sort_reverse = false;
+              show_symlink = true;
+            };
           };
         };
-      };
 
-      programs.yt-dlp = {
-        enable = true;
-        settings = mkMerge [
-          {
-            paths = cfg.yt-dlp.path;
-            output = "%(title)s.%(ext)s";
+        yt-dlp = {
+          enable = true;
+          settings = mkMerge [
+            {
+              paths = cfg.yt-dlp.path;
+              output = "%(title)s.%(ext)s";
 
-            embed-chapters = true;
-            embed-metadata = true;
-            embed-subs = true;
-            embed-thumbnail = true;
+              embed-chapters = true;
+              embed-metadata = true;
+              embed-subs = true;
+              embed-thumbnail = true;
 
-            format = "bestvideo*+bestaudio/best";
-            merge-output-format = "mkv/mp4";
-          }
+              format = "bestvideo*+bestaudio/best";
+              merge-output-format = "mkv/mp4";
+            }
 
-          (mkIf (cfg.yt-dlp.downloader == "aria2c") {
-            downloader = "aria2c";
-            downloader-args = "aria2c:'-x16 -s16 -c'";
-          })
+            (mkIf (cfg.yt-dlp.downloader == "aria2c") {
+              downloader = "aria2c";
+              downloader-args = "aria2c:'-x16 -s16 -c'";
+            })
 
-          (mkIf (cfg.yt-dlp.downloader == "wget") {
-            downloader = "wget";
-            downloader-args = "wget:'--retry-connrefused --continue'";
-          })
-        ];
+            (mkIf (cfg.yt-dlp.downloader == "wget") {
+              downloader = "wget";
+              downloader-args = "wget:'--retry-connrefused --continue'";
+            })
+          ];
 
-        extraConfig = "--sub-langs all,-live_chat";
-      };
+          extraConfig = "--sub-langs all,-live_chat";
+        };
 
-      programs.zoxide = {
-        enable = true;
-        enableZshIntegration = true;
-        enableBashIntegration = true;
-        enableNushellIntegration = true;
+        zoxide = {
+          enable = true;
+          enableZshIntegration = true;
+          enableBashIntegration = true;
+          enableNushellIntegration = true;
+        };
       };
     })
 

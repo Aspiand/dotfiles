@@ -28,12 +28,21 @@
 
   programs.git = {
     enable = true;
+    delta.enable = true;
     userName = "Aspian";
     userEmail = "p.aspian1738@gmail.com";
-    extraConfig.init.defaultBranch = "main";
-    extraConfig.core.fileMode = true;
+    extraConfig = {
+      core.fileMode = true;
+      init.defaultBranch = "main";
+
+      delta = {
+        line-numbers = true;
+        side-by-side = false;
+      };
+    };
 
     ignores = [
+      "tmp/"
       ".venv/"
       ".vscode/"
       "__pycache__/"

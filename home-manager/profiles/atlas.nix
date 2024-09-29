@@ -81,6 +81,8 @@
       qemu
       scrcpy
       sqlite
+      wavemon
+      zenith
     ];
   };
 
