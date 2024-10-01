@@ -72,6 +72,7 @@
       android-tools
       dirb
       distrobox
+      duf
       glow
       gnumake
       litecli
@@ -98,7 +99,6 @@
       neovim.enable = true;
       pass.enable = true;
       tmux.enable = true;
-      tmux.shell = "${pkgs.nushell}/bin/nu";
       vscode.enable = true;
       yt-dlp.downloader = "aria2c";
     };
