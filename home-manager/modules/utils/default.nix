@@ -70,6 +70,10 @@ with lib; let cfg = config.programs.utils; in
           gotop
           # nyx
 
+          # Multimedia
+          exiftool
+          ffmpeg
+
           # Network
           aria2
           nettools
@@ -79,7 +83,6 @@ with lib; let cfg = config.programs.utils; in
           # Other          
           bat
           findutils
-          ffmpeg
           gitui
           gnumake
           gawk
@@ -87,7 +90,6 @@ with lib; let cfg = config.programs.utils; in
           gnused
           ncurses
           rm-improved
-          steghide
           procps
           which
         ]

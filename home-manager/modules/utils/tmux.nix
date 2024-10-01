@@ -17,6 +17,7 @@ with lib; let cfg = config.programs.utils.tmux; in
       mouse = true;
       clock24 = true;
       newSession = true;
+      aggressiveResize = true;
       baseIndex = 1;
       shortcut = "a";
       shell = cfg.shell;
@@ -30,7 +31,7 @@ with lib; let cfg = config.programs.utils.tmux; in
         prefix-highlight
         resurrect
         sensible
-        # sidebar
+        sidebar
         yank
 
         {

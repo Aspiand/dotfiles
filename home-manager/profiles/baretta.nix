@@ -63,9 +63,6 @@
       # python3Packages.insightface
       podman-compose
 
-      # Security
-      steghide
-
       # System
       gnumake
       scrcpy
