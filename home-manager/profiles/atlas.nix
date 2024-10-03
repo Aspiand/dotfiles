@@ -105,8 +105,88 @@
   };
 
   services.syncthing.enable = false;
-  services.glance.enable = false;
+  services.glance.enable = true;
+  services.glance.settings.pages = [
+    {
+      name = "Home";
+      columns = [
+        {
+          size = "small";
+          widgets = [
+            { type = "calendar"; }
+
+            {
+              type = "monitor";
+              title = "Sites";
+              cache = "10m";
+              sites = [
+                {
+                  title = "Github";
+                  url = "https://github.com/";
+                }
+
+                {
+                  title = "Google";
+                  url = "https://google.com/";
+                }
+              ];
+            }
+          ];
+        }
+
+        {
+          size = "full";
+          widgets = [
+            { # https://commentpicker.com/youtube-channel-id.php
+              title = "YouTube";
+              type = "videos";
+              channels = [
+                "UCxxnxya_32jcKj4yN1_kD7A" # Muse Indonesia
+                "UCUn0hEbVJc273anl_0ozDMQ" # Ani One ID
+                "UCL_D8_Oqnb_Icr3zRn9pVNw" # Guru Gembul
+                "UC14ZKB9XsDZbnHVmr4AmUpQ" # Programmer Zaman Now
+              ];
+            }
+
+            { type = "hacker-news"; }
+          ];
+        }
+      ];
+    }
+
+    {
+      name = "Anime";
+      columns = [
+        {
+          size = "full";
+          widgets = [
+            { # Muse Indonesia
+              type = "videos";
+              style = "grid-cards";
+              title = "Muse Indonesia";
+              collapse-after-rows = 1;
+              channels = [ "UCxxnxya_32jcKj4yN1_kD7A" ];
+            }
+
+            { # Ani-One ID
+              type = "videos";
+              style = "grid-cards";
+              title = "Ani-One Indonesia";
+              collapse-after-rows = 1;
+              channels = [ "UCUn0hEbVJc273anl_0ozDMQ" ];
+            }
+
+            { # Ani-One Asia
+              type = "videos";
+              style = "grid-cards";
+              title = "Ani-One Asia";
+              collapse-after-rows = 1;
+              channels = [ "UCUn0hEbVJc273anl_0ozDMQ" ];
+            }
+          ];
+        }
+      ];
+    }
+  ];
   # xfconf.settings
 }
-
-# file = { # config.lib.file.mkOutOfStoreSymlink };
