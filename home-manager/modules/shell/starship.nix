@@ -23,13 +23,13 @@ with lib; let cfg = config.shell.bash; in
           impure_msg = "[impure shell](bold red)";
           pure_msg = "[pure shell](bold green)";
           unknown_msg = "[unknown shell](bold yellow)";
-          format = "via [$state( \($name\))](bold blue) ";
+          format = "❄️ [$state( \($name\))](bold blue)";
         };
 
         sudo = {
           disabled = false;
           style = "bold red";
-          symbol = 	"ɫ";
+          symbol = "ɫ";
         };
       };
     }; #https://starship.rs/config/

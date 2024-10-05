@@ -104,7 +104,6 @@
     };
   };
 
-  services.syncthing.enable = false;
   services.glance.enable = true;
   services.glance.settings.pages = [
     {
@@ -181,7 +180,7 @@
               style = "grid-cards";
               title = "Ani-One Asia";
               collapse-after-rows = 1;
-              channels = [ "UCUn0hEbVJc273anl_0ozDMQ" ];
+              channels = [ "UC0wNSTMWIL3qaorLx0jie6A" ];
             }
           ];
         }

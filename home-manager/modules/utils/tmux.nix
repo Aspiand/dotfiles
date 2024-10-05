@@ -20,6 +20,7 @@ with lib; let cfg = config.programs.utils.tmux; in
       aggressiveResize = true;
       baseIndex = 1;
       shortcut = "a";
+      terminal = "screen-256color";
       shell = cfg.shell;
 
       plugins = with pkgs.tmuxPlugins; [
