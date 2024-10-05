@@ -1,29 +1,42 @@
 { config, pkgs, lib, ... }:
 
-with lib; let cfg = config.shell.zsh; in
+with lib;
+
+let
+  cfg = config.shell.zsh;
+  dir = config.programs.zsh.dotDir;
+  home = config.home.homeDirectory;
+in
 
 {
   options.shell.zsh.enable = mkEnableOption "Z Shell";
 
   config = mkIf cfg.enable {
 
+    home.file."${dir}/.p10k.zsh".source = ../../../zsh/p10k;
+
     programs.zsh = {
       enable = true;
       autocd = true;
       enableCompletion = true;
-      autosuggestion.enable = true;
+      autosuggestion.enable = false;
       syntaxHighlighting.enable = true;
       dotDir = ".config/zsh";
-      shellAliases.reload = "source ${config.programs.zsh.dotDir}/.zshrc";
-      initExtra = "source ${config.home.homeDirectory}/.nix-profile/etc/profile.d/nix.sh";
+      shellAliases.reload = "source ${dir}/.zshrc";
+      initExtraFirst = "source ${home}/.nix-profile/etc/profile.d/nix.sh";
+
+      initExtra = mkIf config.programs.zsh.zplug.enable ''
+        [[ ! -f ${dir}/.p10k.zsh ]] || source ${dir}/.p10k.zsh
+      '';
 
       oh-my-zsh = {
-        enable = true;
+        enable = false;
         theme = "robbyrussell";
       };
 
       zplug = {
-        enable = false;
+        enable = true;
+        zplugHome = "${home}/.config/zsh/zplug";
         plugins = [
           { name = "zsh-users/zsh-autosuggestions"; }
           { name = "romkatv/powerlevel10k"; tags = [ as:theme depth:1 ]; }
@@ -37,7 +50,7 @@ with lib; let cfg = config.shell.zsh; in
         ignorePatterns = [];
         save = 100000;
         size = config.programs.zsh.history.save;
-        path = "${config.home.homeDirectory}/.local/history/zsh";
+        path = "${home}/.local/history/zsh";
       };
 
       zsh-abbr = {
