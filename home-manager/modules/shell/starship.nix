@@ -28,8 +28,7 @@ with lib; let cfg = config.shell.bash; in
 
         sudo = {
           disabled = false;
-          style = "bold red";
-          symbol = "ɫ";
+          format = "[ɫ ](bold red)";
         };
       };
     }; #https://starship.rs/config/

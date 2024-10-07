@@ -39,7 +39,7 @@ with lib; let cfg = config.programs.utils.tmux; in
           # https://draculatheme.com/tmux
           plugin = dracula;
           extraConfig = ''
-            set -g @dracula-plugins "ssh-session network-bandwidth time"
+            set -g @dracula-plugins "ssh-session network-bandwidth"
 
             set -g @dracula-border-contrast true
             set -g @dracula-left-icon-padding 0

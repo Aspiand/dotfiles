@@ -15,9 +15,9 @@
   nixpkgs.config.allowUnfree = true;
 
   shell = {
-    ohmyposh.enable = true;
+    ohmyposh.enable = false;
 
-    nu.enable = true;
+    nu.enable = false;
     zsh.enable = true;
     bash.enable = true;
   };

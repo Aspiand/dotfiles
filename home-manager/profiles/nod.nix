@@ -22,13 +22,7 @@
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
   nixpkgs.config.allowUnfree = true;
 
-  shell = {
-    ohmyposh.enable = false;
-
-    nu.enable = false;
-    zsh.enable = false;
-    bash.enable = true;
-  };
+  shell.bash.enable = true;
 
   home = {
     stateVersion = "24.11";

@@ -26,7 +26,7 @@ in
       initExtraFirst = "source ${home}/.nix-profile/etc/profile.d/nix.sh";
 
       initExtra = mkIf config.programs.zsh.zplug.enable ''
-        [[ ! -f ${dir}/.p10k.zsh ]] || source ${dir}/.p10k.zsh
+        [[ -f ${dir}/.p10k.zsh ]] && source ${dir}/.p10k.zsh
       '';
 
       oh-my-zsh = {
