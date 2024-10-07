@@ -48,51 +48,47 @@ with lib; let cfg = config.programs.utils; in
     (mkIf cfg.additional {
       home.shellAliases.ls = "eza";
 
-      home.packages = with pkgs; mkMerge [
-        ## ffm
-        [ (pkgs.writeShellScriptBin "ffm" (builtins.readFile ../../../sh/ffm.sh)) ]
+      home.packages = with pkgs; [
+        (writeShellScriptBin "ffm" (builtins.readFile ../../../sh/ffm.sh))
         ## https://discourse.nixos.org/t/link-scripts-to-bin-home-manager/41774
 
-        [
-          # Archive
-          bzip2
-          bzip3
-          gzip
-          unrar
-          unzip
-          gnutar
-          xz
-          zip
-          zstd
+        # Archive
+        bzip2
+        bzip3
+        gzip
+        unrar
+        unzip
+        gnutar
+        xz
+        zip
+        zstd
 
-          # Monitor
-          bottom
-          gotop
-          # nyx
+        # Monitor
+        bottom
+        gotop
+        # nyx
 
-          # Multimedia
-          exiftool
-          ffmpeg
+        # Multimedia
+        exiftool
+        ffmpeg
 
-          # Network
-          aria2
-          nettools
-          sshfs
-          wget
+        # Network
+        aria2
+        nettools
+        sshfs
+        wget
 
-          # Other          
-          bat
-          findutils
-          gitui
-          gnumake
-          gawk
-          gnugrep
-          gnused
-          ncurses
-          rm-improved
-          procps
-          which
-        ]
+        # Other          
+        bat
+        findutils
+        gitui
+        gnumake
+        gawk
+        gnugrep
+        gnused
+        ncurses
+        procps
+        which
       ];
 
       programs = {

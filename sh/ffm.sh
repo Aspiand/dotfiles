@@ -1,8 +1,6 @@
 #!/bin/bash
 
 set -eu
-
-readonly VERSION=3.1
 readonly ROOT=$(dirname "${BASH_SOURCE[0]}")
 
 get_permission() {
