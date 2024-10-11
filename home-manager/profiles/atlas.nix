@@ -39,6 +39,17 @@
 
     file = {
       ".myclirc".source = ../../.myclirc;
+      ".local/share/applications/obsidian.desktop".text = ''
+        [Desktop Entry]
+        Categories=Office
+        Comment=Knowledge base
+        Exec=${config.home.homeDirectory}/.nix-profile/bin/obsidian %u
+        Icon=obsidian
+        MimeType=x-scheme-handler/obsidian
+        Name=Obsidian
+        Type=Application
+        Version=1.4
+      '';
     };
 
     packages = with pkgs; [
@@ -70,6 +81,7 @@
 
       # Utils
       android-tools
+      caddy
       dirb
       distrobox
       duf
@@ -78,6 +90,7 @@
       litecli
       mkp224o
       mycli
+      obsidian
       podman-compose
       qemu
       scrcpy
@@ -91,6 +104,10 @@
     ssh.control = true;
     home-manager.enable = true;
     git.extraConfig.core.editor = "nvim";
+    git.extraConfig.delta = {
+      hyperlinks = true;
+      hyperlinks-file-link-format = "vscode://file/{path}:{line}";
+    };
 
     utils = {
       additional = true;

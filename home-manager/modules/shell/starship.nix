@@ -18,12 +18,19 @@ with lib; let cfg = config.shell.bash; in
           format = "[$duration](bold yellow)";
         };
 
+        bun.disabled = true;
+
         nix_shell = {
           disabled = false;
           impure_msg = "[impure shell](bold red)";
           pure_msg = "[pure shell](bold green)";
           unknown_msg = "[unknown shell](bold yellow)";
-          format = "❄️ [$state( \($name\))](bold blue)";
+          format = "❄️  [$state( \($name\))](bold blue)";
+        };
+
+        nodejs = {
+          disabled = false;
+          format = "[$symbol]($style)";
         };
 
         sudo = {
