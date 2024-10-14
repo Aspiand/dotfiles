@@ -7,7 +7,6 @@
 - https://github.com/evilsocket/opensnitch
 
 ## Flatpak
-- ```com.github.marktext.marktext```
 - ```com.google.AndroidStudio```
 - ```com.vscodium.codium```
 - ```com.github.tchx84.Flatseal```
