@@ -3,6 +3,7 @@
 - [Caddy](https://caddyserver.com/)
 - https://developer.android.com/codelabs/basic-android-kotlin-compose-connect-device#0
 - https://developer.android.com/studio/run/device
+- https://www.geeksforgeeks.org/how-to-fix-android-studio-doesnt-see-device-in-android-studio/
 
 # App
 ## Repository
