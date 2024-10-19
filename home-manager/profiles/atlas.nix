@@ -55,6 +55,7 @@
     packages = with pkgs; [
       # Network
       dnsutils
+      i2pd
       ipcalc
       ngrok
       nmap
@@ -89,7 +90,7 @@
       gnumake
       litecli
       mkp224o
-      mycli
+      # mycli
       obsidian
       podman-compose
       qemu
@@ -119,9 +120,13 @@
       vscode.enable = true;
       yt-dlp.downloader = "aria2c";
     };
+
+    zed-editor = {
+      enable = true;
+    };
   };
 
-  services.glance.enable = true;
+  services.glance.enable = false;
   services.glance.settings.pages = [
     {
       name = "Home";
