@@ -25,7 +25,7 @@ with lib; let cfg = config.shell.bash; in
           impure_msg = "[impure shell](bold red)";
           pure_msg = "[pure shell](bold green)";
           unknown_msg = "[unknown shell](bold yellow)";
-          format = "❄️  [$state( \($name\))](bold blue)";
+          format = "❄️ [$state( \($name\))](bold blue)";
         };
 
         nodejs = {

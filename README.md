@@ -1,6 +1,7 @@
 # Later
 - [Rclone](https://rclone.org/)
 - [Caddy](https://caddyserver.com/)
+- https://developer.android.com/studio/run/device
 
 # App
 ## Repository
