@@ -30,7 +30,6 @@
       # Network
       dnsutils
       ngrok
-      proxychains
       tor
       torsocks
 
@@ -44,6 +43,14 @@
       python312
       python312Packages.pip
       python312Packages.virtualenv
+
+      procps
+      ncurses
+      gnused
+      gnugrep
+      gawk
+      gnumake
+      findutils
     ];
 
     shellAliases = {
@@ -59,7 +66,7 @@
     git.extraConfig.core.editor = "nvim";
 
     utils = {
-      additional = true;
+      general = true;
       clamav.enable = true;
       neovim.enable = true;
       yt-dlp.path = "/data/data/com.termux.nix/files/home/storage/Share/YouTube/";

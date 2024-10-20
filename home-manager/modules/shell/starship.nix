@@ -19,6 +19,9 @@ with lib; let cfg = config.shell.bash; in
         };
 
         bun.disabled = true;
+        gradle.format = "[$symbol]($style)";
+        java.format = "[$symbol]($style)";
+        kotlin.format = "[$symbol]($style)";
 
         nix_shell = {
           disabled = false;
@@ -28,15 +31,9 @@ with lib; let cfg = config.shell.bash; in
           format = "❄️ [$state( \($name\))](bold blue)";
         };
 
-        nodejs = {
-          disabled = false;
-          format = "[$symbol]($style)";
-        };
-
-        sudo = {
-          disabled = false;
-          format = "[ɫ ](bold red)";
-        };
+        php.format = "[$symbol]($style)"; # 🔹
+        nodejs.format = "[$symbol]($style)";
+        sudo.format = "[ɫ ](bold red)";
       };
     }; #https://starship.rs/config/
   };

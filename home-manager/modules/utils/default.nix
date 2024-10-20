@@ -9,7 +9,7 @@ with lib; let cfg = config.programs.utils; in
   ];
 
   options.programs.utils = {
-    additional = mkEnableOption "Additional package";
+    general = mkEnableOption "General package";
 
     gnupg = {
       enable = mkEnableOption "GnuPG";
@@ -45,7 +45,7 @@ with lib; let cfg = config.programs.utils; in
 
   config = mkMerge [
 
-    (mkIf cfg.additional {
+    (mkIf cfg.general {
       home.shellAliases.ls = "eza";
 
       home.packages = with pkgs; [
@@ -74,21 +74,12 @@ with lib; let cfg = config.programs.utils; in
 
         # Network
         aria2
-        nettools
         sshfs
         wget
 
         # Other          
         bat
-        findutils
         gitui
-        gnumake
-        gawk
-        gnugrep
-        gnused
-        ncurses
-        procps
-        which
       ];
 
       programs = {
