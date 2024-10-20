@@ -59,8 +59,6 @@
       ipcalc
       ngrok
       nmap
-      proxychains
-      speedtest-cli
       tor
       torsocks
 
@@ -83,19 +81,15 @@
       # Utils
       android-tools
       caddy
-      dirb
       distrobox
       duf
       glow
       gnumake
-      litecli
       mkp224o
       # mycli
       obsidian
-      podman-compose
-      qemu
+      # qemu
       scrcpy
-      sqlite
       wavemon
       zenith
     ];
@@ -111,7 +105,7 @@
     };
 
     utils = {
-      additional = true;
+      general = true;
       clamav.enable = true;
       librewolf.enable = true;
       neovim.enable = true;
