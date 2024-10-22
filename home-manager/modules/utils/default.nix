@@ -143,7 +143,7 @@ with lib; let cfg = config.programs.utils; in
 
             (mkIf (cfg.yt-dlp.downloader == "aria2c") {
               downloader = "aria2c";
-              downloader-args = "aria2c:'-x16 -s16 -c'";
+              downloader-args = "aria2c:'-x8 -s8 -c'";
             })
 
             (mkIf (cfg.yt-dlp.downloader == "wget") {
