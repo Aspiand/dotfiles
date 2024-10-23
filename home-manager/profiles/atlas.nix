@@ -75,8 +75,6 @@
       python3
       python3Packages.pip
       python3Packages.virtualenv
-      # python3Packages.face-recognition
-      # python3Packages.insightface
 
       # Utils
       android-tools
@@ -86,9 +84,8 @@
       glow
       gnumake
       mkp224o
-      # mycli
       obsidian
-      # qemu
+      qemu
       scrcpy
       wavemon
       zenith
