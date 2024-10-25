@@ -20,7 +20,6 @@
     curl
     htop
     nano
-    openssh
     rsync
     trash-cli
     tree
