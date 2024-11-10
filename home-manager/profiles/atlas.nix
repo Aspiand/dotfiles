@@ -59,6 +59,7 @@
       ipcalc
       ngrok
       nmap
+      speedtest-cli
       tor
       torsocks
 
