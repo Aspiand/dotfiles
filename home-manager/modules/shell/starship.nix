@@ -28,11 +28,12 @@ with lib; let cfg = config.shell.bash; in
           impure_msg = "[impure shell](bold red)";
           pure_msg = "[pure shell](bold green)";
           unknown_msg = "[unknown shell](bold yellow)";
-          format = "❄️ [$state( \($name\))](bold blue)";
+          format = "❄️  [$state( \($name\))](bold blue)";
         };
 
         php.format = "[$symbol]($style)"; # 🔹
         nodejs.format = "[$symbol]($style)";
+        sudo.disabled = false;
         sudo.format = "[ɫ ](bold red)";
       };
     }; #https://starship.rs/config/
