@@ -12,6 +12,7 @@
 # App
 ## Repository
 - https://github.com/evilsocket/opensnitch
+- https://github.com/prateekmedia/netspeedsimplified
 
 ## Flatpak
 - ```com.google.AndroidStudio```
