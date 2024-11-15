@@ -23,7 +23,6 @@ in
       syntaxHighlighting.enable = true;
       dotDir = ".config/zsh";
       shellAliases.reload = "source ${dir}/.zshrc";
-      initExtraFirst = "source ${home}/.nix-profile/etc/profile.d/nix.sh";
 
       initExtra = mkIf config.programs.zsh.zplug.enable ''
         [[ -f ${dir}/.p10k.zsh ]] && source ${dir}/.p10k.zsh
