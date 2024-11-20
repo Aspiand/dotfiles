@@ -2,6 +2,7 @@
 - [Rclone](https://rclone.org/)
 - [Caddy](https://caddyserver.com/)
 - https://portableapps.com/
+- [Zram](https://wiki.archlinux.org/title/Zram)
 
 ## Android
 - https://developer.android.com/codelabs/basic-android-kotlin-compose-connect-device#0
