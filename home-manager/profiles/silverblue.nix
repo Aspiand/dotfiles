@@ -31,7 +31,7 @@
     file.".myclirc".source = ../../.myclirc;
 
     packages = with pkgs; [
-      pkgs.gnome-tweaks
+      gnome-tweaks
 
       # Network
       # ngrok
@@ -54,10 +54,11 @@
       python3Packages.virtualenv
 
       # Utils
-      # android-tools
+      android-tools
       # caddy
       duf
       mycli
+      neofetch
       ollama
       # qemu
     ];
@@ -71,6 +72,10 @@
       hyperlinks = true;
       hyperlinks-file-link-format = "vscode://file/{path}:{line}";
     };
+
+    bash.bashrcExtra = ''
+      export PATH="/var/home/aspian/.config/composer/vendor/laravel/installer/bin:$PATH"
+    '';
 
     utils = {
       general = true;
