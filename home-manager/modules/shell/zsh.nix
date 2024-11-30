@@ -6,6 +6,7 @@ let
   cfg = config.shell.zsh;
   dir = config.programs.zsh.dotDir;
   home = config.home.homeDirectory;
+  zplug = config.programs.zsh.zplug;
 in
 
 {
@@ -13,7 +14,7 @@ in
 
   config = mkIf cfg.enable {
 
-    home.file."${dir}/.p10k.zsh".source = ../../../zsh/p10k;
+    home.file."${dir}/.p10k.zsh".source = mkIf zplug.enable ../../../zsh/p10k;
 
     programs.zsh = {
       enable = true;
@@ -24,7 +25,7 @@ in
       dotDir = ".config/zsh";
       shellAliases.reload = "source ${dir}/.zshrc";
 
-      initExtra = mkIf config.programs.zsh.zplug.enable ''
+      initExtra = mkIf zplug.enable ''
         [[ -f ${dir}/.p10k.zsh ]] && source ${dir}/.p10k.zsh
       '';
 
