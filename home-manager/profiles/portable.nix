@@ -8,14 +8,11 @@
 
   nixpkgs.config.allowUnfree = true;
 
-  shell = {
-    bash.enable = true;
-    nix-path = /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh;
-  };
+  shell.bash.enable = true;
 
   home = {
-    username = "aspian";
-    homeDirectory = "/var/home/aspian";
+    username = "kuro";
+    homeDirectory = "/home/kuro";
     stateVersion = "24.11";
 
     shellAliases = {
@@ -31,8 +28,6 @@
     file.".myclirc".source = ../../.myclirc;
 
     packages = with pkgs; [
-      gnome-tweaks
-
       # Network
       # ngrok
       nmap
@@ -52,12 +47,16 @@
       python3
       python3Packages.pip
       python3Packages.virtualenv
+      vscode
 
       # Utils
       android-tools
+      android-studio
+      firefox
       # caddy
       duf
       mycli
+      nix-bash-completions
       neofetch
       ollama
       # qemu
@@ -73,10 +72,6 @@
       hyperlinks-file-link-format = "vscode://file/{path}:{line}";
     };
 
-    bash.bashrcExtra = ''
-      export PATH="/var/home/aspian/.config/composer/vendor/laravel/installer/bin:$PATH"
-    '';
-
     utils = {
       general = true;
       neovim.enable = true;
@@ -86,4 +81,10 @@
       yt-dlp.downloader = "aria2c";
     };
   };
+
+  services.podman = {
+    enable = true;
+    autoUpdate.enable = true;
+  };
+
 }
