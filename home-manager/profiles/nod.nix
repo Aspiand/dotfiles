@@ -35,8 +35,8 @@
 
       # Programming
       nodejs
-      # jdk_headless
-      # jre_headless
+      jdk_headless
+      jre_headless
       php
       phpPackages.composer
       phpExtensions.pdo
