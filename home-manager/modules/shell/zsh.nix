@@ -13,9 +13,6 @@ in
   options.shell.zsh.enable = mkEnableOption "Z Shell";
 
   config = mkIf cfg.enable {
-
-    home.file."${dir}/.p10k.zsh".source = mkIf zplug.enable ../../../zsh/p10k;
-
     programs.zsh = {
       enable = true;
       autocd = true;
@@ -30,12 +27,12 @@ in
       '';
 
       oh-my-zsh = {
-        enable = false;
+        enable = true;
         theme = "robbyrussell";
       };
 
       zplug = {
-        enable = true;
+        enable = false;
         zplugHome = "${home}/.config/zsh/zplug";
         plugins = [
           { name = "zsh-users/zsh-autosuggestions"; }
@@ -61,5 +58,7 @@ in
         };
       };
     };
+
+    # home.file."${dir}/.p10k.zsh".source = mkIf zplug.enable ../../../zsh/p10k;
   };
 }

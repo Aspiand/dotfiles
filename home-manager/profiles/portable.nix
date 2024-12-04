@@ -54,6 +54,7 @@
       android-studio
       firefox
       # caddy
+      distrobox
       duf
       mycli
       nix-bash-completions
@@ -86,5 +87,4 @@
     enable = true;
     autoUpdate.enable = true;
   };
-
 }
