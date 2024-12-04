@@ -1,0 +1,3 @@
+[submodule "rofi"]
+	path = rofi
+	url = git@github.com:Aspiann17/rofi.git

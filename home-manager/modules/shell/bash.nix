@@ -31,5 +31,7 @@ with lib; let cfg = config.shell.bash; in
         "ls"
       ];
     };
+
+    # https://www.gnu.org/software/bash/manual/html_node/The-Shopt-Builtin.html
   };
 }
