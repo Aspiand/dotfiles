@@ -12,6 +12,24 @@ with lib; let cfg = config.shell.bash; in
       historyControl = [ "ignoreboth" ];
       historyFile = "${config.home.homeDirectory}/.local/history/bash";
       shellAliases.reload = "source ~/.bashrc";
+
+      sessionVariables = {
+        PROMPT_COMMAND="history -a; history -n";
+      };
+
+      shellOptions = [
+        "histappend"
+        "autocd"
+      ];
+
+      historyIgnore = [
+        "clear"
+        "hmbs"
+        "ncu"
+        "code"
+        "history"
+        "ls"
+      ];
     };
   };
 }
