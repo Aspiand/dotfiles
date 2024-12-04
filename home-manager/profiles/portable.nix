@@ -61,6 +61,9 @@
       neofetch
       ollama
       # qemu
+
+      # Rofi https://github.com/adi1090x/rofi
+      maim
     ];
   };
 
@@ -77,7 +80,7 @@
       general = true;
       neovim.enable = true;
       pass.enable = true;
-      tmux.enable = true;
+      tmux.enable = false;
       tmux.shell = "${pkgs.bash}/bin/bash";
       yt-dlp.downloader = "aria2c";
     };
