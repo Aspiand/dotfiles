@@ -64,6 +64,9 @@
 
       # Rofi https://github.com/adi1090x/rofi
       maim
+      pywal
+      calc
+      networkmanager_dmenu
     ];
   };
 
