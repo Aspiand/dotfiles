@@ -67,7 +67,7 @@
       nodejs
       jdk_headless
       jre_headless
-      php
+      php84
       phpPackages.composer
       phpExtensions.pdo
       phpExtensions.sqlite3
