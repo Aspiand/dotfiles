@@ -32,6 +32,7 @@
     userEmail = "p.aspian1738@gmail.com";
     extraConfig = {
       core.fileMode = true;
+      pull.rebase = true;
       init.defaultBranch = "main";
 
       delta = {
