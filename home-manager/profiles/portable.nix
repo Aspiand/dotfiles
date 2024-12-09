@@ -22,12 +22,21 @@
     };
 
     sessionVariables = {
-      MYCLI_HISTFILE="~/.local/share/mycli/history.txt";
+      MYCLI_HISTFILE = "~/.local/share/mycli/history.txt";
+      # TERM = "xterm";
     };
 
     file.".myclirc".source = ../../.myclirc;
 
     packages = with pkgs; [
+      # Browser
+      firefox
+      # tor-browser
+
+      # Editor
+      android-studio
+      vscode
+      
       # Network
       # ngrok
       nmap
@@ -39,6 +48,7 @@
       jdk_headless
       jre_headless
       php84
+      frankenphp
       phpPackages.composer
       phpExtensions.pdo
       phpExtensions.sqlite3
@@ -47,26 +57,20 @@
       python3
       python3Packages.pip
       python3Packages.virtualenv
-      vscode
 
       # Utils
       android-tools
-      android-studio
-      firefox
       # caddy
       distrobox
       duf
       mycli
       nix-bash-completions
-      neofetch
-      ollama
+      # ollama
       # qemu
 
       # Rofi https://github.com/adi1090x/rofi
       maim
-      pywal
       calc
-      networkmanager_dmenu
     ];
   };
 
@@ -79,8 +83,13 @@
       hyperlinks-file-link-format = "vscode://file/{path}:{line}";
     };
 
+    bash.bashrcExtra = ''
+      export TERM=xterm
+    '';
+
     utils = {
       general = true;
+      clamav.enable = true;
       neovim.enable = true;
       pass.enable = true;
       tmux.enable = false;
