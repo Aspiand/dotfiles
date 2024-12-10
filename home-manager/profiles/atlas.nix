@@ -73,9 +73,9 @@
       phpExtensions.sqlite3
       phpExtensions.pdo_mysql
       phpExtensions.pdo_sqlite
-      python3
-      python3Packages.pip
-      python3Packages.virtualenv
+      python314
+      python314Packages.pip
+      python314Packages.virtualenv
 
       # Utils
       android-tools
