@@ -18,12 +18,11 @@
     shellAliases = {
       hmbs = "home-manager build switch";
       hmg = "home-manager generations";
-      sql = "PYTHONWARNINGS='ignore' mycli mysql://root:'uh'@localhost/";
+      sql = "PYTHONWARNINGS='ignore' mycli mysql://root:'root'@localhost/";
     };
 
     sessionVariables = {
       MYCLI_HISTFILE = "~/.local/share/mycli/history.txt";
-      # TERM = "xterm";
     };
 
     file.".myclirc".source = ../../.myclirc;
@@ -54,9 +53,9 @@
       phpExtensions.sqlite3
       phpExtensions.pdo_mysql
       phpExtensions.pdo_sqlite
-      python314
-      python314Packages.pip
-      python314Packages.virtualenv
+      python312
+      python312Packages.pip
+      python312Packages.virtualenv
       vscode
 
       # Utils
