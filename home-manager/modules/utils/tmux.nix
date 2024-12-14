@@ -6,8 +6,8 @@ with lib; let cfg = config.programs.utils.tmux; in
   options.programs.utils.tmux = {
     enable = mkEnableOption "Tmux";
     shell = mkOption {
-      type = types.str;
-      default = "${pkgs.zsh}/bin/zsh";
+      type = with types; nullOr str;
+      default = null;
     };
   };
 

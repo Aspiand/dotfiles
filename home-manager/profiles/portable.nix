@@ -56,7 +56,6 @@
       python312
       python312Packages.pip
       python312Packages.virtualenv
-      vscode
 
       # Utils
       android-tools
@@ -67,6 +66,7 @@
       nix-bash-completions
       # ollama
       # qemu
+      xfce.xfce4-terminal
 
       # Rofi https://github.com/adi1090x/rofi
       maim
@@ -83,17 +83,12 @@
       hyperlinks-file-link-format = "vscode://file/{path}:{line}";
     };
 
-    bash.bashrcExtra = ''
-      export TERM=xterm
-    '';
-
     utils = {
       general = true;
       clamav.enable = true;
       neovim.enable = true;
       pass.enable = true;
-      tmux.enable = false;
-      tmux.shell = "${pkgs.bash}/bin/bash";
+      tmux.enable = true;
       yt-dlp.downloader = "aria2c";
     };
   };
