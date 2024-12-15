@@ -23,6 +23,10 @@ with lib; let cfg = config.programs.utils.tmux; in
       terminal = "screen-256color";
       shell = cfg.shell;
 
+      extraConfig = ''
+        set-option -g status-position top
+      '';
+
       plugins = with pkgs.tmuxPlugins; [
         better-mouse-mode
         continuum
