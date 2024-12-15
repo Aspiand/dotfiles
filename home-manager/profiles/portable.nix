@@ -13,7 +13,7 @@
   home = {
     username = "kuro";
     homeDirectory = "/home/kuro";
-    stateVersion = "24.11";
+    stateVersion = "25.05";
 
     shellAliases = {
       hmbs = "home-manager build switch";
@@ -30,7 +30,7 @@
     packages = with pkgs; [
       # Browser
       firefox
-      # tor-browser
+      tor-browser
 
       # Editor
       android-studio
@@ -63,6 +63,8 @@
       distrobox
       duf
       mycli
+      mkp224o
+      neofetch
       nix-bash-completions
       # ollama
       # qemu
