@@ -25,7 +25,7 @@
   home = {
     username = "aspian";
     homeDirectory = "/home/${config.home.username}";
-    stateVersion = "24.11";
+    stateVersion = "25.05";
 
     shellAliases = {
       hmbs = "home-manager build switch";
@@ -55,8 +55,8 @@
     packages = with pkgs; [
       # Network
       dnsutils
-      i2pd
-      ipcalc
+      # i2pd
+      # ipcalc
       ngrok
       nmap
       speedtest-cli
@@ -73,9 +73,9 @@
       phpExtensions.sqlite3
       phpExtensions.pdo_mysql
       phpExtensions.pdo_sqlite
-      python314
-      python314Packages.pip
-      python314Packages.virtualenv
+      python313
+      python313Packages.pip
+      python313Packages.virtualenv
 
       # Utils
       android-tools
@@ -84,12 +84,15 @@
       duf
       glow
       gnumake
+      ioping
       mkp224o
       obsidian
       qemu
       scrcpy
-      wavemon
-      zenith
+      # wavemon
+      # zenith
+
+      immich-machine-learning
     ];
   };
 
