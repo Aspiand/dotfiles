@@ -9,6 +9,8 @@
 - https://developer.android.com/studio/run/device
 - https://www.geeksforgeeks.org/how-to-fix-android-studio-doesnt-see-device-in-android-studio/
 
+# N
+- https://immich.app/docs/guides/remote-machine-learning/
 
 # App
 ## Repository
