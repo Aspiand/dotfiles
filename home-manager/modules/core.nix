@@ -43,6 +43,8 @@
 
     ignores = [
       "tmp/"
+      "vendor/"
+      "node_modules"
       ".venv/"
       ".vscode/"
       "__pycache__/"
@@ -72,22 +74,6 @@
       host = "dnod";
       user = "nix-on-droid";
       port = 3022;
-      identityFile = "~/.ssh/id_rsa";
-    };
-
-    san = {
-      hostname = "192.168.100.10";
-      host = "san";
-      user = "aspian";
-      port = 22;
-      identityFile = "~/.ssh/id_rsa";
-    };
-
-    lsan = {
-      hostname = "192.168.1.1";
-      host = "lsan";
-      user = "aspian";
-      port = 22;
       identityFile = "~/.ssh/id_rsa";
     };
   };

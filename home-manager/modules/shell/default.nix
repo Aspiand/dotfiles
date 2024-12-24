@@ -5,10 +5,8 @@ with lib; let cfg = config.shell; in
 {
   imports = [
     ./starship.nix
-    ./ohmyposh.nix
 
     ./bash.nix
-    ./nu.nix
     ./zsh.nix
   ];
 
@@ -26,6 +24,5 @@ with lib; let cfg = config.shell; in
     programs.zsh.initExtraFirst = mkIf cfg.zsh.enable ''
       source ${cfg.nix-path}
     '';
-
   };
 }
