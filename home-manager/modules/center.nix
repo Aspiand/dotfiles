@@ -1,0 +1,67 @@
+{ config, pkgs, lib, ... }:
+
+with lib;
+
+{
+  options = {
+    programs = {
+      ssh.control = mkEnableOption "SSH Control";
+    };
+
+    shell.nix-path = mkOption {
+      type = types.path;
+      default = "${config.home.homeDirectory}/.nix-profile/etc/profile.d/nix.sh";
+      example = "/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh";
+    };
+  };
+
+  config = let
+    cfg = config.programs;
+  in mkMerge [
+
+    (mkIf cfg.ssh.control {
+      programs.ssh = {
+        controlMaster = "auto";
+        controlPersist = "30m";
+        controlPath = "~/.ssh/control/%r@%n:%p";
+      };
+    })
+
+    (let path = config.shell.nix-path; in {
+      programs.bash.bashrcExtra = ''
+        source ${path}
+      '';
+
+      programs.zsh.initExtraFirst = mkIf cfg.zsh.enable ''
+        source ${path}
+      '';
+    })
+
+    # Password Store
+    (mkIf cfg.password-store.enable {
+      programs.password-store.settings = {
+        PASSWORD_STORE_CLIP_TIME = "120";
+        PASSWORD_STORE_GENERATED_LENGTH = "12";
+        PASSWORD_STORE_DIR = "${config.xdg.dataHome}/password_store";
+      };
+
+      home.activation.passSetup = let
+        pass_dir = cfg.password-store.settings.PASSWORD_STORE_DIR;
+      in lib.hm.dag.entryAfter ["writeBoundary"] ''
+        if [ -d '${pass_dir}' ]; then
+          find ${pass_dir} -type d -not -perm "700" -exec chmod -v 700 {} \;
+          find ${pass_dir} -type f -not -perm "600" -exec chmod -v 600 {} \;
+        fi
+      '';
+    })
+
+    (mkIf cfg.ssh.enable {
+      home.activation.ssh_setup = lib.hm.dag.entryAfter ["writeBoundary"] ''
+        if [ -d "$HOME/.ssh" ]; then
+          find "$HOME/.ssh" -type d -not -perm "700" -exec chmod -v 700 {} \;
+          find "$HOME/.ssh" -type f -not -perm "600" -exec chmod -v 600 {} \;
+        fi
+      '';
+    })
+  ];
+}

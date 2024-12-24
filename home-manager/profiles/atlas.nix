@@ -93,10 +93,7 @@
     ssh.control = true;
     home-manager.enable = true;
     git.extraConfig.core.editor = "nvim";
-    git.extraConfig.delta = {
-      hyperlinks = true;
-      hyperlinks-file-link-format = "vscode://file/{path}:{line}";
-    };
+    password-store.enable = true;
 
     utils = {
       general = true;
