@@ -1,4 +1,0 @@
-Andoid
-Bootstrap
-Delphi
-SQL

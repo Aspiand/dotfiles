@@ -6,11 +6,11 @@ with lib; let cfg = config.programs; in
 
 {
   imports = [
-    ./browser
-    ./editor
-    ./shell
-    ./services
+    ./core.nix
+    ./librewolf.nix
+    ./neovim.nix
     ./utils
+    ./shell
   ];
 
   options.programs.ssh.control = mkEnableOption "SSH Control";

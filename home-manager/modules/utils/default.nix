@@ -15,7 +15,7 @@ with lib; let cfg = config.programs.utils; in
       enable = mkEnableOption "GnuPG";
       dir = mkOption {
         type = types.str;
-        default = "${config.home.homeDirectory}/.local/data/gnupg";
+        default = "${config.home.homeDirectory}/.local/share/gnupg";
         example = "${config.home.homeDirectory}/.gnupg";
       };
     };
@@ -49,9 +49,6 @@ with lib; let cfg = config.programs.utils; in
       home.shellAliases.ls = "eza";
 
       home.packages = with pkgs; [
-        (writeShellScriptBin "ffm" (builtins.readFile ../../../sh/ffm.sh))
-        ## https://discourse.nixos.org/t/link-scripts-to-bin-home-manager/41774
-
         # Archive
         bzip2
         bzip3
