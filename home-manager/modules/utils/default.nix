@@ -3,11 +3,6 @@
 with lib; let cfg = config.programs.utils; in
 
 {
-  imports = [
-    ./clamav.nix
-    ./tmux.nix
-  ];
-
   options.programs.utils = {
     general = mkEnableOption "General package";
 
@@ -46,8 +41,6 @@ with lib; let cfg = config.programs.utils; in
   config = mkMerge [
 
     (mkIf cfg.general {
-      home.shellAliases.ls = "eza";
-
       home.packages = with pkgs; [
         # Archive
         bzip2
@@ -166,24 +159,6 @@ with lib; let cfg = config.programs.utils; in
         enable = true;
         homedir = cfg.gnupg.dir;
       };
-    })
-
-    (mkIf cfg.pass.enable {
-      programs.password-store = {
-        enable = true;
-        settings = {
-          PASSWORD_STORE_CLIP_TIME = "120";
-          PASSWORD_STORE_GENERATED_LENGTH = "12";
-          PASSWORD_STORE_DIR = cfg.pass.dir;
-        };
-      };
-
-      home.activation.pass_setup = lib.hm.dag.entryAfter ["writeBoundary"] ''
-        if [ -d '${cfg.pass.dir}' ]; then
-          find ${cfg.pass.dir} -type d -not -perm "700" -exec chmod -v 700 {} \;
-          find ${cfg.pass.dir} -type f -not -perm "600" -exec chmod -v 600 {} \;
-        fi
-      '';
     })
   ];
 }
