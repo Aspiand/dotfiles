@@ -3,12 +3,11 @@
 {
   imports = [
     ../modules/init.nix
-    ../core.nix
   ];
 
   nixpkgs.config.allowUnfree = true;
-
   shell.bash.enable = true;
+  fonts.fontconfig.enable = true;
 
   home = {
     username = "kuro";
@@ -21,13 +20,13 @@
       sql = "PYTHONWARNINGS='ignore' mycli mysql://root:'root'@localhost/";
     };
 
-    sessionVariables = {
-      MYCLI_HISTFILE = "~/.local/share/mycli/history.txt";
-    };
-
-    file.".myclirc".source = ../../.myclirc;
+    file.".local/share/icons/candy-icons".source = "${pkgs.candy-icons}/share/icons/candy-icons";
 
     packages = with pkgs; [
+      nerd-fonts._0xproto
+      nerd-fonts.caskaydia-cove
+      candy-icons
+      
       # Browser
       firefox
       tor-browser
@@ -35,7 +34,7 @@
       # Editor
       android-studio
       vscode
-      
+
       # Network
       # ngrok
       nmap
@@ -62,8 +61,7 @@
       # caddy
       distrobox
       duf
-      mycli
-      mkp224o
+      # mkp224o
       neofetch
       nix-bash-completions
       # ollama
@@ -77,22 +75,19 @@
   };
 
   programs = {
-    ssh.control = true;
-    home-manager.enable = true;
-    git.extraConfig.core.editor = "nvim";
-    git.extraConfig.delta = {
-      hyperlinks = true;
-      hyperlinks-file-link-format = "vscode://file/{path}:{line}";
-    };
+    home-manager.enable = true;    
+    git.extraConfig.core.editor = "code";
 
-    utils = {
-      general = true;
-      clamav.enable = true;
-      neovim.enable = true;
-      pass.enable = true;
-      tmux.enable = true;
-      yt-dlp.downloader = "aria2c";
-    };
+    eza.enable = true;
+    fzf.enable = true;
+    neovim.enable = true;
+    password-store.enable = true;
+    ssh.control = true;
+    tmux.enable = true;
+    yazi.enable = true;
+    yt-dlp.enable = true;
+    yt-dlp.downloader = "aria2c";
+    zoxide.enable = true;
   };
 
   services.podman = {

@@ -1,9 +1,9 @@
 { config, pkgs, lib, ... }:
 
-with lib; let cfg = config.programs.utils.clamav; in
+with lib; let cfg = config.programs.clamav; in
 
 {
-  options.programs.utils.clamav = {
+  options.programs.clamav = {
     enable = mkEnableOption "ClamAV";
     dir = mkOption {
       type = types.path;

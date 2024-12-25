@@ -14,6 +14,3 @@
 ## Repository
 - https://github.com/evilsocket/opensnitch
 - https://github.com/prateekmedia/netspeedsimplified
-
-## Icon
-- [Candy Icons](https://github.com/EliverLara/candy-icons)

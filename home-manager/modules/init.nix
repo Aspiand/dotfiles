@@ -1,9 +1,3 @@
-# https://github.com/notusknot/dotfiles-nix
-
-{ config, pkgs, lib, ... }:
-
-with lib; let cfg = config.programs; in
-
 {
   imports = [
     ./core.nix
