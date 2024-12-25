@@ -103,6 +103,7 @@
     clamav.enable = true;
     eza.enable = true;
     fzf.enable = true;
+    mycli.enable = true;
     neovim.enable = true;
     password-store.enable = true;
     ssh.control = true;

@@ -17,10 +17,12 @@
     shellAliases = {
       hmbs = "home-manager build switch";
       hmg = "home-manager generations";
-      sql = "PYTHONWARNINGS='ignore' mycli mysql://root:'root'@localhost/";
     };
 
-    file.".local/share/icons/candy-icons".source = "${pkgs.candy-icons}/share/icons/candy-icons";
+    file = {
+      ".local/share/icons/candy-icons".source = "${pkgs.candy-icons}/share/icons/candy-icons";
+      ".config/i3/config".source = ../../manjaro/i3/config;
+    };
 
     packages = with pkgs; [
       nerd-fonts._0xproto
@@ -66,9 +68,11 @@
       nix-bash-completions
       # ollama
       # qemu
-      xfce.xfce4-terminal
 
-      # Rofi https://github.com/adi1090x/rofi
+      ###
+      rofi
+      polybar
+      xfce.xfce4-terminal
       maim
       calc
     ];
@@ -80,6 +84,7 @@
 
     eza.enable = true;
     fzf.enable = true;
+    mycli.enable = true;
     neovim.enable = true;
     password-store.enable = true;
     ssh.control = true;
