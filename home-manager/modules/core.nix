@@ -5,7 +5,6 @@
     dh = "du -h";
     dt = "df -Th";
     durl = "curl -O --progress-bar";
-    ls = "eza";
     l = "ls -lah";
     la = "ls -lAh";
     ll = "ls -lh";

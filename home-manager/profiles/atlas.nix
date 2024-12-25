@@ -22,7 +22,7 @@
     shellAliases = {
       hmbs = "home-manager build switch";
       hmg = "home-manager generations";
-      sql = "PYTHONWARNINGS='ignore' mycli mysql://root:'uh'@localhost/tugas_dbs_aspian";
+      sql = "PYTHONWARNINGS='ignore' mycli mysql://root:'root'@localhost/";
     };
 
     sessionVariables = {
@@ -49,7 +49,7 @@
       dnsutils
       # i2pd
       # ipcalc
-      ngrok
+      # ngrok
       nmap
       speedtest-cli
       tor
@@ -71,17 +71,17 @@
 
       # Utils
       android-tools
-      caddy
+      # caddy
       distrobox
       duf
-      glow
+      # glow
       gnumake
-      ioping
+      # ioping
       immich-cli
-      mkp224o
+      # mkp224o
       obsidian
-      qemu
-      scrcpy
+      # qemu
+      # scrcpy
       # wavemon
       # zenith
 
@@ -90,20 +90,30 @@
   };
 
   programs = {
-    ssh.control = true;
-    home-manager.enable = true;
-    git.extraConfig.core.editor = "nvim";
-    password-store.enable = true;
+    home-manager.enable = true;    
+    git.extraConfig.core.editor = "code";
 
-    utils = {
-      general = true;
-      clamav.enable = true;
-      librewolf.enable = true;
-      neovim.enable = true;
-      pass.enable = true;
-      tmux.enable = true;
-      yt-dlp.downloader = "aria2c";
-    };
+    # clamav.enable = true;
+    eza.enable = true;
+    fzf.enable = true;
+    neovim.enable = true;
+    password-store.enable = true;
+    ssh.control = true;
+    tmux.enable = true;
+    yazi.enable = false;
+    yt-dlp.enable = true;
+    yt-dlp.downloader = "aria2c";
+    zoxide.enable = true;
+
+    # utils = {
+    #   # general = true;
+    #   clamav.enable = true;
+    #   librewolf.enable = true;
+    #   neovim.enable = true;
+    #   yt-dlp.downloader = "aria2c";
+    # };
+
+    librewolf.enable = true;
 
     bash.bashrcExtra = ''
       [ -f ~/.profile ] && source ~/.profile
