@@ -84,6 +84,8 @@
 
     eza.enable = true;
     fzf.enable = true;
+    gpg.enable = true;
+    gpg.homedir = "${config.xdg.dataHome}/gnupg";
     mycli.enable = true;
     neovim.enable = true;
     password-store.enable = true;
@@ -95,8 +97,15 @@
     zoxide.enable = true;
   };
 
-  services.podman = {
-    enable = true;
-    autoUpdate.enable = true;
+  services = {
+    podman = {
+      enable = true;
+      autoUpdate.enable = true;
+    };
+
+    gpg-agent = {
+      enable = true;
+      pinentryPackage = pkgs.pinentry-tty;
+    };
   };
 }
