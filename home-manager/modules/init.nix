@@ -8,7 +8,9 @@
     ./starship.nix
     ./tmux.nix
 
+    # CLI
     ./clamav.nix
+    ./mycli.nix
     ./neovim.nix
 
     ./sshd.nix
