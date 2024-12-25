@@ -43,7 +43,7 @@
     ignores = [
       "tmp/"
       "vendor/"
-      "node_modules"
+      "node_modules/"
       ".venv/"
       ".vscode/"
       "__pycache__/"

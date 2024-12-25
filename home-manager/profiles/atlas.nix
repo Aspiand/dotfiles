@@ -14,6 +14,8 @@
     bash.enable = true;
   };
 
+  fonts.fontconfig.enable = true;
+
   home = {
     username = "aspian";
     homeDirectory = "/home/${config.home.username}";
@@ -42,9 +44,14 @@
         Type=Application
         Version=1.4
       '';
+      ".local/share/icons/candy-icons".source = "${pkgs.candy-icons}/share/icons/candy-icons";
     };
 
     packages = with pkgs; [
+      nerd-fonts._0xproto
+      nerd-fonts.caskaydia-cove
+      candy-icons # later -> https://discourse.nixos.org/t/merging-directories-in-home-manager/31677
+
       # Network
       dnsutils
       # i2pd
@@ -52,8 +59,8 @@
       # ngrok
       nmap
       speedtest-cli
-      tor
-      torsocks
+      # tor
+      # torsocks
 
       # Programming
       nodejs
@@ -108,9 +115,6 @@
     # utils = {
     #   # general = true;
     #   clamav.enable = true;
-    #   librewolf.enable = true;
-    #   neovim.enable = true;
-    #   yt-dlp.downloader = "aria2c";
     # };
 
     librewolf.enable = true;
