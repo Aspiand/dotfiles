@@ -100,7 +100,7 @@
     home-manager.enable = true;    
     git.extraConfig.core.editor = "code";
 
-    # clamav.enable = true;
+    clamav.enable = true;
     eza.enable = true;
     fzf.enable = true;
     neovim.enable = true;
@@ -111,11 +111,6 @@
     yt-dlp.enable = true;
     yt-dlp.downloader = "aria2c";
     zoxide.enable = true;
-
-    # utils = {
-    #   # general = true;
-    #   clamav.enable = true;
-    # };
 
     librewolf.enable = true;
 
