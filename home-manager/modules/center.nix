@@ -108,6 +108,7 @@ with lib;
         # Utils
         bat
         gitui
+        ncdu
       ];
     })
 

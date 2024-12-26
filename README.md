@@ -4,6 +4,7 @@
 - [OWASP](https://owasp.org/)
 - [Hyprland](https://hyprland.org/)
 - https://nix-community.github.io/home-manager/index.xhtml#sec-usage-gpu-non-nixos
+- https://distrobox.it/useful_tips/#using-waydroid-inside-a-distrobox
 
 ## Android
 - https://developer.android.com/codelabs/basic-android-kotlin-compose-connect-device#0
