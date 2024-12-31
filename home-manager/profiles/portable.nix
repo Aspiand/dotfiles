@@ -63,11 +63,13 @@
       # caddy
       distrobox
       duf
+      immich-cli
       # mkp224o
       neofetch
       nix-bash-completions
       # ollama
       # qemu
+      podman-compose
 
       ###
       rofi
