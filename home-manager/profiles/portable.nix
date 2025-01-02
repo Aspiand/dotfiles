@@ -17,6 +17,7 @@
     shellAliases = {
       hmbs = "home-manager build switch";
       hmg = "home-manager generations";
+      pc = "podman-compose";
     };
 
     file = {
@@ -77,6 +78,7 @@
       xfce.xfce4-terminal
       maim
       calc
+      vlc
     ];
   };
 
