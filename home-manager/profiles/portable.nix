@@ -18,6 +18,7 @@
       hmbs = "home-manager build switch";
       hmg = "home-manager generations";
       pc = "podman-compose";
+      pps = "podman ps";
     };
 
     file = {
@@ -29,7 +30,7 @@
       nerd-fonts._0xproto
       nerd-fonts.caskaydia-cove
       candy-icons
-      
+
       # Browser
       firefox
       tor-browser
@@ -49,18 +50,18 @@
       jdk_headless
       jre_headless
       php84
-      frankenphp
+      # frankenphp
       phpPackages.composer
       phpExtensions.pdo
-      phpExtensions.sqlite3
-      phpExtensions.pdo_mysql
-      phpExtensions.pdo_sqlite
+      # phpExtensions.sqlite3
+      # phpExtensions.pdo_mysql
+      # phpExtensions.pdo_sqlite
       python312
       python312Packages.pip
       python312Packages.virtualenv
 
       # Utils
-      android-tools
+      # android-tools
       # caddy
       distrobox
       duf
@@ -83,8 +84,8 @@
   };
 
   programs = {
-    home-manager.enable = true;    
-    git.extraConfig.core.editor = "code";
+    home-manager.enable = true;
+    git.extraConfig.core.editor = "${pkgs.vscode}/bin/code --wait";
 
     eza.enable = true;
     fzf.enable = true;
