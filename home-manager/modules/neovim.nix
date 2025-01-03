@@ -1,7 +1,7 @@
 { config, pkgs, lib, ... }:
 
 {
-  config = {
+  config = lib.mkIf config.programs.neovim.enable {
 
     home.packages = [ pkgs.nodejs ];
 
