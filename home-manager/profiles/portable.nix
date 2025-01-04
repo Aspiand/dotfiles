@@ -103,10 +103,7 @@
   };
 
   services = {
-    podman = {
-      enable = true;
-      autoUpdate.enable = true;
-    };
+    podman.enable = true;
 
     gpg-agent = {
       enable = true;
