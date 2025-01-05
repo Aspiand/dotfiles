@@ -7,6 +7,7 @@ let
   dir = "${cfg.dir}";
   log_dir = "${dir}/log";
   db_dir = "${dir}/database";
+  config_dir = "${config.home.homeDirectory}/.config/clamav";
   username = config.home.username;
 in
 
@@ -23,19 +24,19 @@ in
     home.packages = [ pkgs.clamav ];
 
     home.shellAliases = {
-      clamscan = "clamscan --database ${db_dir}";
-      clamd = "clamd --config-file ${dir}/clamd.conf";
-      clamdscan = "clamdscan --config-file ${dir}/clamd.conf";
-      freshclam = "freshclam --config-file ${dir}/freshclam.conf";
+      clamscan = "${pkgs.clamav}/bin/clamscan --database ${db_dir}";
+      clamd = "${pkgs.clamav}/bin/clamd --config-file ${config_dir}/clamd.conf";
+      clamdscan = "${pkgs.clamav}/bin/clamdscan --config-file ${config_dir}/clamd.conf";
+      freshclam = "${pkgs.clamav}/bin/freshclam --config-file ${config_dir}/freshclam.conf";
     };
 
     home.activation.clamavSetup = lib.hm.dag.entryAfter ["writeBoundary"] ''
-      for dir in "${cfg.dir}" "${db_dir}" "${log_dir}"; do
+      for dir in "${cfg.dir}" "${config_dir}" "${db_dir}" "${log_dir}"; do
         [ ! -d "$dir" ] && mkdir -vp "$dir"
       done
 
       # Clamd
-      cat <<EOF > ${dir}/clamd.conf
+      cat <<EOF > ${config_dir}/clamd.conf
       LocalSocket ${dir}/clamd.ctl
       FixStaleSocket true
       LocalSocketGroup ${username}
@@ -121,7 +122,7 @@ in
       OnAccessMaxFileSize 5M
       EOF
 
-      cat <<EOF > ${dir}/freshclam.conf
+      cat <<EOF > ${config_dir}/freshclam.conf
       DatabaseOwner ${username}
       UpdateLogFile ${log_dir}/freshclam.log
       LogVerbose true
@@ -142,7 +143,7 @@ in
       CompressLocalDatabase yes
       Bytecode true
       NotifyClamd yes
-      NotifyClamd ${dir}/clamd.conf
+      NotifyClamd ${config_dir}/clamd.conf
       Checks 24
       DatabaseMirror db.local.clamav.net
       DatabaseMirror database.clamav.net
