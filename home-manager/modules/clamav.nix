@@ -1,6 +1,14 @@
 { config, pkgs, lib, ... }:
 
-with lib; let cfg = config.programs.clamav; in
+with lib;
+
+let
+  cfg = config.programs.clamav;
+  dir = "${cfg.dir}";
+  log_dir = "${dir}/log";
+  db_dir = "${dir}/database";
+  username = config.home.username;
+in
 
 {
   options.programs.clamav = {
@@ -11,11 +19,7 @@ with lib; let cfg = config.programs.clamav; in
     };
   };
 
-  config = let
-    dir = "${cfg.dir}";
-    log_dir = "${dir}/log";
-    db_dir = "${dir}/database";
-  in mkIf cfg.enable {
+  config = mkIf cfg.enable {
     home.packages = [ pkgs.clamav ];
 
     home.shellAliases = {
@@ -34,11 +38,11 @@ with lib; let cfg = config.programs.clamav; in
       cat <<EOF > ${dir}/clamd.conf
       LocalSocket ${dir}/clamd.ctl
       FixStaleSocket true
-      LocalSocketGroup ${config.home.username}
+      LocalSocketGroup ${username}
       LocalSocketMode 666
       # TemporaryDirectory is not set to its default /tmp here to make overriding
       # the default with environment variables TMPDIR/TMP/TEMP possible
-      User ${config.home.username}
+      User ${username}
       ScanMail true
       ScanArchive true
       ArchiveBlockEncrypted false
@@ -118,7 +122,7 @@ with lib; let cfg = config.programs.clamav; in
       EOF
 
       cat <<EOF > ${dir}/freshclam.conf
-      DatabaseOwner ${config.home.username}
+      DatabaseOwner ${username}
       UpdateLogFile ${log_dir}/freshclam.log
       LogVerbose true
       LogSyslog false
