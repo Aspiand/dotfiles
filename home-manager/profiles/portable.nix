@@ -87,6 +87,7 @@
     home-manager.enable = true;
     git.extraConfig.core.editor = "${pkgs.vscode}/bin/code --wait";
 
+    clamav.enable = true;
     eza.enable = true;
     fzf.enable = true;
     gpg.enable = true;
