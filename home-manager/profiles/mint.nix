@@ -98,7 +98,7 @@
 
   programs = {
     home-manager.enable = true;    
-    git.extraConfig.core.editor = "code";
+    git.extraConfig.core.editor = "${pkgs.vscode}/bin/code --wait";
 
     clamav.enable = true;
     eza.enable = true;
