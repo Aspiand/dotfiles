@@ -37,6 +37,7 @@
 
       # Editor
       android-studio
+      obsidian
       vscode
 
       # Network
@@ -80,6 +81,7 @@
       maim
       calc
       vlc
+      exiftool
     ];
   };
 
