@@ -24,6 +24,10 @@
     tree
   ];
 
+  home.sessionVariables = {
+    IMMICH_RECURSIVE = "true";
+  };
+
   programs.git = {
     enable = true;
     delta.enable = true;

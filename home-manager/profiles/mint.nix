@@ -28,7 +28,7 @@
     };
 
     sessionVariables = {
-      MYCLI_HISTFILE="~/.local/share/mycli/history.txt";
+      MYCLI_HISTFILE = "~/.local/share/mycli/history.txt";
     };
 
     file = {
@@ -91,6 +91,7 @@
       # scrcpy
       # wavemon
       # zenith
+      tor-browser
 
       vscode
     ];

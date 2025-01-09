@@ -134,7 +134,7 @@ with lib;
           tmux.enableShellIntegration = true;
           defaultOptions = [
             "--border"
-            "--height 60%"
+            "--height 100%"
           ];
 
           tmux.shellIntegrationOptions = [];
