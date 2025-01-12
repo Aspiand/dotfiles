@@ -43,6 +43,7 @@
       # Network
       # ngrok
       nmap
+      sqlmap
       # tor
       # torsocks
 
@@ -82,6 +83,9 @@
       calc
       vlc
       exiftool
+      netbeans
+      postman
+      immich-go
     ];
   };
 
