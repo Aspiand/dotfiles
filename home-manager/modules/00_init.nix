@@ -12,6 +12,7 @@
     ./clamav.nix
     ./mycli.nix
     ./neovim.nix
+    ./yt-dlp.nix
 
     ./sshd.nix
 
