@@ -2,6 +2,10 @@
 
 with lib;
 
+let
+  cfg = config.programs;
+in
+
 {
   options = {
     programs = {
@@ -28,9 +32,7 @@ with lib;
     };
   };
 
-  config = let
-    cfg = config.programs;
-  in mkMerge [
+  config = mkMerge [
 
     (mkIf cfg.ssh.control {
       programs.ssh = {
