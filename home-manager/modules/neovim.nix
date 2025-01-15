@@ -31,7 +31,9 @@
             colorscheme dracula
             syntax enable
           '';
-        } {
+        }
+
+        {
           plugin = lazy-lsp-nvim;
           type = "lua";
           config = ''
@@ -46,7 +48,9 @@
 
             }
           '';
-        } {
+        }
+
+        {
           plugin = vim-airline-themes;
           config = "let g:airline_theme='wombat'";
         }
