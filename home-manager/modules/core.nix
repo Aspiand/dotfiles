@@ -13,79 +13,96 @@
     nclg = "nix-channel --list-generations";
     rm = "${pkgs.trash-cli}/bin/trash-put"; # don't change this line
     remove = "${pkgs.coreutils}/bin/rm";
+    tree = "eza --tree";
   };
 
   home.packages = with pkgs; [
+    bat
     coreutils
     curl
+    gitui
     nano
+    ncdu
     rsync
     trash-cli
-    tree
   ];
 
-  programs.git = {
-    enable = true;
-    userName = "Aspian";
-    userEmail = "p.aspian1738@gmail.com";
-    delta.enable = true;
-
-    extraConfig = {
-      pull.rebase = true;
-      init.defaultBranch = "main";
-
-      core = {
-        fileMode = true;
-        pager = "${pkgs.delta}/bin/delta";
-      };
-
-      delta = {
-        line-numbers = true;
-        side-by-side = false;
-      };
-
-      interactive = {
-        diffFilter = "${pkgs.delta}/bin/delta --color-only";
-      };
-    };
-
-    ignores = [
-      "tmp/"
-      "vendor/"
-      "node_modules/"
-      ".venv/"
-      ".vscode/"
-      "__pycache__/"
-      "*.pyc"
-    ];
-  };
-
-  programs.ssh.enable = true;
-  programs.ssh.matchBlocks = {
-    github = {
-      host = "github.com";
-      user = "git";
-      forwardAgent = true;
-      identityFile = [
-        "~/.ssh/id_rsa"
-        "~/.ssh/id_ed25519"
+  programs = {
+    eza = {
+      git = true;
+      icons = "always";
+      enableZshIntegration = true;
+      enableBashIntegration = true;
+      extraOptions = [
+        "--group"
+        "--group-directories-first"
+        "--mounts"
+        "--no-quotes"
       ];
     };
 
-    # dalet = {
-    #   hostname = "192.168.100.2";
-    #   host = "dalet";
-    #   user = "u0_a251";
-    #   port = 2222;
-    #   identityFile = "~/.ssh/id_rsa";
-    # };
+    fzf = {
+      enableBashIntegration = true;
+      tmux.enableShellIntegration = true;
+      defaultOptions = [
+        "--border"
+        "--height 100%"
+      ];
+    };
 
-    # nix-dalet = {
-    #   hostname = "192.168.100.2";
-    #   host = "dnod";
-    #   user = "nix-on-droid";
-    #   port = 3022;
-    #   identityFile = "~/.ssh/id_rsa";
-    # };
+    git = {
+      enable = true;
+      userName = "Aspian";
+      userEmail = "p.aspian1738@gmail.com";
+      delta.enable = true;
+
+      extraConfig = {
+        pull.rebase = true;
+        init.defaultBranch = "main";
+
+        core = {
+          fileMode = true;
+          pager = "${pkgs.delta}/bin/delta";
+        };
+
+        delta = {
+          line-numbers = true;
+          side-by-side = false;
+        };
+
+        interactive = {
+          diffFilter = "${pkgs.delta}/bin/delta --color-only";
+        };
+      };
+
+      ignores = [
+        "tmp/"
+        "vendor/"
+        "node_modules/"
+        ".venv/"
+        ".vscode/"
+        "__pycache__/"
+        "*.pyc"
+      ];
+    };
+
+    ssh = {
+      enable = true;
+      matchBlocks.github = {
+        host = "github.com";
+        user = "git";
+        forwardAgent = true;
+        identityFile = [
+          "~/.ssh/id_rsa"
+          "~/.ssh/id_ed25519"
+        ];
+      };
+    };
+
+    zoxide = {
+      enable = true;
+      enableBashIntegration = true;
+      options = [];
+    };
   };
 }

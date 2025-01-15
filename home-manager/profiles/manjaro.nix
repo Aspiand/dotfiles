@@ -1,9 +1,7 @@
 { config, pkgs, ... }:
 
 {
-  imports = [
-    ../modules/init.nix
-  ];
+  imports = [ ../modules/00_init.nix ];
 
   nixpkgs.config.allowUnfree = true;
   shell.bash.enable = true;
