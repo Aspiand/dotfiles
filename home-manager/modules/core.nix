@@ -24,23 +24,28 @@
     tree
   ];
 
-  home.sessionVariables = {
-    IMMICH_RECURSIVE = "true";
-  };
-
   programs.git = {
     enable = true;
-    delta.enable = true;
     userName = "Aspian";
     userEmail = "p.aspian1738@gmail.com";
+    delta.enable = true;
+
     extraConfig = {
-      core.fileMode = true;
       pull.rebase = true;
       init.defaultBranch = "main";
+
+      core = {
+        fileMode = true;
+        pager = "${pkgs.delta}/bin/delta";
+      };
 
       delta = {
         line-numbers = true;
         side-by-side = false;
+      };
+
+      interactive = {
+        diffFilter = "${pkgs.delta}/bin/delta --color-only";
       };
     };
 
@@ -61,7 +66,10 @@
       host = "github.com";
       user = "git";
       forwardAgent = true;
-      identityFile = "~/.ssh/id_rsa";
+      identityFile = [
+        "~/.ssh/id_rsa"
+        "~/.ssh/id_ed25519"
+      ];
     };
 
     # dalet = {
