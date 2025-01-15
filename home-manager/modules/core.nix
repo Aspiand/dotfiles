@@ -64,20 +64,20 @@
       identityFile = "~/.ssh/id_rsa";
     };
 
-    dalet = {
-      hostname = "192.168.100.2";
-      host = "dalet";
-      user = "u0_a251";
-      port = 2222;
-      identityFile = "~/.ssh/id_rsa";
-    };
+    # dalet = {
+    #   hostname = "192.168.100.2";
+    #   host = "dalet";
+    #   user = "u0_a251";
+    #   port = 2222;
+    #   identityFile = "~/.ssh/id_rsa";
+    # };
 
-    nix-dalet = {
-      hostname = "192.168.100.2";
-      host = "dnod";
-      user = "nix-on-droid";
-      port = 3022;
-      identityFile = "~/.ssh/id_rsa";
-    };
+    # nix-dalet = {
+    #   hostname = "192.168.100.2";
+    #   host = "dnod";
+    #   user = "nix-on-droid";
+    #   port = 3022;
+    #   identityFile = "~/.ssh/id_rsa";
+    # };
   };
 }
