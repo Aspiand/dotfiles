@@ -2,14 +2,29 @@
 
 with lib;
 
-{
-  options.programs.mycli.enable = mkEnableOption "MyCLI";
+let
+  cfg = config.programs.mycli;
+in
 
-  config = mkIf config.programs.mycli.enable {
+{
+  options.programs.mycli = {
+    enable = mkEnableOption "MyCLI";
+    dir = mkOption {
+      type = types.path;
+      default = "${config.home.homeDirectory}/.local/share/mycli";
+    };
+  };
+
+  config = mkIf cfg.enable {
     home = {
       packages = [ pkgs.mycli ];
       shellAliases.sql = "PYTHONWARNINGS='ignore' mycli mysql://root:'root'@localhost/";
-      file.".myclirc".source = ../../.myclirc;
+
+      activation.mycliSetup = lib.hm.dag.entryAfter ["writeBoundary"] ''
+        if [ ! -d "${cfg.dir}" ]; then
+          mkdir -p "${cfg.dir}"
+        fi
+      '';
     };
   };
 }

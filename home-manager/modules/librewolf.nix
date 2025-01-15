@@ -1,6 +1,8 @@
 { lib, config, pkgs, ... }:
 
-with lib; {
+with lib;
+
+{
   options.programs.utils.librewolf.enable = mkEnableOption "librewolf";
 
   config = mkIf config.programs.utils.librewolf.enable {

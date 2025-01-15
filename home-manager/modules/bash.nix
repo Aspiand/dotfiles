@@ -1,6 +1,10 @@
 { config, pkgs, lib, ... }:
 
-with lib; let cfg = config.shell.bash; in
+with lib;
+
+let
+  cfg = config.shell.bash;
+in
 
 {
   options.shell.bash.enable = mkEnableOption "Bash Shell";

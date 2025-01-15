@@ -1,14 +1,18 @@
 { config, pkgs, lib, ...}:
 
-with lib; let cfg = config.services.sshd; in
+with lib;
+
+let
+  cfg = config.services.sshd;
+in
 
 {
   options.services.sshd = {
     enable = mkEnableOption "sshd";
     dir = mkOption {
       type = types.path;
-      default = "${config.home.homeDirectory}/.ssh/sshd";
-      example = "${config.home.homeDirectory}/.ssh";
+      default = "${config.home.homeDirectory}/.ssh";
+      example = "${config.home.homeDirectory}/.ssh/sshd";
     };
 
     port = mkOption {
@@ -57,7 +61,7 @@ with lib; let cfg = config.services.sshd; in
       sshd_stop = "kill $(cat ${cfg.dir}/sshd.pid)";
     };
 
-    home.activation.sshd_setup = lib.hm.dag.entryAfter ["writeBoundary"] ''
+    home.activation.sshdSetup = lib.hm.dag.entryAfter ["writeBoundary"] ''
       if [ ! -d "${cfg.dir}" ]; then
         mkdir -pvm "700" ${cfg.dir}
       fi
@@ -89,6 +93,7 @@ with lib; let cfg = config.services.sshd; in
       PubkeyAuthentication ${if cfg.keyAuthentication then "yes" else "no"}
       PermitRootLogin ${if cfg.rootLogin then "yes" else "no"}
       TCPKeepAlive yes
+
       ${if cfg.extraConfig != "" then cfg.extraConfig else ""}
       EOF
 
