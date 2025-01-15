@@ -75,22 +75,30 @@ in
 
     # General
     {
-      programs = {
-        yazi = {
-          enableBashIntegration = true;
-          enableZshIntegration = true;
-          settings = {
-            log.enable = true;
-            manager = {
-              show_hidden = true;
-              sort_by = "alphabetical";
-              sort_dir_first = true;
-              sort_reverse = false;
-              show_symlink = true;
-            };
-          };
-        };
-      };
+      programs = mkMerge [
+        {
+          yazi = mkMerge [
+            {
+              enableBashIntegration = true;
+              enableZshIntegration = true;
+              settings = mkMerge [
+                {
+                  log.enable = true;
+                  manager = mkMerge [
+                    {
+                      show_hidden = true;
+                      sort_by = "alphabetical";
+                      sort_dir_first = true;
+                      sort_reverse = false;
+                      show_symlink = true;
+                    }
+                  ];
+                }
+              ];
+            }
+          ];
+        }
+      ];
     }
   ];
 }
