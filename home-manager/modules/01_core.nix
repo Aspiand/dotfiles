@@ -29,6 +29,7 @@
 
   programs = {
     eza = {
+      enable = true;
       git = true;
       icons = "always";
       enableZshIntegration = true;
@@ -42,6 +43,7 @@
     };
 
     fzf = {
+      enable = true;
       enableBashIntegration = true;
       tmux.enableShellIntegration = true;
       defaultOptions = [

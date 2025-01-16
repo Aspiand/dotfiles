@@ -35,13 +35,14 @@
 
       # Editor
       android-studio
+      netbeans
       obsidian
       vscode
 
       # Network
       # ngrok
       nmap
-      sqlmap
+      # sqlmap
       # tor
       # torsocks
 
@@ -52,7 +53,7 @@
       php84
       # frankenphp
       phpPackages.composer
-      phpExtensions.pdo
+      # phpExtensions.pdo
       # phpExtensions.sqlite3
       # phpExtensions.pdo_mysql
       # phpExtensions.pdo_sqlite
@@ -65,7 +66,9 @@
       # caddy
       distrobox
       duf
+      exiftool
       immich-cli
+      immich-go
       # mkp224o
       neofetch
       nix-bash-completions
@@ -80,10 +83,7 @@
       maim
       calc
       vlc
-      exiftool
-      netbeans
       postman
-      immich-go
     ];
   };
 
@@ -92,8 +92,6 @@
     git.extraConfig.core.editor = "${pkgs.vscode}/bin/code --wait";
 
     clamav.enable = true;
-    eza.enable = true;
-    fzf.enable = true;
     gpg.enable = true;
     gpg.homedir = "${config.xdg.dataHome}/gnupg";
     mycli.enable = true;
@@ -101,10 +99,8 @@
     password-store.enable = true;
     ssh.control = true;
     tmux.enable = true;
-    yazi.enable = true;
     yt-dlp.enable = true;
     yt-dlp.downloader = "aria2c";
-    zoxide.enable = true;
   };
 
   services = {

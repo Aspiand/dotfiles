@@ -1,6 +1,6 @@
 {
   imports = [
-    ./core.nix
+    ./01_core.nix
     ./center.nix
 
     ./bash.nix
@@ -11,6 +11,7 @@
     # CLI
     ./clamav.nix
     ./mycli.nix
+    ./password-store.nix
     ./neovim.nix
     ./yt-dlp.nix
 

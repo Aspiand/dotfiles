@@ -30,7 +30,6 @@
     };
 
     file = {
-      ".myclirc".source = ../../.myclirc;
       ".local/share/applications/obsidian.desktop".text = ''
         [Desktop Entry]
         Categories=Office
@@ -48,7 +47,7 @@
     packages = with pkgs; [
       nerd-fonts._0xproto
       nerd-fonts.caskaydia-cove
-      candy-icons # later -> https://discourse.nixos.org/t/merging-directories-in-home-manager/31677
+      candy-icons
 
       # Network
       dnsutils
@@ -100,17 +99,13 @@
     git.extraConfig.core.editor = "${pkgs.vscode}/bin/code --wait";
 
     clamav.enable = true;
-    eza.enable = true;
-    fzf.enable = true;
     mycli.enable = true;
     neovim.enable = true;
     password-store.enable = true;
     ssh.control = true;
     tmux.enable = true;
-    yazi.enable = false;
     yt-dlp.enable = true;
     yt-dlp.downloader = "aria2c";
-    zoxide.enable = true;
 
     librewolf.enable = true;
 

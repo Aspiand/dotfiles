@@ -11,13 +11,14 @@ in
     enable = mkEnableOption "MyCLI";
     dir = mkOption {
       type = types.path;
-      default = "${config.home.homeDirectory}/.local/share/mycli";
+      default = "${config.xdg.dataHome}/mycli";
     };
   };
 
   config = mkIf cfg.enable {
     home = {
       packages = [ pkgs.mycli ];
+      file.".myclirc".source = ../../.myclirc;
       shellAliases.sql = "PYTHONWARNINGS='ignore' mycli mysql://root:'root'@localhost/";
 
       activation.mycliSetup = lib.hm.dag.entryAfter ["writeBoundary"] ''
