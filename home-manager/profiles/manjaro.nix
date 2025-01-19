@@ -62,7 +62,7 @@
       python312Packages.virtualenv
 
       # Utils
-      # android-tools
+      android-tools
       # caddy
       distrobox
       duf
