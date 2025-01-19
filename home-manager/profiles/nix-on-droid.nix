@@ -33,6 +33,7 @@
       gawk
       gnumake
       findutils
+      which
     ];
 
     shellAliases = {
