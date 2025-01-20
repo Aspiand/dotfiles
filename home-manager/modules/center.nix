@@ -79,7 +79,6 @@ in
           yazi = mkMerge [
             {
               enableBashIntegration = true;
-              enableZshIntegration = true;
               settings = mkMerge [
                 {
                   log.enable = true;

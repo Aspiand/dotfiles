@@ -48,14 +48,10 @@
     home-manager.enable = true;
 
     clamav.enable = true;
-    eza.enable = true;
-    fzf.enable = true;
     gpg.enable = true;
     gpg.homedir = "${config.xdg.dataHome}/gnupg";
     yt-dlp.enable = true;
-    # yt-dlp.downloader = "aria2c";
     yt-dlp.path = "/data/data/com.termux.nix/files/home/storage/Share/YouTube/";
-    zoxide.enable = true;
   };
 
   services.sshd = {
@@ -66,7 +62,7 @@
   };
 
   services.gpg-agent = {
-    enable = true;
+    enable = false;
     enableSshSupport = true;
     enableBashIntegration = true;
     pinentryPackage = pkgs.pinentry-tty;
