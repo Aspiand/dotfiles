@@ -35,7 +35,7 @@
 
       # Editor
       android-studio
-      netbeans
+      # netbeans
       obsidian
       vscode
 
@@ -83,7 +83,8 @@
       maim
       calc
       vlc
-      postman
+      # postman
+      baobab
     ];
   };
 
