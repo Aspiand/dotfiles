@@ -17,6 +17,7 @@
   };
 
   home.packages = with pkgs; [
+    # CLI
     bat
     coreutils
     curl
@@ -25,6 +26,13 @@
     ncdu
     rsync
     trash-cli
+
+    # Archive
+    unzip
+    gnutar
+    gzip
+    xz
+    zip
   ];
 
   programs = {

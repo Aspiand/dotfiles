@@ -11,12 +11,6 @@ in
     programs = {
       ssh.control = mkEnableOption "SSH Control";
     };
-
-    shell.nix-path = mkOption {
-      type = types.path;
-      default = "${config.home.homeDirectory}/.nix-profile/etc/profile.d/nix.sh";
-      example = "/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh";
-    };
   };
 
   config = mkMerge [
@@ -27,17 +21,6 @@ in
         controlPersist = "30m";
         controlPath = "~/.ssh/control/%r@%n:%p";
       };
-    })
-
-    # Shell
-    (let path = config.shell.nix-path; in {
-      programs.bash.bashrcExtra = ''
-        source ${path}
-      '';
-
-      programs.zsh.initExtraFirst = mkIf cfg.zsh.enable ''
-        source ${path}
-      '';
     })
 
     (mkIf cfg.ssh.enable {
@@ -54,16 +37,10 @@ in
         # Archive
         bzip2
         bzip3
-        gzip
         unrar
-        unzip
-        gnutar
-        xz
-        zip
         zstd
 
         # Multimedia
-        # exiftool
         ffmpeg
 
         # Network
