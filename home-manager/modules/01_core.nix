@@ -5,7 +5,7 @@
     dh = "du -h";
     dt = "df -Th";
     durl = "curl -O --progress-bar";
-    l = "ls -lah";
+    l = "ls -lh";
     la = "ls -lAh";
     ll = "ls -lh";
     ncu = "nix-channel --update";
