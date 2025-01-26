@@ -59,6 +59,7 @@
       # phpExtensions.pdo_sqlite
       python312
       python312Packages.pip
+      python312Packages.mypy
       python312Packages.virtualenv
 
       # Utils
@@ -85,6 +86,7 @@
       vlc
       # postman
       baobab
+      borgbackup
     ];
   };
 
