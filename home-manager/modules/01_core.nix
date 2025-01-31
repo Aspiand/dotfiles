@@ -6,8 +6,9 @@
     dt = "df -Th";
     durl = "curl -O --progress-bar";
     l = "ls -lh";
-    la = "ls -lAh";
-    ll = "ls -lh";
+    la = "ls -lAh --octal-permissions";
+    ld = "ls --only-dirs";
+    ll = "ls -lh --total-size";
     ncu = "nix-channel --update";
     ncl = "nix-channel --list";
     nclg = "nix-channel --list-generations";
@@ -43,6 +44,7 @@
       enableZshIntegration = true;
       enableBashIntegration = true;
       extraOptions = [
+        "--git-repos"
         "--group"
         "--group-directories-first"
         "--mounts"
