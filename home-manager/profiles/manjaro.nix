@@ -25,6 +25,7 @@
     };
 
     packages = with pkgs; [
+      #
       nerd-fonts._0xproto
       nerd-fonts.caskaydia-cove
       candy-icons
@@ -35,7 +36,7 @@
 
       # Editor
       android-studio
-      # netbeans
+      netbeans
       obsidian
       vscode
 
@@ -52,14 +53,13 @@
       jre_headless
       php84
       # frankenphp
-      phpPackages.composer
+      php84Packages.composer
       # phpExtensions.pdo
       # phpExtensions.sqlite3
       # phpExtensions.pdo_mysql
       # phpExtensions.pdo_sqlite
       python312
       python312Packages.pip
-      python312Packages.mypy
       python312Packages.virtualenv
 
       # Utils
@@ -68,8 +68,8 @@
       distrobox
       duf
       exiftool
-      immich-cli
-      immich-go
+      # immich-cli
+      # immich-go
       # mkp224o
       neofetch
       nix-bash-completions
@@ -85,8 +85,8 @@
       calc
       vlc
       # postman
-      baobab
-      borgbackup
+      # baobab
+      # borgbackup
     ];
   };
 
