@@ -1,7 +1,7 @@
 { config, pkgs, ... }:
 
 {
-  imports = [ ../modules/00_init.nix ../modules/default.nix ];
+  imports = [ ../modules/00_init.nix ];
 
   nixpkgs.config.allowUnfree = true;
   shell.bash.enable = true;
@@ -17,6 +17,7 @@
       hmg = "home-manager generations";
       pc = "podman-compose";
       pps = "podman ps";
+      mc = "${config.home.homeDirectory}.local/share/venv/bin/mov-cli";
     };
 
     file = {

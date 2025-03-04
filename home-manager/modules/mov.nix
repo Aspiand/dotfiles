@@ -20,11 +20,15 @@ in
     home.packages = with pkgs; [
       cfg.player
       chafa
-      ffmpeg_6-headless
+      ffmpeg
       fzf
-      mov-cli-youtube
+      mov-cli
       python3
       yt-dlp
+
+      # (import ../packages/mov-cli-youtube.nix {
+      #   inherit (pkgs) lib fetchFromGitHub python3;
+      # })
     ];
 
     home.file.".config/mov-cli/config.toml".text = ''
@@ -53,6 +57,7 @@ in
       display_quality = true # false
 
       [mov-cli.plugins] # E.g: namespace = "package-name"
+      youtube = "mov-cli-youtube"
       test = "mov-cli-test"
 
       [mov-cli.scrapers]
