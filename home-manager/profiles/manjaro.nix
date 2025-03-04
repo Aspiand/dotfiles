@@ -1,7 +1,7 @@
 { config, pkgs, ... }:
 
 {
-  imports = [ ../modules/00_init.nix ];
+  imports = [ ../modules/00_init.nix ../modules/default.nix ];
 
   nixpkgs.config.allowUnfree = true;
   shell.bash.enable = true;
@@ -97,6 +97,7 @@
     clamav.enable = true;
     gpg.enable = true;
     gpg.homedir = "${config.xdg.dataHome}/gnupg";
+    # mov.enable = true;
     mycli.enable = true;
     neovim.enable = true;
     password-store.enable = true;

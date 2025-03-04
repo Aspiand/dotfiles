@@ -1,3 +1,5 @@
+########
+
 {
   imports = [
     ./01_core.nix
@@ -10,9 +12,10 @@
 
     # CLI
     ./clamav.nix
+    # ./mov.nix
     ./mycli.nix
-    ./password-store.nix
     ./neovim.nix
+    ./password-store.nix
     ./yt-dlp.nix
 
     ./sshd.nix
