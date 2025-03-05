@@ -1,25 +1,35 @@
 {
   lib,
-  fetchFromGitHub,
-  python3
+  buildPythonPackage,
+  fetchPypi,
+
+  # dependencies
+  pytubefix,
+  requests,
+  setuptools,
+  yt-dlp
 }:
 
-let
-  pname = "mov-cli-youtube";
+buildPythonPackage rec {
+  pname = "mov_cli_youtube";
   version = "1.3.8";
-in
-
-python3.pkgs.buildPythonPackage {
-  inherit pname version;
   pyproject = true;
-  src = fetchFromGitHub {
-    owner = "mov-cli";
-    repo = pname;
-    tag = version;
-    hash = "sha256-2dc6EYy+6vCOCy+FZBVKWzeV3xFAswUaX9XfYk0jz1E=";
+  doCheck = false;
+
+  src = fetchPypi {
+    inherit pname version;
+    hash = "sha256-qy/s7teIKuqecrkSURuc+oaFRX4u3J2ZuZSkLD+nXyk=";
   };
 
-  propagatedBuildInputs = with python3.pkgs; [
+  postPatch = ''
+    rm -f $out/bin/pydoc
+  '';
+
+  build-system = [
+    setuptools
+  ];
+
+  dependencies = [
     pytubefix
     requests
     setuptools

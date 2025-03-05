@@ -1,9 +1,21 @@
+# https://wiki.nixos.org/wiki/Python#
+# https://github.com/NixOS/nixpkgs/blob/master/doc/languages-frameworks/python.section.md
+# https://discourse.nixos.org/t/add-python-package-via-overlay/19783/3
+
 { config, lib, pkgs, ...}:
 
 with lib;
 
 let
   cfg = config.programs.mov;
+  python = pkgs.python312.override {
+    # postFixup = ''
+    #   rm -f $out/bin/pydoc
+    # '';
+    packageOverrides = python-final: python-prev: {
+      mov-cli-youtube = python-final.callPackage ../packages/mov-cli-youtube.nix {};
+    };
+  };
 in
 
 {
@@ -20,15 +32,15 @@ in
     home.packages = with pkgs; [
       cfg.player
       chafa
-      ffmpeg
-      fzf
+      # ffmpeg
+      # fzf
       mov-cli
-      python3
-      yt-dlp
+      # yt-dlp
 
-      # (import ../packages/mov-cli-youtube.nix {
-      #   inherit (pkgs) lib fetchFromGitHub python3;
-      # })
+      (python.withPackages (ps: [
+        # (lib.mkForce ps.mov-cli-youtube)
+        ps.mov-cli-youtube
+      ]))
     ];
 
     home.file.".config/mov-cli/config.toml".text = ''
