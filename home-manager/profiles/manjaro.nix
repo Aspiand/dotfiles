@@ -1,11 +1,15 @@
 { config, pkgs, ... }:
 
 {
-  imports = [ ../modules/00_init.nix ];
+  imports = [ ./core.nix ];
 
-  nixpkgs.config.allowUnfree = true;
   shell.bash.enable = true;
   fonts.fontconfig.enable = true;
+  nixpkgs.config.allowUnfree = true;
+  nix = {
+    package = pkgs.nix;
+    settings.experimental-features = [ "nix-command" "flakes" ];
+  };
 
   home = {
     username = "kuro";
@@ -17,7 +21,7 @@
       hmg = "home-manager generations";
       pc = "podman-compose";
       pps = "podman ps";
-      mc = "${config.home.homeDirectory}.local/share/venv/bin/mov-cli";
+      # mc = "${config.home.homeDirectory}.local/share/venv/bin/mov-cli";
     };
 
     file = {

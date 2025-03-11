@@ -1,8 +1,5 @@
-########
-
 {
   imports = [
-    ./01_core.nix
     ./center.nix
 
     ./bash.nix
@@ -20,6 +17,7 @@
 
     ./sshd.nix
 
+    # deprecated
     ./librewolf.nix
   ];
 }
