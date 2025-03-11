@@ -1,7 +1,7 @@
 { config, pkgs, ... }:
 
 {
-  imports = [ ../modules/00_init.nix ];
+  imports = [ ./core.nix ];
 
   # Nix Channel
 

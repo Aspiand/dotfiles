@@ -1,6 +1,8 @@
 { pkgs, ... }:
 
 {
+  imports = [ ../modules/default.nix ];
+
   home.shellAliases = {
     dh = "du -h";
     dt = "df -Th";
