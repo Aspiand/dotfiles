@@ -21,9 +21,9 @@ buildPythonPackage rec {
     hash = "sha256-qy/s7teIKuqecrkSURuc+oaFRX4u3J2ZuZSkLD+nXyk=";
   };
 
-  postPatch = ''
-    rm -f $out/bin/pydoc
-  '';
+  # postPatch = ''
+  #   rm -f $out/bin/pydoc
+  # '';
 
   build-system = [
     setuptools

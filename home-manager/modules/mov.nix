@@ -8,14 +8,24 @@ with lib;
 
 let
   cfg = config.programs.mov;
+  packageOverrides = pkgs.callPackage ../packages/mov-cli-youtube.nix {};
   python = pkgs.python312.override {
-    # postFixup = ''
-    #   rm -f $out/bin/pydoc
-    # '';
-    packageOverrides = python-final: python-prev: {
-      mov-cli-youtube = python-final.callPackage ../packages/mov-cli-youtube.nix {};
+    overrides = self: super: {
+      mov-cli-youtube = packageOverrides;
     };
   };
+
+# packageOverrides = pkgs.callPackage ../packages/mov-cli-youtube.nix {
+#   buildPythonPackage = pkgs.pythonPackages.buildPythonPackage;
+#   fetchPypi = pkgs.fetchPypi;
+#   lib = pkgs.lib;
+#   pytubefix = pkgs.pythonPackages.pytubefix;
+#   requests = pkgs.pythonPackages.requests;
+#   setuptools = pkgs.pythonPackages.setuptools;
+#   yt-dlp = pkgs.pythonPackages.yt-dlp;
+# };
+
+  # python = pkgs.python312.override { inherit packageOverrides; };
 in
 
 {
@@ -38,7 +48,6 @@ in
       # yt-dlp
 
       (python.withPackages (ps: [
-        # (lib.mkForce ps.mov-cli-youtube)
         ps.mov-cli-youtube
       ]))
     ];
