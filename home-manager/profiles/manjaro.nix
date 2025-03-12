@@ -40,7 +40,7 @@
       tor-browser
 
       # Editor
-      android-studio
+      # android-studio
       netbeans
       obsidian
       vscode
