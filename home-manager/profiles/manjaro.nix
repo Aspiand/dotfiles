@@ -104,12 +104,22 @@
     gpg.homedir = "${config.xdg.dataHome}/gnupg";
     # mov.enable = true;
     mycli.enable = true;
-    neovim.enable = true;
+    # neovim.enable = true;
     password-store.enable = true;
     ssh.control = true;
     tmux.enable = true;
     yt-dlp.enable = true;
     yt-dlp.downloader = "aria2c";
+  };
+
+  programs.nixvim = {
+    enable = true;
+    viAlias = true;
+    vimAlias = true;
+    defaultEditor = true;
+    colorschemes.catppuccin = {
+      enable = true;
+    };
   };
 
   services = {
