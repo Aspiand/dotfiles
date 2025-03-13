@@ -91,7 +91,6 @@
       vlc
       # postman
       # baobab
-      # borgbackup
     ];
   };
 
@@ -110,6 +109,25 @@
     tmux.enable = true;
     yt-dlp.enable = true;
     yt-dlp.downloader = "aria2c";
+
+    borgmatic = let home = config.home.homeDirectory; in {
+      enable = true;
+      backups = {
+        credentials = {
+          location = {
+            sourceDirectories = [
+              "${home}/.local/share/gnupg"
+              "${home}/.local/share/password-store"
+              "${home}/.ssh"
+            ];
+
+            repositories = [
+              "${home}/borgmatic"
+            ];
+          };
+        };
+      };
+    };
   };
 
   services = {
