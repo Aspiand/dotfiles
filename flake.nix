@@ -9,16 +9,18 @@
     };
   };
 
-  outputs = { self, nixpkgs, home-manager, ... }: {
-    # packages.x86_64-linux.hello = nixpkgs.legacyPackages.x86_64-linux.hello;
-    # packages.x86_64-linux.default = self.packages.x86_64-linux.hello;
-
+  outputs = { self, nixpkgs, home-manager, ... }: let
+    pkgs = import nixpkgs { system = "x86_64-linux"; };
+  in{
     homeConfigurations = {
       "manjaro" = home-manager.lib.homeManagerConfiguration {
-        pkgs = import nixpkgs { system = "x86_64-linux"; };
-        modules = [
-          ./home-manager/profiles/manjaro.nix
-        ];
+        inherit pkgs;
+        modules = [ ./home-manager/profiles/manjaro.nix ];
+      };
+
+      "mint" = home-manager.lib.homeManagerConfiguration {
+        inherit pkgs;
+        modules = [ ./home-manager/profiles/mint.nix ];
       };
     };
   };
