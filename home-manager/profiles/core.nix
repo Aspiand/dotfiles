@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
 {
   imports = [ ../modules/default.nix ];
@@ -38,7 +38,11 @@
     zip
   ];
 
-  programs = {
+  programs = with lib; {
+    gpg.homedir = mkDefault "${config.xdg.dataHome}/gnupg";
+    password-store.enable = mkDefault true;
+    home-manager.enable = true;
+
     eza = {
       enable = true;
       git = true;
