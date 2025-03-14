@@ -90,6 +90,7 @@
       # zenith
       tor-browser
 
+      android-studio
       vscode
     ];
   };
@@ -101,7 +102,6 @@
     clamav.enable = true;
     mycli.enable = true;
     neovim.enable = true;
-    password-store.enable = true;
     ssh.control = true;
     tmux.enable = true;
     yt-dlp.enable = true;
