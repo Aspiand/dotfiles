@@ -21,7 +21,6 @@
       hmg = "home-manager generations";
       pc = "podman-compose";
       pps = "podman ps";
-      # mc = "${config.home.homeDirectory}.local/share/venv/bin/mov-cli";
     };
 
     file = {
@@ -56,6 +55,7 @@
       nodejs
       jdk_headless
       jre_headless
+      mysql_jdbc
       php84
       # frankenphp
       php84Packages.composer
@@ -95,16 +95,12 @@
   };
 
   programs = {
-    home-manager.enable = true;
     git.extraConfig.core.editor = "${pkgs.vscode}/bin/code --wait";
 
     clamav.enable = true;
     gpg.enable = true;
-    gpg.homedir = "${config.xdg.dataHome}/gnupg";
-    # mov.enable = true;
     mycli.enable = true;
     neovim.enable = true;
-    password-store.enable = true;
     ssh.control = true;
     tmux.enable = true;
     yt-dlp.enable = true;
