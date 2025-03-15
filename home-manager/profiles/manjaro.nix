@@ -21,6 +21,11 @@
       hmg = "home-manager generations";
       pc = "podman-compose";
       pps = "podman ps";
+      podman-sock = "podman system service --time=0 unix://$XDG_RUNTIME_DIR/podman.sock";
+    };
+
+    sessionVariables = {
+      DOCKER_HOST = "unix:///$($XDG_RUNTIME_DIR)/podman.sock";
     };
 
     file = {
@@ -100,6 +105,7 @@
     clamav.enable = true;
     gpg.enable = true;
     mycli.enable = true;
+    # mysql.enable = true;
     neovim.enable = true;
     ssh.control = true;
     tmux.enable = true;
