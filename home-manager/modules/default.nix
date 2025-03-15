@@ -15,6 +15,7 @@
     ./password-store.nix
     ./yt-dlp.nix
 
+    ./mysql.nix
     ./sshd.nix
 
     # deprecated
