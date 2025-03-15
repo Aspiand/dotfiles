@@ -19,6 +19,7 @@ in
     home = {
       packages = [ pkgs.mycli ];
       file.".myclirc".source = ../../.myclirc;
+      sessionVariables.MYCLI_HISTFILE = "~/.local/share/mycli/history.txt";
       shellAliases.sql = "PYTHONWARNINGS='ignore' mycli mysql://root:'root'@localhost/";
 
       activation.mycliSetup = lib.hm.dag.entryAfter ["writeBoundary"] ''

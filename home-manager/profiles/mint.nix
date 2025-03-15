@@ -22,11 +22,6 @@
     shellAliases = {
       hmbs = "home-manager build switch";
       hmg = "home-manager generations";
-      sql = "PYTHONWARNINGS='ignore' mycli mysql://root:'root'@localhost/";
-    };
-
-    sessionVariables = {
-      MYCLI_HISTFILE = "~/.local/share/mycli/history.txt";
     };
 
     file = {
@@ -96,7 +91,6 @@
   };
 
   programs = {
-    home-manager.enable = true;    
     git.extraConfig.core.editor = "${pkgs.vscode}/bin/code --wait";
 
     clamav.enable = true;
