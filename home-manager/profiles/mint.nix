@@ -24,6 +24,10 @@
       hmg = "home-manager generations";
     };
 
+    sessionVariables = {
+      DOCKER_HOST = "unix:///var/run/podman/podman.sock";
+    };
+
     file = {
       ".local/share/applications/obsidian.desktop".text = ''
         [Desktop Entry]
