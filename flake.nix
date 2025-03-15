@@ -11,7 +11,7 @@
 
   outputs = { self, nixpkgs, home-manager, ... }: let
     pkgs = import nixpkgs { system = "x86_64-linux"; };
-  in{
+  in {
     homeConfigurations = {
       "manjaro" = home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
