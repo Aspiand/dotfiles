@@ -13,4 +13,7 @@ jobs:
               with:
                   nix_path: nixpkgs=channel:nixos-unstable
                   github_access_token: ${{ secrets.GITHUB_TOKEN }}
+            - run: |
+                [ -f ~/.config/nix/nix.conf ] || mv --verbose ~/.config/nix/nix.conf ~/.config/nix/nix.conf.bak
+                echo "experimental-features = nix-command flakes" >> ~/.config/nix/nix.conf
             - run: nix run nixpkgs#home-manager -- switch --show-trace --flake ${{ github.workspace }}#${{ matrix.profile }}
