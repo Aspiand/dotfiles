@@ -6,12 +6,7 @@
   nix.package = pkgs.nix;
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
   nixpkgs.config.allowUnfree = true;
-
-  shell = {
-    zsh.enable = true;
-    bash.enable = true;
-  };
-
+  shell.bash.enable = true;
   fonts.fontconfig.enable = true;
 
   home = {
