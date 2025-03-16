@@ -37,7 +37,8 @@ install_nix() {
         esac
     done
 
-    [ ! -f ~/.config/nix/nix.conf ] || mv --verbose ~/.config/nix/nix.conf ~/.config/nix/nix.conf.bak
+    [ ! -d ~/.config/nix ] && mkdir --verbose -p ~/.config/nix
+    [ -f ~/.config/nix/nix.conf ] || mv --verbose ~/.config/nix/nix.conf ~/.config/nix/nix.conf.bak
     echo "experimental-features = nix-command flakes" >> ~/.config/nix/nix.conf
 
     nix run nixpkgs.git -- clone https://github.com/Aspiand/dotfiles ~/.config/dotfiles
