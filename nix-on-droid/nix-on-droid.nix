@@ -4,6 +4,7 @@
   time.timeZone = "Asia/Makassar";
   system.stateVersion = "24.05";
   terminal.font = "${pkgs.nerd-fonts.caskaydia-cove}/share/fonts/truetype/NerdFonts/CaskaydiaCove/CaskaydiaCoveNerdFont-SemiBoldItalic.ttf";
+  user.shell = "${pkgs.bashInteractive}/bin/bash";
 
   environment = {
     packages = [ pkgs.busybox ];
@@ -14,12 +15,6 @@
   nix.extraOptions = ''
     experimental-features = nix-command flakes
   '';
-
-  user = {
-    shell = "${pkgs.bashInteractive}/bin/bash";
-    uid = 1000;
-    gid = 1000;
-  };
 
   home-manager = {
     backupFileExtension = "hm.bak";
