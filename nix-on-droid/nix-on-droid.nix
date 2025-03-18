@@ -26,14 +26,15 @@
     backupFileExtension = "hm.bak";
     useGlobalPkgs = true;
 
-    config =
-      { config, lib, pkgs, ... }:
+    config = { config, lib, pkgs, ... }:
       {
+        imports = [ ../home-manager/profiles/core.nix ];
+
         nixpkgs.config.allowUnfree = true;
         shell.bash.enable = true;
 
         home = {
-          stateVersion = "24.11";
+          stateVersion = "25.05";
 
           shellAliases = {
             more = "less";
