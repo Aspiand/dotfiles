@@ -17,7 +17,7 @@
 
   user = {
     userName = "aka";
-    shell = ${pkgs.bashInteractive}/bin/bash;
+    shell = "${pkgs.bashInteractive}/bin/bash";
     uid = 1000;
     gid = 1000;
   };
