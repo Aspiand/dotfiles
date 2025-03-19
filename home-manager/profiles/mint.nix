@@ -59,10 +59,10 @@
       jre_headless
       php84
       phpPackages.composer
-      phpExtensions.pdo
-      phpExtensions.sqlite3
-      phpExtensions.pdo_mysql
-      phpExtensions.pdo_sqlite
+      # phpExtensions.pdo
+      # phpExtensions.sqlite3
+      # phpExtensions.pdo_mysql
+      # phpExtensions.pdo_sqlite
       python313
       python313Packages.pip
       python313Packages.virtualenv
@@ -72,19 +72,14 @@
       # caddy
       distrobox
       duf
-      # glow
-      gnumake
-      # ioping
-      immich-cli
+      # immich-cli
       # mkp224o
-      obsidian
-      # qemu
+      qemu
       # scrcpy
-      # wavemon
-      # zenith
       tor-browser
 
       android-studio
+      obsidian
       vscode
     ];
   };
