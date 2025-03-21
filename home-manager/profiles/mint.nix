@@ -58,16 +58,12 @@
       jdk_headless
       jre_headless
       php84
-      phpPackages.composer
-      # phpExtensions.pdo
-      # phpExtensions.sqlite3
-      # phpExtensions.pdo_mysql
-      # phpExtensions.pdo_sqlite
+      php84Packages.composer
       python313
       python313Packages.pip
       python313Packages.virtualenv
 
-      # Utils
+      # Utilities
       android-tools
       # caddy
       distrobox
@@ -78,6 +74,7 @@
       # scrcpy
       tor-browser
 
+      # Editor
       android-studio
       obsidian
       vscode
