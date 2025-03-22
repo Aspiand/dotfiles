@@ -6,6 +6,13 @@
   terminal.font = "${pkgs.nerd-fonts.caskaydia-cove}/share/fonts/truetype/NerdFonts/CaskaydiaCove/CaskaydiaCoveNerdFont-SemiBoldItalic.ttf";
   user.shell = "${pkgs.bashInteractive}/bin/bash";
 
+  android-integration = {
+    termux-setup-storage.enable = true;
+    termux-wake-lock.enable = true;
+    termux-wake-unlock.enable = true;
+    termux-open-url.enable = true;
+  };
+
   environment = {
     packages = [ pkgs.busybox ];
     etcBackupExtension = ".bak";
