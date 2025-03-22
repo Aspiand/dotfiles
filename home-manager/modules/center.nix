@@ -35,24 +35,6 @@ in
       '';
     })
 
-    (mkIf true {
-      home.packages = with pkgs; [
-        # Archive
-        bzip2
-        bzip3
-        unrar
-        zstd
-
-        # Multimedia
-        ffmpeg
-
-        # Network
-        aria2
-        sshfs
-        wget
-      ];
-    })
-
     {
       programs = mkMerge [
         {

@@ -43,6 +43,12 @@
       nerd-fonts.caskaydia-cove
       candy-icons
 
+      # Archive
+      bzip2
+      bzip3
+      unrar
+      zstd
+
       # Network
       dnsutils
       # i2pd

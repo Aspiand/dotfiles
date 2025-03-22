@@ -39,6 +39,12 @@
       nerd-fonts.caskaydia-cove
       candy-icons
 
+      # Archive
+      bzip2
+      bzip3
+      unrar
+      zstd
+
       # Browser
       firefox
       tor-browser

@@ -4,8 +4,6 @@
   imports = [ ../modules/default.nix ];
 
   home.shellAliases = {
-    dh = "du -h";
-    dt = "df -Th";
     durl = "curl -O --progress-bar";
     l = "ls -lh";
     la = "ls -lAh --octal-permissions";
@@ -16,26 +14,31 @@
     nclg = "nix-channel --list-generations";
     rm = "${pkgs.trash-cli}/bin/trash-put"; # don't change this line
     remove = "${pkgs.coreutils}/bin/rm";
-    tree = "eza --tree";
+    tree = "${pkgs.eza}/bin/eza --tree";
   };
 
   home.packages = with pkgs; [
-    # CLI
-    bat
-    coreutils
-    curl
-    gitui
-    nano
-    ncdu
-    rsync
-    trash-cli
-
     # Archive
     unzip
     gnutar
     gzip
     xz
     zip
+
+    # CLI
+    bat
+    coreutils
+    gitui
+    nano
+    ncdu
+    rsync
+    trash-cli
+
+    # Network
+    aria2
+    curl
+    wget
+    sshfs
   ];
 
   programs = with lib; {
@@ -44,7 +47,7 @@
     home-manager.enable = true;
 
     eza = {
-      enable = true;
+      enable = mkDefault true;
       git = true;
       icons = "always";
       enableBashIntegration = true;
@@ -58,7 +61,7 @@
     };
 
     fzf = {
-      enable = true;
+      enable = mkDefault true;
       enableBashIntegration = true;
       tmux.enableShellIntegration = true;
       defaultOptions = [
@@ -68,21 +71,21 @@
     };
 
     git = {
-      enable = true;
+      enable = mkDefault true;
       userName = "Aspian";
       userEmail = "p.aspian1738@gmail.com";
-      delta.enable = true;
 
       extraConfig = {
         pull.rebase = true;
         init.defaultBranch = "main";
 
         core = {
-          fileMode = true;
+          fileMode = mkDefault true;
           pager = "${pkgs.delta}/bin/delta";
         };
 
         delta = {
+          enable = mkDefault true;
           line-numbers = true;
           side-by-side = false;
         };
@@ -104,7 +107,7 @@
     };
 
     ssh = {
-      enable = true;
+      enable = mkDefault true;
       matchBlocks.github = {
         host = "github.com";
         user = "git";
