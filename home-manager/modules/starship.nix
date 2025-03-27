@@ -1,9 +1,12 @@
 { config, pkgs, lib, ... }:
 
+with lib;
+
 {
   programs.starship = {
-    enable = true;
+    enable = mkDefault true;
     enableBashIntegration = true;
+    enableFishIntegration = mkDefault true;
     settings = {
       add_newline = false;
       character.error_symbol = "[✗](bold red)";
