@@ -100,8 +100,7 @@
       maim
       calc
       vlc
-      # postman
-      # baobab
+      podman-tui
     ];
   };
 
