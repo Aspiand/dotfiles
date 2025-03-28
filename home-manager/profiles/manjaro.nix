@@ -21,7 +21,7 @@
       hmg = "home-manager generations";
       pc = "podman-compose";
       pps = "podman ps";
-      podman-sock = "podman system service --time=0 unix://$XDG_RUNTIME_DIR/podman.sock";
+      podman-sock = "podman system service --time=0 unix://$XDG_RUNTIME_DIR/podman/podman.sock";
     };
 
     sessionVariables = {
