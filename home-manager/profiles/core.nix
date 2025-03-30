@@ -1,7 +1,10 @@
 { config, pkgs, lib, ... }:
 
 {
-  imports = [ ../modules/default.nix ];
+  imports = [
+    ../config/default.nix
+    ../modules/default.nix
+  ];
 
   home.shellAliases = {
     durl = "curl -O --progress-bar";

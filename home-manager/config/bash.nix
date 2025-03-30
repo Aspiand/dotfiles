@@ -3,12 +3,11 @@
 with lib;
 
 let
-  cfg = config.shell;
+  cfg = config.programs.bash;
 in
 
 {
-  options.shell = {
-    bash.enable = mkEnableOption "Bash Shell";
+  options.programs.bash = {
     nix-path = mkOption {
       type = types.path;
       default = "${config.home.homeDirectory}/.nix-profile/etc/profile.d/nix.sh";
@@ -16,9 +15,8 @@ in
     };
   };
 
-  config = mkIf cfg.bash.enable {
+  config = {
     programs.bash = {
-      enable = true;
       enableCompletion = true;
       historyControl = [ "ignoreboth" ];
       historyFile = "${config.home.homeDirectory}/.local/history/bash";
