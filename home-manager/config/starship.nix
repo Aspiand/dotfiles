@@ -4,7 +4,7 @@ with lib;
 
 {
   programs.starship = {
-    enable = mkDefault true;
+    enable = config.programs.bash.enable;
     enableBashIntegration = true;
     enableFishIntegration = mkDefault true;
     settings = {
