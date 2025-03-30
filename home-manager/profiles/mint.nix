@@ -6,7 +6,6 @@
   nix.package = pkgs.nix;
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
   nixpkgs.config.allowUnfree = true;
-  shell.bash.enable = true;
   fonts.fontconfig.enable = true;
 
   home = {
@@ -90,6 +89,7 @@
   programs = {
     git.extraConfig.core.editor = "${pkgs.vscode}/bin/code --wait";
 
+    bash.enable = true;
     clamav.enable = true;
     mycli.enable = true;
     neovim.enable = true;

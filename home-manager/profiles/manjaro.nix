@@ -3,7 +3,6 @@
 {
   imports = [ ./core.nix ];
 
-  shell.bash.enable = true;
   fonts.fontconfig.enable = true;
   nixpkgs.config.allowUnfree = true;
   nix = {
@@ -107,6 +106,7 @@
   programs = {
     git.extraConfig.core.editor = "${pkgs.vscode}/bin/code --wait";
 
+    bash.enable = true;
     clamav.enable = true;
     gpg.enable = true;
     mycli.enable = true;
@@ -116,25 +116,6 @@
     tmux.enable = true;
     yt-dlp.enable = true;
     yt-dlp.downloader = "aria2c";
-
-    borgmatic = let home = config.home.homeDirectory; in {
-      enable = true;
-      backups = {
-        credentials = {
-          location = {
-            sourceDirectories = [
-              "${home}/.local/share/gnupg"
-              "${home}/.local/share/password-store"
-              "${home}/.ssh"
-            ];
-
-            repositories = [
-              "${home}/borgmatic"
-            ];
-          };
-        };
-      };
-    };
   };
 
   services = {
