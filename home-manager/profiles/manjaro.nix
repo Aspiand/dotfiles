@@ -58,8 +58,8 @@
       # ngrok
       nmap
       # sqlmap
-      # tor
-      # torsocks
+      tor
+      torsocks
 
       # Programming
       nodejs
