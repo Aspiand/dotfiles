@@ -32,7 +32,6 @@
         imports = [ ../home-manager/profiles/core.nix ];
 
         nixpkgs.config.allowUnfree = true;
-        shell.bash.enable = true;
 
         home = {
           stateVersion = "25.05";
@@ -52,6 +51,7 @@
         };
 
         programs = {
+          bash.enable = true;
           clamav.enable = true;
           gpg.enable = true;
           yt-dlp.enable = true;
