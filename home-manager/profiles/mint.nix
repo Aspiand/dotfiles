@@ -55,8 +55,8 @@
       # ngrok
       nmap
       speedtest-cli
-      # tor
-      # torsocks
+      tor
+      torsocks
 
       # Programming
       nodejs
