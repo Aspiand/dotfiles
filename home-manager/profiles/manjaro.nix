@@ -121,6 +121,11 @@
   services = {
     podman.enable = true;
 
+    home-manager.autoExpire = {
+      enable = true;
+      frequency = "weekly";
+    };
+
     gpg-agent = {
       enable = true;
       pinentryPackage = pkgs.pinentry-tty;
