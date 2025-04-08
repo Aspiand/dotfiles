@@ -22,7 +22,7 @@ in
       historyFile = "${config.home.homeDirectory}/.local/history/bash";
       shellAliases.reload = "source ~/.bashrc";
       bashrcExtra = ''
-        source ${cfg.nix-path}
+        #source ${cfg.nix-path}
       '';
 
       sessionVariables = {

@@ -5,21 +5,30 @@
 {
   imports = [ ./core.nix ];
   nixpkgs.config.allowUnfree = true;
-  nix = {
-    package = pkgs.nix;
-    settings.experimental-features = [ "nix-command" "flakes" ];
-  };
+  # nix = {
+  #   package = pkgs.nix;
+  #   settings.experimental-features = [ "nix-command" "flakes" ];
+  # };
 
   home = {
+    username = "ao";
+    homeDirectory = "/home/ao";
     stateVersion = "25.05";
     packages = with pkgs; [
       # Main
-      # kitty
-      # dolphin
-      # ark
-      # nwg-displays
-      # fastfetch
+      fastfetch
+      mpv
+      mpvScripts.mpris
       # emote
+
+      # Other
+      obs-studio
+      bottles
+      kdePackages.kdenlive
+      discord
+      steam
+      spotify
+      nmap
 
       # Browser
       firefox
@@ -41,7 +50,22 @@
 
       php84
       nodejs
-
+      jdk_headless
+      jre_headless
     ];
   };
+
+  programs = {
+    git.extraConfig.core.editor = "${pkgs.vscode}/bin/code --wait";
+    bash.enable = true;
+    clamav.enable = true;
+    neovim.enable = true;
+    password-store.enable = true;
+    ssh.control = true;
+    tmux.enable = true;
+    yt-dlp.enable = true;
+    yt-dlp.downloader = "aria2c";
+  };
+
+  services.podman.enable = true;
 }
