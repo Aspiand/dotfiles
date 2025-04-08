@@ -1,5 +1,7 @@
 { config, pkgs, ... }:
 
+# nix run home-manager/master -- switch --flake /home/kuro/.config/dotfiles#arch
+
 {
   imports = [ ./core.nix ];
   nixpkgs.config.allowUnfree = true;
@@ -12,12 +14,12 @@
     stateVersion = "25.05";
     packages = with pkgs; [
       # Main
-      kitty
-      dolphin
-      ark
-      nwg-displays
-      fastfetch
-      emote
+      # kitty
+      # dolphin
+      # ark
+      # nwg-displays
+      # fastfetch
+      # emote
 
       # Browser
       firefox
