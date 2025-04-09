@@ -50,8 +50,7 @@
 
       php84
       nodejs
-      jdk_headless
-      jre_headless
+      jdk
     ];
   };
 
