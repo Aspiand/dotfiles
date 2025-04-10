@@ -24,7 +24,10 @@
       kdePackages.kdenlive
       discord
       spotify
+      ollama
       nmap
+      osu-lazer
+      nvtopPackages.intel
 
       # Browser
       firefox
