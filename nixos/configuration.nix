@@ -42,7 +42,15 @@
     LC_TIME = "id_ID.UTF-8";
   };
 
+  hardware.graphics = {
+    enable = true;
+  };
+
+  boot.kernelModules = [ "i915" ];
+
   programs.steam.enable = true;
+  programs.steam.gamescopeSession.enable = true;
+  programs.gamemode.enable = true;
 
   home-manager.backupFileExtension = ".bak";
 
@@ -89,17 +97,13 @@
     packages = with pkgs; [];
   };
 
-  # Install firefox.
   programs.firefox.enable = true;
 
-  # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
-  # List packages installed in system profile. To search, run:
-  # $ nix search wget
   environment.systemPackages = with pkgs; [
-  #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-  #  wget
+    # Games
+    mangohud protonup-qt lutris bottles heroic
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
