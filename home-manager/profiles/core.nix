@@ -76,7 +76,7 @@
     git = {
       enable = mkDefault true;
       userName = "Aspian";
-      userEmail = "p.aspian1738@gmail.com";
+      userEmail = "muhammad.aspian.d@gmail.com";
 
       extraConfig = {
         pull.rebase = true;
