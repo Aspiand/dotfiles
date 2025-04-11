@@ -54,5 +54,15 @@
 
   programs = {
     bash.enable = true;
+    gpg.enable = true;
+  };
+
+  services = {
+    copyq.enable = true;
+    gpg-agent = {
+      enable = true;
+      enableSshSupport = true;
+      pinentryPackage = pkgs.pinentry-tty;
+    };
   };
 }
