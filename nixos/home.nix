@@ -8,6 +8,10 @@
     homeDirectory = "/home/ao";
     stateVersion = "25.05";
 
+    shellAliases = {
+      switch = "sudo nixos-rebuild switch --flake ~/.config/dotfiles/nixos";
+    };
+
     sessionVariables = {
       #FLAKE = "$HOME/.config/dotfiles/nixos";
     };
@@ -28,6 +32,7 @@
       nmap
       osu-lazer
       nvtopPackages.intel
+      podman-compose
 
       # Browser
       firefox
@@ -58,6 +63,7 @@
   };
 
   services = {
+    podman.enable = true;
     copyq.enable = true;
     gpg-agent = {
       enable = true;
