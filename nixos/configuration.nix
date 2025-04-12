@@ -43,12 +43,12 @@
   };
 
   environment.systemPackages = with pkgs; [
-    # Games
-    mangohud
-    protonup-qt
+    # # Games
+    # mangohud
+    # protonup-qt
     lutris
-    bottles
-    heroic
+    # bottles
+    # heroic
   ];
 
   programs = {

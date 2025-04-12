@@ -3,6 +3,8 @@
 {
   imports = [ ../home-manager/profiles/core.nix ];
 
+  # fonts.fontconfig.enable = true;
+
   home = {
     username = "ao";
     homeDirectory = "/home/ao";
@@ -12,31 +14,28 @@
       switch = "sudo nixos-rebuild switch --flake ~/.config/dotfiles/nixos";
     };
 
-    sessionVariables = {
-      #FLAKE = "$HOME/.config/dotfiles/nixos";
-    };
+    sessionVariables = {};
 
     packages = with pkgs; [
-      # Main
-      fastfetch
-      # mpv
-      # mpvScripts.mpris
+      nerd-fonts._0xproto
+      nerd-fonts.caskaydia-cove
 
-      # Other
-      obs-studio
-      bottles
-      kdePackages.kdenlive
+      # Desktop
       discord
-      spotify
-      ollama
-      nmap
-      osu-lazer
-      nvtopPackages.intel
-      podman-compose
-
-      # Browser
       firefox
+      kdePackages.kdenlive
+      obs-studio
+      osu-lazer
+      spotify
       tor-browser
+
+      # CLI
+      fastfetch
+      nmap
+      nvtopPackages.intel
+      ollama
+      podman-compose
+      wl-clipboard
 
       # Editor
       android-studio
@@ -45,6 +44,7 @@
       vscode
 
       # Programming
+      go
       php84
       nodejs
       jdk
@@ -59,12 +59,18 @@
 
   programs = {
     bash.enable = true;
+    clamav.enable = true;
     gpg.enable = true;
+    mycli.enable = true;
+    neovim.enable = true;
+    ssh.control = true;
+    tmux.enable = true;
+    yt-dlp.enable = true;
+    yt-dlp.downloader = "aria2c";
   };
 
   services = {
     podman.enable = true;
-    copyq.enable = true;
     gpg-agent = {
       enable = true;
       enableSshSupport = true;
