@@ -30,6 +30,7 @@
       tor-browser
 
       # CLI
+      duf
       fastfetch
       nmap
       nvtopPackages.intel

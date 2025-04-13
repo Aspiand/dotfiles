@@ -1,5 +1,8 @@
 { config, pkgs, ... }:
 
+# https://github.com/NixOS/nixpkgs/blob/b8ec4fd2a4edc4e30d02ba7b1a2cc1358f3db1d5/nixos/modules/services/x11/desktop-managers/gnome.nix#L329-L348
+# https://nixos.org/manual/nixos/stable/#sec-gnome-without-the-apps
+
 {
   imports = [ ./hardware-configuration.nix ];
   nixpkgs.config.allowUnfree = true;
@@ -56,6 +59,15 @@
     steam.enable = true;
     steam.gamescopeSession.enable = true;
     gamemode.enable = true;
+  };
+
+  zramSwap = {
+    enable = true;
+    priority = 5;
+    # memoryMax = ;
+    algorithm = "zstd";
+    swapDevices = 1;
+    memoryPercent = 50;
   };
 
   services = {
