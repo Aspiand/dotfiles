@@ -24,6 +24,8 @@
       discord
       firefox
       kdePackages.kdenlive
+      kdePackages.okular # Document reader
+      libreoffice
       obs-studio
       osu-lazer
       spotify
@@ -36,6 +38,7 @@
       nvtopPackages.intel
       ollama
       podman-compose
+      steam-run
       wl-clipboard
 
       # Editor
