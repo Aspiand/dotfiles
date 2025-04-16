@@ -71,8 +71,18 @@
   };
 
   services = {
-    printing.enable = true; # Enable CUPS to print documents.
+    printing.enable = false; # Enable CUPS to print documents.
     zerotierone.enable = true;
+
+    openssh = {
+      enable = false;
+      ports = [ 22 ];
+      settings = {
+        UseDns = true;
+        PasswordAuthentication = true;
+        PermitRootLogin = "no";
+      };
+    };
 
     xserver = {
       enable = true;
@@ -87,7 +97,6 @@
       };
     };
 
-    pulseaudio.enable = false;
     pipewire = {
       enable = true;
       alsa.enable = true;

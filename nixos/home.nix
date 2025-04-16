@@ -24,7 +24,6 @@
       discord
       firefox
       kdePackages.kdenlive
-      kdePackages.okular # Document reader
       libreoffice
       obs-studio
       osu-lazer
@@ -32,8 +31,10 @@
       tor-browser
 
       # CLI
+      bottom
       duf
       fastfetch
+      htop
       nmap
       nvtopPackages.intel
       ollama
