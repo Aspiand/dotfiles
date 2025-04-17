@@ -1,7 +1,7 @@
 { config, pkgs, ... }:
 
 {
-  imports = [ ./core.nix ];
+  imports = [ ../. ];
 
   nix.package = pkgs.nix;
   nix.settings.experimental-features = [ "nix-command" "flakes" ];

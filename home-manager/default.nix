@@ -2,8 +2,8 @@
 
 {
   imports = [
-    ../config/default.nix
-    ../modules/default.nix
+    ./config/default.nix
+    ./modules/default.nix
   ];
 
   home.shellAliases = {
