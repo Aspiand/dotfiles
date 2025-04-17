@@ -1,7 +1,7 @@
 { pkgs, ... }:
 
 {
-  imports = [ ../home-manager/profiles/core.nix ];
+  imports = [ ../home-manager/default.nix ];
 
   # fonts.fontconfig.enable = true;
 
