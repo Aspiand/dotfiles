@@ -15,6 +15,7 @@
     ncu = "nix-channel --update";
     ncl = "nix-channel --list";
     nclg = "nix-channel --list-generations";
+    news = "${pkgs.home-manager}/bin/home-manager news";
     rm = "${pkgs.trash-cli}/bin/trash-put"; # don't change this line
     remove = "${pkgs.coreutils}/bin/rm";
     tree = "${pkgs.eza}/bin/eza --tree";

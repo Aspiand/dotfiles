@@ -77,6 +77,11 @@
 
   services = {
     podman.enable = true;
+    home-manager.autoExpire = {
+      enable = true;
+      frequency = "weekly";
+      store.cleanup = true;
+    };
     gpg-agent = {
       enable = true;
       enableSshSupport = true;

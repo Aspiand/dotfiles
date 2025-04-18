@@ -17,10 +17,14 @@
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "24.11"; # Did you read the comment?
 
-  hardware.graphics.enable = true;
+  hardware.graphics = {
+    enable = true;
+    extraPackages = with pkgs; [ intel-media-driver vpl-gpu-rt intel-compute-runtime];
+  };
 
   boot = {
-    kernelModules = [ "i915" ];
+    # kernelModules = [ "i915" ];
+    # kernelParams = [ "i915.force_probe=46a8" ];
     loader = {
       systemd-boot.enable = true;
       efi.canTouchEfiVariables = true;
@@ -45,14 +49,17 @@
     packages = with pkgs; [];
   };
 
-  environment.systemPackages = with pkgs; [
-    # # Games
-    # mangohud
-    # protonup-qt
-    lutris
-    # bottles
-    # heroic
-  ];
+  environment = {
+    sessionVariables = { LIBVA_DRIVER_NAME = "iHD"; };
+    systemPackages = with pkgs; [
+      # # Games
+      # mangohud
+      # protonup-qt
+      lutris
+      # bottles
+      # heroic
+    ];
+  };
 
   programs = {
     firefox.enable = true;
@@ -90,6 +97,8 @@
 
       displayManager.gdm.enable = true;
       desktopManager.gnome.enable = true;
+
+      videoDrivers = [ "modesetting" ];
 
       xkb = {
         layout = "us";
