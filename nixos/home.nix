@@ -35,6 +35,7 @@
       duf
       fastfetch
       htop
+      nix-tree
       nmap
       nvtopPackages.intel
       ollama
