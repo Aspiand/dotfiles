@@ -1,6 +1,6 @@
 {
   imports = [
-    ./center.nix
+    ./center.nix # remove later
 
     ./bash.nix
     ./zsh.nix
