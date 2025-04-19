@@ -27,6 +27,7 @@
       libreoffice
       obs-studio
       osu-lazer
+      postman
       spotify
       tor-browser
 
