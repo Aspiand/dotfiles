@@ -58,6 +58,8 @@
       lutris
       # bottles
       # heroic
+
+      gparted
     ];
   };
 
@@ -78,6 +80,7 @@
   };
 
   services = {
+    netdata.enable = true;
     printing.enable = false; # Enable CUPS to print documents.
     zerotierone.enable = true;
 

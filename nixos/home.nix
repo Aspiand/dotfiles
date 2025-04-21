@@ -46,6 +46,7 @@
 
       # Editor
       android-studio
+      arduino-ide
       netbeans
       obsidian
       vscode
