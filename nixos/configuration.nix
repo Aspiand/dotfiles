@@ -34,7 +34,6 @@
   networking = {
     hostName = "aira";
     networkmanager.enable = true;
-    # wireless.enable = true;  # Enables wireless support via wpa_supplicant.
   };
 
   nix.settings = {
@@ -80,7 +79,7 @@
   };
 
   services = {
-    netdata.enable = true;
+    netdata.enable = false;
     printing.enable = false; # Enable CUPS to print documents.
     zerotierone.enable = true;
 

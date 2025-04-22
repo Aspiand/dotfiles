@@ -33,13 +33,14 @@
 
       # CLI
       bottom
+      cava
       duf
       fastfetch
       htop
       nix-tree
       nmap
       nvtopPackages.intel
-      ollama
+      # ollama
       podman-compose
       steam-run
       wl-clipboard
@@ -56,7 +57,7 @@
       php84
       nodejs
       jdk
-      (python3.withPackages (ps: with ps; [
+      (python314.withPackages (ps: with ps; [
         aiohttp
         pip
         pydantic
