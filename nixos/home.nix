@@ -43,6 +43,7 @@
       # ollama
       podman-compose
       steam-run
+      winePackages.wayland
       wl-clipboard
 
       # Editor
@@ -57,7 +58,7 @@
       php84
       nodejs
       jdk
-      (python314.withPackages (ps: with ps; [
+      (python3.withPackages (ps: with ps; [
         aiohttp
         pip
         pydantic
