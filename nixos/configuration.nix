@@ -49,14 +49,17 @@
   };
 
   environment = {
-    sessionVariables = { LIBVA_DRIVER_NAME = "iHD"; };
+    sessionVariables = {
+      LIBVA_DRIVER_NAME = "iHD"; 
+      NIXOS_OZONE_WL = "1";
+    };
     systemPackages = with pkgs; [
       # # Games
-      # mangohud
+      mangohud
       # protonup-qt
       lutris
-      # bottles
-      # heroic
+      bottles
+      heroic
 
       gparted
     ];
@@ -67,6 +70,8 @@
     steam.enable = true;
     steam.gamescopeSession.enable = true;
     gamemode.enable = true;
+
+    hyprland.enable = true;
   };
 
   zramSwap = {
