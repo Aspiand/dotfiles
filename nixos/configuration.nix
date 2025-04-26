@@ -64,7 +64,7 @@
   environment = {
     sessionVariables = {
       LIBVA_DRIVER_NAME = "iHD"; 
-      NIXOS_OZONE_WL = "1";
+      # NIXOS_OZONE_WL = "1";
     };
 
     systemPackages = with pkgs; [
@@ -96,6 +96,7 @@
   };
 
   services = {
+    sysprof.enable = false;
     netdata.enable = false;
     printing.enable = false; # Enable CUPS to print documents.
     zerotierone.enable = true;
