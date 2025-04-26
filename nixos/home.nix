@@ -30,6 +30,7 @@
       postman
       spotify
       tor-browser
+      umu-launcher
 
       # CLI
       bottom
@@ -52,6 +53,11 @@
       netbeans
       obsidian
       vscode
+
+      # Gaming
+      # rpcs3
+      vulkan-tools
+      gpu-viewer
 
       # Programming
       go
@@ -79,17 +85,34 @@
     yt-dlp.downloader = "aria2c";
   };
 
+  # gtk = {
+  #   enable = true;
+  #   theme.name = "Adwaita";
+  #   iconTheme.name = "Adwaita";
+  # };
+
   services = {
     podman.enable = true;
+
     home-manager.autoExpire = {
       enable = true;
       frequency = "weekly";
       store.cleanup = true;
     };
+
     gpg-agent = {
       enable = true;
       enableSshSupport = true;
       pinentryPackage = pkgs.pinentry-tty;
     };
   };
+
+  # wayland.windowManager.hyprland = {
+  #   enable = true;
+  #   hypridle.enable = true;
+  #   hyprlock.enable = true;
+  #   hyprpaper.enable = true;
+  #   xwayland.enable = true;
+  #   systemd.enable = true;
+  # };
 }

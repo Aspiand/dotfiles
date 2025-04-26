@@ -4,7 +4,6 @@
 # https://nixos.org/manual/nixos/stable/#sec-gnome-without-the-apps
 
 {
-  imports = [ ./hardware-configuration.nix ];
   nixpkgs.config.allowUnfree = true;
   security.rtkit.enable = true;
   time.timeZone = "Asia/Makassar";
@@ -16,6 +15,11 @@
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "24.11"; # Did you read the comment?
+
+  imports = [
+    ./hardware-configuration.nix
+    ./hyprland.nix
+  ];
 
   hardware.graphics = {
     enable = true;
@@ -36,10 +40,19 @@
     networkmanager.enable = true;
   };
 
-  nix.settings = {
-    auto-optimise-store = true;
-    experimental-features = [ "nix-command" "flakes" ];
+  nix = {
+    gc = {
+      automatic = true;
+      dates = "weekly";
+      options = "--delete-older-than 10d";
+    };
+
+    settings = {
+      auto-optimise-store = true;
+      experimental-features = [ "nix-command" "flakes" ];
+    };
   };
+
 
   users.users.ao = {
     isNormalUser = true;
@@ -53,8 +66,9 @@
       LIBVA_DRIVER_NAME = "iHD"; 
       NIXOS_OZONE_WL = "1";
     };
+
     systemPackages = with pkgs; [
-      # # Games
+      # Games
       mangohud
       # protonup-qt
       lutris
@@ -70,8 +84,6 @@
     steam.enable = true;
     steam.gamescopeSession.enable = true;
     gamemode.enable = true;
-
-    hyprland.enable = true;
   };
 
   zramSwap = {
@@ -130,19 +142,12 @@
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
   # programs.mtr.enable = true;
-  # programs.gnupg.agent = {
+
+  # networking.firewall = {
   #   enable = true;
-  #   enableSSHSupport = true;
+  #   allowedTCPPorts = [ ... ];
+  #   allowedUDPPorts = [ ... ];
   # };
-
-  # Enable the OpenSSH daemon.
-  # services.openssh.enable = true;
-
-  # Open ports in the firewall.
-  # networking.firewall.allowedTCPPorts = [ ... ];
-  # networking.firewall.allowedUDPPorts = [ ... ];
-  # Or disable the firewall altogether.
-  # networking.firewall.enable = false;
 
   i18n.defaultLocale = "en_US.UTF-8";
   i18n.extraLocaleSettings = {
