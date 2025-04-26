@@ -12,6 +12,7 @@
 
     shellAliases = {
       switch = "sudo nixos-rebuild switch --flake ~/.config/dotfiles/nixos";
+      code = "NIXOS_OZONE_WL=1 code";
     };
 
     sessionVariables = {};
