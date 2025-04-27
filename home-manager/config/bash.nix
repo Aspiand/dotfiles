@@ -7,22 +7,19 @@ let
 in
 
 {
-  options.programs.bash = {
-    nix-path = mkOption {
-      type = types.path;
-      default = "${config.home.homeDirectory}/.nix-profile/etc/profile.d/nix.sh";
-      example = "/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh";
-    };
-  };
-
   config = {
+    home.packages = [ pkgs.nerd-fonts.caskaydia-cove ];
     programs.bash = {
       enableCompletion = true;
       historyControl = [ "ignoreboth" ];
-      historyFile = "${config.home.homeDirectory}/.local/history/bash";
       shellAliases.reload = "source ~/.bashrc";
+      historyFile = "${config.home.homeDirectory}/.local/history/bash";
       bashrcExtra = ''
-        #source ${cfg.nix-path}
+        if [[ -f "${config.home.homeDirectory}/.nix-profile/etc/profile.d/nix.sh" ]]; then
+          source ${config.home.homeDirectory}/.nix-profile/etc/profile.d/nix.sh
+        elif [[ -f "/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh" ]]; then
+          source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
+        fi
       '';
 
       sessionVariables = {
