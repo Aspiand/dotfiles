@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 
 {
   imports = [ ../home-manager/default.nix ];
@@ -72,6 +72,13 @@
         virtualenv
       ]))
     ];
+
+    activation.backup = lib.hm.dag.entryBefore ["preActivation"] ''
+      DIR="$HOME/.local/share/backups/gnome"
+      [ ! -f "$DIR" ]; mkdir -vp "$DIR"
+
+      ${pkgs.dconf}/bin/dconf dump / > $DIR/$(date +%Y%m%d%H%M%S).conf
+    '';
   };
 
   programs = {
@@ -108,12 +115,61 @@
     };
   };
 
-  # wayland.windowManager.hyprland = {
-  #   enable = true;
-  #   hypridle.enable = true;
-  #   hyprlock.enable = true;
-  #   hyprpaper.enable = true;
-  #   xwayland.enable = true;
-  #   systemd.enable = true;
-  # };
+  gtk = {
+    enable = true;
+
+    iconTheme = {
+      name = "Adwaita";
+      package = pkgs.gnome-themes-extra;
+    };
+
+    theme = {
+      name = "Adwaita-dark";
+      package = pkgs.gnome-themes-extra;
+    };
+
+    gtk3.extraConfig = {
+      gtk-application-prefer-dark-theme = 1;
+    };
+
+    gtk4.extraConfig = {
+      gtk-application-prefer-dark-theme = 1;
+    };
+  };
+
+  dconf.settings = {
+    "org/gnome/desktop/interface" = {
+      color-scheme = "prefer-dark";
+      enable-hot-corners = false;
+      gtk-theme = "Adwaita-dark";
+      icon-theme = "Adwaita";
+      show-battery-percentage = true;
+      toolkit-accessibility = false;
+    };
+
+    "org/gnome/desktop/peripherals/touchpad" = {
+      two-finger-scrolling-enabled = true;
+    };
+
+    "org/gnome/desktop/wm/preferences" = {
+      button-layout = "appmenu:minimize,maximize,close";
+      focus-mode = "click";
+      resize-with-right-button = false;
+    };
+
+    "org/gnome/evolution-data-server" = {
+      migrated = true;
+    };
+
+    "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0" = {
+      binding = "<Alt>Return";
+      command = "kgx";
+      name = "Terminal";
+    };
+
+    "org/gnome/settings-daemon/plugins/power" = {
+      power-saver-profile-on-low-battery = true;
+      sleep-inactive-ac-type = "nothing";
+    };
+  };
 }
