@@ -1,4 +1,4 @@
-{ pkgs, lib, ... }:
+{ config, pkgs, lib, ... }:
 
 {
   imports = [ ../home-manager/default.nix ];
@@ -15,7 +15,9 @@
       code = "NIXOS_OZONE_WL=1 code";
     };
 
-    sessionVariables = {};
+    sessionVariables = {
+      GOPATH = "${config.xdg.dataHome}/go";
+    };
 
     packages = with pkgs; [
       nerd-fonts._0xproto
