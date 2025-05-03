@@ -113,7 +113,7 @@
     gpg-agent = {
       enable = true;
       enableSshSupport = true;
-      pinentryPackage = pkgs.pinentry-tty;
+      pinentry.package = pkgs.pinentry-tty;
     };
   };
 
@@ -140,6 +140,10 @@
   };
 
   dconf.settings = {
+    "org/gnome/Console" = {
+      font-scale = 1.5;
+    };
+
     "org/gnome/desktop/interface" = {
       color-scheme = "prefer-dark";
       enable-hot-corners = false;
