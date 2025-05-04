@@ -41,11 +41,13 @@
       duf
       fastfetch
       htop
+      maven
       nix-tree
       nmap
       nvtopPackages.intel
       # ollama
       podman-compose
+      superfile
       steam-run
       winePackages.wayland
       wl-clipboard
