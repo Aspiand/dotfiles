@@ -13,6 +13,7 @@
     shellAliases = {
       switch = "sudo nixos-rebuild switch --flake ~/.config/dotfiles/nixos";
       code = "NIXOS_OZONE_WL=1 code";
+      ehe = "fastfetch";
     };
 
     sessionVariables = {
@@ -36,6 +37,7 @@
       umu-launcher
 
       # CLI
+      android-tools
       bottom
       cava
       duf
@@ -67,6 +69,7 @@
       # Programming
       go
       php84
+      php84Packages.composer
       nodejs
       jdk
       (python3.withPackages (ps: with ps; [

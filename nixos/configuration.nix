@@ -18,7 +18,7 @@
 
   imports = [
     ./hardware-configuration.nix
-    ./hyprland.nix
+    # ./hyprland.nix
   ];
 
   hardware.graphics = {
