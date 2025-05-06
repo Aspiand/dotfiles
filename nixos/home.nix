@@ -25,6 +25,7 @@
       nerd-fonts.caskaydia-cove
 
       # Desktop
+      brave
       discord
       firefox
       kdePackages.kdenlive
@@ -42,6 +43,7 @@
       cava
       duf
       fastfetch
+      gcc
       htop
       maven
       nix-tree
@@ -99,12 +101,6 @@
     yt-dlp.enable = true;
     yt-dlp.downloader = "aria2c";
   };
-
-  # gtk = {
-  #   enable = true;
-  #   theme.name = "Adwaita";
-  #   iconTheme.name = "Adwaita";
-  # };
 
   services = {
     podman.enable = true;
