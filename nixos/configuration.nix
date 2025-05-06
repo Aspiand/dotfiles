@@ -16,10 +16,7 @@
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "24.11"; # Did you read the comment?
 
-  imports = [
-    ./hardware-configuration.nix
-    # ./hyprland.nix
-  ];
+  imports = [ ./hardware-configuration.nix ];
 
   hardware.graphics = {
     enable = true;
@@ -131,6 +128,7 @@
   };
 
   programs = {
+    # adb.enable = true;
     firefox.enable = true;
     steam.enable = true;
     steam.gamescopeSession.enable = true;
@@ -151,6 +149,8 @@
     netdata.enable = false;
     printing.enable = false; # Enable CUPS to print documents.
     zerotierone.enable = true;
+
+    # udev.packages = [ pkgs.android-udev-rules ];
 
     openssh = {
       enable = false;
