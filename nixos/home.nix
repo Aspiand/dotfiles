@@ -14,6 +14,7 @@
       switch = "sudo nixos-rebuild switch --flake ~/.config/dotfiles/nixos";
       code = "NIXOS_OZONE_WL=1 code";
       ehe = "fastfetch";
+      brave = "HOME=\"$HOME/.local/share/brave\" brave";
     };
 
     sessionVariables = {
