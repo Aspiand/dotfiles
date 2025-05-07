@@ -126,9 +126,9 @@
       # gnome-software
     ];
   };
-
+ 
   programs = {
-    # adb.enable = true;
+    adb.enable = true;
     firefox.enable = true;
     steam.enable = true;
     steam.gamescopeSession.enable = true;
@@ -150,7 +150,7 @@
     printing.enable = false; # Enable CUPS to print documents.
     zerotierone.enable = true;
 
-    # udev.packages = [ pkgs.android-udev-rules ];
+    udev.packages = [ pkgs.android-udev-rules ];
 
     openssh = {
       enable = false;
