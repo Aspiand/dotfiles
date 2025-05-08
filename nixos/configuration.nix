@@ -20,7 +20,11 @@
 
   hardware.graphics = {
     enable = true;
-    extraPackages = with pkgs; [ intel-media-driver vpl-gpu-rt intel-compute-runtime];
+    extraPackages = with pkgs; [
+      intel-media-driver
+      vpl-gpu-rt
+      intel-compute-runtime
+    ];
   };
 
   boot = {
@@ -46,20 +50,27 @@
 
     settings = {
       auto-optimise-store = true;
-      experimental-features = [ "nix-command" "flakes" ];
+      experimental-features = [
+        "nix-command"
+        "flakes"
+      ];
     };
   };
 
   users.users.ao = {
     isNormalUser = true;
     description = "Aspian";
-    extraGroups = [ "networkmanager" "wheel" "video" ];
-    packages = with pkgs; [];
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+      "video"
+    ];
+    packages = with pkgs; [ ];
   };
 
   environment = {
     sessionVariables = {
-      LIBVA_DRIVER_NAME = "iHD"; 
+      LIBVA_DRIVER_NAME = "iHD";
       # NIXOS_OZONE_WL = "1";
     };
 
@@ -126,7 +137,7 @@
       # gnome-software
     ];
   };
- 
+
   programs = {
     adb.enable = true;
     firefox.enable = true;
