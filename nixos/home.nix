@@ -1,4 +1,9 @@
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 
 {
   imports = [ ../home-manager/default.nix ];
@@ -15,6 +20,7 @@
       code = "NIXOS_OZONE_WL=1 code";
       ehe = "fastfetch";
       brave = "HOME=\"$HOME/.local/share/brave\" brave";
+      debian = "${pkgs.distrobox}/bin/distrobox enter debian";
     };
 
     sessionVariables = {
@@ -26,7 +32,6 @@
       nerd-fonts.caskaydia-cove
 
       # Desktop
-      brave
       discord
       firefox
       kdePackages.kdenlive
@@ -42,6 +47,7 @@
       android-tools
       bottom
       cava
+      distrobox
       duf
       fastfetch
       gcc
@@ -75,20 +81,30 @@
       php84Packages.composer
       nodejs
       jdk
-      (python3.withPackages (ps: with ps; [
-        aiohttp
-        pip
-        pydantic
-        virtualenv
-      ]))
+      nixfmt-rfc-style
+      (python3.withPackages (
+        ps: with ps; [
+          aiohttp
+          pip
+          pydantic
+          virtualenv
+        ]
+      ))
     ];
 
-    activation.backup = lib.hm.dag.entryBefore ["preActivation"] ''
+    activation.backup = lib.hm.dag.entryBefore [ "preActivation" ] ''
       DIR="$HOME/.local/share/backups/gnome"
       [ ! -f "$DIR" ]; mkdir -vp "$DIR"
 
       ${pkgs.dconf}/bin/dconf dump / > $DIR/$(date +%Y%m%d%H%M%S).conf
     '';
+
+    pointerCursor = {
+      gtk.enable = true;
+      name = "Adwaita";
+      package = pkgs.adwaita-icon-theme;
+      size = 24;
+    };
   };
 
   programs = {
