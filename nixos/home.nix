@@ -81,12 +81,10 @@
       php84Packages.composer
       nodejs
       jdk
-      nixfmt-rfc-style
+      nixfmt-rfc-style # nix formatter
       (python3.withPackages (
         ps: with ps; [
-          aiohttp
           pip
-          pydantic
           virtualenv
         ]
       ))
