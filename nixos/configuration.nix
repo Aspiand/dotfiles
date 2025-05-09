@@ -27,13 +27,9 @@
     ];
   };
 
-  boot = {
-    # kernelModules = [ "i915" ];
-    # kernelParams = [ "i915.force_probe=46a8" ];
-    loader = {
-      systemd-boot.enable = true;
-      efi.canTouchEfiVariables = true;
-    };
+  boot.loader = {
+    systemd-boot.enable = true;
+    efi.canTouchEfiVariables = true;
   };
 
   networking = {
