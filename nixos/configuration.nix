@@ -30,8 +30,25 @@
   boot = {
     kernelPackages = pkgs.linuxPackages_zen;
     loader = {
-      systemd-boot.enable = true;
-      efi.canTouchEfiVariables = true;
+      systemd-boot.enable = false;
+
+      efi = {
+        canTouchEfiVariables = true;
+        efiSysMountPoint = "/boot/efi";
+      };
+
+      grub = {
+        enable = true;
+        efiSupport = true;
+        useOSProber = true;
+        device = "nodev";
+      };
+
+      grub2-theme = {
+        enable = true;
+        footer = true;
+        theme = "vimix";
+      };
     };
   };
 
@@ -59,30 +76,20 @@
   users.users.ao = {
     isNormalUser = true;
     description = "Aspian";
+    packages = with pkgs; [ ];
     extraGroups = [
       "networkmanager"
       "wheel"
       "video"
     ];
-    packages = with pkgs; [ ];
   };
 
   environment = {
+    systemPackages = with pkgs; [ ];
     sessionVariables = {
       LIBVA_DRIVER_NAME = "iHD";
       # NIXOS_OZONE_WL = "1";
     };
-
-    systemPackages = with pkgs; [
-      # Games
-      mangohud
-      # protonup-qt
-      lutris
-      # bottles
-      # heroic
-
-      gparted
-    ];
 
     gnome.excludePackages = with pkgs; [
       # orca

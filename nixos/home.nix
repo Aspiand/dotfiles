@@ -27,68 +27,78 @@
       GOPATH = "${config.xdg.dataHome}/go";
     };
 
-    packages = with pkgs; [
-      nerd-fonts._0xproto
-      nerd-fonts.caskaydia-cove
+    packages =
+      with pkgs;
+      [
+        # Desktop
+        dbeaver-bin
+        discord
+        firefox
+        gparted
+        kdePackages.kdenlive
+        libreoffice
+        obs-studio
+        osu-lazer
+        postman
+        spotify
+        tor-browser
+        umu-launcher
 
-      # Desktop
-      discord
-      firefox
-      kdePackages.kdenlive
-      libreoffice
-      obs-studio
-      osu-lazer
-      postman
-      spotify
-      tor-browser
-      umu-launcher
+        # CLI
+        android-tools
+        bottom
+        cava
+        distrobox
+        duf
+        fastfetch
+        htop
+        nix-tree
+        nmap
+        nvtopPackages.intel
+        # ollama
+        podman-compose
+        superfile
+        steam-run
+        winePackages.wayland
+        wl-clipboard
 
-      # CLI
-      android-tools
-      bottom
-      cava
-      distrobox
-      duf
-      fastfetch
-      gcc
-      htop
-      maven
-      nix-tree
-      nmap
-      nvtopPackages.intel
-      # ollama
-      podman-compose
-      superfile
-      steam-run
-      winePackages.wayland
-      wl-clipboard
+        # Editor
+        android-studio
+        arduino-ide
+        netbeans
+        obsidian
+        vscode
 
-      # Editor
-      android-studio
-      arduino-ide
-      netbeans
-      obsidian
-      vscode
+        # Gaming
+        # rpcs3
+        gpu-viewer
+        mangohud
+        lutris
+        vulkan-tools
 
-      # Gaming
-      # rpcs3
-      vulkan-tools
-      gpu-viewer
+        ventoy-full
 
-      # Programming
-      go
-      php84
-      php84Packages.composer
-      nodejs
-      jdk
-      nixfmt-rfc-style # nix formatter
-      (python3.withPackages (
-        ps: with ps; [
-          pip
-          virtualenv
-        ]
-      ))
-    ];
+        # Programming
+        gcc
+        go
+        maven
+        php84
+        php84Packages.composer
+        nodejs
+        jdk
+        nixfmt-rfc-style # nix formatter
+        (python3.withPackages (
+          ps: with ps; [
+            pip
+            virtualenv
+          ]
+        ))
+      ]
+      ++ (with gnomeExtensions; [ blur-my-shell ])
+      ++ (with nerd-fonts; [
+        nerd-fonts._0xproto
+        nerd-fonts.caskaydia-cove
+      ]);
 
     activation.backup = lib.hm.dag.entryBefore [ "preActivation" ] ''
       DIR="$HOME/.local/share/backups/gnome"
@@ -192,6 +202,18 @@
     "org/gnome/settings-daemon/plugins/power" = {
       power-saver-profile-on-low-battery = true;
       sleep-inactive-ac-type = "nothing";
+    };
+
+    "org/gnome/shell" = {
+      disable-user-extensions = false;
+      enabled-extensions = with pkgs.gnomeExtensions; [
+        blur-my-shell.extensionUuid
+        # gsconnect.extensionUuid
+        launch-new-instance.extensionUuid
+        status-icons.extensionUuid
+        system-monitor.extensionUuid
+        window-list.extensionUuid
+      ];
     };
   };
 }

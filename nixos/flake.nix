@@ -5,10 +5,16 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
+    grub2-themes.url = "github:vinceliuice/grub2-themes";
   };
 
   outputs =
-    inputs@{ nixpkgs, home-manager, ... }:
+    inputs@{
+      nixpkgs,
+      home-manager,
+      grub2-themes,
+      ...
+    }:
     let
       system = "x86_64-linux";
     in
@@ -18,6 +24,7 @@
           inherit system;
           modules = [
             ./configuration.nix
+            grub2-themes.nixosModules.default
             home-manager.nixosModules.home-manager
             {
               home-manager = {
