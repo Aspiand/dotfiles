@@ -27,9 +27,12 @@
     ];
   };
 
-  boot.loader = {
-    systemd-boot.enable = true;
-    efi.canTouchEfiVariables = true;
+  boot = {
+    kernelPackages = pkgs.linuxPackages_zen;
+    loader = {
+      systemd-boot.enable = true;
+      efi.canTouchEfiVariables = true;
+    };
   };
 
   networking = {
@@ -41,7 +44,7 @@
     gc = {
       automatic = true;
       dates = "weekly";
-      options = "--delete-older-than 10d";
+      options = "--delete-older-than 7d";
     };
 
     settings = {
