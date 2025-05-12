@@ -40,7 +40,7 @@
       grub = {
         enable = true;
         efiSupport = true;
-        useOSProber = true;
+        useOSProber = false;
         device = "nodev";
       };
 
@@ -155,7 +155,7 @@
   zramSwap = {
     enable = true;
     priority = 5;
-    # memoryMax = ;
+    memoryMax = 4294967296;
     algorithm = "zstd";
     swapDevices = 1;
     memoryPercent = 50;
@@ -207,6 +207,24 @@
       # use the example session manager (no others are packaged yet so this is enabled by default,
       # no need to redefine it in your config for now)
       #media-session.enable = true;
+    };
+
+    clamav = {
+      daemon = {
+        enable = false;
+        settings = { };
+      };
+
+      updater = {
+        enable = false;
+        frequency = 1;
+        interval = "hourly";
+      };
+
+      scanner = {
+        enable = false;
+        scanDirectories = [ "/home" ];
+      };
     };
   };
 
