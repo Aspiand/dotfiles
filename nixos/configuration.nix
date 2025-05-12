@@ -154,11 +154,11 @@
 
   zramSwap = {
     enable = true;
-    priority = 5;
-    memoryMax = 4294967296;
-    algorithm = "zstd";
+    priority = 100;
     swapDevices = 1;
     memoryPercent = 50;
+    algorithm = "zstd";
+    memoryMax = (size: size * 1024 * 1024 * 1024) 4; # GB
   };
 
   services = {
