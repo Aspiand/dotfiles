@@ -1,4 +1,9 @@
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 
 {
   imports = [
@@ -12,6 +17,7 @@
     la = "ls -lAh --octal-permissions";
     ld = "ls --only-dirs";
     ll = "ls -lh --total-size";
+    nano = "micro";
     ncu = "nix-channel --update";
     ncl = "nix-channel --list";
     nclg = "nix-channel --list-generations";
@@ -33,7 +39,6 @@
     bat
     coreutils
     gitui
-    nano
     ncdu
     rsync
     trash-cli
@@ -110,6 +115,47 @@
       ];
     };
 
+    micro = {
+      enable = true;
+      settings = {
+        autoindent = true;
+        autosave = 5;
+        autosu = true;
+        backup = true;
+        backupdir = "${config.xdg.dataHome}/micro";
+        basename = true;
+        clipboard = "external"; # terminal internal
+        cursorline = true;
+        diffgutter = false;
+        eofnewline = true;
+        helpsplit = "hsplit";
+        ignorecase = true;
+        incsearch = true;
+        keepautoindent = false;
+        matchbrace = true;
+        matchbraceleft = true;
+        matchbracestyle = "highlight";
+        mkparents = true;
+        mouse = true;
+        multiopen = "tab";
+        permbackup = false;
+        pluginrepos = [ ];
+        relativeruler = false;
+        reload = "prompt";
+        ruler = true;
+        savecursor = true;
+        savehistory = true;
+        saveundo = true;
+        smartpaste = true;
+        statusline = true;
+        syntax = true;
+        tabhighlight = true;
+        tabmovement = true;
+        tabreverse = true;
+        tabsize = 4;
+      };
+    };
+
     ssh = {
       enable = mkDefault true;
       matchBlocks.github = {
@@ -126,7 +172,7 @@
     zoxide = {
       enable = true;
       enableBashIntegration = true;
-      options = [];
+      options = [ ];
     };
   };
 }
