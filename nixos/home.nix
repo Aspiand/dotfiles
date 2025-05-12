@@ -31,14 +31,17 @@
       with pkgs;
       [
         # Desktop
+        authenticator
         dbeaver-bin
         discord
         firefox
+        gnome-extension-manager
         gparted
         kdePackages.kdenlive
         libreoffice
         obs-studio
         osu-lazer
+        planify
         postman
         spotify
         tor-browser
@@ -94,7 +97,12 @@
           ]
         ))
       ]
-      ++ (with gnomeExtensions; [ blur-my-shell ])
+      ++ (with gnomeExtensions; [
+        blur-my-shell
+        # fly-pie
+        pano
+        pop-shell
+      ])
       ++ (with nerd-fonts; [
         nerd-fonts._0xproto
         nerd-fonts.caskaydia-cove
@@ -210,6 +218,8 @@
         blur-my-shell.extensionUuid
         # gsconnect.extensionUuid
         launch-new-instance.extensionUuid
+        pano.extensionUuid
+        pop-shell.extensionUuid
         status-icons.extensionUuid
         system-monitor.extensionUuid
         window-list.extensionUuid
