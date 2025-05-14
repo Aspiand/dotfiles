@@ -80,7 +80,7 @@
         lutris
         vulkan-tools
 
-        ventoy-full
+        # ventoy-full # https://github.com/NixOS/nixpkgs/issues/404663
 
         # Programming
         gcc
