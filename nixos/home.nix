@@ -56,6 +56,7 @@
         fastfetch
         htop
         nix-tree
+        nixos-generators
         nmap
         nvtopPackages.intel
         # ollama
