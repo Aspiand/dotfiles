@@ -35,6 +35,7 @@
         dbeaver-bin
         discord
         firefox
+        gnome-tweaks
         gnome-extension-manager
         gparted
         kdePackages.kdenlive
