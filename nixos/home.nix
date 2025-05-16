@@ -31,7 +31,7 @@
       with pkgs;
       [
         # Desktop
-        authenticator
+        # authenticator
         dbeaver-bin
         discord
         firefox
@@ -42,7 +42,7 @@
         libreoffice
         obs-studio
         osu-lazer
-        planify
+        # planify
         postman
         spotify
         tor-browser
@@ -59,7 +59,7 @@
         nix-tree
         nixos-generators
         nmap
-        nvtopPackages.intel
+        # nvtopPackages.intel
         # ollama
         podman-compose
         superfile
@@ -76,15 +76,15 @@
 
         # Gaming
         # rpcs3
-        gpu-viewer
-        mangohud
+        # gpu-viewer
+        # mangohud
         lutris
         vulkan-tools
 
         # ventoy-full # https://github.com/NixOS/nixpkgs/issues/404663
 
         # Programming
-        gcc
+        # gcc
         go
         maven
         php84
