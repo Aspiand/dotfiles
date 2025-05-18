@@ -101,13 +101,17 @@
       ]
       ++ (with gnomeExtensions; [
         blur-my-shell
+        launch-new-instance
         # fly-pie
         pano
         pop-shell
+        status-icons
+        system-monitor
+        window-list
       ])
       ++ (with nerd-fonts; [
-        nerd-fonts._0xproto
-        nerd-fonts.caskaydia-cove
+        _0xproto
+        caskaydia-cove
       ]);
 
     activation.backup = lib.hm.dag.entryBefore [ "preActivation" ] ''
@@ -178,6 +182,7 @@
   dconf.settings = {
     "org/gnome/Console" = {
       font-scale = 1.5;
+      last-window-maximised = false;
     };
 
     "org/gnome/desktop/interface" = {
@@ -218,7 +223,6 @@
       disable-user-extensions = false;
       enabled-extensions = with pkgs.gnomeExtensions; [
         blur-my-shell.extensionUuid
-        # gsconnect.extensionUuid
         launch-new-instance.extensionUuid
         pano.extensionUuid
         pop-shell.extensionUuid
@@ -226,6 +230,14 @@
         system-monitor.extensionUuid
         window-list.extensionUuid
       ];
+    };
+
+    "org/gtk/gtk4/settings/file-chooser" = {
+      show-hidden = false;
+    };
+
+    "org/gtk/settings/file-chooser" = {
+      sort-directories-first = true;
     };
   };
 }
