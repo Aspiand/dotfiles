@@ -7,6 +7,7 @@
     home-manager.url = "github:nix-community/home-manager/release-25.05";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     grub2-themes.url = "github:vinceliuice/grub2-themes";
+    grub2-themes.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs =

@@ -20,6 +20,7 @@
       code = "NIXOS_OZONE_WL=1 code";
       ehe = "fastfetch";
       debian = "${pkgs.distrobox}/bin/distrobox enter debian";
+      build = "nix build ~/Kode/hg680p#packages.aarch64-linux.sdcard";
     };
 
     sessionVariables = {
