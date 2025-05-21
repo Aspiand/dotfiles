@@ -30,7 +30,7 @@
 
   boot = {
     kernelPackages = pkgs.linuxPackages_zen;
-    tmp.useTmpfs = true;
+    tmp.useTmpfs = false;
     binfmt.emulatedSystems = [ "aarch64-linux" ];
     loader = {
       systemd-boot.enable = false;
