@@ -57,6 +57,7 @@
         fastfetch
         htop
         nix-tree
+        nixos-anywhere
         nixos-generators
         nmap
         # nvtopPackages.intel
