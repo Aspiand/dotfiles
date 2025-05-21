@@ -2,6 +2,7 @@
 
 # https://github.com/NixOS/nixpkgs/blob/b8ec4fd2a4edc4e30d02ba7b1a2cc1358f3db1d5/nixos/modules/services/x11/desktop-managers/gnome.nix#L329-L348
 # https://nixos.org/manual/nixos/stable/#sec-gnome-without-the-apps
+# https://www.tweag.io/blog/2022-08-18-nixos-specialisations/
 
 {
   nixpkgs.config.allowUnfree = true;
@@ -29,6 +30,7 @@
 
   boot = {
     kernelPackages = pkgs.linuxPackages_zen;
+    tmp.useTmpfs = true;
     binfmt.emulatedSystems = [ "aarch64-linux" ];
     loader = {
       systemd-boot.enable = false;
