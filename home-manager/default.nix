@@ -6,13 +6,10 @@
 }:
 
 {
-  imports = [
-    ./config/default.nix
-    ./modules/default.nix
-  ];
+  imports = [ ./modules/default.nix ];
 
   home.shellAliases = {
-  	df = "${pkgs.duf}/bin/duf";
+    df = "${pkgs.duf}/bin/duf";
     durl = "curl -O --progress-bar";
     l = "ls -lh";
     la = "ls -lAh --octal-permissions";
@@ -36,25 +33,26 @@
     xz
     zip
 
-    # CLI
+    # Network
+    aria2
+    curl
+    wget
+    sshfs
+
+    # Utils
     bat
     coreutils
     gitui
     ncdu
     rsync
     trash-cli
-
-    # Network
-    aria2
-    curl
-    wget
-    sshfs
   ];
 
   programs = with lib; {
     gpg.homedir = mkDefault "${config.xdg.dataHome}/gnupg";
-    password-store.enable = mkDefault true;
     home-manager.enable = true;
+    micro.enable = mkDefault true;
+    password-store.enable = mkDefault true;
 
     eza = {
       enable = mkDefault true;
@@ -101,7 +99,7 @@
         };
 
         interactive = {
-          diffFilter = "${pkgs.delta}/bin/delta --color-only";
+          diffFilter = mkIf config.programs.git.extraConfig.delta.enable "${pkgs.delta}/bin/delta --color-only";
         };
       };
 
@@ -114,47 +112,6 @@
         "__pycache__/"
         "*.pyc"
       ];
-    };
-
-    micro = {
-      enable = true;
-      settings = {
-        autoindent = true;
-        autosave = 5;
-        autosu = true;
-        backup = true;
-        backupdir = "${config.xdg.dataHome}/micro";
-        basename = true;
-        clipboard = "external"; # terminal internal
-        cursorline = true;
-        diffgutter = false;
-        eofnewline = true;
-        helpsplit = "hsplit";
-        ignorecase = true;
-        incsearch = true;
-        keepautoindent = false;
-        matchbrace = true;
-        matchbraceleft = true;
-        matchbracestyle = "highlight";
-        mkparents = true;
-        mouse = true;
-        multiopen = "tab";
-        permbackup = false;
-        pluginrepos = [ ];
-        relativeruler = false;
-        reload = "prompt";
-        ruler = true;
-        savecursor = true;
-        savehistory = true;
-        saveundo = true;
-        smartpaste = true;
-        statusline = true;
-        syntax = true;
-        tabhighlight = true;
-        tabmovement = true;
-        tabreverse = true;
-        tabsize = 4;
-      };
     };
 
     ssh = {
@@ -171,7 +128,7 @@
     };
 
     zoxide = {
-      enable = true;
+      enable = mkDefault true;
       enableBashIntegration = true;
       options = [ ];
     };
