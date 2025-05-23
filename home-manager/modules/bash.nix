@@ -1,4 +1,9 @@
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 
 with lib;
 
@@ -7,7 +12,7 @@ let
 in
 
 {
-  config = {
+  config = mkIf cfg.enable {
     home.packages = [ pkgs.nerd-fonts.caskaydia-cove ];
     programs.bash = {
       enableCompletion = true;
@@ -23,7 +28,7 @@ in
       '';
 
       sessionVariables = {
-        PROMPT_COMMAND="history -a; history -n";
+        PROMPT_COMMAND = "history -a; history -n";
       };
 
       shellOptions = [
