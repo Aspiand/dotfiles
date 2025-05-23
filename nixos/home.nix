@@ -21,6 +21,7 @@
       ehe = "fastfetch";
       debian = "${pkgs.distrobox}/bin/distrobox enter debian";
       build = "nix build ~/Kode/nixos/build#packages.aarch64-linux.sdcard";
+      pa = "php artisan";
     };
 
     sessionVariables = {
