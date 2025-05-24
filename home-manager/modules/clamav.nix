@@ -16,7 +16,7 @@ in
     enable = mkEnableOption "ClamAV";
     dir = mkOption {
       type = types.path;
-      default = "${config.home.homeDirectory}/.local/share/clamav";
+      default = "${config.xdg.dataHome}/clamav";
     };
   };
 
