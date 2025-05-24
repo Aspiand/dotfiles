@@ -39,6 +39,7 @@
         gnome-tweaks
         gnome-extension-manager
         gparted
+        heroic
         kdePackages.kdenlive
         libreoffice
         obs-studio
@@ -215,6 +216,12 @@
       binding = "<Alt>Return";
       command = "kgx";
       name = "Terminal";
+    };
+
+    "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1" = {
+      binding = "<Alt>e";
+      command = "nautilus";
+      name = "File Manager";
     };
 
     "org/gnome/settings-daemon/plugins/power" = {
