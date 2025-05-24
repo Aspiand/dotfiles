@@ -27,7 +27,7 @@
     relativeruler = false;
     reload = "prompt";
     ruler = true;
-    savecursor = true;
+    savecursor = false;
     savehistory = true;
     saveundo = true;
     smartpaste = true;
