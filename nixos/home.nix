@@ -16,7 +16,7 @@
     stateVersion = "25.05";
 
     shellAliases = {
-      switch = "sudo nixos-rebuild switch --flake ~/.config/dotfiles/nixos";
+      switch = "sudo nixos-rebuild switch --verbose --flake ~/.config/dotfiles/nixos";
       code = "NIXOS_OZONE_WL=1 code";
       ehe = "fastfetch";
       debian = "${pkgs.distrobox}/bin/distrobox enter debian";
@@ -43,7 +43,7 @@
         kdePackages.kdenlive
         libreoffice
         obs-studio
-        osu-lazer
+        #osu-lazer
         # planify
         postman
         spotify
