@@ -30,6 +30,7 @@
 
   boot = {
     kernelPackages = pkgs.linuxPackages_zen;
+    kernelModules = [ "binfmt_misc" ]; # TODO: remove?
     tmp.useTmpfs = false;
     binfmt.emulatedSystems = [ "aarch64-linux" ];
     loader = {
@@ -87,6 +88,7 @@
       "networkmanager"
       "wheel"
       "video"
+      "docker"
     ];
   };
 
@@ -231,6 +233,26 @@
         enable = false;
         scanDirectories = [ "/home" ];
       };
+    };
+  };
+
+  virtualisation.docker = {
+    enable = true;
+    enableOnBoot = false;
+    daemon.settings = {
+      log-driver = "journald";
+      storage-driver = "overlay2";
+
+      dns = [
+        "1.1.1.1"
+        "8.8.8.8"
+      ];
+
+      registry-mirrors = [
+        # "https://mirror.gcr.io"
+        "https://ghcr.io"
+        "https://docker.io"
+      ];
     };
   };
 
