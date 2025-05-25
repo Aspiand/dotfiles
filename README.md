@@ -7,3 +7,9 @@
 
 ## Android
 - https://developer.android.com/codelabs/basic-android-kotlin-compose-connect-device
+
+
+# 
+```bash
+docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+```

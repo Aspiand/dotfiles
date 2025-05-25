@@ -29,7 +29,7 @@
 
     file = {
       ".local/share/icons/candy-icons".source = "${pkgs.candy-icons}/share/icons/candy-icons";
-      ".config/i3/config".source = ../../manjaro/i3/config;
+      # ".config/i3/config".source = ../../manjaro/i3/config;
     };
 
     packages = with pkgs; [
