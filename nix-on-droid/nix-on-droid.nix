@@ -29,7 +29,7 @@
 
     config = { config, lib, pkgs, ... }:
       {
-        imports = [ ../home-manager/profiles/core.nix ];
+        imports = [ ../home-manager/default.nix ];
 
         nixpkgs.config.allowUnfree = true;
 
@@ -40,7 +40,7 @@
             more = "less";
             nodg = "nix-on-droid generations";
             nodr = "nix-on-droid rollback";
-            nods = "nix-on-droid build switch";
+            nods = "nix-on-droid build switch --flake ${toString ./.}";
           };
 
           packages = with pkgs; [
