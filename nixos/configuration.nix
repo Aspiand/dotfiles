@@ -30,7 +30,7 @@
 
   boot = {
     kernelPackages = pkgs.linuxPackages_zen;
-    kernelModules = [ "binfmt_misc" ]; # TODO: remove?
+    #kernelModules = [ "binfmt_misc" ]; # TODO: remove?
     tmp.useTmpfs = false;
     binfmt.emulatedSystems = [ "aarch64-linux" ];
     loader = {
