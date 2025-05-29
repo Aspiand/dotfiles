@@ -7,7 +7,6 @@
 {
   nixpkgs.config.allowUnfree = true;
   security.rtkit.enable = true;
-  security.polkit.enable = true;
   time.timeZone = "Asia/Makassar";
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
@@ -30,7 +29,7 @@
 
   boot = {
     kernelPackages = pkgs.linuxPackages_zen;
-    binfmt.emulatedSystems = [ "aarch64-linux" ];
+    #binfmt.emulatedSystems = [ "aarch64-linux" ];
     #kernelModules = [ "binfmt_misc" ]; # TODO: remove?
     tmp.useTmpfs = false;
     loader = {
@@ -171,13 +170,10 @@
   };
 
   services = {
-    gvfs.enable = true;
-    udisks2.enable = true;
     sysprof.enable = false;
     netdata.enable = false;
     printing.enable = false; # Enable CUPS to print documents.
     zerotierone.enable = true;
-
     udev.packages = [ pkgs.android-udev-rules ];
 
     openssh = {

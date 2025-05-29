@@ -166,24 +166,8 @@
 
   gtk = {
     enable = true;
-
-    iconTheme = {
-      name = "Adwaita";
-      package = pkgs.gnome-themes-extra;
-    };
-
-    theme = {
-      name = "Adwaita-dark";
-      package = pkgs.gnome-themes-extra;
-    };
-
-    gtk3.extraConfig = {
-      gtk-application-prefer-dark-theme = 1;
-    };
-
-    gtk4.extraConfig = {
-      gtk-application-prefer-dark-theme = 1;
-    };
+    iconTheme.name = "Adwaita";
+    theme.name = "Adwaita-dark";
   };
 
   dconf.settings = {
@@ -195,8 +179,6 @@
     "org/gnome/desktop/interface" = {
       color-scheme = "prefer-dark";
       enable-hot-corners = false;
-      gtk-theme = "Adwaita-dark";
-      icon-theme = "Adwaita";
       show-battery-percentage = true;
       toolkit-accessibility = false;
     };
