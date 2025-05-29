@@ -170,6 +170,7 @@
   };
 
   services = {
+    # gvfs.enable = true;
     sysprof.enable = false;
     netdata.enable = false;
     printing.enable = false; # Enable CUPS to print documents.
