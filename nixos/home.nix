@@ -48,10 +48,11 @@
         postman
         spotify
         tor-browser
-        umu-launcher
 
         # CLI
         android-tools
+        borgbackup
+        borgmatic
         bottom
         cachix
         cava
@@ -60,14 +61,15 @@
         fastfetch
         htop
         nix-tree
-        nixos-anywhere
-        nixos-generators
+        # nixos-anywhere
+        # nixos-generators
         nmap
         # nvtopPackages.intel
         # ollama
         podman-compose
         superfile
         steam-run
+        umu-launcher
         winePackages.wayland
         wl-clipboard
 
