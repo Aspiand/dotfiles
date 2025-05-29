@@ -7,8 +7,8 @@
 {
   nixpkgs.config.allowUnfree = true;
   security.rtkit.enable = true;
+  security.polkit.enable = true;
   time.timeZone = "Asia/Makassar";
-  home-manager.backupFileExtension = "bak";
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
   # on your system were taken. It‘s perfectly fine and recommended to leave
@@ -30,9 +30,9 @@
 
   boot = {
     kernelPackages = pkgs.linuxPackages_zen;
+    binfmt.emulatedSystems = [ "aarch64-linux" ];
     #kernelModules = [ "binfmt_misc" ]; # TODO: remove?
     tmp.useTmpfs = false;
-    binfmt.emulatedSystems = [ "aarch64-linux" ];
     loader = {
       systemd-boot.enable = false;
 
@@ -75,8 +75,9 @@
         "flakes"
       ];
 
-      substituters = [ "https://arm.cachix.org/" ];
-      trusted-substituters = [ "arm.cachix.org-1:K3XjAeWPgWkFtSS9ge5LJSLw3xgnNqyOaG7MDecmTQ8=" ];
+      # TODO: remove?
+      # substituters = [ "https://arm.cachix.org/" ];
+      # trusted-substituters = [ "arm.cachix.org-1:K3XjAeWPgWkFtSS9ge5LJSLw3xgnNqyOaG7MDecmTQ8=" ];
     };
   };
 
@@ -170,7 +171,8 @@
   };
 
   services = {
-    # gvfs.enable = true;
+    gvfs.enable = true;
+    udisks2.enable = true;
     sysprof.enable = false;
     netdata.enable = false;
     printing.enable = false; # Enable CUPS to print documents.
@@ -216,24 +218,6 @@
       # use the example session manager (no others are packaged yet so this is enabled by default,
       # no need to redefine it in your config for now)
       #media-session.enable = true;
-    };
-
-    clamav = {
-      daemon = {
-        enable = false;
-        settings = { };
-      };
-
-      updater = {
-        enable = false;
-        frequency = 1;
-        interval = "hourly";
-      };
-
-      scanner = {
-        enable = false;
-        scanDirectories = [ "/home" ];
-      };
     };
   };
 
