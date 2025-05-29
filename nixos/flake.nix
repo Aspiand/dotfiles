@@ -2,11 +2,13 @@
   description = "NixOS configuration";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
+
     home-manager = {
-      url = "github:nix-community/home-manager";
+      url = "github:nix-community/home-manager/release-25.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
     grub2-themes = {
       url = "github:vinceliuice/grub2-themes";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -43,12 +45,12 @@
         };
       };
 
-      homeConfigurations = {
-        backupFileExtension = "bak";
-        ao = home-manager.lib.homeManagerConfiguration {
-          pkgs = import nixpkgs { inherit system; };
-          modules = [ ./home.nix ];
-        };
-      };
+      # homeConfigurations = {
+      #   backupFileExtension = "bak";
+      #   ao = home-manager.lib.homeManagerConfiguration {
+      #     pkgs = import nixpkgs { inherit system; };
+      #     modules = [ ./home.nix ];
+      #   };
+      # };
     };
 }
