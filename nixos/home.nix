@@ -136,6 +136,7 @@
   };
 
   programs = {
+    home-manager.enable = true;
     bash.enable = true;
     clamav.enable = true;
     gpg.enable = true;
