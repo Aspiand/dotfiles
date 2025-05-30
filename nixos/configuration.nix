@@ -174,6 +174,8 @@
     netdata.enable = false;
     printing.enable = false; # Enable CUPS to print documents.
     zerotierone.enable = true;
+    tailscale.enable = true;
+    resolved.enable = true; # https://wiki.nixos.org/wiki/Tailscale#DNS
     udev.packages = [ pkgs.android-udev-rules ];
 
     openssh = {

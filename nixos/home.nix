@@ -32,7 +32,7 @@
       with pkgs;
       [
         # Desktop
-        # authenticator
+        authenticator
         dbeaver-bin
         discord
         firefox
@@ -45,6 +45,7 @@
         obs-studio
         #osu-lazer
         # planify
+        pika-backup
         postman
         spotify
         tor-browser
