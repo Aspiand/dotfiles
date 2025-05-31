@@ -53,7 +53,7 @@
         # CLI
         android-tools
         borgbackup
-        borgmatic
+        # borgmatic
         bottom
         cachix
         cava
