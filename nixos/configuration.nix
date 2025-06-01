@@ -192,9 +192,6 @@
       enable = true;
       # libinput.enable = true; # Enable touchpad support (enabled default in most desktopManager).
 
-      displayManager.gdm.enable = true;
-      desktopManager.gnome.enable = true;
-
       videoDrivers = [ "modesetting" ];
 
       xkb = {
@@ -204,6 +201,9 @@
 
       excludePackages = with pkgs; [ xterm ];
     };
+
+    displayManager.gdm.enable = true;
+    desktopManager.gnome.enable = true;
 
     pipewire = {
       enable = true;
