@@ -35,6 +35,7 @@
         authenticator
         dbeaver-bin
         discord
+        bitwarden-desktop
         firefox
         gnome-tweaks
         gnome-extension-manager
@@ -52,6 +53,7 @@
 
         # CLI
         android-tools
+        bitwarden-cli
         borgbackup
         # borgmatic
         bottom
@@ -68,6 +70,7 @@
         # nvtopPackages.intel
         # ollama
         podman-compose
+        # rbw
         superfile
         steam-run
         umu-launcher
