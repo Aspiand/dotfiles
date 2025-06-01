@@ -91,7 +91,7 @@
         # ventoy-full # https://github.com/NixOS/nixpkgs/issues/404663
 
         # Programming
-        # gcc
+        gcc
         go
         maven
         php84
@@ -146,6 +146,7 @@
     ssh.control = true;
     tmux.enable = true;
     yt-dlp.enable = true;
+    yt-dlp.path = "${config.home.homeDirectory}/Videos/YouTube";
     yt-dlp.downloader = "aria2c";
   };
 
@@ -169,6 +170,8 @@
     enable = true;
     iconTheme.name = "Adwaita";
     theme.name = "Adwaita-dark";
+    gtk3.extraConfig.gtk-application-prefer-dark-theme = 1;
+    gtk4.extraConfig.gtk-application-prefer-dark-theme = 1;
   };
 
   dconf.settings = {

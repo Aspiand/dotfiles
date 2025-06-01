@@ -1,4 +1,1 @@
-.direnv
-*.qcow2
-result
-.git-hooks
+hardware-configuration.nix
