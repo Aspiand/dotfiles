@@ -70,7 +70,7 @@
         # nvtopPackages.intel
         # ollama
         podman-compose
-        # rbw
+        rbw
         superfile
         steam-run
         umu-launcher
@@ -227,7 +227,7 @@
         blur-my-shell.extensionUuid
         launch-new-instance.extensionUuid
         pano.extensionUuid
-        pop-shell.extensionUuid
+        # pop-shell.extensionUuid
         status-icons.extensionUuid
         system-monitor.extensionUuid
         window-list.extensionUuid
