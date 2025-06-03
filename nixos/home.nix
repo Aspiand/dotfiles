@@ -70,7 +70,7 @@
         # nvtopPackages.intel
         # ollama
         podman-compose
-        rbw
+        # rbw
         superfile
         steam-run
         umu-launcher
