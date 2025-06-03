@@ -171,10 +171,24 @@
 
   gtk = {
     enable = true;
-    iconTheme.name = "Adwaita";
-    theme.name = "Adwaita-dark";
-    gtk3.extraConfig.gtk-application-prefer-dark-theme = 1;
-    gtk4.extraConfig.gtk-application-prefer-dark-theme = 1;
+
+    iconTheme = {
+      name = "Adwaita";
+      package = pkgs.gnome-themes-extra;
+    };
+
+    theme = {
+      name = "Adwaita-dark";
+      package = pkgs.gnome-themes-extra;
+    };
+
+    gtk3.extraConfig = {
+      gtk-application-prefer-dark-theme = 1;
+    };
+
+    gtk4.extraConfig = {
+      gtk-application-prefer-dark-theme = 1;
+    };
   };
 
   dconf.settings = {
@@ -188,6 +202,8 @@
       enable-hot-corners = false;
       show-battery-percentage = true;
       toolkit-accessibility = false;
+      # gtk-theme = "Adwaita-dark";
+      # icon-theme = "Adwaita";
     };
 
     "org/gnome/desktop/peripherals/touchpad" = {
