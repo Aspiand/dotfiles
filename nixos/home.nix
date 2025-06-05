@@ -114,7 +114,7 @@
         launch-new-instance
         # fly-pie
         pano
-        pop-shell
+        # pop-shell
         status-icons
         system-monitor
         window-list
