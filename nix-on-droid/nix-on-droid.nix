@@ -40,7 +40,7 @@
             more = "less";
             nodg = "nix-on-droid generations";
             nodr = "nix-on-droid rollback";
-            nods = "nix-on-droid build switch --flake ${toString ./.}";
+            nods = "nix-on-droid build switch --flake ~/.config/dotfiles/nix-on-droid";
           };
 
           packages = with pkgs; [
@@ -70,7 +70,7 @@
             enable = false;
             enableSshSupport = true;
             enableBashIntegration = true;
-            pinentryPackage = pkgs.pinentry-tty;
+            pinentry.package = pkgs.pinentry-tty;
             defaultCacheTtl = 600;
             defaultCacheTtlSsh = 600;
           };
