@@ -33,9 +33,9 @@
       [
         # Desktop
         authenticator
+        bitwarden-desktop
         dbeaver-bin
         discord
-        bitwarden-desktop
         firefox
         gnome-tweaks
         gnome-extension-manager
@@ -44,7 +44,6 @@
         kdePackages.kdenlive
         libreoffice
         obs-studio
-        #osu-lazer
         # planify
         pika-backup
         postman
@@ -57,7 +56,7 @@
         borgbackup
         # borgmatic
         bottom
-        cachix
+        # cachix
         cava
         distrobox
         duf
@@ -149,8 +148,9 @@
     ssh.control = true;
     tmux.enable = true;
     yt-dlp.enable = true;
-    yt-dlp.path = "${config.home.homeDirectory}/Videos/YouTube";
     yt-dlp.downloader = "aria2c";
+    yt-dlp.path = "${config.home.homeDirectory}/Videos/YouTube";
+    git.extraConfig.core.editor = "${pkgs.vscode}/bin/code --wait";
   };
 
   services = {
