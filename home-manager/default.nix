@@ -8,21 +8,27 @@
 {
   imports = [ ./modules/default.nix ];
 
-  home.shellAliases = {
-    df = "${pkgs.duf}/bin/duf";
-    durl = "curl -O --progress-bar";
-    l = "ls -lh";
-    la = "ls -lAh --octal-permissions";
-    ld = "ls --only-dirs";
-    ll = "ls -lh --total-size";
-    nano = "micro";
-    ncu = "nix-channel --update";
-    ncl = "nix-channel --list";
-    nclg = "nix-channel --list-generations";
-    news = "${pkgs.home-manager}/bin/home-manager news";
-    rm = "${pkgs.trash-cli}/bin/trash-put"; # don't change this line
-    remove = "${pkgs.coreutils}/bin/rm";
-    tree = "${pkgs.eza}/bin/eza --tree";
+  home = {
+    shellAliases = {
+      df = "${pkgs.duf}/bin/duf";
+      durl = "curl -O --progress-bar";
+      l = "ls -lh";
+      la = "ls -lAh --octal-permissions";
+      ld = "ls --only-dirs";
+      ll = "ls -lh --total-size";
+      nano = "micro";
+      ncu = "nix-channel --update";
+      ncl = "nix-channel --list";
+      nclg = "nix-channel --list-generations";
+      news = "${pkgs.home-manager}/bin/home-manager news";
+      rm = "${pkgs.trash-cli}/bin/trash-put"; # don't change this line
+      remove = "${pkgs.coreutils}/bin/rm";
+      tree = "${pkgs.eza}/bin/eza --tree";
+    };
+
+    sessionVariables = {
+      EDITOR = "${pkgs.micro}/bin/micro";
+    };
   };
 
   home.packages = with pkgs; [

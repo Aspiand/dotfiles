@@ -8,7 +8,7 @@
     programs.neovim = {
       viAlias = true;
       vimAlias = true;
-      defaultEditor = true;
+      defaultEditor = lib.mkDefault false;
 
       plugins = with pkgs.vimPlugins; [
         coc-nvim
