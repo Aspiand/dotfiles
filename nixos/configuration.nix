@@ -173,9 +173,11 @@
     sysprof.enable = false;
     netdata.enable = false;
     printing.enable = false; # Enable CUPS to print documents.
-    zerotierone.enable = false;
+    lact.enable = false;
     tailscale.enable = true;
+    kismet.enable = false;
     resolved.enable = false; # https://wiki.nixos.org/wiki/Tailscale#DNS
+    zerotierone.enable = false;
     udev.packages = [ pkgs.android-udev-rules ];
 
     openssh = {
