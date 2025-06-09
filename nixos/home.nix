@@ -61,6 +61,7 @@
         distrobox
         duf
         fastfetch
+        # ffmpeg
         gocryptfs
         htop
         nix-tree
