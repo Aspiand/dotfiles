@@ -61,6 +61,7 @@
         distrobox
         duf
         fastfetch
+        gocryptfs
         htop
         nix-tree
         # nixos-anywhere
