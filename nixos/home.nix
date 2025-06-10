@@ -129,7 +129,10 @@
       DIR="$HOME/.local/share/backups/gnome"
       [ ! -f "$DIR" ]; mkdir -vp "$DIR"
 
-      ${pkgs.dconf}/bin/dconf dump / > $DIR/$(date +%Y%m%d%H%M%S).conf
+      dest="$DIR/$(date +%Y%m%d%H%M%S).conf"
+      ${pkgs.dconf}/bin/dconf dump / > $dest
+
+      ln -sf $dest $DIR/latest.conf
     '';
 
     pointerCursor = {
