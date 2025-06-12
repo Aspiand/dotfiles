@@ -10,7 +10,6 @@
 
   home = {
     shellAliases = {
-      df = "${pkgs.duf}/bin/duf";
       durl = "curl -O --progress-bar";
       l = "ls -lh";
       la = "ls -lAh --octal-permissions";
