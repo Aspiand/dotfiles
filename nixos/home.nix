@@ -73,8 +73,8 @@
         podman-compose
         # rbw
         superfile
-        steam-run
-        umu-launcher
+        # steam-run
+        # umu-launcher
         winePackages.wayland
         wl-clipboard
 
