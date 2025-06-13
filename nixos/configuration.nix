@@ -225,8 +225,8 @@
     enable = true;
     enableOnBoot = false;
     daemon.settings = {
-      log-driver = "journald";
-      storage-driver = "overlay2";
+      # log-driver = "journald";
+      # storage-driver = "overlay2";
 
       dns = [
         "1.1.1.1"
