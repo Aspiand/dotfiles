@@ -64,6 +64,7 @@
         # ffmpeg
         gocryptfs
         htop
+        hugo
         nix-tree
         # nixos-anywhere
         # nixos-generators
