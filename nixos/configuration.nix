@@ -245,11 +245,11 @@
   # started in user sessions.
   # programs.mtr.enable = true;
 
-  # networking.firewall = {
-  #   enable = true;
-  #   allowedTCPPorts = [ ... ];
-  #   allowedUDPPorts = [ ... ];
-  # };
+  networking.firewall = {
+    enable = true;
+    allowedTCPPorts = [ 3003 ];
+    # allowedUDPPorts = [ ... ];
+  };
 
   i18n = {
     defaultLocale = "en_US.UTF-8";
