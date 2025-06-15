@@ -13,9 +13,9 @@
     pkgs = import nixpkgs { system = "x86_64-linux"; };
   in {
     homeConfigurations = {
-      "arch" = home-manager.lib.homeManagerConfiguration {
+      "sericea" = home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
-        modules = [ ./home-manager/profiles/arch.nix ];
+        modules = [ ./home-manager/profiles/sericea.nix ];
       };
 
       "manjaro" = home-manager.lib.homeManagerConfiguration {
