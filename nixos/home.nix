@@ -54,9 +54,7 @@
         android-tools
         bitwarden-cli
         borgbackup
-        # borgmatic
         bottom
-        # cachix
         cava
         distrobox
         duf
@@ -65,20 +63,18 @@
         gocryptfs
         htop
         hugo
+        immich-go
         nix-tree
-        # nixos-anywhere
-        # nixos-generators
         nmap
         # nvtopPackages.intel
-        # ollama
         podman-compose
-        # rbw
         rustic
         superfile
         # steam-run
         # umu-launcher
         winePackages.wayland
         wl-clipboard
+        zathura #  Document viewer
 
         # Editor
         android-studio
@@ -102,12 +98,12 @@
         # Programming
         gcc
         go
+        jdk
         maven
+        nixfmt-rfc-style # nix formatter
+        nodejs
         php84
         php84Packages.composer
-        nodejs
-        jdk
-        nixfmt-rfc-style # nix formatter
         (python3.withPackages (
           ps: with ps; [
             pip
