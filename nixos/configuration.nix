@@ -58,6 +58,11 @@
   networking = {
     hostName = "aira";
     networkmanager.enable = true;
+    firewall = {
+      enable = true;
+      allowedTCPPorts = [ 3003 ];
+      # allowedUDPPorts = [ ... ];
+    };
   };
 
   nix = {
@@ -244,12 +249,6 @@
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
   # programs.mtr.enable = true;
-
-  networking.firewall = {
-    enable = true;
-    allowedTCPPorts = [ 3003 ];
-    # allowedUDPPorts = [ ... ];
-  };
 
   i18n = {
     defaultLocale = "en_US.UTF-8";
