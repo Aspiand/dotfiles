@@ -73,6 +73,7 @@
         # ollama
         podman-compose
         # rbw
+        rustic
         superfile
         # steam-run
         # umu-launcher
@@ -94,6 +95,9 @@
         vulkan-tools
 
         # ventoy-full # https://github.com/NixOS/nixpkgs/issues/404663
+
+        # idk
+        # s3fs
 
         # Programming
         gcc
