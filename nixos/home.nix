@@ -60,6 +60,7 @@
         duf
         fastfetch
         # ffmpeg
+        gnumake
         gocryptfs
         htop
         hugo
@@ -68,13 +69,14 @@
         nmap
         # nvtopPackages.intel
         podman-compose
+        restic
         rustic
         superfile
         # steam-run
         # umu-launcher
         winePackages.wayland
         wl-clipboard
-        zathura #  Document viewer
+        # zathura #  Document viewer
 
         # Editor
         android-studio
