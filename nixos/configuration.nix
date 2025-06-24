@@ -60,7 +60,7 @@
     networkmanager.enable = true;
     firewall = {
       enable = true;
-      allowedTCPPorts = [ 3003 ];
+      allowedTCPPorts = [ 3003 45876 ];
       # allowedUDPPorts = [ ... ];
     };
   };
@@ -196,7 +196,7 @@
     };
 
     xserver = {
-      enable = true;
+      enable = false;
       # libinput.enable = true; # Enable touchpad support (enabled default in most desktopManager).
 
       videoDrivers = [ "modesetting" ];
@@ -228,7 +228,7 @@
 
   virtualisation.docker = {
     enable = true;
-    enableOnBoot = false;
+    enableOnBoot = true;
     daemon.settings = {
       # log-driver = "journald";
       # storage-driver = "overlay2";

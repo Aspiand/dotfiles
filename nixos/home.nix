@@ -36,6 +36,7 @@
         bitwarden-desktop
         dbeaver-bin
         discord
+        electrum
         firefox
         gnome-tweaks
         gnome-extension-manager
