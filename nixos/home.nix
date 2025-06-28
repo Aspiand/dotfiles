@@ -34,20 +34,20 @@
         # Desktop
         authenticator
         bitwarden-desktop
-        dbeaver-bin
+        # dbeaver-bin
         discord
         electrum
         firefox
         gnome-tweaks
         gnome-extension-manager
         gparted
-        heroic
-        kdePackages.kdenlive
+        # heroic
+        # kdePackages.kdenlive
         libreoffice
         obs-studio
         # planify
         pika-backup
-        postman
+        # postman
         spotify
         tor-browser
 
@@ -69,10 +69,11 @@
         nix-tree
         nmap
         # nvtopPackages.intel
-        podman-compose
+        # podman-compose
         restic
         rustic
-        superfile
+        s3fs
+        # superfile
         # steam-run
         # umu-launcher
         winePackages.wayland
@@ -163,7 +164,7 @@
   };
 
   services = {
-    podman.enable = true;
+    podman.enable = false;
 
     home-manager.autoExpire = {
       enable = true;
