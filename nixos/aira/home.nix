@@ -6,7 +6,7 @@
 }:
 
 {
-  imports = [ ../home-manager/default.nix ];
+  imports = [ ../../home-manager/default.nix ];
 
   # fonts.fontconfig.enable = true;
 
@@ -16,7 +16,7 @@
     stateVersion = "25.05";
 
     shellAliases = {
-      switch = "sudo nixos-rebuild switch --verbose --flake ~/.config/dotfiles/nixos";
+      switch = "sudo nixos-rebuild switch --verbose --flake ~/.config/dotfiles/nixos/aira";
       code = "NIXOS_OZONE_WL=1 code";
       ehe = "fastfetch";
       debian = "${pkgs.distrobox}/bin/distrobox enter debian";
