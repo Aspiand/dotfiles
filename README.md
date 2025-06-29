@@ -12,3 +12,8 @@
 ```bash
 docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
 ```
+
+https://exiftool.org/forum/index.php?topic=8105.0
+```bash
+exiftool '-filename<%f.$fileTypeExtension' -r -ext '*'
+```
