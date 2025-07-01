@@ -27,6 +27,11 @@
         inherit pkgs;
         modules = [ ./home-manager/profiles/mint.nix ];
       };
+
+      "pc" = home-manager.lib.homeManagerConfiguration {
+        inherit pkgs;
+        modules = [ ./home-manager/profiles/work.nix ];
+      };
     };
   };
 }
