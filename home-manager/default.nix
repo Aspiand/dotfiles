@@ -126,7 +126,6 @@
         user = "git";
         forwardAgent = true;
         identityFile = [
-          "~/.ssh/id_rsa"
           "~/.ssh/id_ed25519"
         ];
       };
