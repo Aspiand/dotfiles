@@ -18,6 +18,7 @@
     shellAliases = {
       hmbs = "nix run home-manager -- build switch";
       hmg = "nix run home-manager -- generations";
+      rustic-clean = "rustic forget --keep-none --prune";
     };
 
     packages = with pkgs; [
@@ -29,6 +30,7 @@
 
       distrobox
       duf
+      gocryptfs
       nix-bash-completions
     ];
   };
