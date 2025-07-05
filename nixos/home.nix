@@ -16,12 +16,10 @@
     stateVersion = "25.05";
 
     shellAliases = {
-      switch = "sudo nixos-rebuild switch --verbose --flake ~/.config/dotfiles/nixos/aira";
+      switch = "sudo nixos-rebuild switch --verbose --flake ~/.config/dotfiles/nixos";
       code = "NIXOS_OZONE_WL=1 code";
       ehe = "fastfetch";
       debian = "${pkgs.distrobox}/bin/distrobox enter debian";
-      build = "nix build ~/Kode/nixos/build#packages.aarch64-linux.sdcard";
-      pa = "php artisan";
     };
 
     sessionVariables = {
