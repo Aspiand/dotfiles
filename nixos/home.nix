@@ -6,7 +6,7 @@
 }:
 
 {
-  imports = [ ../../home-manager/default.nix ];
+  imports = [ ../home-manager/default.nix ];
 
   # fonts.fontconfig.enable = true;
 
