@@ -18,11 +18,12 @@
     shellAliases = {
       hmbs = "nix run home-manager -- build switch";
       hmg = "nix run home-manager -- generations";
-      rustic-clean = "rustic forget --keep-none --prune";
+      rclean = "rustic forget --keep-none --prune";
     };
 
     packages = with pkgs; [
       s3fs
+      restic
       rustic
       python312
       python312Packages.pip
