@@ -32,6 +32,7 @@
       distrobox
       duf
       gocryptfs
+      jq
       nix-bash-completions
     ];
   };
