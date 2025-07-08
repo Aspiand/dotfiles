@@ -42,6 +42,7 @@
     bash.enable = true;
     tmux.enable = true;
     tmux.shell = "${pkgs.bash}/bin/bash";
+    yt-dlp.enable = true;
 
     ssh = {
       matchBlocks.github.identityFile = [
