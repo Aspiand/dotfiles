@@ -22,12 +22,15 @@
     };
 
     packages = with pkgs; [
-      s3fs
-      restic
-      rustic
-      python312
-      python312Packages.pip
-      python312Packages.virtualenv
+      # s3fs
+      # restic
+      # rustic
+      # python312
+      # python312Packages.pip
+      # python312Packages.virtualenv
+      # php
+      # composer
+      mailpit
 
       distrobox
       duf
@@ -41,6 +44,7 @@
     git.extraConfig.core.editor = "${pkgs.vscode}/bin/code --wait";
 
     bash.enable = true;
+    mycli.enable = true;
     tmux.enable = true;
     tmux.shell = "${pkgs.bash}/bin/bash";
     yt-dlp.enable = true;
