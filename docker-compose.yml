@@ -1,0 +1,19 @@
+services:
+  database:
+    container_name: sql
+    image: docker.io/percona:latest
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+    volumes:
+      - database:/var/lib/mysql
+    ports:
+      - 3306:3306
+
+  phpmyadmin:
+    container_name: phpmyadmin
+    image: docker.io/phpmyadmin/phpmyadmin:latest
+    ports:
+      - 8080:80
+
+volumes:
+  database:
