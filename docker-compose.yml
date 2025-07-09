@@ -12,6 +12,10 @@ services:
   phpmyadmin:
     container_name: phpmyadmin
     image: docker.io/phpmyadmin/phpmyadmin:latest
+    environment:
+      - PMA_HOST=database
+    depends_on:
+      - database
     ports:
       - 8080:80
 
