@@ -36,6 +36,7 @@
       duf
       gocryptfs
       jq
+      # obsidian
       nix-bash-completions
     ];
   };
