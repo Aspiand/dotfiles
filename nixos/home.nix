@@ -44,17 +44,17 @@
         libreoffice
         obs-studio
         # planify
-        pika-backup
+        # pika-backup
         # postman
         spotify
         tor-browser
 
         # CLI
-        android-tools
+        # android-tools
         bitwarden-cli
-        borgbackup
+        # borgbackup
         bottom
-        cava
+        # cava
         distrobox
         duf
         fastfetch
@@ -79,9 +79,9 @@
         # zathura #  Document viewer
 
         # Editor
-        android-studio
-        arduino-ide
-        netbeans
+        # android-studio
+        # arduino-ide
+        # netbeans
         obsidian
         vscode
 
@@ -98,10 +98,10 @@
         # s3fs
 
         # Programming
-        gcc
-        go
-        jdk
-        maven
+        # gcc
+        # go
+        # jdk
+        # maven
         nixfmt-rfc-style # nix formatter
         nodejs
         php84
