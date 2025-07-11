@@ -24,12 +24,12 @@
     packages = with pkgs; [
       # s3fs
       # restic
-      # rustic
+      rustic
       # python312
       # python312Packages.pip
       # python312Packages.virtualenv
-      # php
-      # composer
+      php82
+      php82Packages.composer
       mailpit
 
       distrobox
