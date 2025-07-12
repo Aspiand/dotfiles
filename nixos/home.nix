@@ -34,14 +34,14 @@
         bitwarden-desktop
         # dbeaver-bin
         discord
-        electrum
+        # electrum
         firefox
         gnome-tweaks
         gnome-extension-manager
         gparted
         # heroic
         # kdePackages.kdenlive
-        libreoffice
+        # libreoffice
         obs-studio
         # planify
         # pika-backup
@@ -51,7 +51,7 @@
 
         # CLI
         # android-tools
-        bitwarden-cli
+        # bitwarden-cli
         # borgbackup
         bottom
         # cava
@@ -59,7 +59,7 @@
         duf
         fastfetch
         # ffmpeg
-        gnumake
+        # gnumake
         gocryptfs
         htop
         hugo
@@ -70,7 +70,7 @@
         # podman-compose
         restic
         rustic
-        s3fs
+        # s3fs
         # superfile
         # steam-run
         # umu-launcher
@@ -88,7 +88,7 @@
         # Gaming
         # rpcs3
         # gpu-viewer
-        mangohud
+        # mangohud
         lutris
         vulkan-tools
 
@@ -103,7 +103,7 @@
         # jdk
         # maven
         nixfmt-rfc-style # nix formatter
-        nodejs
+        # nodejs
         php84
         php84Packages.composer
         (python3.withPackages (
