@@ -30,10 +30,12 @@
       # python312Packages.virtualenv
       php82
       php82Packages.composer
+      postman
       mailpit
 
       distrobox
       duf
+      gemini-cli
       gocryptfs
       jq
       # obsidian
