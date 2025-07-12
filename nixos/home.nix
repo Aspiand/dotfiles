@@ -175,6 +175,27 @@
       enableSshSupport = true;
       pinentry.package = pkgs.pinentry-tty;
     };
+
+    restic = {
+      enable = false;
+      backups = {
+        main = {
+          package = pkgs.restic;
+          initialize = true;
+          repository = "sftp:yuki@agarta:/mnt/hz128/devices";
+          passwordFile = "${config.xdg.dataHome}/.restic_password";
+          pruneOpts = [
+            "--keep-daily 7"
+            "--keep-weekly 4"
+            "--keep-monthly 12"
+            "--keep-yearly 2"
+          ];
+          paths = [
+            "${config.home.homeDirectory}/Pictures"
+          ];
+        };
+      };
+    };
   };
 
   gtk = {
