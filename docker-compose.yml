@@ -2,6 +2,7 @@ services:
   database:
     container_name: sql
     image: docker.io/percona:latest
+    restart: always
     environment:
       - MYSQL_ROOT_PASSWORD=root
     volumes:
@@ -12,6 +13,7 @@ services:
   phpmyadmin:
     container_name: phpmyadmin
     image: docker.io/phpmyadmin/phpmyadmin:latest
+    restart: always
     environment:
       - PMA_HOST=database
     depends_on:
