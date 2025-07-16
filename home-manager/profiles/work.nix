@@ -25,7 +25,7 @@
       # s3fs
       # restic
       rustic
-      # python312
+      python312
       # python312Packages.pip
       # python312Packages.virtualenv
       php82
