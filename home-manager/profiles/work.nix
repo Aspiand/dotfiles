@@ -30,7 +30,7 @@
       # python312Packages.virtualenv
       php82
       php82Packages.composer
-      postman
+      # postman
       mailpit
 
       distrobox
