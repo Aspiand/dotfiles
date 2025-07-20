@@ -99,7 +99,7 @@
 
         # Programming
         # gcc
-        # go
+        go
         # jdk
         # maven
         nixfmt-rfc-style # nix formatter
