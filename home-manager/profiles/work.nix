@@ -37,6 +37,7 @@
       duf
       gemini-cli
       gocryptfs
+      hugo
       jq
       # obsidian
       nix-bash-completions
