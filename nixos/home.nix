@@ -103,7 +103,7 @@
         # jdk
         # maven
         nixfmt-rfc-style # nix formatter
-        # nodejs
+        nodejs
         php84
         php84Packages.composer
         (python3.withPackages (
