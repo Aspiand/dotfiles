@@ -104,8 +104,9 @@
         # maven
         nixfmt-rfc-style # nix formatter
         nodejs
-        php84
-        php84Packages.composer
+        php82
+        php82Packages.composer
+        php82Extensions.pdo_sqlite
         (python3.withPackages (
           ps: with ps; [
             pip
