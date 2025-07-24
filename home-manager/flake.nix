@@ -13,24 +13,19 @@
     pkgs = import nixpkgs { system = "x86_64-linux"; };
   in {
     homeConfigurations = {
-      "sericea" = home-manager.lib.homeManagerConfiguration {
-        inherit pkgs;
-        modules = [ ./home-manager/profiles/sericea.nix ];
-      };
-
       "manjaro" = home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
-        modules = [ ./home-manager/profiles/manjaro.nix ];
+        modules = [ ./profiles/manjaro.nix ];
       };
 
       "mint" = home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
-        modules = [ ./home-manager/profiles/mint.nix ];
+        modules = [ ./profiles/mint.nix ];
       };
 
       "pc" = home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
-        modules = [ ./home-manager/profiles/work.nix ];
+        modules = [ ./profiles/work.nix ];
       };
     };
   };
