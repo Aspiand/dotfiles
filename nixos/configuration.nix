@@ -60,7 +60,10 @@
     networkmanager.enable = true;
     firewall = {
       enable = true;
-      allowedTCPPorts = [ 3003 45876 ];
+      allowedTCPPorts = [
+        3003
+        45876
+      ];
       # allowedUDPPorts = [ ... ];
     };
   };
@@ -226,23 +229,26 @@
     };
   };
 
-  virtualisation.docker = {
-    enable = true;
-    enableOnBoot = true;
-    daemon.settings = {
-      # log-driver = "journald";
-      # storage-driver = "overlay2";
+  virtualisation = {
+    multipass.enable = true;
+    docker = {
+      enable = true;
+      enableOnBoot = true;
+      daemon.settings = {
+        # log-driver = "journald";
+        # storage-driver = "overlay2";
 
-      dns = [
-        "1.1.1.1"
-        "8.8.8.8"
-      ];
+        dns = [
+          "1.1.1.1"
+          "8.8.8.8"
+        ];
 
-      registry-mirrors = [
-        # "https://mirror.gcr.io"
-        "https://ghcr.io"
-        "https://docker.io"
-      ];
+        registry-mirrors = [
+          # "https://mirror.gcr.io"
+          "https://ghcr.io"
+          "https://docker.io"
+        ];
+      };
     };
   };
 
