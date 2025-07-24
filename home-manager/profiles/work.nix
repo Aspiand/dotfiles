@@ -22,6 +22,7 @@
     };
 
     packages = with pkgs; [
+      bun
       # s3fs
       # restic
       rustic
