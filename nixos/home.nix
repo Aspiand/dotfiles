@@ -64,6 +64,7 @@
         htop
         hugo
         immich-go
+        laravel
         nix-tree
         nmap
         # nvtopPackages.intel
@@ -104,9 +105,8 @@
         # maven
         nixfmt-rfc-style # nix formatter
         nodejs
-        php82
-        php82Packages.composer
-        php82Extensions.pdo_sqlite
+        php84
+        php84Packages.composer
         (python3.withPackages (
           ps: with ps; [
             pip
