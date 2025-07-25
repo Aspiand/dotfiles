@@ -230,7 +230,7 @@
   };
 
   virtualisation = {
-    multipass.enable = true;
+    multipass.enable = false;
     docker = {
       enable = true;
       enableOnBoot = true;
