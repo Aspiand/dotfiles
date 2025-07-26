@@ -59,6 +59,7 @@
         duf
         fastfetch
         # ffmpeg
+        gemini-cli
         # gnumake
         gocryptfs
         htop
