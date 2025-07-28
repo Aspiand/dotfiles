@@ -22,17 +22,20 @@
     };
 
     packages = with pkgs; [
-      bun
+      # bun
+      nodejs
       # s3fs
       # restic
-      rustic
-      python312
+      # rustic
+      # python312
       # python312Packages.pip
       # python312Packages.virtualenv
-      php82
-      php82Packages.composer
+      php84
+      php84Packages.composer
+      php84Extensions.intl
       # postman
       mailpit
+      # multipass
 
       distrobox
       duf
