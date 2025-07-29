@@ -32,7 +32,6 @@
       # python312Packages.virtualenv
       php84
       php84Packages.composer
-      php84Extensions.intl
       # postman
       mailpit
       # multipass
