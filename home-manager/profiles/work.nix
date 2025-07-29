@@ -21,6 +21,7 @@
 
     packages = with pkgs; [
       # bun
+      go
       nodejs
       # s3fs
       # restic
