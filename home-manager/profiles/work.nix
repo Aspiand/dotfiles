@@ -26,9 +26,9 @@
       # s3fs
       # restic
       # rustic
-      # python312
-      # python312Packages.pip
-      # python312Packages.virtualenv
+      python312
+      python312Packages.pip
+      python312Packages.virtualenv
       php84
       php84Packages.composer
       # postman
