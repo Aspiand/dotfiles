@@ -16,9 +16,7 @@
     stateVersion = "25.05";
 
     shellAliases = {
-      hmbs = "nix run home-manager -- build switch";
-      hmg = "nix run home-manager -- generations";
-      rclean = "rustic forget --keep-none --prune";
+      hmbs = "home-manager --flake ~/Kodes/dotfiles/home-manager#pc build switch";
     };
 
     packages = with pkgs; [
