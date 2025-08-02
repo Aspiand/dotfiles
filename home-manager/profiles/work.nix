@@ -16,7 +16,7 @@
     stateVersion = "25.05";
 
     shellAliases = {
-      hmbs = "home-manager --flake ~/Kodes/dotfiles/home-manager#pc build switch";
+      hmbs = "home-manager --flake ~/Kodes/dotfiles/home-manager#pc build switch --verbose";
     };
 
     packages = with pkgs; [
@@ -53,7 +53,7 @@
     mycli.enable = true;
     tmux.enable = true;
     tmux.shell = "${pkgs.bash}/bin/bash";
-    yt-dlp.enable = true;
+    yt-dlp.enable = false;
 
     ssh = {
       matchBlocks.github.identityFile = [
