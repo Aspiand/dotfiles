@@ -57,7 +57,7 @@
     gpg.homedir = mkDefault "${config.xdg.dataHome}/gnupg";
     home-manager.enable = true;
     micro.enable = mkDefault true;
-    password-store.enable = mkDefault true;
+    password-store.enable = mkDefault false;
 
     eza = {
       enable = mkDefault true;
