@@ -23,9 +23,10 @@
       # bun
       go
       nodejs
+      pnpm
       # s3fs
-      # restic
-      # rustic
+      restic
+      rustic
       python312
       python312Packages.pip
       python312Packages.virtualenv
@@ -34,6 +35,7 @@
       # postman
       mailpit
       # multipass
+      sqlitebrowser
 
       distrobox
       duf
