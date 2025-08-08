@@ -21,6 +21,7 @@
 
     packages = with pkgs; [
       # bun
+      cobra-cli
       go
       nodejs
       pnpm
@@ -33,7 +34,7 @@
       php84
       php84Packages.composer
       # postman
-      mailpit
+      # mailpit
       # multipass
       sqlitebrowser
 
@@ -41,8 +42,8 @@
       duf
       gemini-cli
       gocryptfs
-      hugo
-      jq
+      # hugo
+      # jq
       # obsidian
       nix-bash-completions
     ];
