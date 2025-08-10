@@ -27,6 +27,11 @@
         inherit pkgs;
         modules = [ ./profiles/work.nix ];
       };
+
+      "yuki" = home-manager.lib.homeManagerConfiguration {
+        inherit pkgs;
+        modules = [ ./profiles/yuki.nix ];
+      };
     };
   };
 }
