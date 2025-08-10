@@ -1,4 +1,9 @@
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 
 with lib;
 
@@ -33,6 +38,16 @@ with lib;
         pure_msg = "[pure](bold green)";
         unknown_msg = "[unknown](bold yellow)";
         # format = "❄️ [$state( \($name\))](bold blue)";
+      };
+
+      hostname = {
+        format = "[$ssh_symbol$hostname]($style) ";
+      };
+
+      username = {
+        style_user = "white bold";
+        style_root = "black bold";
+        format = "[$user]($style) ";
       };
 
       sudo = {
