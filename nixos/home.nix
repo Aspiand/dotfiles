@@ -19,7 +19,6 @@
       switch = "sudo nixos-rebuild switch --verbose --flake ~/.config/dotfiles/nixos";
       code = "NIXOS_OZONE_WL=1 code";
       ehe = "fastfetch";
-      debian = "${pkgs.distrobox}/bin/distrobox enter debian";
     };
 
     sessionVariables = {
