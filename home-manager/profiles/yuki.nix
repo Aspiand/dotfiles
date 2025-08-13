@@ -12,7 +12,7 @@
     stateVersion = "25.05";
 
     shellAliases = {
-      hmbs = "home-manager build switch --verbose";
+      hmbs = "home-manager build switch --flake ~/dotfiles/home-manager --verbose";
     };
 
     packages = with pkgs; [
@@ -25,7 +25,7 @@
   };
 
   programs = {
-    git.extraConfig.core.editor = "${pkgs.micro}/bin/micro --wait";
+    git.extraConfig.core.editor = "${pkgs.micro}/bin/micro";
 
     bash.enable = true;
     tmux.enable = true;
