@@ -50,6 +50,7 @@
 
         # CLI
         # android-tools
+        ansible
         # bitwarden-cli
         # borgbackup
         bottom
