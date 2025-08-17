@@ -68,6 +68,7 @@
         laravel
         nix-tree
         nmap
+        ollama
         # nvtopPackages.intel
         # podman-compose
         restic
