@@ -54,7 +54,7 @@
         # bitwarden-cli
         # borgbackup
         bottom
-        # cava
+        claude-code
         distrobox
         duf
         fastfetch
@@ -158,7 +158,7 @@
     ssh.control = true;
     tmux.enable = true;
     yt-dlp.enable = true;
-    yt-dlp.downloader = "wget";
+    yt-dlp.downloader = "aria2";
     yt-dlp.path = "${config.home.homeDirectory}/Videos/YouTube";
     git.extraConfig.core.editor = "${pkgs.vscode}/bin/code --wait";
   };
