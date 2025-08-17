@@ -1,0 +1,5 @@
+export FZF_DEFAULT_OPTS="--border --tmux center,40%"
+export GNUPGHOME="$HOME/.local/share/gnupg"
+export ROOT="/data/data/com.termux/files/usr"
+export PASSWORD_STORE_GENERATED_LENGTH="128"
+export PASSWORD_STORE_DIR="$HOME/.local/share/password-store"
