@@ -1,0 +1,22 @@
+[core]
+	editor = "micro"
+	fileMode = true
+	pager = "delta"
+
+[delta]
+	enable = true
+	line-numbers = true
+	side-by-side = false
+
+[init]
+	defaultBranch = "main"
+
+[interactive]
+	diffFilter = "delta --color-only"
+
+[pull]
+	rebase = true
+
+[user]
+	email = "muhammad.aspian.d@gmail.com"
+	name = "Aspian"
