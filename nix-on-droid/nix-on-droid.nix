@@ -44,9 +44,10 @@
           };
 
           packages = with pkgs; [
-            php
-            phpPackages.composer
-            python312
+            # php
+            # phpPackages.composer
+            # python312
+            rustic
           ];
         };
 
