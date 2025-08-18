@@ -60,7 +60,7 @@
         fastfetch
         # ffmpeg
         gemini-cli
-        # gnumake
+        gnumake
         gocryptfs
         htop
         hugo
@@ -101,7 +101,7 @@
         # s3fs
 
         # Programming
-        # gcc
+        gcc
         go
         # jdk
         # maven
@@ -150,6 +150,7 @@
   };
 
   programs = {
+  	password-store.enable = true;
     home-manager.enable = true;
     bash.enable = true;
     clamav.enable = true;
