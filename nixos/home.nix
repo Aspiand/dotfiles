@@ -44,7 +44,7 @@
         obs-studio
         # planify
         # pika-backup
-        # postman
+        postman
         spotify
         tor-browser
 
@@ -65,6 +65,7 @@
         htop
         hugo
         immich-go
+        jq
         laravel
         nix-tree
         nmap
