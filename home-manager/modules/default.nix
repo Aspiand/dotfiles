@@ -19,7 +19,6 @@ in
     ./sshd.nix
     ./yt-dlp.nix
 
-    ./librewolf.nix
     ./zsh.nix
   ];
 
