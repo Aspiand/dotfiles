@@ -55,6 +55,7 @@
         # borgbackup
         bottom
         claude-code
+        cobra-cli
         distrobox
         duf
         fastfetch
