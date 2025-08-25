@@ -162,7 +162,7 @@
     ssh.control = true;
     tmux.enable = true;
     yt-dlp.enable = true;
-    yt-dlp.downloader = "aria2c";
+    yt-dlp.downloader = "wget";
     yt-dlp.path = "${config.home.homeDirectory}/Videos/YouTube";
     git.extraConfig.core.editor = "${pkgs.vscode}/bin/code --wait";
   };
