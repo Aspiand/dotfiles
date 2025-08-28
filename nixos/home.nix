@@ -49,6 +49,7 @@
         tor-browser
 
         # CLI
+        air
         # android-tools
         ansible
         # bitwarden-cli
