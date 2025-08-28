@@ -20,6 +20,7 @@
     };
 
     packages = with pkgs; [
+      air
       # bun
       cobra-cli
       go
