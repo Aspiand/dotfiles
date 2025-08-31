@@ -8,8 +8,6 @@
 {
   imports = [ ../home-manager/default.nix ];
 
-  # fonts.fontconfig.enable = true;
-
   home = {
     username = "ao";
     homeDirectory = "/home/ao";
@@ -17,7 +15,6 @@
 
     shellAliases = {
       switch = "sudo nixos-rebuild switch --verbose --flake ~/.config/dotfiles/nixos";
-      code = "NIXOS_OZONE_WL=1 code";
       ehe = "fastfetch";
     };
 
@@ -29,15 +26,13 @@
       with pkgs;
       [
         # Desktop
-        authenticator
+        # authenticator
         bitwarden-desktop
         # dbeaver-bin
         discord
-        # electrum
         firefox
         gnome-tweaks
-        gnome-extension-manager
-        gparted
+        # gnome-extension-manager
         # heroic
         # kdePackages.kdenlive
         # libreoffice
@@ -49,14 +44,12 @@
         tor-browser
 
         # CLI
-        air
         # android-tools
-        ansible
+        # ansible
         # bitwarden-cli
         # borgbackup
         bottom
-        claude-code
-        cobra-cli
+        # claude-code
         distrobox
         duf
         fastfetch
@@ -68,10 +61,9 @@
         hugo
         immich-go
         jq
-        laravel
         nix-tree
         nmap
-        ollama
+        # ollama
         # nvtopPackages.intel
         # podman-compose
         restic
@@ -124,10 +116,9 @@
         launch-new-instance
         # fly-pie
         pano
-        # pop-shell
         status-icons
         system-monitor
-        window-list
+        # window-list
       ])
       ++ (with nerd-fonts; [
         _0xproto
@@ -159,7 +150,6 @@
     clamav.enable = true;
     gpg.enable = true;
     mycli.enable = true;
-    neovim.enable = false;
     ssh.control = true;
     tmux.enable = true;
     yt-dlp.enable = true;
@@ -181,27 +171,6 @@
       enable = true;
       enableSshSupport = true;
       pinentry.package = pkgs.pinentry-tty;
-    };
-
-    restic = {
-      enable = false;
-      backups = {
-        main = {
-          package = pkgs.restic;
-          initialize = true;
-          repository = "sftp:yuki@agarta:/mnt/hz128/devices";
-          passwordFile = "${config.xdg.dataHome}/.restic_password";
-          pruneOpts = [
-            "--keep-daily 7"
-            "--keep-weekly 4"
-            "--keep-monthly 12"
-            "--keep-yearly 2"
-          ];
-          paths = [
-            "${config.home.homeDirectory}/Pictures"
-          ];
-        };
-      };
     };
   };
 
@@ -279,10 +248,9 @@
         blur-my-shell.extensionUuid
         launch-new-instance.extensionUuid
         pano.extensionUuid
-        # pop-shell.extensionUuid
         status-icons.extensionUuid
         system-monitor.extensionUuid
-        window-list.extensionUuid
+        # window-list.extensionUuid
       ];
     };
 
