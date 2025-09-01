@@ -106,7 +106,7 @@
     ];
     sessionVariables = {
       LIBVA_DRIVER_NAME = "iHD";
-      NIXOS_OZONE_WL = "1";
+      # NIXOS_OZONE_WL = "1";
     };
 
     gnome.excludePackages = with pkgs; [
