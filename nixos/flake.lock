@@ -7,11 +7,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1756381920,
-        "narHash": "sha256-h6FZq485lEhkTICK779ZQ2kUWe3BieUqIKuJ2jef7SI=",
+        "lastModified": 1757136219,
+        "narHash": "sha256-tKU+vq34KHu/A2wD7WdgP5A4/RCmSD8hB0TyQAUlixA=",
         "owner": "vinceliuice",
         "repo": "grub2-themes",
-        "rev": "8f30385f556a92ecbcc0c1800521730187da1cd7",
+        "rev": "80dd04ddf3ba7b284a7b1a5df2b1e95ee2aad606",
         "type": "github"
       },
       "original": {
