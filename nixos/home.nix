@@ -72,7 +72,7 @@
         # superfile
         # steam-run
         # umu-launcher
-        winePackages.wayland
+        # winePackages.wayland
         wl-clipboard
         # zathura #  Document viewer
 
@@ -96,7 +96,7 @@
         # s3fs
 
         # Programming
-        gcc
+        # gcc
         go
         # jdk
         # maven
