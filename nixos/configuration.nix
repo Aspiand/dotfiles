@@ -187,7 +187,6 @@
     tailscale.enable = true;
     kismet.enable = false;
     resolved.enable = false; # https://wiki.nixos.org/wiki/Tailscale#DNS
-    zerotierone.enable = false;
     udev.packages = [ pkgs.android-udev-rules ];
 
     openssh = {
@@ -232,7 +231,6 @@
   };
 
   virtualisation = {
-    multipass.enable = false;
     docker = {
       enable = true;
       enableOnBoot = true;
