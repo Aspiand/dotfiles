@@ -18,8 +18,6 @@ in
     ./starship.nix
     ./sshd.nix
     ./yt-dlp.nix
-
-    ./zsh.nix
   ];
 
   options = {
