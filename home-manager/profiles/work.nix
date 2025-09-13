@@ -45,6 +45,7 @@
       # hugo
       # jq
       # obsidian
+      nixfmt-rfc-style
       nix-bash-completions
     ];
   };
