@@ -50,6 +50,7 @@
         # borgbackup
         bottom
         # claude-code
+        copyparty
         distrobox
         duf
         fastfetch
@@ -78,7 +79,7 @@
 
         # Editor
         # android-studio
-        # arduino-ide
+        arduino-ide
         # netbeans
         obsidian
         vscode
