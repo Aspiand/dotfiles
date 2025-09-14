@@ -38,6 +38,7 @@
       # multipass
       sqlitebrowser
 
+      arduino-ide
       distrobox
       duf
       gemini-cli

@@ -59,7 +59,7 @@
     hostName = "aira";
     networkmanager.enable = true;
     firewall = {
-      enable = true;
+      enable = false;
       allowedTCPPorts = [
         3003
         45876

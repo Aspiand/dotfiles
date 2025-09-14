@@ -13,6 +13,11 @@
       url = "github:vinceliuice/grub2-themes";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    copyparty = {
+      url = "github:9001/copyparty";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -20,6 +25,7 @@
       nixpkgs,
       home-manager,
       grub2-themes,
+      copyparty,
       ...
     }:
     let
@@ -33,6 +39,9 @@
             ./configuration.nix
             grub2-themes.nixosModules.default
             home-manager.nixosModules.home-manager
+            {
+              nixpkgs.overlays = [ copyparty.overlays.default ];
+            }
             {
               home-manager = {
                 useGlobalPkgs = true;
