@@ -97,7 +97,7 @@
         # s3fs
 
         # Programming
-        # gcc
+        gcc
         go
         # jdk
         # maven
