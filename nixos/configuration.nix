@@ -58,14 +58,22 @@
   networking = {
     hostName = "aira";
     networkmanager.enable = true;
-    firewall = {
-      enable = false;
-      allowedTCPPorts = [
-        3003
-        45876
-      ];
-      # allowedUDPPorts = [ ... ];
-    };
+    firewall =
+      let
+        kdeConnectPort = {
+          from = 1714;
+          to = 1764;
+        };
+      in
+      {
+        enable = false;
+        allowedTCPPorts = [
+          3003
+          45876
+          kdeConnectPort
+        ];
+        allowedUDPPorts = [ kdeConnectPort ];
+      };
   };
 
   nix = {
@@ -168,6 +176,11 @@
     steam.enable = true;
     steam.gamescopeSession.enable = true;
     gamemode.enable = true;
+
+    kdeconnect = {
+      enable = true;
+      package = pkgs.gnomeExtensions.gsconnect;
+    };
   };
 
   zramSwap = {
