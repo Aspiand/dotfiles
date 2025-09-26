@@ -114,8 +114,9 @@
       ]
       ++ (with gnomeExtensions; [
         blur-my-shell
-        launch-new-instance
         # fly-pie
+        gsconnect
+        launch-new-instance
         pano
         status-icons
         system-monitor
@@ -161,6 +162,12 @@
 
   services = {
     podman.enable = false;
+
+    kdeconnect = {
+      enable = true;
+      indicator = true;
+      # package = pkgs.gnomeExtensions.gsconnect;
+    };
 
     home-manager.autoExpire = {
       enable = true;
@@ -247,6 +254,7 @@
       disable-user-extensions = false;
       enabled-extensions = with pkgs.gnomeExtensions; [
         blur-my-shell.extensionUuid
+        gsconnect.extensionUuid
         launch-new-instance.extensionUuid
         pano.extensionUuid
         status-icons.extensionUuid
