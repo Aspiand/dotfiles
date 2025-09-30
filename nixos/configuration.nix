@@ -58,21 +58,13 @@
   networking = {
     hostName = "aira";
     networkmanager.enable = true;
-    firewall =
-      let
-        kdeConnectPort = {
-          from = 1714;
-          to = 1764;
-        };
-      in
-      {
+    firewall = {
         enable = false;
         allowedTCPPorts = [
-          3003
-          45876
-          kdeConnectPort
+          # 3003
+          # 45876
         ];
-        allowedUDPPorts = [ kdeConnectPort ];
+        allowedUDPPorts = [ ];
       };
   };
 
@@ -121,7 +113,7 @@
       # orca
       # evince
       # file-roller
-      geary
+      # geary
       # gnome-disk-utility
       # seahorse
       # sushi
@@ -136,8 +128,8 @@
       # gnome-color-manager
       # gnome-control-center
       # gnome-shell-extensions
-      gnome-tour # GNOME Shell detects the .desktop file on first log-in.
-      gnome-user-docs
+      # gnome-tour # GNOME Shell detects the .desktop file on first log-in.
+      # gnome-user-docs
       # glib # for gsettings program
       # gnome-menus
       # gtk3.out # for gtk-launch program
@@ -145,27 +137,27 @@
       # xdg-user-dirs-gtk # Used to create the default bookmarks
       #
       # baobab
-      epiphany # Browser
-      gnome-text-editor
+      # epiphany # Browser
+      # gnome-text-editor
       # gnome-calculator
       # gnome-calendar
-      gnome-characters
+      # gnome-characters
       # gnome-clocks
       # gnome-console
       # gnome-contacts
       # gnome-font-viewer
       # gnome-logs
-      gnome-maps
-      gnome-music
+      # gnome-maps
+      # gnome-music
       # gnome-system-monitor
       # gnome-weather
       # loupe
       # nautilus
-      gnome-connections
+      # gnome-connections
       # simple-scan
       # snapshot
       # totem
-      yelp
+      # yelp
       # gnome-software
     ];
   };
@@ -176,11 +168,6 @@
     steam.enable = true;
     steam.gamescopeSession.enable = true;
     gamemode.enable = true;
-
-    kdeconnect = {
-      enable = true;
-      package = pkgs.gnomeExtensions.gsconnect;
-    };
   };
 
   zramSwap = {
