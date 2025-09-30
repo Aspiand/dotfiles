@@ -75,11 +75,12 @@
 
     fzf = {
       enable = mkDefault true;
-      enableBashIntegration = true;
-      tmux.enableShellIntegration = true;
+      enableBashIntegration = mkDefault true;
+      tmux.enableShellIntegration = mkDefault true;
       defaultOptions = [
         "--border"
         "--height 100%"
+        "--multi"
       ];
     };
 
