@@ -41,20 +41,25 @@
             home-manager.nixosModules.home-manager
             {
               nixpkgs.overlays = [ copyparty.overlays.default ];
+            }
+            {
               home-manager = {
                 useGlobalPkgs = true;
                 useUserPackages = true;
                 users.ao = ./home.nix;
                 backupFileExtension = "bak";
               };
-              specialisation = {
-                gnome.configuration = {
-                  imports = [ ./specialisations/gnome.nix ];
-                };
-              };
             }
           ];
         };
       };
+
+      # homeConfigurations = {
+      #   backupFileExtension = "bak";
+      #   ao = home-manager.lib.homeManagerConfiguration {
+      #     pkgs = import nixpkgs { inherit system; };
+      #     modules = [ ./home.nix ];
+      #   };
+      # };
     };
 }
