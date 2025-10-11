@@ -122,13 +122,23 @@
 
     ssh = {
       enable = mkDefault true;
-      matchBlocks.github = {
-        host = "github.com";
-        user = "git";
-        forwardAgent = true;
-        identityFile = [
-          "~/.ssh/id_ed25519"
-        ];
+      matchBlocks = {
+        self = {
+          hostname = "agarta";
+          user = "git";
+          port = 22222;
+          identityFile = [
+            "~/.ssh/id_ed25519"
+          ];
+        };
+        github = {
+          hostname = "github.com";
+          user = "git";
+          forwardAgent = true;
+          identityFile = [
+            "~/.ssh/id_ed25519"
+          ];
+        };
       };
     };
 
