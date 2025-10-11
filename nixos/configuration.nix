@@ -181,6 +181,13 @@
       enable = true;
       package = pkgs.gnomeExtensions.gsconnect;
     };
+
+    nix-ld = {
+    	enable = true;
+    	libraries = with pkgs; [
+    	  stdenv.cc.cc
+    	];
+    };
   };
 
   zramSwap = {
@@ -263,6 +270,8 @@
         ];
       };
     };
+
+    multipass.enable = true;
   };
 
   # Some programs need SUID wrappers, can be configured further or are
