@@ -17,6 +17,7 @@
 
     shellAliases = {
       hmbs = "home-manager --flake ~/Kodes/dotfiles/home-manager#pc build switch --verbose";
+      wok="distrobox enter work -- ";
     };
 
     packages = with pkgs; [
