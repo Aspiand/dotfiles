@@ -58,11 +58,17 @@
   programs = {
     git.extraConfig.core.editor = "${pkgs.vscode}/bin/code --wait";
 
-    bash.enable = true;
     mycli.enable = true;
     tmux.enable = true;
     tmux.shell = "${pkgs.bash}/bin/bash";
     yt-dlp.enable = false;
+
+    bash = {
+    	enable = true;
+    	bashrcExtra = ''
+    		[ -d $HOME/.local/bin ] && export PATH="$PATH:$HOME/.local/bin"
+    	'';
+    };
 
     ssh = {
       matchBlocks.github.identityFile = [
