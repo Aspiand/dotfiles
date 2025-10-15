@@ -23,12 +23,14 @@
     packages = with pkgs; [
       # bun
       cobra-cli
+      ecc
+      gcc
       go
       nodejs
-      pnpm
+      # pnpm
       # s3fs
-      restic
-      rustic
+      # restic
+      # rustic
       python312
       python312Packages.pip
       python312Packages.virtualenv
@@ -36,9 +38,10 @@
       php84Packages.composer
       # postman
       # mailpit
-      # multipass
       sqlitebrowser
+      strace
 
+      authenticator
       arduino-ide
       distrobox
       duf
