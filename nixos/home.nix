@@ -87,7 +87,7 @@
         # Gaming
         # rpcs3
         # gpu-viewer
-        # mangohud
+        mangohud
         lutris
         vulkan-tools
 
