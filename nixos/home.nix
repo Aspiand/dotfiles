@@ -152,7 +152,7 @@
     clamav.enable = true;
     gpg.enable = true;
     mycli.enable = true;
-    ssh.control = true;
+    ssh.control = false;
     tmux.enable = true;
     yt-dlp.enable = true;
     yt-dlp.downloader = "wget";
