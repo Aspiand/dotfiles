@@ -17,7 +17,7 @@ services:
     image: docker.io/phpmyadmin/phpmyadmin:latest
     restart: unless-stopped
     environment:
-      - PMA_HOST=database
+      PMA_HOST: database
     depends_on:
       - database
     ports:
