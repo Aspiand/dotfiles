@@ -210,7 +210,7 @@
     udev.packages = [ pkgs.android-udev-rules ];
 
     openssh = {
-      enable = true;
+      enable = false;
       ports = [ 22 ];
       settings = {
         UseDns = true;
