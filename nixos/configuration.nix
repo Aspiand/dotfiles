@@ -208,6 +208,7 @@
     kismet.enable = false;
     resolved.enable = false; # https://wiki.nixos.org/wiki/Tailscale#DNS
     udev.packages = [ pkgs.android-udev-rules ];
+    logind.settings.Login.HandleLidSwitchDocked = "ignore";
 
     openssh = {
       enable = false;
