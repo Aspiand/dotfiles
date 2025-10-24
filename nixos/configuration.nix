@@ -272,7 +272,7 @@
       };
     };
 
-    multipass.enable = true;
+    multipass.enable = false;
   };
 
   # Some programs need SUID wrappers, can be configured further or are
