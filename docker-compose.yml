@@ -10,7 +10,7 @@ services:
     volumes:
       - database:/var/lib/mysql
     ports:
-      - 3306:3306
+      - 127.0.0.1:3306:3306
 
   phpmyadmin:
     container_name: phpmyadmin
