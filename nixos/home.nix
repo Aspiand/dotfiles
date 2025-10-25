@@ -36,7 +36,7 @@
         # heroic
         # kdePackages.kdenlive
         # libreoffice
-        obs-studio
+        # obs-studio
         # planify
         # pika-backup
         postman
@@ -79,7 +79,7 @@
 
         # Editor
         # android-studio
-        arduino-ide
+        # arduino-ide
         # netbeans
         obsidian
         vscode
