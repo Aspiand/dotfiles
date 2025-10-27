@@ -200,14 +200,11 @@
   };
 
   services = {
-    sysprof.enable = false;
-    netdata.enable = false;
     printing.enable = false; # Enable CUPS to print documents.
     lact.enable = false;
     tailscale.enable = true;
-    kismet.enable = false;
     resolved.enable = false; # https://wiki.nixos.org/wiki/Tailscale#DNS
-    udev.packages = [ pkgs.android-udev-rules ];
+    # udev.packages = [ pkgs.android-udev-rules ]; # 'android-udev-rules' has been removed due to being superseded by built-in systemd uaccess rules.
     logind.settings.Login.HandleLidSwitchDocked = "ignore";
 
     openssh = {
@@ -265,7 +262,6 @@
         ];
 
         registry-mirrors = [
-          # "https://mirror.gcr.io"
           "https://ghcr.io"
           "https://docker.io"
         ];
