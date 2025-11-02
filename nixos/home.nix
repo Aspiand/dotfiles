@@ -78,7 +78,7 @@
         # zathura #  Document viewer
 
         # Editor
-        # android-studio
+        android-studio
         # arduino-ide
         # netbeans
         obsidian
@@ -152,12 +152,13 @@
     clamav.enable = true;
     gpg.enable = true;
     mycli.enable = true;
-    ssh.control = false;
+    ssh.control = true;
+    # ssh.enableDefaultConfig = false; # later
     tmux.enable = true;
     yt-dlp.enable = true;
     yt-dlp.downloader = "wget";
     yt-dlp.path = "${config.home.homeDirectory}/Videos/YouTube";
-    git.extraConfig.core.editor = "${pkgs.vscode}/bin/code --wait";
+    git.settings.core.editor = "${pkgs.vscode}/bin/code --wait";
   };
 
   services = {
