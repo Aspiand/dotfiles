@@ -20,6 +20,7 @@
 
     sessionVariables = {
       GOPATH = "${config.xdg.dataHome}/go";
+      QT_QPA_PLATFORM = "wayland";
     };
 
     packages =
