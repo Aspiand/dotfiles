@@ -125,8 +125,7 @@
       matchBlocks = {
         self = {
           hostname = "agarta";
-          user = "git";
-          port = 22222;
+          port = 23231;
           identityFile = [
             "~/.ssh/id_ed25519"
           ];
