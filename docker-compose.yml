@@ -23,5 +23,26 @@ services:
     ports:
       - 8008:80
 
+  iml:
+    container_name: iml
+    image: ghcr.io/immich-app/immich-machine-learning:${IMMICH_VERSION:-release}-openvino
+    restart: unless-stopped
+    ports:
+      - "3003:3003"
+    volumes:
+      - immich-model-cache:/cache
+      - /dev/bus/usb:/dev/bus/usb
+    devices:
+      - /dev/dri:/dev/dri
+    device_cgroup_rules:
+      - "c 189:* rmw"
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:3003/"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
 volumes:
   database:
+  immich-model-cache:
