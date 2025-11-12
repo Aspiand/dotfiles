@@ -79,7 +79,7 @@
         # zathura #  Document viewer
 
         # Editor
-        android-studio
+        # android-studio
         # arduino-ide
         # netbeans
         obsidian
