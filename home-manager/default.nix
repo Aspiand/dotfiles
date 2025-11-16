@@ -86,29 +86,26 @@
 
     git = {
       enable = mkDefault true;
-      userName = "Aspian";
-      userEmail = "muhammad.aspian.d@gmail.com";
-
-      extraConfig = {
+      settings = {
+        user = {
+          name = "Aspian";
+          email = "muhammad.aspian.d@gmail.com";
+        };
         pull.rebase = true;
         init.defaultBranch = "main";
-
         core = {
           fileMode = mkDefault true;
           pager = "${pkgs.delta}/bin/delta";
         };
-
         delta = {
           enable = mkDefault true;
           line-numbers = true;
           side-by-side = false;
         };
-
         interactive = {
-          diffFilter = mkIf config.programs.git.extraConfig.delta.enable "${pkgs.delta}/bin/delta --color-only";
+          diffFilter = mkIf config.programs.git.settings.delta.enable "${pkgs.delta}/bin/delta --color-only";
         };
       };
-
       ignores = [
         "tmp/"
         "vendor/"
@@ -122,6 +119,7 @@
 
     ssh = {
       enable = mkDefault true;
+      enableDefaultConfig = false;
       matchBlocks = {
         self = {
           hostname = "agarta";
