@@ -16,6 +16,7 @@
     shellAliases = {
       switch = "sudo nixos-rebuild switch --verbose --flake ~/.config/dotfiles/nixos";
       ehe = "fastfetch";
+      self = "ssh self";
     };
 
     sessionVariables = {
