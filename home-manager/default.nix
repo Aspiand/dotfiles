@@ -87,12 +87,12 @@
     git = {
       enable = mkDefault true;
       settings = {
+      	pull.rebase = true;
+      	init.defaultBranch = "main";
         user = {
           name = "Aspian";
           email = "muhammad.aspian.d@gmail.com";
         };
-        pull.rebase = true;
-        init.defaultBranch = "main";
         core = {
           fileMode = mkDefault true;
           pager = "${pkgs.delta}/bin/delta";
