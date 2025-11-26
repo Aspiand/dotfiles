@@ -39,6 +39,7 @@
         # kdePackages.kdenlive
         # libreoffice
         # obs-studio
+        onlyoffice-desktopeditors
         # planify
         # pika-backup
         postman
@@ -53,6 +54,7 @@
         bottom
         # claude-code
         copyparty
+        delta
         distrobox
         duf
         fastfetch
