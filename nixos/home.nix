@@ -39,7 +39,7 @@
         # kdePackages.kdenlive
         # libreoffice
         # obs-studio
-        onlyoffice-desktopeditors
+        # onlyoffice-desktopeditors
         # planify
         # pika-backup
         postman
