@@ -79,6 +79,7 @@
         # umu-launcher
         # winePackages.wayland
         wl-clipboard
+        yq
         # zathura #  Document viewer
 
         # Editor
