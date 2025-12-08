@@ -24,6 +24,12 @@
       intel-media-driver
       vpl-gpu-rt
       intel-compute-runtime
+      intel-vaapi-driver
+
+      mesa
+      vulkan-loader
+      vulkan-validation-layers
+      vulkan-extension-layer
     ];
   };
 
@@ -176,6 +182,7 @@
     steam.enable = true;
     steam.gamescopeSession.enable = true;
     gamemode.enable = true;
+    gamescope.enable = true;
 
     kdeconnect = {
       enable = true;
