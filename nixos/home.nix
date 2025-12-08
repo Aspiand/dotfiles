@@ -74,6 +74,7 @@
         restic
         rustic
         # s3fs
+        sqlmap
         # superfile
         # steam-run
         # umu-launcher
