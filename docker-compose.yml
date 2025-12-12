@@ -18,6 +18,8 @@ services:
     restart: unless-stopped
     environment:
       PMA_HOST: database
+      PMA_USER: root
+      PMA_PASSWORD: root
     depends_on:
       - database
     ports:
