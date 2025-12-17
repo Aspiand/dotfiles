@@ -103,6 +103,7 @@
         # s3fs
 
         # Programming
+        bun
         gcc
         go
         # jdk
