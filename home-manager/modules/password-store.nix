@@ -22,7 +22,7 @@ in
       package = pkgs.pass.withExtensions (
         exts: with exts; [
           pass-import
-          # pass-otp
+          pass-otp
         ]
       );
 
