@@ -24,6 +24,10 @@
       QT_QPA_PLATFORM = "wayland";
     };
 
+    extraOutputsToInstall = [
+      "dev"
+    ];
+
     packages =
       with pkgs;
       [
@@ -74,6 +78,7 @@
         # podman-compose
         restic
         rustic
+        hanabi
         # s3fs
         sqlmap
         # superfile
@@ -119,7 +124,25 @@
             virtualenv
           ]
         ))
+
+        # hanabi
+        meson
+        ninja
+        nodejs
+        glib
+        pkg-config
+        gettext
+        clapper
+        gjs
+        cairo
       ]
+      ++ (with gst_all_1; [
+        gstreamer
+        gst-plugins-good
+        gst-plugins-base
+        gst-plugins-bad
+        gst-plugins-ugly
+      ])
       ++ (with gnomeExtensions; [
         blur-my-shell
         # fly-pie
@@ -154,7 +177,7 @@
   };
 
   programs = {
-  	password-store.enable = true;
+    password-store.enable = true;
     home-manager.enable = true;
     bash.enable = true;
     clamav.enable = true;
@@ -268,6 +291,7 @@
         pano.extensionUuid
         status-icons.extensionUuid
         system-monitor.extensionUuid
+        "hanabi-extension@jeffshee.github.io"
         # window-list.extensionUuid
       ];
     };

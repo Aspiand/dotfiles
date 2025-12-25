@@ -40,7 +40,16 @@
             grub2-themes.nixosModules.default
             home-manager.nixosModules.home-manager
             {
-              nixpkgs.overlays = [ copyparty.overlays.default ];
+              nixpkgs.overlays = [
+                copyparty.overlays.default
+                (final: prev: {
+                  hanabi = (import ./hanabi.nix {
+                    pkgs = final;
+                    stdenv = final.stdenv;
+                    fetchFromGitHub = final.fetchFromGitHub;
+                  }).hanabi;
+                })
+              ];
             }
             {
               home-manager = {
