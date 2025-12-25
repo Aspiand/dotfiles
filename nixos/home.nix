@@ -66,6 +66,7 @@
         hugo
         immich-go
         jq
+        lsof
         nix-tree
         nmap
         # ollama
