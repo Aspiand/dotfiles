@@ -6,11 +6,12 @@ services:
     image: docker.io/percona:latest
     restart: unless-stopped
     environment:
-      - MYSQL_ROOT_PASSWORD=root
+      MYSQL_ROOT_PASSWORD: bukankahinimy?
     volumes:
       - database:/var/lib/mysql
+      - /etc/localtime:/etc/localtime
     ports:
-      - 127.0.0.1:3306:3306
+      - 3306:3306
 
   phpmyadmin:
     container_name: phpmyadmin
@@ -19,7 +20,7 @@ services:
     environment:
       PMA_HOST: database
       PMA_USER: root
-      PMA_PASSWORD: root
+      PMA_PASSWORD: bukankahinimy?
     depends_on:
       - database
     ports:
@@ -30,10 +31,11 @@ services:
     image: ghcr.io/immich-app/immich-machine-learning:${IMMICH_VERSION:-release}-openvino
     restart: unless-stopped
     ports:
-      - "3003:3003"
+      - 3003:3003
     volumes:
-      - immich-model-cache:/cache
+      - /etc/localtime:/etc/localtime
       - /dev/bus/usb:/dev/bus/usb
+      - immich-model-cache:/cache
     devices:
       - /dev/dri:/dev/dri
     device_cgroup_rules:

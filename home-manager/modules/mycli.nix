@@ -20,7 +20,7 @@ in
       packages = [ pkgs.mycli ];
       file.".myclirc".source = ../../.myclirc;
       sessionVariables.MYCLI_HISTFILE = "${cfg.dir}/history.txt";
-      shellAliases.sql = "PYTHONWARNINGS='ignore' mycli mysql://root:'root'@localhost/";
+      shellAliases.sql = "PYTHONWARNINGS='ignore' mycli mysql://root:'bukankahinimy?'@localhost/";
 
       activation.mycliSetup = lib.hm.dag.entryAfter ["writeBoundary"] ''
         if [ ! -d "${cfg.dir}" ]; then
