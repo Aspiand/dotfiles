@@ -52,6 +52,7 @@
         tor-browser
 
         # CLI
+        act
         # android-tools
         # ansible
         # bitwarden-cli
@@ -187,6 +188,8 @@
     # ssh.control = true;
     # ssh.enableDefaultConfig = false; # later
     tmux.enable = true;
+    vscode-fzf.enable = true;
+    vscode-fzf.dirs = [ "$HOME/Kode/workspaces" ];
     yt-dlp.enable = true;
     yt-dlp.downloader = "wget";
     yt-dlp.path = "${config.home.homeDirectory}/Videos/YouTube";
