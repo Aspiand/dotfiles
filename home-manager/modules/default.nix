@@ -17,6 +17,7 @@ in
     ./tmux.nix
     ./starship.nix
     ./sshd.nix
+    ./vscode-fzf.nix
     ./yt-dlp.nix
   ];
 
