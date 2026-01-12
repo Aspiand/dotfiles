@@ -72,6 +72,7 @@
         hugo
         immich-go
         jq
+        lnav
         lsof
         nix-tree
         nmap
@@ -80,6 +81,7 @@
         # podman-compose
         restic
         rustic
+        # pm2
         hanabi
         # s3fs
         sqlmap
