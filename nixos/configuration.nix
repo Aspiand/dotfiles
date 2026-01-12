@@ -177,7 +177,6 @@
   };
 
   programs = {
-    adb.enable = true;
     firefox.enable = true;
     steam.enable = true;
     steam.gamescopeSession.enable = true;
