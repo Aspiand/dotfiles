@@ -6,7 +6,7 @@ services:
     image: docker.io/percona:latest
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: bukankahinimy?
+      MYSQL_ROOT_PASSWORD: root
     volumes:
       - database:/var/lib/mysql
       - /etc/localtime:/etc/localtime
@@ -20,7 +20,8 @@ services:
     environment:
       PMA_HOST: database
       PMA_USER: root
-      PMA_PASSWORD: bukankahinimy?
+      # PMA_PASSWORD: bukankahinimy?
+      PMA_PASSWORD: root
     depends_on:
       - database
     ports:

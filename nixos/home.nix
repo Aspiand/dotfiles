@@ -53,7 +53,7 @@
 
         # CLI
         act
-        # android-tools
+        android-tools
         # ansible
         # bitwarden-cli
         # borgbackup
@@ -94,9 +94,9 @@
         # zathura #  Document viewer
 
         # Editor
-        # android-studio
+        android-studio
         # arduino-ide
-        # netbeans
+        netbeans
         obsidian
         vscode
 
