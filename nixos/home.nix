@@ -105,7 +105,7 @@
         # rpcs3
         # gpu-viewer
         mangohud
-        lutris
+        # lutris
         vulkan-tools
 
         # ventoy-full # https://github.com/NixOS/nixpkgs/issues/404663
@@ -119,7 +119,7 @@
         go
         # jdk
         # maven
-        nixfmt-rfc-style # nix formatter
+        nixfmt # nix formatter
         nodejs
         php84
         php84Packages.composer
@@ -187,6 +187,7 @@
     bash.enable = true;
     clamav.enable = true;
     gpg.enable = true;
+    lutris.enable = true;
     mycli.enable = true;
     # ssh.control = true;
     # ssh.enableDefaultConfig = false; # later
