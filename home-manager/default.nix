@@ -6,7 +6,10 @@
 }:
 
 {
-  imports = [ ./modules/default.nix ];
+  imports = [
+    ./configs/default.nix
+    ./modules/default.nix
+  ];
 
   home = {
     shellAliases = {
@@ -87,8 +90,8 @@
     git = {
       enable = mkDefault true;
       settings = {
-      	pull.rebase = true;
-      	init.defaultBranch = "main";
+        pull.rebase = true;
+        init.defaultBranch = "main";
         user = {
           name = "Aspian";
           email = "muhammad.aspian.d@gmail.com";
