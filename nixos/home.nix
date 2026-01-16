@@ -76,7 +76,7 @@
         lsof
         nix-tree
         nmap
-        # ollama
+        ollama
         # nvtopPackages.intel
         # podman-compose
         restic
