@@ -74,6 +74,7 @@
         jq
         lnav
         lsof
+        maturin
         nix-tree
         nmap
         ollama
@@ -121,6 +122,7 @@
         # maven
         nixfmt # nix formatter
         nodejs
+        rustc
         php84
         php84Packages.composer
         (python3.withPackages (
