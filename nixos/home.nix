@@ -55,6 +55,7 @@
         act
         android-tools
         # ansible
+        alpine-make-rootfs
         # bitwarden-cli
         # borgbackup
         bottom
@@ -129,6 +130,7 @@
           ps: with ps; [
             pip
             virtualenv
+            pyyaml
           ]
         ))
 
