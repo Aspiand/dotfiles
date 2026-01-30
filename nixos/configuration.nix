@@ -116,11 +116,13 @@
 
   environment = {
     systemPackages = with pkgs; [
+      gamemode
       gparted
     ];
     sessionVariables = {
       LIBVA_DRIVER_NAME = "iHD";
       # NIXOS_OZONE_WL = "1";
+      LD_LIBRARY_PATH = "${pkgs.gamemode.lib}/lib";
     };
 
     gnome.excludePackages = with pkgs; [
@@ -178,10 +180,17 @@
 
   programs = {
     firefox.enable = true;
-    steam.enable = true;
-    steam.gamescopeSession.enable = true;
     gamemode.enable = true;
     gamescope.enable = true;
+
+    steam = {
+   	  enable = true;
+   	  gamescopeSession.enable = true;
+   	  protontricks.enable = true;
+   	  extraCompatPackages = with pkgs; [
+   	  	gamemode
+   	  ];
+    };
 
     kdeconnect = {
       enable = true;
