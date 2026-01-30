@@ -48,6 +48,7 @@
         # planify
         # pika-backup
         postman
+        protonplus
         spotify
         tor-browser
 
@@ -96,10 +97,10 @@
         # zathura #  Document viewer
 
         # Editor
-        android-studio
+        # android-studio
         antigravity
         # arduino-ide
-        netbeans
+        # netbeans
         obsidian
         vscode
 
@@ -144,6 +145,9 @@
         clapper
         gjs
         cairo
+
+		# Games
+        wineWowPackages.waylandFull
       ]
       ++ (with gst_all_1; [
         gstreamer
