@@ -79,7 +79,7 @@
         maturin
         nix-tree
         nmap
-        ollama
+        # ollama
         # nvtopPackages.intel
         # podman-compose
         restic
@@ -87,7 +87,7 @@
         # pm2
         hanabi
         # s3fs
-        sqlmap
+        # sqlmap
         # superfile
         # steam-run
         # umu-launcher
@@ -164,6 +164,7 @@
         pano
         status-icons
         system-monitor
+        # wakapanel
         # window-list
       ])
       ++ (with nerd-fonts; [
@@ -309,6 +310,7 @@
         system-monitor.extensionUuid
         "hanabi-extension@jeffshee.github.io"
         # window-list.extensionUuid
+        # wakapanel.extensionUuid
       ];
     };
 
