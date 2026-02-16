@@ -147,7 +147,7 @@
         cairo
 
 		# Games
-        wineWowPackages.waylandFull
+        # wineWowPackages.waylandFull
       ]
       ++ (with gst_all_1; [
         gstreamer
