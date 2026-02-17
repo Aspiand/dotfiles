@@ -102,6 +102,8 @@
         };
         delta = {
           enable = mkDefault true;
+          dark = true;
+          navigate = true;
           line-numbers = true;
           side-by-side = false;
         };
