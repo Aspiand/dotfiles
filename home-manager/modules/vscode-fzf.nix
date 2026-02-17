@@ -40,25 +40,26 @@ in
       pkgs.fzf
     ];
 
-    programs.bash.initExtra = ''
+    programs.bash.bashrcExtra = ''
       export VSCODE_FZF_WORKSPACES="${workspaceDirs}"
 
       fcode() {
-        local roots dirs selected
+        local roots workspaces selected
+        roots=()
+        workspaces=()
 
         IFS=":" read -ra roots <<< "$VSCODE_FZF_WORKSPACES"
 
         for root in "''${roots[@]}"; do
           [[ -d "$root" ]] || continue
-          for d in "$root"/*; do
-            [[ -d "$d" ]] && dirs+=("$d")
-          done
+          while IFS= read -r -d "" f; do
+            workspaces+=("$f")
+          done < <(find "$root" -maxdepth 1 -name "*.code-workspace" -print0)
         done
 
-        selected=$(
-          printf '%s\n' "''${dirs[@]}" |
-          fzf --prompt="VSCode Workspaces > "
-        )
+        [[ ''${#workspaces[@]} -eq 0 ]] && echo "No workspaces found" && return 1
+
+        selected=$(printf '%s\n' "''${workspaces[@]}" | fzf --prompt="VSCode Workspaces > ")
 
         [[ -n "$selected" ]] && code "$selected"
       }
