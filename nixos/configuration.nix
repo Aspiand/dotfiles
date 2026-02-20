@@ -186,7 +186,7 @@
     steam = {
    	  enable = true;
    	  gamescopeSession.enable = true;
-   	  protontricks.enable = true;
+   	  protontricks.enable = false;
    	  extraCompatPackages = with pkgs; [
    	  	gamemode
    	  ];
