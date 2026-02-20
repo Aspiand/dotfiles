@@ -46,11 +46,11 @@
         # obs-studio
         # onlyoffice-desktopeditors
         # planify
-        # pika-backup
         postman
         protonplus
         spotify
         tor-browser
+        winboat
 
         # CLI
         act
