@@ -35,8 +35,8 @@
 
   boot = {
     kernelPackages = pkgs.linuxPackages_zen;
-    #binfmt.emulatedSystems = [ "aarch64-linux" ];
-    #kernelModules = [ "binfmt_misc" ]; # TODO: remove?
+    # binfmt.emulatedSystems = [ "aarch64-linux" ];
+    # kernelModules = [ "binfmt_misc" ]; # TODO: remove?
     tmp.useTmpfs = false;
     loader = {
       systemd-boot.enable = false;
@@ -193,7 +193,7 @@
     };
 
     kdeconnect = {
-      enable = true;
+      enable = false;
       package = pkgs.gnomeExtensions.gsconnect;
     };
 
