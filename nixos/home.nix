@@ -80,11 +80,10 @@
         nix-tree
         nmap
         # ollama
+        opencode
         # nvtopPackages.intel
-        # podman-compose
         restic
         rustic
-        # pm2
         hanabi
         # s3fs
         # sqlmap
@@ -213,7 +212,7 @@
     podman.enable = false;
 
     kdeconnect = {
-      enable = true;
+      enable = false;
       indicator = true;
       # package = pkgs.gnomeExtensions.gsconnect;
     };
