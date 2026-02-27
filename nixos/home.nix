@@ -196,7 +196,7 @@
     clamav.enable = true;
     gpg.enable = true;
     lutris.enable = true;
-    mycli.enable = true;
+    mycli.enable = false;
     # ssh.control = true;
     # ssh.enableDefaultConfig = false; # later
     tmux.enable = true;
