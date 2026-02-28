@@ -61,6 +61,7 @@
         # borgbackup
         bottom
         # claude-code
+        codex
         copyparty
         delta
         distrobox
