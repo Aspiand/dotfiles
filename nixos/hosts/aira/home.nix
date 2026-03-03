@@ -6,7 +6,7 @@
 }:
 
 {
-  imports = [ ../../home-manager/default.nix ];
+  imports = [ ../../../home-manager/default.nix ];
 
   home = {
     username = "ao";
