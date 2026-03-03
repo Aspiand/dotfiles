@@ -64,8 +64,8 @@
     '';
 
     src = fetchFromGitHub {
-      owner = "rootacite";
-      repo = "gnome-ext-hanabi-gnome49";
+      owner = "jeffshee";
+      repo = "gnome-ext-hanabi";
       rev = "10c0460b12bf0d6e42e50b9f0071201671059a70";
       sha256 = "sha256-O7C5CadzMtw6VwSOtMJ6R+C4sjl5GG1WZDF45Vay2oo=";
     };
