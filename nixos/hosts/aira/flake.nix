@@ -1,5 +1,5 @@
 {
-  description = "NixOS configuration";
+  description = "NixOS configuration for aira";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
@@ -43,11 +43,12 @@
               nixpkgs.overlays = [
                 copyparty.overlays.default
                 (final: prev: {
-                  hanabi = (import ./hanabi.nix {
-                    pkgs = final;
-                    stdenv = final.stdenv;
-                    fetchFromGitHub = final.fetchFromGitHub;
-                  }).hanabi;
+                  hanabi =
+                    (import ../../modules/hanabi/default.nix {
+                      pkgs = final;
+                      stdenv = final.stdenv;
+                      fetchFromGitHub = final.fetchFromGitHub;
+                    }).hanabi;
                 })
               ];
             }
@@ -62,13 +63,5 @@
           ];
         };
       };
-
-      # homeConfigurations = {
-      #   backupFileExtension = "bak";
-      #   ao = home-manager.lib.homeManagerConfiguration {
-      #     pkgs = import nixpkgs { inherit system; };
-      #     modules = [ ./home.nix ];
-      #   };
-      # };
     };
 }
