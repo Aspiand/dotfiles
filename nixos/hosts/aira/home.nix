@@ -6,7 +6,7 @@
 }:
 
 {
-  imports = [ ../home-manager/default.nix ];
+  imports = [ ../../home-manager/default.nix ];
 
   home = {
     username = "ao";
@@ -14,7 +14,7 @@
     stateVersion = "25.05";
 
     shellAliases = {
-      switch = "sudo nixos-rebuild switch --verbose --flake ~/.config/dotfiles/nixos";
+      switch = "sudo nixos-rebuild switch --verbose --flake ~/.config/dotfiles/nixos/hosts/aira";
       ehe = "fastfetch";
       self = "ssh self";
       f = "fzf";
@@ -146,7 +146,7 @@
         gjs
         cairo
 
-		# Games
+        # Games
         # wineWowPackages.waylandFull
       ]
       ++ (with gst_all_1; [
