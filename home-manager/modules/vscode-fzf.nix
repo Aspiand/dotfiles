@@ -14,10 +14,9 @@ in
     enable = lib.mkEnableOption "VS Code workspace selector using fzf";
     shortcut = lib.mkOption {
       type = lib.types.str;
-      default = "\\C-w";
+      default = "C-p";
       description = ''
         Bash keybinding for launching VS Code workspace selector.
-        Uses readline key syntax, e.g. \\C-w for Ctrl+W.
       '';
     };
     dirs = lib.mkOption {
@@ -64,7 +63,7 @@ in
         [[ -n "$selected" ]] && code "$selected"
       }
 
-      bind -x '"${cfg.shortcut}": fcode'
+      bind -x '"\${cfg.shortcut}":"fcode"'
     '';
   };
 }
