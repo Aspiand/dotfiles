@@ -62,7 +62,7 @@
         bottom
         # claude-code
         codex
-        copyparty
+        copyparty-most
         delta
         distrobox
         duf
