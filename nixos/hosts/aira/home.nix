@@ -67,6 +67,7 @@
         distrobox
         duf
         fastfetch
+        fd
         # ffmpeg
         gemini-cli
         gnumake
