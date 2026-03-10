@@ -85,6 +85,7 @@
         # nvtopPackages.intel
         restic
         rustic
+        ripgrep
         hanabi
         # s3fs
         # sqlmap
