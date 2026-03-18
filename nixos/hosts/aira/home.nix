@@ -25,9 +25,9 @@
       QT_QPA_PLATFORM = "wayland";
     };
 
-    extraOutputsToInstall = [
-      "dev"
-    ];
+    # extraOutputsToInstall = [
+    #   "dev"
+    # ];
 
     packages =
       with pkgs;
@@ -56,7 +56,7 @@
         act
         android-tools
         # ansible
-        alpine-make-rootfs
+        # alpine-make-rootfs
         # bitwarden-cli
         # borgbackup
         bottom
@@ -126,7 +126,7 @@
         # maven
         nixfmt # nix formatter
         nodejs
-        rustc
+        # rustc
         php84
         php84Packages.composer
         (python3.withPackages (
@@ -138,15 +138,15 @@
         ))
 
         # hanabi
-        meson
-        ninja
-        nodejs
-        glib
-        pkg-config
-        gettext
-        clapper
-        gjs
-        cairo
+        # meson
+        # ninja
+        # nodejs
+        # glib
+        # pkg-config
+        # gettext
+        # clapper
+        # gjs
+        # cairo
 
         # Games
         # wineWowPackages.waylandFull
