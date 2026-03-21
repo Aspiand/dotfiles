@@ -69,6 +69,7 @@
         fastfetch
         fd
         # ffmpeg
+        gallery-dl
         gemini-cli
         gnumake
         gocryptfs
