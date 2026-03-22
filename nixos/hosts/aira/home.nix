@@ -152,19 +152,19 @@
         # Games
         # wineWowPackages.waylandFull
       ]
-      ++ (with gst_all_1; [
-        gstreamer
-        gst-plugins-good
-        gst-plugins-base
-        gst-plugins-bad
-        gst-plugins-ugly
-      ])
+      # ++ (with gst_all_1; [
+      #   gstreamer
+      #   gst-plugins-good
+      #   gst-plugins-base
+      #   gst-plugins-bad
+      #   gst-plugins-ugly
+      # ])
       ++ (with gnomeExtensions; [
         blur-my-shell
+        clipboard-indicator
         # fly-pie
         gsconnect
         launch-new-instance
-        pano
         status-icons
         system-monitor
         # wakapanel
@@ -306,9 +306,9 @@
       disable-user-extensions = false;
       enabled-extensions = with pkgs.gnomeExtensions; [
         blur-my-shell.extensionUuid
+        clipboard-indicator.extensionUuid
         gsconnect.extensionUuid
         launch-new-instance.extensionUuid
-        pano.extensionUuid
         status-icons.extensionUuid
         system-monitor.extensionUuid
         "hanabi-extension@jeffshee.github.io"
