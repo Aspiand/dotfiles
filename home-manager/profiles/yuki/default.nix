@@ -1,7 +1,7 @@
 { config, pkgs, ... }:
 
 {
-  imports = [ ../. ];
+  imports = [ ../../default.nix ];
 
   fonts.fontconfig.enable = true;
   nixpkgs.config.allowUnfree = true;
