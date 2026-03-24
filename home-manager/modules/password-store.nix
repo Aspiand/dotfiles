@@ -28,7 +28,7 @@ in
 
       settings = {
         PASSWORD_STORE_CLIP_TIME = mkDefault "120";
-        PASSWORD_STORE_GENERATED_LENGTH = mkDefault "24";
+        PASSWORD_STORE_GENERATED_LENGTH = mkDefault "128";
         PASSWORD_STORE_DIR = cfg.dir;
       };
     };

@@ -11,23 +11,17 @@
   home = {
     username = "ao";
     homeDirectory = "/home/ao";
-    stateVersion = "25.05";
+    stateVersion = "26.05";
 
     shellAliases = {
       switch = "sudo nixos-rebuild switch --verbose --flake ~/.config/dotfiles/nixos/hosts/aira";
-      ehe = "fastfetch";
       self = "ssh self";
-      f = "fzf";
     };
 
     sessionVariables = {
       GOPATH = "${config.xdg.dataHome}/go";
       QT_QPA_PLATFORM = "wayland";
     };
-
-    # extraOutputsToInstall = [
-    #   "dev"
-    # ];
 
     packages =
       with pkgs;
@@ -54,13 +48,10 @@
 
         # CLI
         act
-        android-tools
+        # android-tools
         # ansible
-        # alpine-make-rootfs
         # bitwarden-cli
-        # borgbackup
         bottom
-        # claude-code
         codex
         copyparty-most
         delta
@@ -71,7 +62,7 @@
         # ffmpeg
         gallery-dl
         gemini-cli
-        gnumake
+        # gnumake
         gocryptfs
         htop
         hugo
@@ -88,10 +79,8 @@
         restic
         rustic
         ripgrep
-        hanabi
         # s3fs
         # sqlmap
-        # superfile
         # steam-run
         # umu-launcher
         # winePackages.wayland
@@ -138,27 +127,8 @@
           ]
         ))
 
-        # hanabi
-        # meson
-        # ninja
-        # nodejs
-        # glib
-        # pkg-config
-        # gettext
-        # clapper
-        # gjs
-        # cairo
-
-        # Games
-        # wineWowPackages.waylandFull
+        hanabi
       ]
-      # ++ (with gst_all_1; [
-      #   gstreamer
-      #   gst-plugins-good
-      #   gst-plugins-base
-      #   gst-plugins-bad
-      #   gst-plugins-ugly
-      # ])
       ++ (with gnomeExtensions; [
         blur-my-shell
         clipboard-indicator
@@ -167,7 +137,6 @@
         launch-new-instance
         status-icons
         system-monitor
-        # wakapanel
         # window-list
       ])
       ++ (with nerd-fonts; [
@@ -213,8 +182,6 @@
   };
 
   services = {
-    podman.enable = false;
-
     kdeconnect = {
       enable = false;
       indicator = true;
