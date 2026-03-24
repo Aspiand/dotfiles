@@ -51,41 +51,26 @@
         # android-tools
         # ansible
         # bitwarden-cli
-        bottom
         codex
         copyparty-most
         delta
         distrobox
-        duf
-        fastfetch
-        fd
-        # ffmpeg
         gallery-dl
         gemini-cli
         # gnumake
         gocryptfs
-        htop
         hugo
         immich-go
-        jq
-        lnav
-        lsof
-        maturin
-        nix-tree
-        nmap
-        # ollama
         opencode
         # nvtopPackages.intel
         restic
         rustic
-        ripgrep
         # s3fs
         # sqlmap
         # steam-run
         # umu-launcher
         # winePackages.wayland
         wl-clipboard
-        yq
         # zathura #  Document viewer
 
         # Editor
@@ -114,7 +99,7 @@
         go
         # jdk
         # maven
-        nixfmt # nix formatter
+        nixfmt-rfc-style # nix formatter
         nodejs
         # rustc
         php84
@@ -163,6 +148,7 @@
   };
 
   programs = {
+    modern-utils.enable = true;
     password-store.enable = true;
     home-manager.enable = true;
     bash.enable = true;
