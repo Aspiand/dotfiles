@@ -99,7 +99,7 @@
         go
         # jdk
         # maven
-        nixfmt-rfc-style # nix formatter
+        nixfmt # nix formatter
         nodejs
         # rustc
         php84
@@ -154,6 +154,7 @@
     bash.enable = true;
     clamav.enable = true;
     gpg.enable = true;
+    git.lfs.enable = true;
     lutris.enable = true;
     mycli.enable = false;
     # ssh.control = true;
