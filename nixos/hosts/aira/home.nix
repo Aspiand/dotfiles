@@ -120,7 +120,7 @@
         # fly-pie
         gsconnect
         launch-new-instance
-        status-icons
+        appindicator
         system-monitor
         # window-list
       ])
@@ -261,9 +261,9 @@
       enabled-extensions = with pkgs.gnomeExtensions; [
         blur-my-shell.extensionUuid
         clipboard-indicator.extensionUuid
-        gsconnect.extensionUuid
+        # gsconnect.extensionUuid
         launch-new-instance.extensionUuid
-        status-icons.extensionUuid
+        appindicator.extensionUuid
         system-monitor.extensionUuid
         "hanabi-extension@jeffshee.github.io"
         # window-list.extensionUuid
