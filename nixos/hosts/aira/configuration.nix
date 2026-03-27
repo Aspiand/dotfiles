@@ -2,12 +2,8 @@
 
 # https://github.com/NixOS/nixpkgs/blob/b8ec4fd2a4edc4e30d02ba7b1a2cc1358f3db1d5/nixos/modules/services/x11/desktop-managers/gnome.nix#L329-L348
 # https://nixos.org/manual/nixos/stable/#sec-gnome-without-the-apps
-# https://www.tweag.io/blog/2022-08-18-nixos-specialisations/
 
 {
-  nixpkgs.config.allowUnfree = true;
-  security.rtkit.enable = true;
-  time.timeZone = "Asia/Makassar";
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
   # on your system were taken. It‘s perfectly fine and recommended to leave
@@ -16,28 +12,27 @@
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "24.11"; # Did you read the comment?
 
-  imports = [ ./hardware-configuration.nix ];
+  time.timeZone = "Asia/Makassar";
+  nixpkgs.config.allowUnfree = true;
+  security.rtkit.enable = true;
 
   hardware.graphics = {
     enable = true;
     extraPackages = with pkgs; [
       intel-media-driver
-      vpl-gpu-rt
       intel-compute-runtime
-      intel-vaapi-driver
+      vpl-gpu-rt
 
       mesa
+      libva
       vulkan-loader
-      vulkan-validation-layers
-      vulkan-extension-layer
     ];
   };
 
   boot = {
     kernelPackages = pkgs.linuxPackages_zen;
-    # binfmt.emulatedSystems = [ "aarch64-linux" ];
-    # kernelModules = [ "binfmt_misc" ]; # TODO: remove?
     tmp.useTmpfs = false;
+
     loader = {
       systemd-boot.enable = false;
 
@@ -64,22 +59,20 @@
   networking = {
     hostName = "aira";
     networkmanager.enable = true;
-    firewall =
-      let
-        kdeConnectPort = {
-          from = 1714;
-          to = 1764;
-        };
-      in
-      {
-        enable = false;
-        allowedTCPPorts = [
-          3003
-          45876
-          kdeConnectPort
-        ];
-        allowedUDPPorts = [ kdeConnectPort ];
-      };
+    firewall = {
+      enable = true;
+
+      allowedTCPPorts = [
+        3003 # immich machine learning
+      ];
+
+      allowedTCPPortRanges = [
+        {
+          from = 8000;
+          to = 9000;
+        }
+      ];
+    };
   };
 
   nix = {
@@ -95,87 +88,29 @@
         "nix-command"
         "flakes"
       ];
-
-      # TODO: remove?
-      # substituters = [ "https://arm.cachix.org/" ];
-      # trusted-substituters = [ "arm.cachix.org-1:K3XjAeWPgWkFtSS9ge5LJSLw3xgnNqyOaG7MDecmTQ8=" ];
     };
   };
 
   users.users.ao = {
     isNormalUser = true;
     description = "Aspian";
-    packages = with pkgs; [ ];
+    packages = with pkgs; [ gparted ];
     extraGroups = [
-      "networkmanager"
-      "wheel"
-      "video"
       "docker"
+      "networkmanager"
+      "video"
+      "wheel"
     ];
   };
 
   environment = {
-    systemPackages = with pkgs; [
-      gamemode
-      gparted
-    ];
+    systemPackages = with pkgs; [ ];
+
     sessionVariables = {
       LIBVA_DRIVER_NAME = "iHD";
-      # NIXOS_OZONE_WL = "1";
+      NIXOS_OZONE_WL = "1";
       LD_LIBRARY_PATH = "${pkgs.gamemode.lib}/lib";
     };
-
-    gnome.excludePackages = with pkgs; [
-      # orca
-      # evince
-      # file-roller
-      geary
-      # gnome-disk-utility
-      # seahorse
-      # sushi
-      # sysprof
-      #
-      # gnome-shell-extensions
-      #
-      # adwaita-icon-theme
-      # nixos-background-info
-      # gnome-backgrounds
-      # gnome-bluetooth
-      # gnome-color-manager
-      # gnome-control-center
-      # gnome-shell-extensions
-      gnome-tour # GNOME Shell detects the .desktop file on first log-in.
-      gnome-user-docs
-      # glib # for gsettings program
-      # gnome-menus
-      # gtk3.out # for gtk-launch program
-      # xdg-user-dirs # Update user dirs as described in https://freedesktop.org/wiki/Software/xdg-user-dirs/
-      # xdg-user-dirs-gtk # Used to create the default bookmarks
-      #
-      # baobab
-      epiphany # Browser
-      gnome-text-editor
-      # gnome-calculator
-      # gnome-calendar
-      gnome-characters
-      # gnome-clocks
-      # gnome-console
-      # gnome-contacts
-      # gnome-font-viewer
-      # gnome-logs
-      gnome-maps
-      gnome-music
-      # gnome-system-monitor
-      # gnome-weather
-      # loupe
-      # nautilus
-      gnome-connections
-      # simple-scan
-      # snapshot
-      # totem
-      yelp
-      # gnome-software
-    ];
   };
 
   programs = {
@@ -184,12 +119,12 @@
     gamescope.enable = true;
 
     steam = {
-   	  enable = true;
-   	  gamescopeSession.enable = true;
-   	  protontricks.enable = false;
-   	  extraCompatPackages = with pkgs; [
-   	  	gamemode
-   	  ];
+      enable = true;
+      gamescopeSession.enable = true;
+      protontricks.enable = false;
+      extraCompatPackages = with pkgs; [
+        gamemode
+      ];
     };
 
     kdeconnect = {
@@ -198,11 +133,17 @@
     };
 
     nix-ld = {
-    	enable = true;
-    	libraries = with pkgs; [
-    	  stdenv.cc.cc
-    	];
+      enable = true;
+      libraries = with pkgs; [
+        stdenv.cc.cc
+      ];
     };
+  };
+
+  qt = {
+    enable = true;
+    platformTheme = "gnome";
+    style = "adwaita-dark";
   };
 
   zramSwap = {
@@ -227,7 +168,7 @@
       ports = [ 22 ];
       settings = {
         UseDns = true;
-        PasswordAuthentication = true;
+        PasswordAuthentication = false;
         PermitRootLogin = "no";
       };
     };
@@ -245,9 +186,6 @@
 
       excludePackages = with pkgs; [ xterm ];
     };
-
-    displayManager.gdm.enable = true;
-    desktopManager.gnome.enable = true;
 
     pipewire = {
       enable = true;
@@ -283,10 +221,6 @@
       };
     };
   };
-
-  # Some programs need SUID wrappers, can be configured further or are
-  # started in user sessions.
-  # programs.mtr.enable = true;
 
   i18n = {
     defaultLocale = "en_US.UTF-8";

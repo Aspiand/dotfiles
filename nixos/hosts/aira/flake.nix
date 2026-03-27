@@ -31,6 +31,8 @@
           inherit system;
           modules = [
             ./configuration.nix
+            ./hardware-configuration.nix
+            ./gnome.nix
             grub2-themes.nixosModules.default
             home-manager.nixosModules.home-manager
             {
