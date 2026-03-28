@@ -1,4 +1,5 @@
 {
+  inputs,
   config,
   pkgs,
   lib,
@@ -6,7 +7,10 @@
 }:
 
 {
-  imports = [ ../../../home-manager/default.nix ];
+  imports = [
+    inputs.spicetify-nix.homeManagerModules.default
+    ../../../home-manager/default.nix
+  ];
 
   home = {
     username = "ao";
@@ -42,7 +46,6 @@
         # planify
         postman
         protonplus
-        spotify
         tor-browser
         winboat
 
@@ -166,6 +169,22 @@
     yt-dlp.downloader = "wget";
     yt-dlp.path = "${config.home.homeDirectory}/Videos/YouTube";
     git.settings.core.editor = "${pkgs.vscode}/bin/code --wait";
+
+    spicetify =
+      let
+        spicePkgs = inputs.spicetify-nix.legacyPackages.${pkgs.system};
+      in
+      {
+        enable = true;
+        theme = spicePkgs.themes.bloom;
+        colorScheme = "comfy";
+
+        enabledExtensions = with spicePkgs.extensions; [
+          adblock
+          hidePodcasts
+          shuffle
+        ];
+      };
   };
 
   services = {
