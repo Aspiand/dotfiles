@@ -94,7 +94,7 @@
   users.users.ao = {
     isNormalUser = true;
     description = "Aspian";
-    packages = with pkgs; [ gparted ];
+    packages = with pkgs; [ ];
     extraGroups = [
       "docker"
       "networkmanager"
@@ -104,7 +104,7 @@
   };
 
   environment = {
-    systemPackages = with pkgs; [ ];
+    systemPackages = with pkgs; [ gparted ];
 
     sessionVariables = {
       LIBVA_DRIVER_NAME = "iHD";
