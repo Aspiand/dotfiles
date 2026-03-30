@@ -19,7 +19,6 @@ in
       bat
       bottom
       duf
-      fastfetch
       fd
       gitui
       htop
