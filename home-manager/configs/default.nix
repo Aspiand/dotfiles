@@ -2,6 +2,7 @@
   imports = [
     ./bash.nix
     ./common.nix
+    ./fastfetch.nix
     ./git.nix
     ./lutris.nix
     ./micro.nix

@@ -1,4 +1,9 @@
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 
 {
   home.sessionVariables = {
@@ -20,15 +25,16 @@
     tree = "${pkgs.eza}/bin/eza --tree";
   };
 
-  programs = {
+  programs = with lib; {
     home-manager.enable = true;
-    micro.enable = lib.mkDefault true;
-    modern-utils.enable = lib.mkDefault true;
-    password-store.enable = lib.mkDefault false;
+    fastfetch.enable = mkDefault true;
+    micro.enable = mkDefault true;
+    modern-utils.enable = mkDefault true;
+    password-store.enable = mkDefault false;
 
     gpg = {
-      enable = lib.mkDefault true;
-      homedir = lib.mkDefault "${config.xdg.dataHome}/gnupg";
+      enable = mkDefault true;
+      homedir = mkDefault "${config.xdg.dataHome}/gnupg";
     };
   };
 }
