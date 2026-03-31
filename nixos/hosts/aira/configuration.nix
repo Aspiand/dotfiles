@@ -66,7 +66,9 @@
         3003 # immich machine learning
       ];
 
-      allowedUDPPorts = [ 67 68 ];
+      allowedUDPPorts = [
+        67 68 # DHCP
+      ];
 
       allowedTCPPortRanges = [
         {
