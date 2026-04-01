@@ -46,6 +46,7 @@
         # planify
         postman
         protonplus
+        spotify
         tor-browser
         winboat
 
@@ -64,6 +65,7 @@
         gocryptfs
         hugo
         immich-go
+        nmap
         opencode
         # nvtopPackages.intel
         restic
@@ -175,7 +177,7 @@
         spicePkgs = inputs.spicetify-nix.legacyPackages.${pkgs.stdenv.hostPlatform.system};
       in
       {
-        enable = true;
+        enable = false;
         theme = spicePkgs.themes.bloom;
         colorScheme = "comfy";
 
