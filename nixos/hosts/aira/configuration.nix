@@ -64,6 +64,8 @@
 
       allowedTCPPorts = [
         3003 # immich machine learning
+        2121 # ftp
+        3923 # copyparty
       ];
 
       allowedUDPPorts = [
