@@ -48,13 +48,13 @@
         protonplus
         spotify
         tor-browser
-        winboat
 
         # CLI
         act
         # android-tools
         # ansible
         # bitwarden-cli
+        claude-code
         codex
         copyparty-most
         delta
