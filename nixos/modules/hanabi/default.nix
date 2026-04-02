@@ -5,10 +5,11 @@
   stdenv,
   fetchFromGitHub,
 }:
+
 {
   hanabi = stdenv.mkDerivation rec {
     pname = "gnome-ext-hanabi";
-    version = "";
+    version = "1.0.0";
     dontBuild = false;
     nativeBuildInputs = with pkgs; [
       meson
@@ -55,7 +56,7 @@
       owner = "jeffshee";
       repo = "gnome-ext-hanabi";
       rev = "b02101014a34ba053edaa64e2ec142d0d2f0f6f9";
-      sha256 = "sha256-IkQtg0fddCnEy2yGKtH5ZOdbuclJLkCqBjO2pSeUk9I=";
+      sha256 = "sha256-vhHSiQq2POHgs9wVZTWiot5PkDUlaKKrH4pOvN0v9Mg=";
     };
   };
 }
