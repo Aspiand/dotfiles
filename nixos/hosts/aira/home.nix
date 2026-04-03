@@ -130,7 +130,7 @@
         # fly-pie
         gsconnect
         launch-new-instance
-        quick-settings-tweaker
+        # quick-settings-tweaker
         appindicator
         system-monitor
         # window-list
@@ -298,7 +298,7 @@
         appindicator.extensionUuid
         system-monitor.extensionUuid
         "hanabi-extension@jeffshee.github.io"
-        quick-settings-tweaker.extensionUuid
+        # quick-settings-tweaker.extensionUuid
         # window-list.extensionUuid
         # wakapanel.extensionUuid
       ];
