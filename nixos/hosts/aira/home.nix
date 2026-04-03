@@ -65,6 +65,7 @@
         gocryptfs
         hugo
         immich-go
+        kando
         nmap
         opencode
         # nvtopPackages.intel
@@ -127,7 +128,7 @@
       ++ (with gnomeExtensions; [
         blur-my-shell
         clipboard-indicator
-        # fly-pie
+        kando-integration
         gsconnect
         launch-new-instance
         # quick-settings-tweaker
@@ -199,6 +200,18 @@
         ];
       };
   };
+
+  xdg.configFile."autostart/kando.desktop".text = ''
+    [Desktop Entry]
+    Type=Application
+    Version=1.0
+    Name=Kando
+    Comment=Start Kando on login
+    Exec=${lib.getExe pkgs.kando}
+    TryExec=${lib.getExe pkgs.kando}
+    Terminal=false
+    X-GNOME-Autostart-enabled=true
+  '';
 
   services = {
     kdeconnect = {
@@ -293,6 +306,7 @@
       enabled-extensions = with pkgs.gnomeExtensions; [
         blur-my-shell.extensionUuid
         clipboard-indicator.extensionUuid
+        kando-integration.extensionUuid
         # gsconnect.extensionUuid
         launch-new-instance.extensionUuid
         appindicator.extensionUuid
