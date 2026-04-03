@@ -46,7 +46,7 @@
         # planify
         postman
         protonplus
-        spotify
+        # spotify
         tor-browser
 
         # CLI
@@ -118,6 +118,11 @@
         ))
 
         hanabi
+
+        # Fonts
+        noto-fonts
+        noto-fonts-cjk-sans
+        noto-fonts-cjk-serif
       ]
       ++ (with gnomeExtensions; [
         blur-my-shell
@@ -125,6 +130,7 @@
         # fly-pie
         gsconnect
         launch-new-instance
+        quick-settings-tweaker
         appindicator
         system-monitor
         # window-list
@@ -177,9 +183,14 @@
         spicePkgs = inputs.spicetify-nix.legacyPackages.${pkgs.stdenv.hostPlatform.system};
       in
       {
-        enable = false;
-        theme = spicePkgs.themes.bloom;
-        colorScheme = "comfy";
+        enable = true;
+        colorScheme = "mocha";
+        theme = spicePkgs.themes.catppuccin // {
+          injectCss = true;
+          injectThemeJs = true;
+          replaceColors = true;
+          overwriteAssets = true;
+        };
 
         enabledExtensions = with spicePkgs.extensions; [
           adblock
@@ -287,6 +298,7 @@
         appindicator.extensionUuid
         system-monitor.extensionUuid
         "hanabi-extension@jeffshee.github.io"
+        quick-settings-tweaker.extensionUuid
         # window-list.extensionUuid
         # wakapanel.extensionUuid
       ];
