@@ -38,6 +38,7 @@
         firefox
         gnome-tweaks
         # gnome-extension-manager
+        gradia
         # heroic
         # kdePackages.kdenlive
         # libreoffice
@@ -54,7 +55,7 @@
         # android-tools
         # ansible
         # bitwarden-cli
-        claude-code
+        # claude-code
         codex
         copyparty-most
         delta
@@ -95,9 +96,6 @@
         vulkan-tools
 
         # ventoy-full # https://github.com/NixOS/nixpkgs/issues/404663
-
-        # idk
-        # s3fs
 
         # Programming
         bun
