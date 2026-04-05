@@ -1,4 +1,5 @@
 {
+  inputs,
   config,
   pkgs,
   lib,
@@ -6,7 +7,10 @@
 }:
 
 {
-  imports = [ ../../../home-manager/default.nix ];
+  imports = [
+    inputs.spicetify-nix.homeManagerModules.default
+    ../../../home-manager/default.nix
+  ];
 
   home = {
     username = "ao";
@@ -34,6 +38,7 @@
         firefox
         gnome-tweaks
         # gnome-extension-manager
+        gradia
         # heroic
         # kdePackages.kdenlive
         # libreoffice
@@ -42,50 +47,37 @@
         # planify
         postman
         protonplus
-        spotify
+        # spotify
         tor-browser
-        winboat
 
         # CLI
         act
         # android-tools
         # ansible
         # bitwarden-cli
-        bottom
+        # claude-code
         codex
         copyparty-most
         delta
         distrobox
-        duf
-        fastfetch
-        fd
-        # ffmpeg
         gallery-dl
         gemini-cli
         # gnumake
         gocryptfs
-        htop
         hugo
         immich-go
-        jq
-        lnav
-        lsof
-        maturin
-        nix-tree
+        kando
         nmap
-        # ollama
         opencode
         # nvtopPackages.intel
         restic
         rustic
-        ripgrep
         # s3fs
         # sqlmap
         # steam-run
         # umu-launcher
         # winePackages.wayland
         wl-clipboard
-        yq
         # zathura #  Document viewer
 
         # Editor
@@ -104,9 +96,6 @@
         vulkan-tools
 
         # ventoy-full # https://github.com/NixOS/nixpkgs/issues/404663
-
-        # idk
-        # s3fs
 
         # Programming
         bun
@@ -128,14 +117,20 @@
         ))
 
         hanabi
+
+        # Fonts
+        noto-fonts
+        noto-fonts-cjk-sans
+        noto-fonts-cjk-serif
       ]
       ++ (with gnomeExtensions; [
         blur-my-shell
         clipboard-indicator
-        # fly-pie
+        kando-integration
         gsconnect
         launch-new-instance
-        status-icons
+        # quick-settings-tweaker
+        appindicator
         system-monitor
         # window-list
       ])
@@ -163,11 +158,13 @@
   };
 
   programs = {
+    modern-utils.enable = true;
     password-store.enable = true;
     home-manager.enable = true;
     bash.enable = true;
     clamav.enable = true;
     gpg.enable = true;
+    git.lfs.enable = true;
     lutris.enable = true;
     mycli.enable = false;
     # ssh.control = true;
@@ -179,7 +176,40 @@
     yt-dlp.downloader = "wget";
     yt-dlp.path = "${config.home.homeDirectory}/Videos/YouTube";
     git.settings.core.editor = "${pkgs.vscode}/bin/code --wait";
+
+    spicetify =
+      let
+        spicePkgs = inputs.spicetify-nix.legacyPackages.${pkgs.stdenv.hostPlatform.system};
+      in
+      {
+        enable = true;
+        colorScheme = "mocha";
+        theme = spicePkgs.themes.catppuccin // {
+          injectCss = true;
+          injectThemeJs = true;
+          replaceColors = true;
+          overwriteAssets = true;
+        };
+
+        enabledExtensions = with spicePkgs.extensions; [
+          adblock
+          hidePodcasts
+          shuffle
+        ];
+      };
   };
+
+  xdg.configFile."autostart/kando.desktop".text = ''
+    [Desktop Entry]
+    Type=Application
+    Version=1.0
+    Name=Kando
+    Comment=Start Kando on login
+    Exec=${lib.getExe pkgs.kando}
+    TryExec=${lib.getExe pkgs.kando}
+    Terminal=false
+    X-GNOME-Autostart-enabled=true
+  '';
 
   services = {
     kdeconnect = {
@@ -252,6 +282,13 @@
       migrated = true;
     };
 
+    "org/gnome/settings-daemon/plugins/media-keys" = {
+      custom-keybindings = [
+        "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/"
+        "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/"
+      ];
+    };
+
     "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0" = {
       binding = "<Alt>Return";
       command = "kgx";
@@ -274,11 +311,13 @@
       enabled-extensions = with pkgs.gnomeExtensions; [
         blur-my-shell.extensionUuid
         clipboard-indicator.extensionUuid
-        gsconnect.extensionUuid
+        kando-integration.extensionUuid
+        # gsconnect.extensionUuid
         launch-new-instance.extensionUuid
-        status-icons.extensionUuid
+        appindicator.extensionUuid
         system-monitor.extensionUuid
         "hanabi-extension@jeffshee.github.io"
+        # quick-settings-tweaker.extensionUuid
         # window-list.extensionUuid
         # wakapanel.extensionUuid
       ];

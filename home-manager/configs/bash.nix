@@ -17,7 +17,6 @@ in
     programs.bash = {
       enableCompletion = true;
       historyControl = [ "ignoreboth" ];
-      shellAliases.reload = "source ~/.bashrc";
       historyFile = "${config.home.homeDirectory}/.local/history/bash";
       bashrcExtra = ''
         if [[ -f "${config.home.homeDirectory}/.nix-profile/etc/profile.d/nix.sh" ]]; then
@@ -26,10 +25,6 @@ in
           source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
         fi
       '';
-
-      sessionVariables = {
-        PROMPT_COMMAND = "history -a; history -n";
-      };
 
       shellOptions = [
         "histappend"
@@ -44,6 +39,14 @@ in
         "history"
         "ls"
       ];
+
+      shellAliases = {
+        reload = "source ~/.bashrc";
+      };
+
+      sessionVariables = {
+        PROMPT_COMMAND = "history -a; history -n";
+      };
     };
 
     # https://www.gnu.org/software/bash/manual/html_node/The-Shopt-Builtin.html

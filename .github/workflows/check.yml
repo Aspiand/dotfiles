@@ -2,8 +2,7 @@ name: Nix Flake Check
 
 on:
   push:
-    branches:
-      - main
+  workflow_dispatch:
 
 jobs:
   flake-check:
