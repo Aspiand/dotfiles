@@ -132,7 +132,6 @@
         # quick-settings-tweaker
         appindicator
         system-monitor
-        # window-list
       ])
       ++ (with nerd-fonts; [
         _0xproto
@@ -312,14 +311,11 @@
         blur-my-shell.extensionUuid
         clipboard-indicator.extensionUuid
         kando-integration.extensionUuid
-        # gsconnect.extensionUuid
         launch-new-instance.extensionUuid
         appindicator.extensionUuid
         system-monitor.extensionUuid
-        "hanabi-extension@jeffshee.github.io"
+        pkgs.hanabi.extensionUuid
         # quick-settings-tweaker.extensionUuid
-        # window-list.extensionUuid
-        # wakapanel.extensionUuid
       ];
     };
 
