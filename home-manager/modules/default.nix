@@ -8,6 +8,7 @@ in
 {
   imports = [
     ./clamav.nix
+    ./modern-utils.nix
     ./mycli.nix
     ./mysql.nix
     ./password-store.nix
