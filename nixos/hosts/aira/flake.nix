@@ -30,6 +30,7 @@
     }:
     let
       system = "x86_64-linux";
+      hanabiFlakeModule = import ../../../nix/hanabi.nix { };
     in
     {
       nixosConfigurations = {
@@ -43,13 +44,8 @@
             home-manager.nixosModules.home-manager
             {
               nixpkgs.overlays = [
-                (final: prev: {
-                  hanabi =
-                    (import ../../modules/hanabi/default.nix {
-                      pkgs = final;
-                      stdenv = final.stdenv;
-                      fetchFromGitHub = final.fetchFromGitHub;
-                    }).hanabi;
+                (final: _: {
+                  hanabi = hanabiFlakeModule.flake.lib.hanabi.mkPackage final;
                 })
               ];
             }
