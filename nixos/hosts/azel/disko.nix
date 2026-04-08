@@ -3,7 +3,7 @@
 {
   disko.devices = {
     disk.main = {
-      device = "/dev/disk/by-id/CHANGE-ME";
+      device = "/dev/disk/by-id/ata-ZD128_AA000000000000001320";
       type = "disk";
       content = {
         type = "gpt";
@@ -56,7 +56,6 @@
                     mountpoint = "/home";
                     mountOptions = [
                       "compress=zstd"
-                      "noatime"
                       "subvol=@home"
                     ];
                   };
@@ -83,7 +82,6 @@
                     mountpoint = "/persist";
                     mountOptions = [
                       "compress=zstd"
-                      "noatime"
                       "subvol=@persist"
                     ];
                   };
