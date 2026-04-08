@@ -17,6 +17,30 @@
 
 This is the shortest safe path to install `azel` onto a portable SSD from an already running NixOS machine.
 
+For repeated offline rebuilds from your internal laptop OS after `azel` is already installed, you can mount the whole installed system to `/mnt` with:
+
+```bash
+sudo nix run .#mount
+```
+
+Optional disk swap activation:
+
+```bash
+sudo nix run .#mount -- --with-swap
+```
+
+To cleanly detach it again:
+
+```bash
+sudo nix run .#umount
+```
+
+For the normal offline rebuild path, the shortest command is:
+
+```bash
+sudo nix run .#deploy
+```
+
 ### 1. Enter the host directory
 
 ```bash
@@ -123,6 +147,64 @@ What you want to see:
 - `zram` with higher priority than disk swap
 - Tailscale service available after first boot
 
+## Offline Rebuild Workflow From The Internal Laptop OS
+
+Use this workflow when:
+
+- you boot into the internal laptop NixOS
+- the `azel` repo lives there
+- the external `azel` SSD is plugged in
+- you want to update the external target without booting into it first
+
+### 1. Mount the installed `azel` system
+
+```bash
+cd /home/ao/.config/dotfiles/nixos/hosts/azel
+sudo nix run .#mount
+```
+
+This mounts:
+
+- `/mnt`
+- `/mnt/home`
+- `/mnt/nix`
+- `/mnt/var/log`
+- `/mnt/persist`
+- `/mnt/boot`
+
+### 2. Build the new system closure on the laptop
+
+```bash
+sudo nix run .#build
+```
+
+### 3. Install the built result into the mounted target
+
+```bash
+sudo nix-env -p /mnt/nix/var/nix/profiles/system --set ./result
+sudo nixos-enter --root /mnt -c 'NIXOS_INSTALL_BOOTLOADER=1 /nix/var/nix/profiles/system/bin/switch-to-configuration boot'
+```
+
+Do not use:
+
+```bash
+sudo nixos-rebuild switch --flake .#azel
+```
+
+when you are booted into the internal laptop OS, because that activates the current running host instead of the mounted external target.
+
+### 4. Unmount when done
+
+```bash
+sudo nix run .#umount
+```
+
+Or do the whole offline rebuild workflow in one command:
+
+```bash
+sudo nix run .#deploy
+```
+
 ## Goals
 
 The design is intentionally split into two concerns:
@@ -165,6 +247,17 @@ nixos/hosts/azel
 ```
 
 ## Layer model
+
+## Flake Apps
+
+The host flake exports three operational helpers:
+
+- `nix run .#mount`
+- `nix run .#umount`
+- `nix run .#build`
+- `nix run .#deploy`
+
+These are implemented directly in `flake.nix`, so the repo itself is the interface.
 
 ### `modules/base/*`
 
