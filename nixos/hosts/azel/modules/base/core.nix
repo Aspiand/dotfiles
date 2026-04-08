@@ -60,6 +60,11 @@
     fish.enable = true;
   };
 
+  environment.pathsToLink = [
+    "/share/applications"
+    "/share/xdg-desktop-portal"
+  ];
+
   users.users.aka = {
     isNormalUser = true;
     description = "Aspian";
