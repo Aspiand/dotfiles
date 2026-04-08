@@ -3,6 +3,13 @@
 {
   system.stateVersion = "26.05";
 
+  boot.kernelParams = [ "nohibernate" ];
+
+  systemd.targets = {
+    hibernate.enable = false;
+    hybrid-sleep.enable = false;
+  };
+
   time.timeZone = "Asia/Makassar";
 
   i18n = {
