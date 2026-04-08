@@ -37,114 +37,34 @@
       system = "x86_64-linux";
       pkgs = import nixpkgs { inherit system; };
 
-      mountScript = ''
-        set -euo pipefail
+      devs = {
+        esp = "/dev/disk/by-partlabel/disk-main-ESP";
+        swap = "/dev/disk/by-partlabel/disk-main-swap";
+        luks = "/dev/disk/by-partlabel/disk-main-luks";
+        mapper = "cryptroot";
+      };
 
-        if [[ "''${EUID}" -ne 0 ]]; then
-          echo "Run this app as root." >&2
-          exit 1
-        fi
-
-        enable_swap=0
-        if [[ "''${1-}" == "--with-swap" ]]; then
-          enable_swap=1
-        fi
-
-        esp="/dev/disk/by-partlabel/disk-main-ESP"
-        swap_dev="/dev/disk/by-partlabel/disk-main-swap"
-        luks_dev="/dev/disk/by-partlabel/disk-main-luks"
-        mapper_name="cryptroot"
-        mapper_dev="/dev/mapper/''${mapper_name}"
-
-        for dev in "$esp" "$swap_dev" "$luks_dev"; do
-          [[ -b "$dev" ]] || {
-            echo "Device not found: $dev" >&2
+      sh = {
+        checkRoot = ''
+          if [[ "''${EUID}" -ne 0 ]]; then
+            echo "Error: This command requires root privileges. Please run with 'sudo'." >&2
             exit 1
-          }
-        done
-
-        if [[ ! -e "$mapper_dev" ]]; then
-          echo "Opening LUKS device $luks_dev as $mapper_name"
-          cryptsetup open "$luks_dev" "$mapper_name" --allow-discards
-        fi
-
-        mount_btrfs_subvol() {
-          local mountpoint="$1"
-          local subvol="$2"
-          local opts="$3"
-
-          mkdir -p "$mountpoint"
-          if ! findmnt "$mountpoint" >/dev/null 2>&1; then
-            mount "$mapper_dev" "$mountpoint" -o "''${opts},subvol=''${subvol}"
           fi
-        }
-
-        mount_btrfs_subvol /mnt "@root" "compress=zstd,noatime"
-        mount_btrfs_subvol /mnt/home "@home" "compress=zstd"
-        mount_btrfs_subvol /mnt/nix "@nix" "compress=zstd,noatime"
-        mount_btrfs_subvol /mnt/var/log "@log" "compress=zstd,noatime"
-        mount_btrfs_subvol /mnt/persist "@persist" "compress=zstd"
-
-        mkdir -p /mnt/boot
-        if ! findmnt /mnt/boot >/dev/null 2>&1; then
-          mount -t vfat -o umask=0077 "$esp" /mnt/boot
-        fi
-
-        if [[ "$enable_swap" -eq 1 ]]; then
-          swapon "$swap_dev" 2>/dev/null || true
-        fi
-
-        echo "Mounted azel at /mnt"
-        findmnt /mnt || true
-        findmnt /mnt/boot || true
-      '';
-
-      umountScript = ''
-        set -euo pipefail
-
-        if [[ "''${EUID}" -ne 0 ]]; then
-          echo "Run this app as root." >&2
-          exit 1
-        fi
-
-        swap_dev="/dev/disk/by-partlabel/disk-main-swap"
-        mapper_name="cryptroot"
-
-        swapoff "$swap_dev" 2>/dev/null || true
-        umount -R /mnt 2>/dev/null || true
-        cryptsetup close "$mapper_name" 2>/dev/null || true
-
-        echo "Unmounted azel from /mnt"
-      '';
-
-      buildScript = ''
-        set -euo pipefail
-
-        work_dir="$PWD"
-        out_link="$work_dir/result"
-        flake_ref="$work_dir#nixosConfigurations.azel.config.system.build.toplevel"
-
-        if [[ ! -f "$work_dir/flake.nix" ]]; then
-          echo "Run this command from nixos/hosts/azel so the current directory contains the azel flake." >&2
-          exit 1
-        fi
-
-        ${pkgs.nix}/bin/nix build "$flake_ref" -o "$out_link"
-
-        target="$(readlink -f "$out_link" || true)"
-        case "$target" in
-          *-nixos-system-azel-*)
-            ;;
-          *)
-            echo "Unexpected build output: $target" >&2
-            echo "Expected a nixos-system-azel closure, not a source tree." >&2
-            exit 1
-            ;;
-        esac
-
-        echo "Built azel system to $out_link"
-        readlink -f "$out_link"
-      '';
+        '';
+        ensureMounted = ''
+          if ! findmnt /mnt >/dev/null 2>&1 || ! findmnt /mnt/boot >/dev/null 2>&1; then
+            echo "azel is not fully mounted at /mnt. Attempting to mount now..."
+            "${mountApp}/bin/mount"
+          fi
+        '';
+        confirm = ''
+          confirm_action() {
+            if [[ "''${CONFIRM_YES:-0}" -eq 1 ]]; then return 0; fi
+            read -p "$1 [y/N] " -n 1 -r; echo
+            [[ $REPLY =~ ^[Yy]$ ]] || { echo "Operation cancelled." >&2; exit 1; }
+          }
+        '';
+      };
 
       mountApp = pkgs.writeShellApplication {
         name = "mount";
@@ -152,7 +72,41 @@
           cryptsetup
           util-linux
         ];
-        text = mountScript;
+        text = ''
+          set -euo pipefail
+          ${sh.checkRoot}
+
+          enable_swap=0
+          [[ "''${1-}" == "--with-swap" ]] && enable_swap=1
+
+          mapper_dev="/dev/mapper/${devs.mapper}"
+
+          for dev in "${devs.esp}" "${devs.swap}" "${devs.luks}"; do
+            [[ -b "$dev" ]] || { echo "Error: Device not found: $dev. Check your partition labels." >&2; exit 1; }
+          done
+
+          if [[ ! -e "$mapper_dev" ]]; then
+            echo "Opening LUKS device ${devs.luks}..."
+            cryptsetup open "${devs.luks}" "${devs.mapper}" --allow-discards
+          fi
+
+          mount_subvol() {
+            mkdir -p "$1"
+            findmnt "$1" >/dev/null 2>&1 || mount "$mapper_dev" "$1" -o "$3,subvol=$2"
+          }
+
+          mount_subvol /mnt "@root" "compress=zstd,noatime"
+          mount_subvol /mnt/home "@home" "compress=zstd"
+          mount_subvol /mnt/nix "@nix" "compress=zstd,noatime"
+          mount_subvol /mnt/var/log "@log" "compress=zstd,noatime"
+          mount_subvol /mnt/persist "@persist" "compress=zstd"
+
+          mkdir -p /mnt/boot
+          findmnt /mnt/boot >/dev/null 2>&1 || mount -t vfat -o umask=0077 "${devs.esp}" /mnt/boot
+
+          [[ "$enable_swap" -eq 1 ]] && swapon "${devs.swap}" 2>/dev/null || true
+          echo "Successfully mounted azel at /mnt."
+        '';
       };
 
       umountApp = pkgs.writeShellApplication {
@@ -161,23 +115,33 @@
           cryptsetup
           util-linux
         ];
-        text = umountScript;
+        text = ''
+          set -euo pipefail
+          ${sh.checkRoot}
+
+          swapoff "${devs.swap}" 2>/dev/null || true
+          umount -R /mnt 2>/dev/null || true
+          cryptsetup close "${devs.mapper}" 2>/dev/null || true
+          echo "Successfully unmounted azel."
+        '';
       };
 
       buildApp = pkgs.writeShellApplication {
         name = "build";
-        runtimeInputs = with pkgs; [
-          nix
-        ];
+        runtimeInputs = with pkgs; [ nix ];
         text = ''
           set -euo pipefail
+          [[ -f "./flake.nix" ]] || { echo "Error: flake.nix not found in $PWD. Please run this command from the 'nixos/hosts/azel' directory." >&2; exit 1; }
 
-          ${buildScript}
+          out_link="$PWD/result"
+          echo "Building azel system profile..."
+          nix build ".#nixosConfigurations.azel.config.system.build.toplevel" -o "$out_link"
+          echo "Build complete: $(readlink -f "$out_link")"
         '';
       };
 
-      deployApp = pkgs.writeShellApplication {
-        name = "deploy";
+      rebuildApp = pkgs.writeShellApplication {
+        name = "rebuild";
         runtimeInputs = with pkgs; [
           cryptsetup
           nix
@@ -185,23 +149,103 @@
         ];
         text = ''
           set -euo pipefail
+          ${sh.checkRoot}
+          ${sh.confirm}
 
-          if [[ "''${EUID}" -ne 0 ]]; then
-            echo "Run this app as root." >&2
-            exit 1
-          fi
+          CONFIRM_YES=0
+          for arg in "$@"; do
+            case "$arg" in
+              -y|--yes) CONFIRM_YES=1 ;;
+            esac
+          done
 
-          if ! findmnt /mnt >/dev/null 2>&1 || ! findmnt /mnt/boot >/dev/null 2>&1; then
-            echo "azel is not fully mounted at /mnt, mounting now"
-            "${mountApp}/bin/mount"
-          else
-            echo "azel is already mounted at /mnt"
-          fi
+          confirm_action "This will overwrite the system profile and update the bootloader. Proceed?"
+          ${sh.ensureMounted}
 
+          echo "Starting system rebuild..."
           "${buildApp}/bin/build"
           out_link="$PWD/result"
-          ${pkgs.nix}/bin/nix-env -p /mnt/nix/var/nix/profiles/system --set "$out_link"
-          ${pkgs.nixos-enter}/bin/nixos-enter --root /mnt -c 'NIXOS_INSTALL_BOOTLOADER=1 /nix/var/nix/profiles/system/bin/switch-to-configuration boot'
+          nix-env -p /mnt/nix/var/nix/profiles/system --set "$out_link"
+          nixos-enter --root /mnt -c 'NIXOS_INSTALL_BOOTLOADER=1 /nix/var/nix/profiles/system/bin/switch-to-configuration boot'
+          echo "Rebuild finished successfully."
+        '';
+      };
+
+      formatApp = pkgs.writeShellApplication {
+        name = "format";
+        runtimeInputs = with pkgs; [ nix ];
+        text = ''
+          set -euo pipefail
+          ${sh.checkRoot}
+          ${sh.confirm}
+          [[ -f "./disko.nix" ]] || { echo "Error: disko.nix not found in $PWD. Please run this command from the 'nixos/hosts/azel' directory." >&2; exit 1; }
+
+          CONFIRM_YES=0
+          for arg in "$@"; do
+            case "$arg" in
+              -y|--yes) CONFIRM_YES=1 ;;
+            esac
+          done
+
+          echo "WARNING: This will WIPEOUT and FORMAT your disks according to disko.nix!"
+          confirm_action "Are you absolutely sure you want to format the disks?"
+
+          nix --experimental-features 'nix-command flakes' \
+            run github:nix-community/disko -- \
+            --mode disko ./disko.nix
+        '';
+      };
+
+      installApp = pkgs.writeShellApplication {
+        name = "install";
+        runtimeInputs = with pkgs; [
+          cryptsetup
+          nix
+          util-linux
+          nixos-install
+        ];
+        text = ''
+          set -euo pipefail
+          ${sh.checkRoot}
+          ${sh.confirm}
+
+          format_disk=0
+          no_build=0
+          CONFIRM_YES=0
+          install_args=()
+
+          for arg in "$@"; do
+            case "$arg" in
+              --format) format_disk=1 ;;
+              --no-build) no_build=1 ;;
+              -y|--yes) CONFIRM_YES=1 ;;
+              *) install_args+=("$arg") ;;
+            esac
+          done
+
+          if [[ "$format_disk" -eq 1 ]]; then
+            echo "WARNING: --format requested. Disks will be WIPED before installation."
+            confirm_action "Proceed with formatting and installation?"
+            "${formatApp}/bin/format" --yes
+          else
+            confirm_action "Start NixOS installation on /mnt?"
+          fi
+
+          ${sh.ensureMounted}
+
+          if [[ "$no_build" -eq 1 ]]; then
+            if [[ ! -L "./result" ]]; then
+              echo "Error: ./result link not found. Cannot proceed with --no-build." >&2
+              echo "Direction: Run 'nix run .#build' first to generate the system closure, or run 'install' without --no-build." >&2
+              exit 1
+            fi
+            system_path=$(readlink -f ./result)
+            echo "Installing pre-built system from $system_path..."
+            nixos-install --system "$system_path" --root /mnt "''${install_args[@]}"
+          else
+            echo "Installing azel system from flake..."
+            nixos-install --flake ".#azel" --root /mnt "''${install_args[@]}"
+          fi
         '';
       };
     in
@@ -210,7 +254,9 @@
         mount = mountApp;
         umount = umountApp;
         build = buildApp;
-        deploy = deployApp;
+        rebuild = rebuildApp;
+        format = formatApp;
+        install = installApp;
       };
 
       apps.${system} = {
@@ -229,9 +275,19 @@
           program = "${buildApp}/bin/build";
         };
 
-        deploy = {
+        format = {
           type = "app";
-          program = "${deployApp}/bin/deploy";
+          program = "${formatApp}/bin/format";
+        };
+
+        install = {
+          type = "app";
+          program = "${installApp}/bin/install";
+        };
+
+        rebuild = {
+          type = "app";
+          program = "${rebuildApp}/bin/rebuild";
         };
       };
 
