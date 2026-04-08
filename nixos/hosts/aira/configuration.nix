@@ -111,6 +111,7 @@
 
   environment = {
     systemPackages = with pkgs; [
+      btrfs-progs
       gparted
       system-config-printer
     ];
