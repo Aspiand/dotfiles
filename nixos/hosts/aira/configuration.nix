@@ -110,7 +110,10 @@
   };
 
   environment = {
-    systemPackages = with pkgs; [ gparted ];
+    systemPackages = with pkgs; [
+      gparted
+      system-config-printer
+    ];
 
     sessionVariables = {
       LIBVA_DRIVER_NAME = "iHD";
@@ -162,7 +165,6 @@
   };
 
   services = {
-    printing.enable = false; # Enable CUPS to print documents.
     lact.enable = false;
     tailscale.enable = true;
     resolved.enable = false; # https://wiki.nixos.org/wiki/Tailscale#DNS
@@ -204,6 +206,11 @@
       # use the example session manager (no others are packaged yet so this is enabled by default,
       # no need to redefine it in your config for now)
       #media-session.enable = true;
+    };
+
+    printing = {
+      enable = true; # Enable CUPS to print documents.
+      drivers = [ pkgs.gutenprint ];
     };
   };
 
