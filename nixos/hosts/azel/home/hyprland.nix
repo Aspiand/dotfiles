@@ -5,7 +5,7 @@
     enable = true;
     systemd.enable = true;
     settings = {
-      "$mod" = "SUPER";
+      "$mod" = "ALT";
 
       monitor = ",preferred,auto,1";
       exec-once = [

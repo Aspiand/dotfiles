@@ -10,6 +10,8 @@
       foot
       wofi
       wl-clipboard
+
+      firefox
     ];
   };
 }
