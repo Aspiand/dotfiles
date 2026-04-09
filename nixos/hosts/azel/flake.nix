@@ -68,7 +68,7 @@
           [[ -f "./disko.nix" ]] || { echo "Error: disko.nix not found." >&2; exit 1; }
 
           echo "Mounting azel using disko..."
-          disko --mode mount ./disko.nix
+          ${pkgs.disko}/bin/disko --mode mount ./disko.nix
         '';
       };
 
