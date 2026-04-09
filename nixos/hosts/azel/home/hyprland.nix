@@ -33,7 +33,7 @@
       bind = [
         "$mod, Return, exec, foot"
         "$mod, Q, killactive,"
-        "$mod, E, exec, wofi --show drun"
+        "$mod, D, exec, wofi --show drun"
         "$mod, F, fullscreen,"
         "$mod, V, togglefloating,"
         "$mod SHIFT, E, exit,"

@@ -145,6 +145,7 @@
         runtimeInputs = with pkgs; [
           cryptsetup
           nix
+          nixos-enter
           util-linux
         ];
         text = ''
@@ -165,8 +166,18 @@
           echo "Starting system rebuild..."
           "${buildApp}/bin/build"
           out_link="$PWD/result"
-          nix-env -p /mnt/nix/var/nix/profiles/system --set "$out_link"
-          nixos-enter --root /mnt -c 'NIXOS_INSTALL_BOOTLOADER=1 /nix/var/nix/profiles/system/bin/switch-to-configuration boot'
+          system_path="$(readlink -f "$out_link")"
+          target_store='local?root=/mnt&require-sigs=false'
+
+          echo "Copying closure to target store..."
+          nix copy --no-check-sigs --to "$target_store" "$system_path"
+
+          echo "Updating target system profile..."
+          nix-env --store "$target_store" -p /nix/var/nix/profiles/system --set "$system_path"
+
+          echo "Activating target system and updating bootloader..."
+          nixos-enter --root /mnt --system /nix/var/nix/profiles/system -c \
+            'NIXOS_INSTALL_BOOTLOADER=1 /nix/var/nix/profiles/system/bin/switch-to-configuration boot'
           echo "Rebuild finished successfully."
         '';
       };
