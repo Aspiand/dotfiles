@@ -102,6 +102,7 @@
     description = "Aspian";
     packages = with pkgs; [ ];
     extraGroups = [
+      "dialout"
       "docker"
       "networkmanager"
       "video"
