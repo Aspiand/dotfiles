@@ -37,13 +37,6 @@
       system = "x86_64-linux";
       pkgs = import nixpkgs { inherit system; };
 
-      devs = {
-        esp = "/dev/disk/by-partlabel/disk-main-ESP";
-        swap = "/dev/disk/by-partlabel/disk-main-swap";
-        luks = "/dev/disk/by-partlabel/disk-main-luks";
-        mapper = "cryptroot";
-      };
-
       sh = {
         checkRoot = ''
           if [[ "''${EUID}" -ne 0 ]]; then
@@ -68,67 +61,55 @@
 
       mountApp = pkgs.writeShellApplication {
         name = "mount";
-        runtimeInputs = with pkgs; [
-          cryptsetup
-          util-linux
-        ];
+        runtimeInputs = with pkgs; [ disko ];
         text = ''
           set -euo pipefail
           ${sh.checkRoot}
+          [[ -f "./disko.nix" ]] || { echo "Error: disko.nix not found." >&2; exit 1; }
 
-          enable_swap=0
-          [[ "''${1-}" == "--with-swap" ]] && enable_swap=1
-
-          mapper_dev="/dev/mapper/${devs.mapper}"
-
-          for dev in "${devs.esp}" "${devs.swap}" "${devs.luks}"; do
-            [[ -b "$dev" ]] || { echo "Error: Device not found: $dev. Check your partition labels." >&2; exit 1; }
-          done
-
-          if [[ ! -e "$mapper_dev" ]]; then
-            echo "Opening LUKS device ${devs.luks}..."
-            cryptsetup open "${devs.luks}" "${devs.mapper}" --allow-discards
-          fi
-
-          mount_subvol() {
-            mkdir -p "$1"
-            findmnt "$1" >/dev/null 2>&1 || mount "$mapper_dev" "$1" -o "$3,subvol=$2"
-          }
-
-          mount_subvol /mnt "@root" "compress=zstd,noatime"
-          mount_subvol /mnt/home "@home" "compress=zstd"
-          mount_subvol /mnt/nix "@nix" "compress=zstd,noatime"
-          mount_subvol /mnt/var/log "@log" "compress=zstd,noatime"
-          mount_subvol /mnt/persist "@persist" "compress=zstd"
-
-          mkdir -p /mnt/boot
-          findmnt /mnt/boot >/dev/null 2>&1 || mount -t vfat -o umask=0077 "${devs.esp}" /mnt/boot
-
-          [[ "$enable_swap" -eq 1 ]] && swapon "${devs.swap}" 2>/dev/null || true
-          echo "Successfully mounted azel at /mnt."
+          echo "Mounting azel using disko..."
+          disko --mode mount ./disko.nix
         '';
       };
 
       umountApp = pkgs.writeShellApplication {
         name = "umount";
-        runtimeInputs = with pkgs; [
-          cryptsetup
-          util-linux
-        ];
+        runtimeInputs = with pkgs; [ disko ];
         text = ''
           set -euo pipefail
           ${sh.checkRoot}
+          [[ -f "./disko.nix" ]] || { echo "Error: disko.nix not found." >&2; exit 1; }
 
-          swapoff "${devs.swap}" 2>/dev/null || true
-          umount -R /mnt 2>/dev/null || true
-          cryptsetup close "${devs.mapper}" 2>/dev/null || true
-          echo "Successfully unmounted azel."
+          echo "Unmounting azel using disko..."
+          disko --mode umount ./disko.nix
+        '';
+      };
+
+      formatApp = pkgs.writeShellApplication {
+        name = "format";
+        runtimeInputs = with pkgs; [ disko ];
+        text = ''
+          set -euo pipefail
+          ${sh.checkRoot}
+          ${sh.confirm}
+          [[ -f "./disko.nix" ]] || { echo "Error: disko.nix not found in $PWD. Please run this command from the 'nixos/hosts/azel' directory." >&2; exit 1; }
+
+          CONFIRM_YES=0
+          for arg in "$@"; do
+            case "$arg" in
+              -y|--yes) CONFIRM_YES=1 ;;
+            esac
+          done
+
+          echo "WARNING: This will WIPEOUT and FORMAT your disks according to disko.nix!"
+          confirm_action "Are you absolutely sure you want to format the disks?"
+
+          disko --mode disko ./disko.nix
         '';
       };
 
       buildApp = pkgs.writeShellApplication {
         name = "build";
-        runtimeInputs = with pkgs; [ nix ];
         text = ''
           set -euo pipefail
           [[ -f "./flake.nix" ]] || { echo "Error: flake.nix not found in $PWD. Please run this command from the 'nixos/hosts/azel' directory." >&2; exit 1; }
@@ -143,7 +124,6 @@
       rebuildApp = pkgs.writeShellApplication {
         name = "rebuild";
         runtimeInputs = with pkgs; [
-          cryptsetup
           nix
           nixos-enter
           util-linux
@@ -182,37 +162,9 @@
         '';
       };
 
-      formatApp = pkgs.writeShellApplication {
-        name = "format";
-        runtimeInputs = with pkgs; [ nix ];
-        text = ''
-          set -euo pipefail
-          ${sh.checkRoot}
-          ${sh.confirm}
-          [[ -f "./disko.nix" ]] || { echo "Error: disko.nix not found in $PWD. Please run this command from the 'nixos/hosts/azel' directory." >&2; exit 1; }
-
-          CONFIRM_YES=0
-          for arg in "$@"; do
-            case "$arg" in
-              -y|--yes) CONFIRM_YES=1 ;;
-            esac
-          done
-
-          echo "WARNING: This will WIPEOUT and FORMAT your disks according to disko.nix!"
-          confirm_action "Are you absolutely sure you want to format the disks?"
-
-          nix --experimental-features 'nix-command flakes' \
-            run github:nix-community/disko -- \
-            --mode disko ./disko.nix
-        '';
-      };
-
       installApp = pkgs.writeShellApplication {
         name = "install";
         runtimeInputs = with pkgs; [
-          cryptsetup
-          nix
-          util-linux
           nixos-install
         ];
         text = ''
