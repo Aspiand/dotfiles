@@ -267,6 +267,10 @@
       # icon-theme = "Adwaita";
     };
 
+    "org/gnome/desktop/media-handling" = {
+      automount = false;
+    };
+
     "org/gnome/desktop/peripherals/touchpad" = {
       two-finger-scrolling-enabled = true;
     };
