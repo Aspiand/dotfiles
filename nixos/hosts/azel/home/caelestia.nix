@@ -28,6 +28,7 @@
     # libsForQt5.qt5.qtwebengine
     kdePackages.qtwebengine
     nerd-fonts.jetbrains-mono
+    awww
   ];
 
   programs.caelestia = {
