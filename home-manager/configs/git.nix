@@ -2,7 +2,7 @@
 
 {
   programs.git = {
-    enable = lib.mkDefault true;
+    enable = true;
     settings = {
       pull.rebase = true;
       init.defaultBranch = "main";

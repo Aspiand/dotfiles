@@ -6,9 +6,11 @@
 }:
 
 with lib;
+
 let
   cfg = config.programs.modern-utils;
 in
+
 {
   options.programs.modern-utils = {
     enable = mkEnableOption "Enable modern and better CLI utilities";
