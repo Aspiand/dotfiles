@@ -95,7 +95,7 @@
           [[ -f "./disko.nix" ]] || { echo "Error: disko.nix not found." >&2; exit 1; }
 
           echo "Unmounting azel using disko..."
-          disko --mode umount ./disko.nix
+          ${pkgs.disko}/bin/disko --mode umount ./disko.nix
         '';
       };
 
@@ -118,7 +118,7 @@
           echo "WARNING: This will WIPEOUT and FORMAT your disks according to disko.nix!"
           confirm_action "Are you absolutely sure you want to format the disks?"
 
-          disko --mode disko ./disko.nix
+          ${pkgs.disko}/bin/disko --mode disko ./disko.nix
         '';
       };
 
