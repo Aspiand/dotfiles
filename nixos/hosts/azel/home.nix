@@ -5,6 +5,7 @@
     # inputs.niri.homeModules.niri
     inputs.dms.homeModules.dank-material-shell
     inputs.dms-plugin-registry.modules.default
+    inputs.danksearch.homeModules.dsearch
   ];
 
   home = {
@@ -116,5 +117,8 @@
         # };
       # };
     };
+
+    # TODO: test
+    dsearch.enable = true;
   };
 }
