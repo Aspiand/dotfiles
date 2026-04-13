@@ -18,7 +18,7 @@
       };
 
       delta = {
-        enable = lib.mkDefault true;
+        enable = true;
         dark = true;
         navigate = true;
         line-numbers = true;

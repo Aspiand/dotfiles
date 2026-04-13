@@ -9,8 +9,8 @@ with lib;
 
 {
   programs.starship = {
-    enable = config.programs.bash.enable;
-    enableBashIntegration = true;
+    enable = mkDefault config.programs.bash.enable;
+    enableBashIntegration = mkDefault true;
     enableFishIntegration = mkDefault true;
     settings = {
       add_newline = false;
