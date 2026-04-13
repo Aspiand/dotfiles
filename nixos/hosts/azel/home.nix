@@ -1,9 +1,14 @@
-{ ... }:
+{ pkgs, ... }:
 
 {
-  imports = [
-    ./home/base.nix
-    ./home/hyprland.nix
-    ./home/caelestia.nix
-  ];
+  home = {
+    username = "aka";
+    homeDirectory = "/home/aka";
+    stateVersion = "26.05";
+
+    packages = with pkgs; [
+      wl-clipboard
+      firefox
+    ];
+  };
 }
