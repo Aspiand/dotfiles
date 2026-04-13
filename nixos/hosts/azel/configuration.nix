@@ -1,6 +1,10 @@
-{ pkgs, ... }:
+{ inputs, pkgs, ... }:
 
 {
+  imports = [
+    inputs.dms.nixosModules.dank-material-shell
+  ];
+
   system.stateVersion = "26.05";
   boot.kernelParams = [ "nohibernate" ];
   time.timeZone = "Asia/Makassar";
@@ -10,6 +14,7 @@
     bluetooth.enable = true;
   };
 
+  systemd.user.services.niri-flake-polkit.enable = false;
   systemd.targets = {
     hibernate.enable = false;
     hybrid-sleep.enable = false;
@@ -31,9 +36,11 @@
     };
   };
 
+  # programs.dank-material-shell.enable = true;
+
   services = {
     xserver.enable = false;
-    dbus.enable = true; # TODO: fungsinya
+    dbus.enable = true;
 
     tailscale.enable = true;
     upower.enable = true;
@@ -67,14 +74,24 @@
       gparted
       micro
       tmux
+      alacritty
     ];
 
     variables = {
       EDITOR = "micro";
       VISUAL = "micro";
+      TERMINAL = "alacritty";
+
+      XDG_CURRENT_DESKTOP = "niri";
+      QT_QPA_PLATFORM = "wayland";
+      QT_QPA_PLATFORMTHEME = "gtk3";
+      QT_QPA_PLATFORMTHEME_QT6 = "gtk3";
+      ELECTRON_OZONE_PLATFORM_HINT = "auto";
+
+      # DMS_HIDE_TRAYIDS "discord,spotify"
     };
 
-    # TODO: keep
+    # TODO: keep?
     pathsToLink = [
       "/share/applications"
       "/share/xdg-desktop-portal"
