@@ -18,8 +18,18 @@
       url = "github:nix-community/impermanence";
     };
 
-    caelestia-shell = {
-      url = "github:caelestia-dots/shell";
+    niri = {
+      url = "github:sodiboo/niri-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    dms = {
+      url = "github:AvengeMedia/DankMaterialShell/stable";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    dms-plugin-registry = {
+      url = "github:AvengeMedia/dms-plugin-registry";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
@@ -30,7 +40,6 @@
       disko,
       home-manager,
       impermanence,
-      caelestia-shell,
       ...
     }:
     let
