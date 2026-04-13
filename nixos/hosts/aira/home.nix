@@ -83,7 +83,6 @@
         # Editor
         # android-studio
         antigravity
-        arduino-ide
         # netbeans
         obsidian
         vscode
