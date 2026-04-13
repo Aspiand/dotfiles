@@ -2,6 +2,7 @@
 
 {
   imports = [
+    inputs.niri.nixosModules.niri
     inputs.dms.nixosModules.dank-material-shell
   ];
 
@@ -36,11 +37,57 @@
     };
   };
 
-  # programs.dank-material-shell.enable = true;
+  programs = {
+    niri.enable = true;
+    dank-material-shell.enable = true;
+  };
+
+  fonts.packages = with pkgs; [
+    jetbrains-mono
+    nerd-fonts.caskaydia-cove
+    material-icons
+    noto-fonts-cjk-sans
+    noto-fonts-color-emoji
+  ];
 
   services = {
+    displayManager.dms-greeter = {
+      enable = true;
+      configHome = "/home/aka";
+      logs = {
+        save = true;
+        path = "/tmp/dms-greeter.log";
+      };
+      compositor = {
+        name = "niri";
+        customConfig = ''
+          hotkey-overlay {
+              skip-at-startup
+          }
+
+          environment {
+              DMS_RUN_GREETER "1"
+          }
+
+          gestures {
+            hot-corners {
+              off
+            }
+          }
+
+          layout {
+            background-color "#000000"
+          }
+        '';
+      };
+    };
+
     xserver.enable = false;
+
     dbus.enable = true;
+
+    gvfs.enable = true;
+    gnome.gnome-keyring.enable = true;
 
     tailscale.enable = true;
     upower.enable = true;
