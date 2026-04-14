@@ -24,12 +24,19 @@ in
     homeDirectory = "/home/aka";
     stateVersion = "26.05";
 
+    shellAliases = {
+    	switch = "sudo nixos-rebuild switch --verbose --flake ~/.config/dotfiles/nixos/hosts/azel";
+    	self = "ssh self";
+    };
+
     packages = with pkgs; [
+      bitwarden-desktop
       discord
       firefox
       codex
       gocryptfs
       rustic
+      vscode
     ];
   };
 
