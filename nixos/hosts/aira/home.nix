@@ -257,6 +257,13 @@
       last-window-maximised = false;
     };
 
+    "org/gnome/desktop/input-sources" = {
+      xkb-options = [
+        "terminate:ctrl_alt_bksp"
+        # "lv3:ralt_switch"
+      ];
+    };
+
     "org/gnome/desktop/interface" = {
       color-scheme = "prefer-dark";
       enable-hot-corners = false;
