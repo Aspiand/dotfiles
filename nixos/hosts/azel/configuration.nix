@@ -9,6 +9,7 @@
   system.stateVersion = "26.05";
   boot.kernelParams = [ "nohibernate" ];
   time.timeZone = "Asia/Makassar";
+  nixpkgs.config.allowUnfree = true;
 
   hardware = {
     graphics.enable = true;
