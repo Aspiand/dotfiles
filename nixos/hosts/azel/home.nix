@@ -1,4 +1,13 @@
-{ pkgs, inputs, ... }:
+{
+  config,
+  inputs,
+  pkgs,
+  ...
+}:
+
+let
+  spicePkgs = inputs.spicetify-nix.legacyPackages.${pkgs.stdenv.hostPlatform.system};
+in
 
 {
   imports = [
@@ -6,6 +15,7 @@
     inputs.dms.homeModules.dank-material-shell
     inputs.dms-plugin-registry.modules.default
     inputs.danksearch.homeModules.dsearch
+    inputs.spicetify-nix.homeManagerModules.default
     ../../../home-manager/default.nix
   ];
 
@@ -141,5 +151,32 @@
 
     # TODO: test
     dsearch.enable = true;
+
+    spicetify = {
+      enable = true;
+      colorScheme = "mocha";
+      theme = spicePkgs.themes.catppuccin // {
+        injectCss = true;
+        injectThemeJs = true;
+        replaceColors = true;
+        overwriteAssets = true;
+      };
+
+      enabledExtensions = with spicePkgs.extensions; [
+        adblock
+        hidePodcasts
+        shuffle # shuffle+ (special characters are sanitized out of extension names)
+      ];
+
+      enabledCustomApps = with spicePkgs.apps; [
+        newReleases
+        ncsVisualizer
+      ];
+
+      enabledSnippets = with spicePkgs.snippets; [
+        rotatingCoverart
+        pointer
+      ];
+    };
   };
 }
