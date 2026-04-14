@@ -30,7 +30,6 @@ in
       codex
       gocryptfs
       rustic
-      spotify
     ];
   };
 
