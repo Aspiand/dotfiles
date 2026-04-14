@@ -1,8 +1,6 @@
 # azel
 
-Portable, Fancy, Simple Setup OS Based on NixOS.
-
-`azel` is a layered, flake-based NixOS configuration designed for a portable external SSD environment. It prioritizes system recovery, declarative persistence, and seamless management from a host OS.
+Portable, Elegant, and Simple NixOS-Based Setup.
 
 ## System Stack
 
