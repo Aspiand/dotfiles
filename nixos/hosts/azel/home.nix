@@ -7,6 +7,15 @@
 
 let
   spicePkgs = inputs.spicetify-nix.legacyPackages.${pkgs.stdenv.hostPlatform.system};
+  vscodeWrapped = pkgs.symlinkJoin {
+    name = "vscode";
+    paths = [ pkgs.vscode ];
+    buildInputs = [ pkgs.makeWrapper ];
+    postBuild = ''
+      wrapProgram $out/bin/code \
+        --add-flags "--password-store=gnome-libsecret"
+    '';
+  };
 in
 
 {
@@ -25,18 +34,20 @@ in
     stateVersion = "26.05";
 
     shellAliases = {
-    	switch = "sudo nixos-rebuild switch --verbose --flake ~/.config/dotfiles/nixos/hosts/azel";
-    	self = "ssh self";
+      switch = "sudo nixos-rebuild switch --verbose --flake ~/.config/dotfiles/nixos/hosts/azel";
+      self = "ssh self";
     };
 
     packages = with pkgs; [
       bitwarden-desktop
+      codex
       discord
       firefox
-      codex
+      gcr # Provides org.gnome.keyring.SystemPrompter
       gocryptfs
+      nixfmt
       rustic
-      vscode
+      vscodeWrapped
     ];
   };
 
@@ -54,7 +65,7 @@ in
     yt-dlp.enable = true;
     yt-dlp.downloader = "wget";
     yt-dlp.path = "${config.home.homeDirectory}/Videos/YouTube";
-    git.settings.core.editor = "${pkgs.vscode}/bin/code --wait";
+    git.settings.core.editor = "${vscodeWrapped}/bin/code --wait";
 
     dank-material-shell = {
       enable = true;
