@@ -67,6 +67,7 @@
         hugo
         immich-go
         kando
+        lazydocker
         nmap
         opencode
         # nvtopPackages.intel
