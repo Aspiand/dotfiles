@@ -195,6 +195,11 @@
           hidePodcasts
           shuffle
         ];
+
+        enabledCustomApps = with spicePkgs.apps; [
+          newReleases
+          ncsVisualizer
+        ];
       };
   };
 
