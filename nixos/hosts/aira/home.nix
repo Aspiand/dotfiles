@@ -157,6 +157,12 @@
   };
 
   programs = {
+    firefox = {
+      enable = true;
+      nativeMessagingHosts = [
+        (pkgs.passff-host.override { pass = pkgs.pass; })
+      ];
+    };
     modern-utils.enable = true;
     password-store.enable = true;
     home-manager.enable = true;
