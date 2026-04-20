@@ -6,6 +6,10 @@
   ...
 }:
 
+let
+  spicePkgs = inputs.spicetify-nix.legacyPackages.${pkgs.stdenv.hostPlatform.system};
+in
+
 {
   imports = [
     inputs.spicetify-nix.homeManagerModules.default
@@ -157,12 +161,6 @@
   };
 
   programs = {
-    firefox = {
-      enable = true;
-      nativeMessagingHosts = [
-        (pkgs.passff-host.override { pass = pkgs.pass; })
-      ];
-    };
     modern-utils.enable = true;
     password-store.enable = true;
     home-manager.enable = true;
@@ -182,31 +180,32 @@
     yt-dlp.path = "${config.home.homeDirectory}/Videos/YouTube";
     git.settings.core.editor = "${pkgs.vscode}/bin/code --wait";
 
-    spicetify =
-      let
-        spicePkgs = inputs.spicetify-nix.legacyPackages.${pkgs.stdenv.hostPlatform.system};
-      in
-      {
-        enable = true;
-        colorScheme = "mocha";
-        theme = spicePkgs.themes.catppuccin // {
-          injectCss = true;
-          injectThemeJs = true;
-          replaceColors = true;
-          overwriteAssets = true;
-        };
-
-        enabledExtensions = with spicePkgs.extensions; [
-          adblock
-          hidePodcasts
-          shuffle
-        ];
-
-        enabledCustomApps = with spicePkgs.apps; [
-          newReleases
-          ncsVisualizer
-        ];
+    spicetify = {
+      enable = true;
+      colorScheme = "mocha";
+      theme = spicePkgs.themes.catppuccin // {
+        injectCss = true;
+        injectThemeJs = true;
+        replaceColors = true;
+        overwriteAssets = true;
       };
+
+      enabledExtensions = with spicePkgs.extensions; [
+        adblock
+        hidePodcasts
+        shuffle
+      ];
+
+      enabledCustomApps = with spicePkgs.apps; [
+        newReleases
+        ncsVisualizer
+      ];
+    };
+
+    browserpass = {
+      enable = true;
+      browsers = [ "firefox" ];
+    };
   };
 
   xdg.configFile."autostart/kando.desktop".text = ''
