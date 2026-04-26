@@ -55,6 +55,7 @@
           bash.enable = true;
           clamav.enable = true;
           gpg.enable = true;
+          tmux.enable = true;
           yt-dlp.enable = true;
           yt-dlp.path = "/data/data/com.termux.nix/files/home/storage/Share/YouTube/";
         };
