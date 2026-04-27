@@ -34,7 +34,7 @@
         nixpkgs.config.allowUnfree = true;
 
         home = {
-          stateVersion = "25.05";
+          stateVersion = "26.05";
 
           shellAliases = {
             more = "less";
