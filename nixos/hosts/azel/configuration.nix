@@ -2,7 +2,6 @@
 
 {
   imports = [
-    inputs.niri.nixosModules.niri
     inputs.dms.nixosModules.dank-material-shell
   ];
 
@@ -19,8 +18,8 @@
   systemd = {
     user.services.niri-flake-polkit.enable = false;
     targets = {
-    hibernate.enable = false;
-    hybrid-sleep.enable = false;
+      hibernate.enable = false;
+      hybrid-sleep.enable = false;
     };
   };
 
