@@ -16,10 +16,12 @@
     bluetooth.enable = true;
   };
 
-  systemd.user.services.niri-flake-polkit.enable = false;
-  systemd.targets = {
+  systemd = {
+    user.services.niri-flake-polkit.enable = false;
+    targets = {
     hibernate.enable = false;
     hybrid-sleep.enable = false;
+    };
   };
 
   nix = {
@@ -177,6 +179,11 @@
     priority = 100;
   };
 
+  networking = {
+    hostName = "azel";
+    networkmanager.enable = true;
+  };
+
   boot = {
     loader = {
       grub.enable = false;
@@ -205,10 +212,5 @@
       LC_TELEPHONE = "id_ID.UTF-8";
       LC_TIME = "id_ID.UTF-8";
     };
-  };
-
-  networking = {
-    hostName = "azel";
-    networkmanager.enable = true;
   };
 }

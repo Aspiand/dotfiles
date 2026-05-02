@@ -20,7 +20,6 @@ in
 
 {
   imports = [
-    # inputs.niri.homeModules.niri
     inputs.dms.homeModules.dank-material-shell
     inputs.dms-plugin-registry.modules.default
     inputs.danksearch.homeModules.dsearch
@@ -88,20 +87,20 @@ in
         dynamicTheming = true;
       };
 
-      # session = {
-      #   isLightMode = false;
-      #   # Add any other session state settings here
-      # };
+      session = {
+        isLightMode = false;
+        # Add any other session state settings here
+      };
 
-      # clipboardSettings = {
-      #   maxHistory = 25;
-      #   maxEntrySize = 5242880;
-      #   # autoClearDays = 1;
-      #   clearAtStartup = false;
-      #   disabled = false;
-      #   disableHistory = false;
-      #   disablePersist = true;
-      # };
+      clipboardSettings = {
+        disabled = false;
+        disableHistory = false;
+        disablePersist = true;
+        clearAtStartup = false;
+        maxHistory = 25;
+        maxEntrySize = 5242880;
+        # autoClearDays = 1;
+      };
 
       plugins = {
         dankBatteryAlerts.enable = true;
@@ -144,10 +143,8 @@ in
         };
       };
 
-      # nixos module
       # niri = {
       # enableKeybinds = true; # Sets static preset keybinds
-      # enableSpawn = true; # Auto-start DMS with niri, if enabled
 
       # includes = {
       #   enable = true; # Enable config includes hack. Enabled by default.
