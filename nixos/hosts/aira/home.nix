@@ -208,17 +208,17 @@ in
     };
   };
 
-  xdg.configFile."autostart/kando.desktop".text = ''
-    [Desktop Entry]
-    Type=Application
-    Version=1.0
-    Name=Kando
-    Comment=Start Kando on login
-    Exec=${lib.getExe pkgs.kando}
-    TryExec=${lib.getExe pkgs.kando}
-    Terminal=false
-    X-GNOME-Autostart-enabled=true
-  '';
+  # xdg.configFile."autostart/kando.desktop".text = ''
+  #   [Desktop Entry]
+  #   Type=Application
+  #   Version=1.0
+  #   Name=Kando
+  #   Comment=Start Kando on login
+  #   Exec=${lib.getExe pkgs.kando}
+  #   TryExec=${lib.getExe pkgs.kando}
+  #   Terminal=false
+  #   X-GNOME-Autostart-enabled=true
+  # '';
 
   services = {
     kdeconnect = {
@@ -331,7 +331,7 @@ in
       enabled-extensions = with pkgs.gnomeExtensions; [
         blur-my-shell.extensionUuid
         clipboard-indicator.extensionUuid
-        kando-integration.extensionUuid
+        # kando-integration.extensionUuid
         launch-new-instance.extensionUuid
         appindicator.extensionUuid
         system-monitor.extensionUuid
