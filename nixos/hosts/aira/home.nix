@@ -49,13 +49,13 @@ in
         # obs-studio
         # onlyoffice-desktopeditors
         # planify
-        postman
+        # postman
         protonplus
         # spotify
         tor-browser
 
         # CLI
-        act
+        # act
         # android-tools
         # ansible
         # bitwarden-cli
@@ -64,17 +64,17 @@ in
         copyparty-most
         delta
         distrobox
-        gallery-dl
+        # gallery-dl
         gemini-cli
         # gnumake
-        gocryptfs
-        hugo
-        immich-go
-        kando
+        # gocryptfs
+        # hugo
+        # immich-go
+        # kando
         lazydocker
         nmap
         opencode
-        # nvtopPackages.intel
+        nvtopPackages.intel
         restic
         rustic
         # s3fs
@@ -87,7 +87,7 @@ in
 
         # Editor
         # android-studio
-        antigravity
+        # antigravity
         # netbeans
         obsidian
         vscode
@@ -102,23 +102,23 @@ in
         # ventoy-full # https://github.com/NixOS/nixpkgs/issues/404663
 
         # Programming
-        bun
-        gcc
-        go
+        # bun
+        # gcc
+        # go
         # jdk
         # maven
         nixfmt # nix formatter
-        nodejs
+        # nodejs
         # rustc
-        php84
-        php84Packages.composer
-        (python3.withPackages (
-          ps: with ps; [
-            pip
-            virtualenv
-            pyyaml
-          ]
-        ))
+        # php84
+        # php84Packages.composer
+        # (python3.withPackages (
+        #   ps: with ps; [
+        #     pip
+        #     virtualenv
+        #     pyyaml
+        #   ]
+        # ))
 
         hanabi
 
@@ -130,7 +130,7 @@ in
       ++ (with gnomeExtensions; [
         blur-my-shell
         clipboard-indicator
-        kando-integration
+        # kando-integration
         gsconnect
         launch-new-instance
         # quick-settings-tweaker

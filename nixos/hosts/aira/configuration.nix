@@ -16,6 +16,15 @@
   nixpkgs.config.allowUnfree = true;
   security.rtkit.enable = true;
 
+  # TODO: remove later
+  nixpkgs.overlays = [
+    (final: prev: {
+      openldap = prev.openldap.overrideAttrs (old: {
+        doCheck = false;
+      });
+    })
+  ];
+
   hardware.graphics = {
     enable = true;
     extraPackages = with pkgs; [
@@ -30,7 +39,7 @@
   };
 
   boot = {
-    kernelPackages = pkgs.linuxPackages_zen;
+    kernelPackages = pkgs.linuxPackages_7_0; # pkgs.linuxPackages_zen;
     tmp.useTmpfs = false;
 
     loader = {
@@ -115,7 +124,7 @@
     systemPackages = with pkgs; [
       btrfs-progs
       gparted
-      system-config-printer
+      # system-config-printer
     ];
 
     sessionVariables = {
@@ -212,7 +221,7 @@
     };
 
     printing = {
-      enable = true; # Enable CUPS to print documents.
+      enable = false; # Enable CUPS to print documents.
       drivers = [ pkgs.gutenprint ];
     };
   };
