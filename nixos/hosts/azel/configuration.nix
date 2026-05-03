@@ -124,6 +124,7 @@
       micro
       tmux
       alacritty
+      xwayland-satellite
     ];
 
     variables = {
