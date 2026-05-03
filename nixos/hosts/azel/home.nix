@@ -42,6 +42,7 @@ in
       codex
       discord
       firefox
+      gemini-cli
       gcr # Provides org.gnome.keyring.SystemPrompter
       gocryptfs
       nixfmt

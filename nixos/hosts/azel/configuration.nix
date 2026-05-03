@@ -184,6 +184,8 @@
   };
 
   boot = {
+    kernelPackages = pkgs.linuxPackages_7_0;
+
     loader = {
       grub.enable = false;
       systemd-boot.enable = true;
