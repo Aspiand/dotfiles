@@ -7,15 +7,6 @@
 
 let
   spicePkgs = inputs.spicetify-nix.legacyPackages.${pkgs.stdenv.hostPlatform.system};
-  vscodeWrapped = pkgs.symlinkJoin {
-    name = "vscode";
-    paths = [ pkgs.vscode ];
-    buildInputs = [ pkgs.makeWrapper ];
-    postBuild = ''
-      wrapProgram $out/bin/code \
-        --add-flags "--password-store=gnome-libsecret"
-    '';
-  };
 in
 
 {
@@ -47,7 +38,15 @@ in
       gocryptfs
       nixfmt
       rustic
-      vscodeWrapped
+      (pkgs.symlinkJoin {
+        name = "vscode";
+        paths = [ pkgs.vscode ];
+        buildInputs = [ pkgs.makeWrapper ];
+        postBuild = ''
+          wrapProgram $out/bin/code \
+            --add-flags "--password-store=gnome-libsecret"
+        '';
+      })
     ];
 
     pointerCursor = {
@@ -73,7 +72,7 @@ in
     yt-dlp.enable = true;
     yt-dlp.downloader = "wget";
     yt-dlp.path = "${config.home.homeDirectory}/Videos/YouTube";
-    git.settings.core.editor = "${vscodeWrapped}/bin/code --wait";
+    # git.settings.core.editor = "${vscode}/bin/code --wait";
 
     dank-material-shell = {
       enable = true;
@@ -112,37 +111,37 @@ in
       };
 
       plugins = {
-        dankBatteryAlerts.enable = true;
-        wallpaperCarousel.enable = true;
-        dmsScreenshot.enable = true;
-        liveChartSchedule.enable = true;
-        tasks.enable = true;
-        nextBootSelector.enable = true;
-        keybindingCheatSheet.enable = true;
-        quranWidget.enable = true;
-        powerUsagePlugin.enable = true;
-        screenRecorder.enable = true;
-        # dankAudioVisualizer.enable = true;
-        # cavaVisualizer.enable = true;
-        discordVoice.enable = true;
-        githubHeatmap.enable = true;
-        # githubNotifier.enable = true;
-        # mpvpaperWallpaper.enable = true;
-        wallpaperShufflerPlugin.enable = true;
-        linuxWallpaperEngine.enable = true;
-        qcalCalendar.enable = true;
-        animeCalendar.enable = true;
-        dankObsidian.enable = true;
-        codexBar.enable = true;
-        prayerTimes.enable = true;
-        displayOutput.enable = true;
-        vscodeLauncher.enable = true;
-        nixMonitor.enable = true;
-        dankBitwarden.enable = true;
-        musicLyrics.enable = true;
-        dmsPass.enable = true;
-        tailscale.enable = true;
-        displayManager.enable = true;
+        # dankBatteryAlerts.enable = true;
+        # wallpaperCarousel.enable = true;
+        # dmsScreenshot.enable = true;
+        # liveChartSchedule.enable = true;
+        # tasks.enable = true;
+        # nextBootSelector.enable = true;
+        # keybindingCheatSheet.enable = true;
+        # quranWidget.enable = true;
+        # powerUsagePlugin.enable = true;
+        # screenRecorder.enable = true;
+        # # dankAudioVisualizer.enable = true;
+        # # cavaVisualizer.enable = true;
+        # discordVoice.enable = true;
+        # githubHeatmap.enable = true;
+        # # githubNotifier.enable = true;
+        # # mpvpaperWallpaper.enable = true;
+        # wallpaperShufflerPlugin.enable = true;
+        # linuxWallpaperEngine.enable = true;
+        # qcalCalendar.enable = true;
+        # animeCalendar.enable = true;
+        # dankObsidian.enable = true;
+        # codexBar.enable = true;
+        # prayerTimes.enable = true;
+        # displayOutput.enable = true;
+        # vscodeLauncher.enable = true;
+        # nixMonitor.enable = true;
+        # dankBitwarden.enable = true;
+        # musicLyrics.enable = true;
+        # dmsPass.enable = true;
+        # tailscale.enable = true;
+        # displayManager.enable = true;
 
         mediaPlayer = {
           enable = true;

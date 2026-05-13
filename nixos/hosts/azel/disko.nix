@@ -44,19 +44,11 @@
                 type = "btrfs";
                 extraArgs = [ "-f" ];
                 subvolumes = {
-                  "@root" = {
-                    mountpoint = "/";
-                    mountOptions = [
-                      "compress=zstd"
-                      "noatime"
-                      "subvol=@root"
-                    ];
-                  };
-
                   "@home" = {
                     mountpoint = "/home";
                     mountOptions = [
                       "compress=zstd"
+                      "noatime"
                       "subvol=@home"
                     ];
                   };
@@ -70,19 +62,11 @@
                     ];
                   };
 
-                  "@log" = {
-                    mountpoint = "/var/log";
-                    mountOptions = [
-                      "compress=zstd"
-                      "noatime"
-                      "subvol=@log"
-                    ];
-                  };
-
                   "@persist" = {
                     mountpoint = "/persist";
                     mountOptions = [
                       "compress=zstd"
+                      "noatime"
                       "subvol=@persist"
                     ];
                   };

@@ -238,6 +238,7 @@
           ./disko.nix
           ./hardware.nix
           ./configuration.nix
+          ./impermanence.nix
           home-manager.nixosModules.home-manager
           {
             home-manager = {
