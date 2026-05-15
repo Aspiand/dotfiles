@@ -166,6 +166,7 @@ in
     home-manager.enable = true;
     bash.enable = true;
     clamav.enable = true;
+    fresh-editor.enable = true;
     gpg.enable = true;
     git.lfs.enable = true;
     lutris.enable = true;
