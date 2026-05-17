@@ -7,11 +7,38 @@
     {
       "key": "p",
       "modifiers": [
+        "ctrl"
+      ],
+      "action": "file_finder::Toggle"
+    },
+    {
+      "key": "p",
+      "modifiers": [
         "ctrl",
         "shift"
       ],
-      "action": "show_command_palette",
-      "when": "normal"
+      "action": "command_palette::Toggle"
     }
-  ]
+  ],
+  "lsp": {
+    "nixd": {
+      "settings": {
+        "nixpkgs": {
+          "expr": "import <nixpkgs> { }"
+        },
+        "formatting": {
+          "command": [ "nixfmt" ]
+        }
+      }
+    },
+    "pyright": {
+      "settings": {
+        "python": {
+          "analysis": {
+            "typeCheckingMode": "basic"
+          }
+        }
+      }
+    }
+  }
 }
