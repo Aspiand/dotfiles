@@ -3,6 +3,7 @@
     ./bash.nix
     ./common.nix
     ./fastfetch.nix
+    ./fresh.nix
     ./git.nix
     ./lutris.nix
     ./micro.nix

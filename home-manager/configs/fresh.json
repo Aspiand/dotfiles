@@ -1,0 +1,6 @@
+{
+  "version": 2,
+  "theme": "builtin://dark",
+  "check_for_updates": false,
+  "active_keybinding_map": "vscode"
+}
