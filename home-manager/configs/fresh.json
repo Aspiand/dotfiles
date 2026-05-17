@@ -2,5 +2,16 @@
   "version": 2,
   "theme": "builtin://dark",
   "check_for_updates": false,
-  "active_keybinding_map": "vscode"
+  "active_keybinding_map": "vscode",
+  "keybindings": [
+    {
+      "key": "p",
+      "modifiers": [
+        "ctrl",
+        "shift"
+      ],
+      "action": "show_command_palette",
+      "when": "normal"
+    }
+  ]
 }
