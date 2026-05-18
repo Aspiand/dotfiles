@@ -49,7 +49,7 @@ in
         # obs-studio
         # onlyoffice-desktopeditors
         # planify
-        # postman
+        postman
         protonplus
         # spotify
         tor-browser
