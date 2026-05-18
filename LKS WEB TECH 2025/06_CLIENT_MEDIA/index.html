@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bomb Skuy</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="welcome">
+            <img src="Images/logo.png" alt="Game Logo" class="logo">
+
+            <input 
+                type="text"
+                placeholder="Input Username"
+                id="input"
+                name="name"
+                required
+                aria-label="Input Username"
+            >
+
+            <select name="level" id="level" required aria-label="Select difficulty level">
+                <option disabled selected value="">Select Level</option>
+                <option value="easy">Easy</option>
+                <option value="medium">Medium</option>
+                <option value="hard">Hard</option>
+            </select>
+        
+            <div class="choices">
+                <button class="play" onclick="play()" id="playButton" disabled aria-label="Play Game">
+                    Play Game
+                </button>
+                <button class="instruction" onclick="showInstruction()" aria-label="Show Instructions">
+                    Instructions
+                </button>
+            </div>
+            <div class="show-error" id="error-message" role="alert">
+                <small style="color: red;">Fill all the form before playing the game!</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="instructBoard hide" >
+        <div class="text-plain">
+          <h2 id="instructionTitle">How to play game</h2>
+          <p>1. Input username</p>
+          <p>2. Put the bomb</p>
+          <p>3. Blow up as many walls as possible</p>
+          <p>4. Blow up enemies</p>
+          <p>5. Enjoy!</p>
+        </div>
+        <div
+          class="close"
+          onclick="document.querySelector('.instructBoard').classList.add('hide');"
+          aria-label="Close instructions"
+        >
+          ❌
+        </div>
+    </div>
+    
+    <div class="game hide">
+        <div class="boardLeft">
+            <img src="Images/logo_white.png" alt="Logo White" class="logo-board-left">
+            <div id="boardLeftScore"></div>
+        </div>
+        
+    </div>
+
+    <div id="gameOver" class="gameOver hide">
+        <!-- Game Over DOM -->
+    </div>
+    
+    <div id="leaderBoards" class="leaderBoards hide">
+        <!-- Leader Boards DOM -->
+    </div>
+    
+
+    <script src="vanilla.js"></script>
+</body>
+</html>
