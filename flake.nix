@@ -11,7 +11,11 @@
     in
     {
       devShells.${system}.default = pkgs.mkShell {
-        buildInputs = with pkgs; [ bun ];
+        buildInputs = with pkgs; [
+          nodejs
+          php
+          phpPackages.composer
+        ];
       };
     };
 }

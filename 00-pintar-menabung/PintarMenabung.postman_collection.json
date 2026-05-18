@@ -13,7 +13,13 @@
 					"name": "Register User",
 					"request": {
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "raw",
 							"raw": "{\n    \"full_name\": \"Dedi\",\n    \"email\": \"dedi@webtech.id\",\n    \"password\": \"password\"\n}",
@@ -41,7 +47,13 @@
 					"name": "Login User",
 					"request": {
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "raw",
 							"raw": "{\n    \"email\": \"budi@webtech.id\",\n    \"password\": \"password\"\n}",
@@ -69,7 +81,13 @@
 					"name": "Logout User",
 					"request": {
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
 						"url": {
 							"raw": "{{base_url}}/api/auth/logout",
 							"host": [
@@ -93,7 +111,13 @@
 					"name": "Get All Currencies",
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
 						"url": {
 							"raw": "{{base_url}}/api/currencies",
 							"host": [
@@ -111,7 +135,13 @@
 					"name": "Get All Categories",
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
 						"url": {
 							"raw": "{{base_url}}/api/categories",
 							"host": [
@@ -134,7 +164,13 @@
 					"name": "Get All Wallets",
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
 						"url": {
 							"raw": "{{base_url}}/api/wallets",
 							"host": [
@@ -152,7 +188,13 @@
 					"name": "Add Wallet",
 					"request": {
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "raw",
 							"raw": "{\n    \"name\": \"Savings\",\n    \"currency_code\": \"IDR\"\n}",
@@ -179,7 +221,13 @@
 					"name": "Get Detail Wallet",
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
 						"url": {
 							"raw": "{{base_url}}/api/wallets/:walletId",
 							"host": [
@@ -204,7 +252,13 @@
 					"name": "Update Wallet",
 					"request": {
 						"method": "PUT",
-						"header": [],
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "raw",
 							"raw": "{\n    \"name\": \"Cash IDR\"\n}",
@@ -238,7 +292,13 @@
 					"name": "Delete Wallet",
 					"request": {
 						"method": "DELETE",
-						"header": [],
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
 						"url": {
 							"raw": "{{base_url}}/api/wallets/:walletId",
 							"host": [
@@ -268,7 +328,13 @@
 					"name": "Get Transactions",
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
 						"url": {
 							"raw": "{{base_url}}/api/transactions?page=1&per_page=25&month=7&year=2025",
 							"host": [
@@ -304,7 +370,13 @@
 					"name": "Add Transaction",
 					"request": {
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "raw",
 							"raw": "{\n    \"wallet_id\": 1,\n    \"category_id\": 3,\n    \"amount\": 50000,\n    \"date\": \"2025-07-31\",\n    \"note\": \"starbucks\"\n}",
@@ -331,7 +403,13 @@
 					"name": "Delete Transaction",
 					"request": {
 						"method": "DELETE",
-						"header": [],
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
 						"url": {
 							"raw": "{{base_url}}/api/transactions/:transactionId",
 							"host": [
@@ -361,7 +439,13 @@
 					"name": "Get Summary by Expense Category",
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
 						"url": {
 							"raw": "{{base_url}}/api/reports/summary-by-category/expense?month=7&year=2025",
 							"host": [
@@ -391,7 +475,13 @@
 					"name": "Get Summary by Income Category",
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
 						"url": {
 							"raw": "{{base_url}}/api/reports/summary-by-category/income?month=7&year=2025",
 							"host": [
