@@ -14,7 +14,6 @@ components:
       type: http
       scheme: bearer
       bearerFormat: Sanctum
-      description: "Gunakan token Sanctum yang didapat dari endpoint login/register" # [2, 3, 5]
 
 security:
   - bearerAuth: []
@@ -43,9 +42,33 @@ paths:
                   minLength: 6
       responses:
         '201':
-          description: Registration successful # [6]
+          description: Registration successful
+          content:
+            application/json:
+              example:
+                status: "success"
+                message: "Registration successful"
+                data:
+                  name: "Dedi"
+                  email: "dedi@webtech.id"
+                  updated_at: "2025-07-11T16:01:46.000000Z"
+                  created_at: "2025-07-11T16:01:46.000000Z"
+                  id: 6
+                  token: "1|wwuOrgoVe4Xyj5dvUmnf6WTPTaA..."
         '422':
-          description: Invalid field # [6]
+          description: Invalid field
+          content:
+            application/json:
+              example:
+                status: "error"
+                message: "Invalid field"
+                errors:
+                  name: 
+                    - "The name field is required."
+                  email: 
+                    - "The email has already been taken."
+                  password: 
+                    - "The password field must be at least 6 characters."
 
   /api/auth/login:
     post:
@@ -67,9 +90,26 @@ paths:
                   type: string
       responses:
         '200':
-          description: Login successful # [7]
+          description: Login successful
+          content:
+            application/json:
+              example:
+                status: "success"
+                message: "Login successful"
+                data:
+                  id: 1
+                  name: "Budi"
+                  email: "budi@webtech.id"
+                  created_at: "2025-07-11T16:01:38.000000Z"
+                  updated_at: "2025-07-11T16:01:38.000000Z"
+                  token: "2|0Q2TAdua0FOslp1F4cxfkrzQgkp..."
         '401':
-          description: Username or password incorrect # [5]
+          description: Username or password incorrect
+          content:
+            application/json:
+              example:
+                status: "error"
+                message: "Username or password incorrect"
 
   /api/auth/logout:
     post:
@@ -77,9 +117,19 @@ paths:
       tags: [Authentication]
       responses:
         '200':
-          description: Logout successful # [3, 5]
+          description: Logout successful
+          content:
+            application/json:
+              example:
+                status: "success"
+                message: "Logout successful"
         '401':
-          description: Unauthenticated # [3]
+          description: Unauthenticated
+          content:
+            application/json:
+              example:
+                status: "error"
+                message: "Unauthenticated."
 
   /api/currencies:
     get:
@@ -87,9 +137,26 @@ paths:
       tags: [Currency & Category]
       responses:
         '200':
-          description: Get all currencies successful # [8, 9]
+          description: Get all currencies successful
+          content:
+            application/json:
+              example:
+                message: "Get all currencies successful"
+                data:
+                  currencies:
+                    - id: 1
+                      name: "US Dollar"
+                      symbol: "$"
+                      code: "USD"
+                      created_at: "2025-07-11T16:01:37..."
+                      updated_at: "2025-07-11T16:01:37..."
         '401':
-          description: Unauthenticated # [9]
+          description: Unauthenticated
+          content:
+            application/json:
+              example:
+                status: "error"
+                message: "Unauthenticated."
 
   /api/categories:
     get:
@@ -97,9 +164,27 @@ paths:
       tags: [Currency & Category]
       responses:
         '200':
-          description: Get all categories successful # [10]
+          description: Get all categories successful
+          content:
+            application/json:
+              example:
+                status: "success"
+                message: "Get all categories successful"
+                data:
+                  categories:
+                    - id: 1
+                      name: "Outgoing Transfer"
+                      icon: "⬆"
+                      type: "EXPENSE"
+                      created_at: "2025-07-11T16:01:38..."
+                      updated_at: "2025-07-11T16:01:38..."
         '401':
-          description: Unauthenticated # [11]
+          description: Unauthenticated
+          content:
+            application/json:
+              example:
+                status: "error"
+                message: "Unauthenticated."
 
   /api/wallets:
     get:
@@ -107,9 +192,29 @@ paths:
       tags: [Wallet]
       responses:
         '200':
-          description: Get all wallets successful # [12, 13]
+          description: Get all wallets successful
+          content:
+            application/json:
+              example:
+                status: "success"
+                message: "Get all wallets successful"
+                data:
+                  wallets:
+                    - id: 2
+                      user_id: 1
+                      name: "Bank"
+                      created_at: "2025-07-11T16:01:38..."
+                      updated_at: "2025-07-11T16:01:38..."
+                      deleted_at: null
+                      currency_code: "IDR"
+                      balance: 12250000
         '401':
-          description: Unauthenticated # [14]
+          description: Unauthenticated
+          content:
+            application/json:
+              example:
+                status: "error"
+                message: "Unauthenticated."
     post:
       summary: Add Wallet
       tags: [Wallet]
@@ -127,11 +232,38 @@ paths:
                   type: string
       responses:
         '201':
-          description: Wallet added successful # [15]
+          description: Wallet added successful
+          content:
+            application/json:
+              example:
+                status: "success"
+                message: "Wallet added successful"
+                data:
+                  name: "Savings"
+                  user_id: 1
+                  updated_at: "2025-07-11T16:22:44.000000Z"
+                  created_at: "2025-07-11T16:22:44.000000Z"
+                  id: 26
+                  currency_code: "IDR"
         '422':
-          description: Invalid field # [16]
+          description: Invalid field
+          content:
+            application/json:
+              example:
+                status: "error"
+                message: "Invalid field"
+                errors:
+                  name:
+                    - "The name field is required."
+                  currency_code:
+                    - "The selected currency code is invalid."
         '401':
-          description: Unauthenticated # [16]
+          description: Unauthenticated
+          content:
+            application/json:
+              example:
+                status: "error"
+                message: "Unauthenticated."
 
   /api/wallets/{walletId}:
     parameters:
@@ -145,13 +277,42 @@ paths:
       tags: [Wallet]
       responses:
         '200':
-          description: Get detail wallet successful # [17]
+          description: Get detail wallet successful
+          content:
+            application/json:
+              example:
+                status: "success"
+                message: "Get detail wallet successful"
+                data:
+                  id: 1
+                  user_id: 1
+                  name: "Cash IDR"
+                  created_at: "2025-07-11T16:01:38.000000Z"
+                  updated_at: "2025-07-11T16:26:25.000000Z"
+                  deleted_at: null
+                  currency_code: "IDR"
+                  balance: 4865000
         '403':
-          description: Forbidden access # [18]
+          description: Forbidden access
+          content:
+            application/json:
+              example:
+                status: "error"
+                message: "Forbidden access"
         '404':
-          description: Not found # [18]
+          description: Not found
+          content:
+            application/json:
+              example:
+                status: "error"
+                message: "Not found"
         '401':
-          description: Unauthenticated # [18]
+          description: Unauthenticated
+          content:
+            application/json:
+              example:
+                status: "error"
+                message: "Unauthenticated."
     put:
       summary: Update Wallet
       tags: [Wallet]
@@ -167,25 +328,73 @@ paths:
                   type: string
       responses:
         '200':
-          description: Wallet updated successful # [19]
+          description: Wallet updated successful
+          content:
+            application/json:
+              example:
+                status: "success"
+                message: "Wallet updated successful"
+                data:
+                  id: 1
+                  user_id: 1
+                  name: "Cash IDR"
+                  created_at: "2025-07-11T16:01:38.000000Z"
+                  updated_at: "2025-07-11T16:26:25.000000Z"
+                  deleted_at: null
+                  currency_code: "IDR"
         '403':
-          description: Forbidden access # [20]
+          description: Forbidden access
+          content:
+            application/json:
+              example:
+                status: "error"
+                message: "Forbidden access"
         '404':
-          description: Not found # [20]
+          description: Not found
+          content:
+            application/json:
+              example:
+                status: "error"
+                message: "Not found"
         '401':
-          description: Unauthenticated # [21]
+          description: Unauthenticated
+          content:
+            application/json:
+              example:
+                status: "error"
+                message: "Unauthenticated."
     delete:
       summary: Delete Wallet
       tags: [Wallet]
       responses:
         '200':
-          description: Wallet deleted successful # [21]
+          description: Wallet deleted successful
+          content:
+            application/json:
+              example:
+                status: "success"
+                message: "Wallet deleted successful"
         '403':
-          description: Forbidden access # [12]
+          description: Forbidden access
+          content:
+            application/json:
+              example:
+                status: "error"
+                message: "Forbidden access"
         '404':
-          description: Not found # [12]
+          description: Not found
+          content:
+            application/json:
+              example:
+                status: "error"
+                message: "Not found"
         '401':
-          description: Unauthenticated # [12]
+          description: Unauthenticated
+          content:
+            application/json:
+              example:
+                status: "error"
+                message: "Unauthenticated."
 
   /api/transactions:
     get:
@@ -214,9 +423,47 @@ paths:
             type: integer
       responses:
         '200':
-          description: Get transactions successful # [22]
+          description: Get transactions successful
+          content:
+            application/json:
+              example:
+                current_page: 1
+                data:
+                  - id: 842
+                    category_id: 3
+                    wallet_id: 1
+                    amount: 50000
+                    note: "starbucks"
+                    date: "2025-07-31"
+                    created_at: "2025-07-11T16:44:09.000000Z"
+                    updated_at: "2025-07-11T16:44:09.000000Z"
+                    wallet:
+                      id: 1
+                      user_id: 1
+                      name: "Savings IDR"
+                      created_at: "2025-07-11T16:01:38.000000Z"
+                      updated_at: "2025-07-11T16:26:25.000000Z"
+                      deleted_at: null
+                      currency_code: "IDR"
+                    category:
+                      id: 3
+                      name: "Food & Drinks"
+                      icon: "🍔"
+                      type: "EXPENSE"
+                      created_at: "2025-07-11T16:01:38.000000Z"
+                      updated_at: "2025-07-11T16:01:38.000000Z"
+                from: 1
+                last_page: 170
+                per_page: 1
+                to: 1
+                total: 170
         '401':
-          description: Unauthenticated # [23]
+          description: Unauthenticated
+          content:
+            application/json:
+              example:
+                status: "error"
+                message: "Unauthenticated."
     post:
       summary: Add Transaction
       tags: [Transaction]
@@ -238,16 +485,44 @@ paths:
                 date:
                   type: string
                   format: date
-                  description: "Format: Y-m-d"
                 note:
                   type: string
       responses:
         '201':
-          description: Transaction added successful # [24]
+          description: Transaction added successful
+          content:
+            application/json:
+              example:
+                status: "success"
+                message: "Transaction added successful"
+                data:
+                  category_id: 3
+                  wallet_id: 1
+                  amount: 50000
+                  note: "starbucks"
+                  date: "2025-07-31"
+                  updated_at: "2025-07-11T16:44:09.000000Z"
+                  created_at: "2025-07-11T16:44:09.000000Z"
+                  id: 842
         '422':
-          description: Invalid field # [25]
+          description: Invalid field
+          content:
+            application/json:
+              example:
+                status: "error"
+                message: "Invalid field"
+                errors:
+                  name:
+                    - "The name field is required."
+                  currency_code:
+                    - "The selected currency code is invalid."
         '401':
-          description: Unauthenticated # [26]
+          description: Unauthenticated
+          content:
+            application/json:
+              example:
+                status: "error"
+                message: "Unauthenticated."
 
   /api/transactions/{transactionId}:
     delete:
@@ -261,13 +536,33 @@ paths:
             type: integer
       responses:
         '200':
-          description: Transaction deleted successful # [27]
+          description: Transaction deleted successful
+          content:
+            application/json:
+              example:
+                status: "success"
+                message: "Transaction deleted successful"
         '403':
-          description: Forbidden access # [27]
+          description: Forbidden access
+          content:
+            application/json:
+              example:
+                status: "error"
+                message: "Forbidden access"
         '404':
-          description: Not found # [27]
+          description: Not found
+          content:
+            application/json:
+              example:
+                status: "error"
+                message: "Not found"
         '401':
-          description: Unauthenticated # [27]
+          description: Unauthenticated
+          content:
+            application/json:
+              example:
+                status: "error"
+                message: "Unauthenticated."
 
   /api/reports/summary-by-category/expense:
     get:
@@ -286,9 +581,30 @@ paths:
             type: integer
       responses:
         '200':
-          description: Get summary by expense category successful # [23, 28]
+          description: Get summary by expense category successful
+          content:
+            application/json:
+              example:
+                status: "success"
+                message: "Get summary by expense category successful"
+                data:
+                  summary:
+                    - category:
+                        id: 13
+                        name: "Groceries"
+                        icon: "🛒"
+                        color: "#55EFC4"
+                        type: "EXPENSE"
+                        created_at: "2025-07-28T02:37:46.000000Z"
+                        updated_at: "2025-07-28T02:37:46.000000Z"
+                      amount: 50000
         '401':
-          description: Unauthenticated # [29]
+          description: Unauthenticated
+          content:
+            application/json:
+              example:
+                status: "error"
+                message: "Unauthenticated."
 
   /api/reports/summary-by-category/income:
     get:
@@ -307,6 +623,27 @@ paths:
             type: integer
       responses:
         '200':
-          description: Get summary by income category successful # [30, 31]
+          description: Get summary by income category successful
+          content:
+            application/json:
+              example:
+                status: "success"
+                message: "Get summary by income category successful"
+                data:
+                  summary:
+                    - category:
+                        id: 2
+                        name: "Incoming Transfer"
+                        icon: "⬇"
+                        color: "#00B894"
+                        type: "INCOME"
+                        created_at: "2025-07-28T02:37:46.000000Z"
+                        updated_at: "2025-07-28T02:37:46.000000Z"
+                      amount: 1050000
         '401':
-          description: Unauthenticated # [31]
+          description: Unauthenticated
+          content:
+            application/json:
+              example:
+                status: "error"
+                message: "Unauthenticated."
