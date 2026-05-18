@@ -110,8 +110,8 @@ in
         nixfmt # nix formatter
         # nodejs
         # rustc
-        # php84
-        # php84Packages.composer
+        php85
+        php85Packages.composer
         # (python3.withPackages (
         #   ps: with ps; [
         #     pip
