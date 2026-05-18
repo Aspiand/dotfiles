@@ -1,0 +1,312 @@
+openapi: 3.0.0
+info:
+  title: PintarMenabung API (LKS 2026 Server Side Module)
+  version: 1.0.0
+  description: REST API untuk Aplikasi Manajemen Keuangan PintarMenabung.
+
+servers:
+  - url: http://localhost:8000
+    description: Local Server
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: Sanctum
+      description: "Gunakan token Sanctum yang didapat dari endpoint login/register" # [2, 3, 5]
+
+security:
+  - bearerAuth: []
+
+paths:
+  /api/auth/register:
+    post:
+      summary: Register User
+      tags: [Authentication]
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [full_name, email, password]
+              properties:
+                full_name:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  minLength: 6
+      responses:
+        '201':
+          description: Registration successful # [6]
+        '422':
+          description: Invalid field # [6]
+
+  /api/auth/login:
+    post:
+      summary: Login User
+      tags: [Authentication]
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Login successful # [7]
+        '401':
+          description: Username or password incorrect # [5]
+
+  /api/auth/logout:
+    post:
+      summary: Logout User
+      tags: [Authentication]
+      responses:
+        '200':
+          description: Logout successful # [3, 5]
+        '401':
+          description: Unauthenticated # [3]
+
+  /api/currencies:
+    get:
+      summary: Get All Currencies
+      tags: [Currency & Category]
+      responses:
+        '200':
+          description: Get all currencies successful # [8, 9]
+        '401':
+          description: Unauthenticated # [9]
+
+  /api/categories:
+    get:
+      summary: Get All Categories
+      tags: [Currency & Category]
+      responses:
+        '200':
+          description: Get all categories successful # [10]
+        '401':
+          description: Unauthenticated # [11]
+
+  /api/wallets:
+    get:
+      summary: Get All Wallets
+      tags: [Wallet]
+      responses:
+        '200':
+          description: Get all wallets successful # [12, 13]
+        '401':
+          description: Unauthenticated # [14]
+    post:
+      summary: Add Wallet
+      tags: [Wallet]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, currency_code]
+              properties:
+                name:
+                  type: string
+                currency_code:
+                  type: string
+      responses:
+        '201':
+          description: Wallet added successful # [15]
+        '422':
+          description: Invalid field # [16]
+        '401':
+          description: Unauthenticated # [16]
+
+  /api/wallets/{walletId}:
+    parameters:
+      - name: walletId
+        in: path
+        required: true
+        schema:
+          type: integer
+    get:
+      summary: Get Detail Wallet
+      tags: [Wallet]
+      responses:
+        '200':
+          description: Get detail wallet successful # [17]
+        '403':
+          description: Forbidden access # [18]
+        '404':
+          description: Not found # [18]
+        '401':
+          description: Unauthenticated # [18]
+    put:
+      summary: Update Wallet
+      tags: [Wallet]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name]
+              properties:
+                name:
+                  type: string
+      responses:
+        '200':
+          description: Wallet updated successful # [19]
+        '403':
+          description: Forbidden access # [20]
+        '404':
+          description: Not found # [20]
+        '401':
+          description: Unauthenticated # [21]
+    delete:
+      summary: Delete Wallet
+      tags: [Wallet]
+      responses:
+        '200':
+          description: Wallet deleted successful # [21]
+        '403':
+          description: Forbidden access # [12]
+        '404':
+          description: Not found # [12]
+        '401':
+          description: Unauthenticated # [12]
+
+  /api/transactions:
+    get:
+      summary: Get Transactions
+      tags: [Transaction]
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: per_page
+          in: query
+          schema:
+            type: integer
+            default: 25
+        - name: month
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 12
+        - name: year
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Get transactions successful # [22]
+        '401':
+          description: Unauthenticated # [23]
+    post:
+      summary: Add Transaction
+      tags: [Transaction]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [wallet_id, category_id, amount, date]
+              properties:
+                wallet_id:
+                  type: integer
+                category_id:
+                  type: integer
+                amount:
+                  type: integer
+                  minimum: 1
+                date:
+                  type: string
+                  format: date
+                  description: "Format: Y-m-d"
+                note:
+                  type: string
+      responses:
+        '201':
+          description: Transaction added successful # [24]
+        '422':
+          description: Invalid field # [25]
+        '401':
+          description: Unauthenticated # [26]
+
+  /api/transactions/{transactionId}:
+    delete:
+      summary: Delete Transaction
+      tags: [Transaction]
+      parameters:
+        - name: transactionId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Transaction deleted successful # [27]
+        '403':
+          description: Forbidden access # [27]
+        '404':
+          description: Not found # [27]
+        '401':
+          description: Unauthenticated # [27]
+
+  /api/reports/summary-by-category/expense:
+    get:
+      summary: Get Summary by Expense Category
+      tags: [Financial Report]
+      parameters:
+        - name: month
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 12
+        - name: year
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Get summary by expense category successful # [23, 28]
+        '401':
+          description: Unauthenticated # [29]
+
+  /api/reports/summary-by-category/income:
+    get:
+      summary: Get Summary by Income Category
+      tags: [Financial Report]
+      parameters:
+        - name: month
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 12
+        - name: year
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Get summary by income category successful # [30, 31]
+        '401':
+          description: Unauthenticated # [31]
