@@ -7,6 +7,7 @@
 
 let
   spicePkgs = inputs.spicetify-nix.legacyPackages.${pkgs.stdenv.hostPlatform.system};
+  dotfilesDir = "${config.home.homeDirectory}/.config/dotfiles";
 in
 
 {
@@ -17,6 +18,9 @@ in
     inputs.spicetify-nix.homeManagerModules.default
     ../../../home-manager/default.nix
   ];
+
+  xdg.configFile."niri/config.kdl".source =
+    config.lib.file.mkOutOfStoreSymlink "${dotfilesDir}/.config/niri/config.kdl";
 
   home = {
     username = "aka";
