@@ -7,7 +7,7 @@ Portable, Elegant, and Simple NixOS-Based Setup.
 - **Boot**: UEFI only, `systemd-boot` (ESP at `/boot`).
 - **Disk**: GPT, `disko` for partitioning.
 - **Security**: `LUKS2` (`cryptroot`) with `randomEncryption` for swap.
-- **Filesystem**: `Btrfs` with subvolumes for `@root`, `@home`, `@nix`, `@log`, and `@persist`.
+- **Filesystem**: `Btrfs` with subvolumes for `@home`, `@nix`, and `@persist`.
 - **Memory**: `zram` as primary swap, encrypted disk swap as fallback.
 - **Persistence**: Declarative via `impermanence` at `/persist`.
 
@@ -25,6 +25,8 @@ The repository is the interface. Use these helpers from `nixos/hosts/azel`.
 | `nix run .#format` | Partitions/Formats target disk (**Destructive**) | `-y` |
 | `nix run .#install` | Performs full `nixos-install` | `--format`, `--no-build`, `-y` |
 | `nix run .#rebuild` | Offline update: Mount -> Build -> Activate | `-y` |
+| `nix run .#backup` | Backs up `@home` and `@persist` from `/mnt` using `btrfs send` | `--subvol`, `--no-compress` |
+| `nix run .#restore` | Restores one backup directory back into `/mnt` | `--from`, `-y` |
 
 ---
 
@@ -69,6 +71,26 @@ Mount the tree for direct file access:
 sudo nix run .#mount
 # ... do work in /mnt ...
 sudo nix run .#umount
+```
+
+### Backup And Restore
+
+Back up the default subvolumes (`@home` and `@persist`) from the mounted target:
+
+```bash
+sudo nix run .#backup
+```
+
+Disable stream compression when needed:
+
+```bash
+sudo nix run .#backup -- --no-compress
+```
+
+Restore one backup directory back into `/mnt`:
+
+```bash
+sudo nix run .#restore -- --from ./backups/azel/@persist/<timestamp>
 ```
 
 ---
