@@ -166,6 +166,19 @@ in
         # tailscale.enable = true;
         # displayManager.enable = true;
 
+        screenCaptureToolbar.enable = true;
+        wallpaperCarousel.enable = true;
+        # clipboardPlus.enable = true;
+        aiOverviewControl.enable = true;
+        # dmsScreenshot.enable = true;
+        dankVault.enable = true;
+        discordVoice.enable = true;
+        screenRecorder.enable = true;
+        dankTodo.enable = true;
+        prayerTimes.enable = true;
+        # nextBootSelector.enable = true;
+        # niriScreenshot.enable = true;
+
         mediaPlayer = {
           enable = true;
           settings = {

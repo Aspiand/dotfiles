@@ -436,13 +436,31 @@
           "enabled": true
         },
         "workspaceSwitcher",
-        "focusedWindow"
+        {
+          "id": "focusedWindow",
+          "enabled": true,
+          "focusedWindowCompactMode": true
+        }
       ],
       "centerWidgets": [
-        "music",
-        "clock"
+        {
+          "id": "prayerTimes",
+          "enabled": true
+        },
+        {
+          "id": "clock",
+          "enabled": true
+        },
+        {
+          "id": "dankTodo",
+          "enabled": true
+        }
       ],
       "rightWidgets": [
+        {
+          "id": "privacyIndicator",
+          "enabled": true
+        },
         {
           "id": "systemTray",
           "enabled": true

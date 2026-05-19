@@ -106,6 +106,8 @@
     };
   };
 
+  virtualisation.docker.enable = true;
+
   users.users.aka = {
     isNormalUser = true;
     description = "Aspian";
@@ -115,6 +117,7 @@
       "networkmanager"
       "video"
       "wheel"
+      "docker"
     ];
   };
 
