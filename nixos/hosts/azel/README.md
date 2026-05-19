@@ -26,7 +26,7 @@ The repository is the interface. Use these helpers from `nixos/hosts/azel`.
 | `nix run .#install` | Performs full `nixos-install` | `--format`, `--no-build`, `-y` |
 | `nix run .#rebuild` | Offline update: Mount -> Build -> Activate | `-y` |
 | `nix run .#backup` | Backs up `@home` and `@persist` from `/mnt` using `btrfs send` | `--subvol`, `--no-compress` |
-| `nix run .#restore` | Restores one backup directory back into `/mnt` | `--from`, `-y` |
+| `nix run .#restore` | Restores one backup directory back into `/mnt` | `--from`, `--latest`, `--subvol`, `-y` |
 
 ---
 
@@ -91,6 +91,12 @@ Restore one backup directory back into `/mnt`:
 
 ```bash
 sudo nix run .#restore -- --from ./backups/azel/@persist/<timestamp>
+```
+
+Restore the latest backup for one subvolume:
+
+```bash
+sudo nix run .#restore -- --latest --subvol @persist
 ```
 
 ---

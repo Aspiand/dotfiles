@@ -60,11 +60,17 @@
           for arg in "$@"; do
             [[ "$arg" == "-y" || "$arg" == "--yes" ]] && CONFIRM_YES=1
           done
+          return 0
         }
 
         confirm() {
           if [[ "''${CONFIRM_YES:-0}" -eq 1 ]]; then return 0; fi
-          read -p "$1 [y/N] " -n 1 -r; echo
+          if ! read -p "$1 [y/N] " -n 1 -r </dev/tty; then
+            echo >&2
+            echo "Error: confirmation prompt requires an interactive TTY, or pass -y/--yes." >&2
+            exit 1
+          fi
+          echo
           [[ $REPLY =~ ^[Yy]$ ]] || { echo "Operation cancelled." >&2; exit 1; }
         }
 
@@ -210,9 +216,11 @@
           filesystem_root="$(dirname "$target_path")"
 
           while IFS= read -r child; do
+            btrfs property set -f -ts "$child" ro false >/dev/null 2>&1 || true
             btrfs subvolume delete "$child"
           done < <(btrfs subvolume list -o "$target_path" | awk '{print $NF}' | sed "s#^#$filesystem_root/#" | sort -r)
 
+          btrfs property set -f -ts "$target_path" ro false >/dev/null 2>&1 || true
           btrfs subvolume delete "$target_path"
         }
 
@@ -221,7 +229,7 @@
           local mount_dir="$2"
 
           mkdir -p "$mount_dir"
-          mount -t btrfs -o subvolid=5 "$fs_source" "$mount_dir"
+          mount -t btrfs -o subvolid=5,rw "$fs_source" "$mount_dir"
         }
       '';
 
@@ -252,7 +260,7 @@
             check_root
             require_disko
             echo "Unmounting azel using disko..."
-            disko --mode umount ./disko.nix
+            disko --mode unmount ./disko.nix
           '';
         };
 
@@ -264,7 +272,11 @@
             require_disko
             echo "WARNING: This will WIPEOUT and FORMAT your disks according to disko.nix!"
             confirm "Are you absolutely sure you want to format the disks?"
-            disko --mode disko ./disko.nix
+            disko_args=(--mode "destroy,format,mount" ./disko.nix)
+            if [[ "$CONFIRM_YES" -eq 1 ]]; then
+              disko_args=(--yes-wipe-all-disks "''${disko_args[@]}")
+            fi
+            disko "''${disko_args[@]}"
           '';
         };
 
@@ -326,7 +338,11 @@
             if [[ "$format_disk" -eq 1 ]]; then
               echo "WARNING: --format requested. Disks will be WIPED before installation."
               confirm "Proceed with formatting and installation?"
-              disko --mode disko ./disko.nix
+              disko_args=(--mode "destroy,format,mount" ./disko.nix)
+              if [[ "$CONFIRM_YES" -eq 1 ]]; then
+                disko_args=(--yes-wipe-all-disks "''${disko_args[@]}")
+              fi
+              disko "''${disko_args[@]}"
             else
               confirm "Start NixOS installation on /mnt?"
             fi
@@ -479,9 +495,10 @@ EOF
             ensure_mounted
             load_disko_metadata
 
-            backup_dir=""
+            backup_dir_arg=""
+            use_latest=0
+            declare -a requested_subvolumes=()
             top_level_mount=""
-            staging_root=""
 
             while [[ "$#" -gt 0 ]]; do
               case "$1" in
@@ -490,7 +507,19 @@ EOF
                     echo "Error: --from requires a backup directory." >&2
                     exit 1
                   }
-                  backup_dir="$2"
+                  backup_dir_arg="$2"
+                  shift 2
+                  ;;
+                --latest)
+                  use_latest=1
+                  shift
+                  ;;
+                --subvol)
+                  [[ "$#" -ge 2 ]] || {
+                    echo "Error: --subvol requires a subvolume name." >&2
+                    exit 1
+                  }
+                  requested_subvolumes+=("$2")
                   shift 2
                   ;;
                 -y|--yes)
@@ -500,95 +529,229 @@ EOF
                   echo "Error: Unknown argument: $1" >&2
                   exit 1
                   ;;
-              esac
+                esac
             done
 
-            [[ -n "$backup_dir" ]] || {
-              echo "Error: --from <backup-directory> is required." >&2
+            if [[ -n "$backup_dir_arg" && "$use_latest" -eq 1 ]]; then
+              echo "Error: Use either --from or --latest, not both." >&2
               exit 1
+            fi
+
+            declare -a backups_to_restore=()
+
+            if [[ -n "$backup_dir_arg" ]]; then
+              backups_to_restore+=("$(readlink -f "$backup_dir_arg")")
+            elif [[ "$use_latest" -eq 1 ]]; then
+              if [[ "''${#requested_subvolumes[@]}" -eq 0 ]]; then
+                mapfile -t requested_subvolumes < <(jq -r '.backupDefaults[]' <<<"$DISKO_JSON")
+              fi
+
+              for subvol_name in "''${requested_subvolumes[@]}"; do
+                latest_root="./backups/azel/$subvol_name"
+                if [[ ! -d "$latest_root" ]]; then
+                  echo "Warning: No backup directory found for $subvol_name at $latest_root. Skipping." >&2
+                  continue
+                fi
+
+                latest_timestamp="$(
+                  find "$latest_root" -mindepth 1 -maxdepth 1 -type d -printf '%f\n' \
+                    | sort \
+                    | tail -n 1
+                )"
+
+                if [[ -n "$latest_timestamp" ]]; then
+                  backups_to_restore+=("$(readlink -f "$latest_root/$latest_timestamp")")
+                else
+                  echo "Warning: No backups found for $subvol_name in $latest_root. Skipping." >&2
+                fi
+              done
+            else
+              echo "Error: Provide --from <backup-directory> or --latest [--subvol <subvolume>]." >&2
+              exit 1
+            fi
+
+            if [[ "''${#backups_to_restore[@]}" -eq 0 ]]; then
+              echo "Error: No backups found to restore." >&2
+              exit 1
+            fi
+
+            restore_mount_path=""
+            restore_fs_source=""
+            restore_mount_options=""
+            top_level_target_path=""
+            current_received_path=""
+            rollback_path=""
+
+            reset_restore_state() {
+              restore_mount_path=""
+              restore_fs_source=""
+              restore_mount_options=""
+              top_level_target_path=""
+              current_received_path=""
+              rollback_path=""
             }
 
-            backup_dir="$(readlink -f "$backup_dir")"
-            meta_file="$backup_dir/meta.env"
-            [[ -f "$meta_file" ]] || {
-              echo "Error: Missing metadata file: $meta_file" >&2
-              exit 1
+            safe_remount_restore_target() {
+              [[ -n "$restore_mount_path" && -n "$restore_fs_source" && -n "$restore_mount_options" ]] || return 0
+              [[ -n "$top_level_target_path" && -e "$top_level_target_path" ]] || return 0
+
+              if findmnt "$restore_mount_path" >/dev/null 2>&1; then
+                return 0
+              fi
+
+              mkdir -p "$restore_mount_path"
+              mount -t btrfs -o "$restore_mount_options" "$restore_fs_source" "$restore_mount_path"
             }
-
-            # shellcheck disable=SC1090
-            source "$meta_file"
-
-            get_subvolume_json "$SUBVOLUME_NAME" >/dev/null || {
-              echo "Error: $SUBVOLUME_NAME is not defined in disko.nix." >&2
-              exit 1
-            }
-
-            target_path="$(get_subvolume_field "$SUBVOLUME_NAME" targetPath)"
-            mount_path="$(get_subvolume_field "$SUBVOLUME_NAME" mountPath)"
-            fs_source="$(get_subvolume_field "$SUBVOLUME_NAME" fsSource)"
-            mount_options="$(get_subvolume_mount_options_csv "$SUBVOLUME_NAME")"
-            stream_path="$backup_dir/$STREAM_FILE"
-
-            [[ -f "$stream_path" ]] || {
-              echo "Error: Missing stream file: $stream_path" >&2
-              exit 1
-            }
-
-            top_level_mount="$(mktemp -d /tmp/azel-btrfs-root.XXXXXX)"
-            staging_root="$top_level_mount/.restore-staging"
-            mount_btrfs_top_level "$fs_source" "$top_level_mount"
-            mkdir -p "$staging_root"
 
             cleanup_restore_mount() {
-              if [[ -n "$top_level_mount" ]]; then
-                if findmnt "$top_level_mount" >/dev/null 2>&1; then
-                  umount "$top_level_mount"
+              local cleanup_status="$?"
+
+              if [[ -n "$rollback_path" && -e "$rollback_path" ]]; then
+                if [[ -n "$top_level_target_path" && -e "$top_level_target_path" ]]; then
+                  echo "Removing incomplete restored subvolume at $top_level_target_path..."
+                  delete_subvolume_tree "$top_level_target_path" || true
                 fi
-                rmdir "$top_level_mount" 2>/dev/null || true
+
+                if [[ -n "$top_level_target_path" && ! -e "$top_level_target_path" ]]; then
+                  echo "Restoring original subvolume to $top_level_target_path..."
+                  mv "$rollback_path" "$top_level_target_path" || true
+                fi
               fi
+
+              if [[ -n "$current_received_path" && -e "$current_received_path" ]]; then
+                echo "Cleaning up staged subvolume at $current_received_path..."
+                delete_subvolume_tree "$current_received_path" || true
+              fi
+
+              if [[ "$cleanup_status" -ne 0 ]]; then
+                safe_remount_restore_target || true
+              fi
+
+              if [[ -n "''${top_level_mount:-}" ]]; then
+                if findmnt "$top_level_mount" >/dev/null 2>&1; then
+                  umount "$top_level_mount" || true
+                fi
+                rm -rf "$top_level_mount" 2>/dev/null || true
+              fi
+
+              return "$cleanup_status"
             }
 
             trap cleanup_restore_mount EXIT
 
-            if findmnt "$mount_path" >/dev/null 2>&1; then
-              echo "Unmounting $mount_path before restore..."
-              umount "$mount_path"
-            fi
+            for backup_dir in "''${backups_to_restore[@]}"; do
+              reset_restore_state
 
-            top_level_target_path="$top_level_mount/$SUBVOLUME_NAME"
+              meta_file="$backup_dir/meta.env"
+              [[ -f "$meta_file" ]] || {
+                echo "Error: Missing metadata file in $backup_dir: $meta_file" >&2
+                exit 1
+              }
 
-            if [[ -e "$top_level_target_path" ]]; then
-              confirm "Subvolume $SUBVOLUME_NAME already exists. Delete and replace it?"
-              echo "Deleting existing subvolume tree at $top_level_target_path..."
-              delete_subvolume_tree "$top_level_target_path"
-            fi
+              # shellcheck disable=SC1090
+              source "$meta_file"
+              # Strip any accidental whitespace
+              SUBVOLUME_NAME="$(echo "$SUBVOLUME_NAME" | tr -d '[:space:]')"
 
-            received_path="$staging_root/$SNAPSHOT_NAME"
-            if [[ -e "$received_path" ]]; then
-              delete_subvolume_tree "$received_path"
-            fi
+              echo "--- Restoring $SUBVOLUME_NAME ---"
+              echo "Source: $backup_dir"
 
-            echo "Receiving backup for $SUBVOLUME_NAME..."
-            if [[ "$COMPRESSION" == "zstd" ]]; then
-              zstd -d -c "$stream_path" | btrfs receive "$staging_root"
-            elif [[ "$COMPRESSION" == "none" ]]; then
-              btrfs receive "$staging_root" <"$stream_path"
-            else
-              echo "Error: Unsupported compression type: $COMPRESSION" >&2
-              exit 1
-            fi
+              get_subvolume_json "$SUBVOLUME_NAME" >/dev/null || {
+                echo "Error: $SUBVOLUME_NAME is not defined in disko.nix." >&2
+                exit 1
+              }
 
-            [[ -e "$received_path" ]] || {
-              echo "Error: Expected received subvolume at $received_path." >&2
-              exit 1
-            }
+              target_path="$(get_subvolume_field "$SUBVOLUME_NAME" targetPath)"
+              mount_path="$(get_subvolume_field "$SUBVOLUME_NAME" mountPath)"
+              fs_source="$(get_subvolume_field "$SUBVOLUME_NAME" fsSource)"
+              mount_options="$(get_subvolume_mount_options_csv "$SUBVOLUME_NAME")"
+              stream_path="$backup_dir/$STREAM_FILE"
+              restore_mount_path="$mount_path"
+              restore_fs_source="$fs_source"
+              restore_mount_options="$mount_options"
 
-            mv "$received_path" "$top_level_target_path"
+              [[ -f "$stream_path" ]] || {
+                echo "Error: Missing stream file: $stream_path" >&2
+                exit 1
+              }
 
-            mkdir -p "$mount_path"
-            mount -t btrfs -o "$mount_options" "$fs_source" "$mount_path"
+              if [[ -z "''${top_level_mount:-}" ]]; then
+                top_level_mount="$(mktemp -d /tmp/azel-btrfs-root.XXXXXX)"
+                mount_btrfs_top_level "$fs_source" "$top_level_mount"
+              fi
+              
+              staging_root="$top_level_mount/.restore-staging"
+              rollback_root="$top_level_mount/.restore-rollback"
+              mkdir -p "$staging_root"
+              mkdir -p "$rollback_root"
 
-            echo "Restore completed for $SUBVOLUME_NAME."
+              top_level_target_path="$top_level_mount/$SUBVOLUME_NAME"
+              restore_suffix="$(date -u +%Y%m%dT%H%M%SZ)-$$"
+
+              if [[ -e "$top_level_target_path" ]]; then
+                confirm "Subvolume $SUBVOLUME_NAME already exists at $top_level_target_path. Replace it with the restored backup?"
+              fi
+
+              current_received_path="$staging_root/$SNAPSHOT_NAME"
+              if [[ -e "$current_received_path" ]]; then
+                echo "Cleaning up previous staged subvolume at $current_received_path..."
+                delete_subvolume_tree "$current_received_path"
+              fi
+
+              echo "Receiving backup for $SUBVOLUME_NAME..."
+              if [[ "$COMPRESSION" == "zstd" ]]; then
+                zstd -d -c "$stream_path" | btrfs receive "$staging_root"
+              elif [[ "$COMPRESSION" == "none" ]]; then
+                btrfs receive "$staging_root" <"$stream_path"
+              else
+                echo "Error: Unsupported compression type: $COMPRESSION" >&2
+                exit 1
+              fi
+
+              [[ -e "$current_received_path" ]] || {
+                echo "Error: Expected received subvolume at $current_received_path." >&2
+                exit 1
+              }
+
+              echo "Making received subvolume read-write..."
+              btrfs property set -f -ts "$current_received_path" ro false
+
+              ro_property="$(btrfs property get -ts "$current_received_path" ro)"
+              [[ "$ro_property" == "ro=false" ]] || {
+                echo "Error: Restored subvolume is still read-only: $ro_property" >&2
+                exit 1
+              }
+
+              if findmnt "$mount_path" >/dev/null 2>&1; then
+                echo "Unmounting $mount_path before final swap..."
+                umount "$mount_path"
+              fi
+
+              if [[ -e "$top_level_target_path" ]]; then
+                rollback_path="$rollback_root/$SUBVOLUME_NAME.pre-restore-$restore_suffix"
+                if [[ -e "$rollback_path" ]]; then
+                  delete_subvolume_tree "$rollback_path"
+                fi
+
+                echo "Moving existing subvolume to rollback path $rollback_path..."
+                mv "$top_level_target_path" "$rollback_path"
+              fi
+
+              echo "Promoting restored subvolume to $top_level_target_path..."
+              mv "$current_received_path" "$top_level_target_path"
+              current_received_path=""
+
+              safe_remount_restore_target
+
+              echo "Restore completed for $SUBVOLUME_NAME."
+
+              if [[ -n "$rollback_path" && -e "$rollback_path" ]]; then
+                echo "Deleting rollback subvolume at $rollback_path..."
+                delete_subvolume_tree "$rollback_path"
+              fi
+
+              reset_restore_state
+            done
           '';
         };
       };
