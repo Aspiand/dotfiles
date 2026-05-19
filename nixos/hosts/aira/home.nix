@@ -108,7 +108,7 @@ in
         # jdk
         # maven
         nixfmt # nix formatter
-        # nodejs
+        nodejs
         # rustc
         php85
         php85Packages.composer
