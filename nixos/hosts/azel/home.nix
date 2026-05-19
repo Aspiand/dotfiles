@@ -18,8 +18,8 @@ in
     ../../../home-manager/default.nix
   ];
 
-  xdg.configFile."niri/config.kdl".source =
-    config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.config/dotfiles/.config/niri/config.kdl";
+  xdg.configFile."niri".source =
+    config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.config/dotfiles/.config/niri";
 
   home = {
     username = "aka";

@@ -601,3 +601,5 @@ gestures {
         top-left
     }
 }
+
+include "dms/windowrules.kdl"
