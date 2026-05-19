@@ -7,7 +7,6 @@
 
 let
   spicePkgs = inputs.spicetify-nix.legacyPackages.${pkgs.stdenv.hostPlatform.system};
-  dotfilesDir = "${config.home.homeDirectory}/.config/dotfiles";
 in
 
 {
@@ -20,7 +19,7 @@ in
   ];
 
   xdg.configFile."niri/config.kdl".source =
-    config.lib.file.mkOutOfStoreSymlink "${dotfilesDir}/.config/niri/config.kdl";
+    config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.config/dotfiles/.config/niri/config.kdl";
 
   home = {
     username = "aka";
@@ -37,6 +36,7 @@ in
       codex
       discord
       firefox
+      fresh-editor
       gemini-cli
       gcr # Provides org.gnome.keyring.SystemPrompter
       gocryptfs

@@ -14,7 +14,7 @@
     graphics.enable = true;
     bluetooth = {
       enable = true;
-      # powerOnBoot = false;
+      powerOnBoot = false;
     };
   };
 
