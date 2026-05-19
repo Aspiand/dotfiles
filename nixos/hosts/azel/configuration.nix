@@ -120,6 +120,10 @@
 
   environment = {
     systemPackages = with pkgs; [
+      adwaita-icon-theme
+      hicolor-icon-theme
+      librsvg
+      xdg-utils
       btrfs-progs
       cryptsetup
       git
@@ -149,6 +153,7 @@
     # TODO: keep?
     pathsToLink = [
       "/share/applications"
+      "/share/icons"
       "/share/xdg-desktop-portal"
     ];
 
