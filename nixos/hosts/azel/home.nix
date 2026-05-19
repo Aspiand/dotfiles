@@ -101,12 +101,12 @@ in
       enable = true;
 
       # Core features
-      enableSystemMonitoring = true; # System monitoring widgets (dgop)
+      enableSystemMonitoring = false; # System monitoring widgets (dgop)
       enableVPN = true; # VPN management widget
       enableDynamicTheming = true; # Wallpaper-based theming (matugen)
       enableAudioWavelength = true; # Audio visualizer (cava)
-      enableCalendarEvents = true; # Calendar integration (khal)
-      enableClipboardPaste = true; # Pasting items from the clipboard (wtype)
+      enableCalendarEvents = false; # Calendar integration (khal)
+      enableClipboardPaste = false; # Pasting items from the clipboard (wtype)
 
       systemd = {
         enable = true; # Systemd service for auto-start
