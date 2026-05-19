@@ -1,3 +1,3 @@
 # azel TODO
 
-- [ ] Hardware portability
+- [x] Hardware portability

@@ -41,11 +41,12 @@ This is the standard path to deploy `azel` onto a new drive.
    sudo nix run .#install -- --format
    ```
 
-3. **Hardware Config**: After installation, generate and prune `./hardware-configuration.nix`:
+3. **Hardware Config**: The system is pre-configured with a **portable hardware profile** (Intel/AMD/USB/NVMe). Manual generation is usually unnecessary. If needed for exotic hardware:
 
    ```bash
-   sudo nixos-generate-config --root /mnt --no-filesystems
+   sudo nixos-generate-config --root /mnt --no-filesystems --output ./hardware-exotic.nix
    ```
+   *Note: Merge specific needed modules into `./hardware.nix` instead of replacing it.*
 
 4. **Boot**: Reboot and select the external UEFI entry.
 

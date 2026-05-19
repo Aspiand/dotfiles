@@ -15,17 +15,30 @@
   ];
 
   boot.initrd.availableKernelModules = [
-    "xhci_pci"
-    "ahci"
-    "nvme"
-    "usbhid"
-    "uas"
-    "sd_mod"
+    "xhci_pci"      # USB 3.0
+    "ehci_pci"      # USB 2.0
+    "ahci"          # SATA
+    "usb_storage"   # Basic USB storage
+    "uas"           # Faster USB storage (UASP)
+    "sd_mod"        # SD Cards
+    "nvme"          # NVMe M.2 SSDs
+    "usbhid"        # USB Keyboards/Mice
   ];
+
   boot.initrd.kernelModules = [ ];
-  boot.kernelModules = [ "kvm-intel" ];
+  boot.kernelModules = [ "kvm-intel" "kvm-amd" ];
   boot.extraModulePackages = [ ];
 
-  nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
+  # ---------------------------------------------------------
+  # Portability Settings
+  # ---------------------------------------------------------
+
+  # Include all common firmware (Wi-Fi, Bluetooth, GPU)
+  hardware.enableRedistributableFirmware = lib.mkDefault true;
+
+  # Update microcode for both Intel and AMD CPUs
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
+  hardware.cpu.amd.updateMicrocode   = lib.mkDefault config.hardware.enableRedistributableFirmware;
+
+  nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
 }
