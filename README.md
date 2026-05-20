@@ -1,46 +1,33 @@
 # dotfiles
 
-## Hanabi
+## Get Started
 
-### Flake
+Add to your `flake.nix`:
+
+```nix
+inputs.dotfiles.url = "github:aspiand/dotfiles";
+```
+
+### 1. Using Overlays
 
 ```nix
 {
-  inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-
-    hanabi = {
-      url = "github:aspiand/dotfiles";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-  };
+  nixpkgs.overlays = [ inputs.dotfiles.overlays.codegraph ];
+  environment.systemPackages = [ pkgs.codegraph ];
 }
 ```
 
-### Use the package directly
-
-```nix
-{ pkgs, inputs, ... }:
-let
-  hanabi = inputs.hanabi.packages.${pkgs.system}.hanabi;
-in
-{
-  home.packages = [ hanabi ];
-
-  dconf.settings."org/gnome/shell".enabled-extensions = [
-    hanabi.extensionUuid
-  ];
-}
-```
-
-### Use the overlay
+### 2. Direct Install
 
 ```nix
 {
-  nixpkgs.overlays = [ inputs.hanabi.overlays.default ];
-
-  environment.systemPackages = [
-    pkgs.hanabi
-  ];
+  home.packages = [ inputs.dotfiles.packages.${pkgs.system}.codegraph ];
 }
 ```
+
+## 📦 Available Packages
+
+| Package | Source Repository | Note |
+| :--- | :--- | :--- |
+| **Codegraph** | [colbymchenry/codegraph](https://github.com/colbymchenry/codegraph) | Pre-indexed code knowledge graph. |
+| **Hanabi** | [jeffshee/gnome-ext-hanabi](https://github.com/jeffshee/gnome-ext-hanabi) | GNOME Video Wallpaper. |
