@@ -96,7 +96,7 @@ in
 {
   flake.lib.hanabi.mkPackage = mkHanabi;
 
-  flake.overlays.default = final: _: {
+  flake.overlays.hanabi = final: _: {
     hanabi = mkHanabi final;
   };
 

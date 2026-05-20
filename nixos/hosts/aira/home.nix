@@ -120,12 +120,13 @@ in
         #   ]
         # ))
 
-        hanabi
-
         # Fonts
         noto-fonts
         noto-fonts-cjk-sans
         noto-fonts-cjk-serif
+
+        hanabi
+        codegraph
       ]
       ++ (with gnomeExtensions; [
         blur-my-shell

@@ -3,6 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    dotfiles.url = "path:../../../";
 
     home-manager = {
       url = "github:nix-community/home-manager";
@@ -30,7 +31,6 @@
     }:
     let
       system = "x86_64-linux";
-      hanabiFlakeModule = import ../../../nix/hanabi.nix { };
     in
     {
       nixosConfigurations = {
@@ -43,10 +43,9 @@
             grub2-themes.nixosModules.default
             home-manager.nixosModules.home-manager
             {
-              nixpkgs.overlays = [
-                (final: _: {
-                  hanabi = hanabiFlakeModule.flake.lib.hanabi.mkPackage final;
-                })
+              nixpkgs.overlays = with inputs.dotfiles.overlays; [
+                codegraph
+                hanabi
               ];
             }
             {
