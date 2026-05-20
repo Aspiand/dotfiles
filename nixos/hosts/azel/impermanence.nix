@@ -3,19 +3,21 @@
 {
   boot.initrd.systemd.enable = true;
 
-  fileSystems."/" = {
-    device = "none";
-    fsType = "tmpfs";
-    options = [
-      "defaults"
-      "mode=755"
-      "size=25%"
-    ];
-  };
+  fileSystems = {
+    "/" = {
+      device = "none";
+      fsType = "tmpfs";
+      options = [
+        "defaults"
+        "mode=755"
+        "size=25%"
+      ];
+    };
 
-  fileSystems."/nix".neededForBoot = true;
-  fileSystems."/persist".neededForBoot = true;
-  fileSystems."/home".neededForBoot = true;
+    "/nix".neededForBoot = true;
+    "/persist".neededForBoot = true;
+    "/home".neededForBoot = true;
+  };
 
   environment.persistence."/persist/system" = {
     hideMounts = true;
