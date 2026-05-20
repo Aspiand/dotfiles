@@ -170,7 +170,7 @@ in
         wallpaperCarousel.enable = true;
         # clipboardPlus.enable = true;
         aiOverviewControl.enable = true;
-        # dmsScreenshot.enable = true;
+        dmsScreenshot.enable = true;
         dankVault.enable = true;
         discordVoice.enable = true;
         screenRecorder.enable = true;
