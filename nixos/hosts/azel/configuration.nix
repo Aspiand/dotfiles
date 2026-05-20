@@ -135,6 +135,7 @@
       tmux
       alacritty
       xwayland-satellite
+      ntfs3g
     ];
 
     variables = {
