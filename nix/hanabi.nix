@@ -108,7 +108,6 @@ in
     {
       packages = {
         inherit hanabi;
-        default = hanabi;
       };
     };
 }
