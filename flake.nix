@@ -6,6 +6,15 @@
     flake-parts.url = "github:hercules-ci/flake-parts";
   };
 
+  nixConfig = {
+    substituters = [
+      "https://nix.aspian.my.id"
+    ];
+    trusted-public-keys = [
+      "github-ci-1:qjsecsjhdp0svqh6aXFEaaYtsTh5U+Ca6Jzmk46wXOY="
+    ];
+  };
+
   outputs =
     inputs:
     let

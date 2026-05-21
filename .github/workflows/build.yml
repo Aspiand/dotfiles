@@ -1,0 +1,75 @@
+name: Build Nix Packages
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "nix/**"
+      - "flake.nix"
+      - "flake.lock"
+  workflow_dispatch:
+
+jobs:
+  # Job to generate the matrix of packages and systems
+  generate-matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: DeterminateSystems/nix-installer-action@v16
+      - id: set-matrix
+        run: |
+          # Get systems from flake
+          # Note: We filter for the systems we can actually build on GitHub Actions (linux)
+          # aarch64-linux requires a runner or binfmt_misc (slow)
+          # For now, let's assume we use ubuntu-latest for x86_64-linux
+
+          # This script extracts all packages for all systems and creates a JSON matrix
+          MATRIX=$(nix eval .#packages --json --apply 'lib: lib.mapAttrs (system: pkgs: lib.attrNames pkgs) (builtins.getFlake (toString ./.)).packages' | jq -c '
+            to_entries | map({
+              system: .key,
+              package: .value[]
+            }) | map(select(.system == "x86_64-linux" or .system == "aarch64-linux"))
+          ')
+          echo "matrix={\"include\":$MATRIX}" >> "$GITHUB_OUTPUT"
+
+  build:
+    needs: generate-matrix
+    name: Build ${{ matrix.package }} (${{ matrix.system }})
+    runs-on: ${{ matrix.system == 'aarch64-linux' && 'ubuntu-24.04-arm' || 'ubuntu-latest' }}
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.generate-matrix.outputs.matrix) }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: DeterminateSystems/nix-installer-action@v16
+
+      # Magic Nix Cache for general GitHub Actions caching (saves time on dependencies)
+      - uses: DeterminateSystems/magic-nix-cache-action@v9
+
+      # Setup for qemu if building aarch64 on x86_64 (if not using ARM runners)
+      - name: Set up QEMU
+        if: matrix.system == 'aarch64-linux' && runner.arch != 'ARM64'
+        uses: docker/setup-qemu-action@v3
+
+      - name: Build package
+        run: nix build .#packages.${{ matrix.system }}.${{ matrix.package }} --print-build-logs
+
+      - name: Push to R2
+        if: github.ref == 'refs/heads/main'
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          NIX_SECRET_KEY: ${{ secrets.NIX_SECRET_KEY }}
+        run: |
+          # Sign paths so consumers can verify integrity
+          echo "$NIX_SECRET_KEY" > ./secret-key
+          nix store sign --key-file ./secret-key $(readlink -f result)
+          rm -f ./secret-key
+
+          # Copy to R2
+          nix copy --to "s3://${{ secrets.R2_BUCKET }}?endpoint=${{ secrets.R2_ENDPOINT }}&region=auto" $(readlink -f result)
