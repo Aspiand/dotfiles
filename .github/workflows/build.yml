@@ -21,13 +21,7 @@ jobs:
       - uses: DeterminateSystems/nix-installer-action@v16
       - id: set-matrix
         run: |
-          # Get systems from flake
-          # Note: We filter for the systems we can actually build on GitHub Actions (linux)
-          # aarch64-linux requires a runner or binfmt_misc (slow)
-          # For now, let's assume we use ubuntu-latest for x86_64-linux
-
-          # This script extracts all packages for all systems and creates a JSON matrix
-          MATRIX=$(nix eval .#packages --json --apply 'lib: lib.mapAttrs (system: pkgs: lib.attrNames pkgs) (builtins.getFlake (toString ./.)).packages' | jq -c '
+          MATRIX=$(nix eval .#packages --json | jq -c '
             to_entries | map({
               system: .key,
               package: .value[]
