@@ -1,13 +1,15 @@
-{
-  config,
-  pkgs,
-  lib,
-  ...
-}:
+{ lib, ... }:
 
+let
+  autoload = dir:
+    builtins.map (name: dir + "/${name}") (
+      builtins.attrNames (
+        lib.filterAttrs (name: type: name != "default.nix" && lib.hasSuffix ".nix" name) (
+          builtins.readDir dir
+        )
+      )
+    );
+in
 {
-  imports = [
-    ./configs/default.nix
-    ./modules/default.nix
-  ];
+  imports = autoload ./configs ++ autoload ./modules;
 }
