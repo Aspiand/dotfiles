@@ -34,6 +34,9 @@ inputs.dotfiles.url = "github:aspiand/dotfiles";
 | **OpenHuman** | [tinyhumansai/openhuman](https://github.com/tinyhumansai/openhuman) | Personal AI super intelligence. |
 | **9router** | [decolua/9router](https://github.com/decolua/9router) | Unlimited FREE AI coding router. |
 
+**Using the Binary Cache:**
+- Set yourself as `trusted-users` (see [docs/R2_CACHE_GUIDE.md](docs/R2_CACHE_GUIDE.md)) to use the flake's built-in Nix binary cache automatically.
+
 ## 🛠️ Setup Guides
 
 ### 9router

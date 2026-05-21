@@ -31,13 +31,13 @@ nix key convert-secret-to-public < cache-priv-key.pem
 
 In your GitHub repository, go to **Settings -> Secrets and variables -> Actions** and add the following secrets:
 
-| Secret | Value |
-|---|---|
-| `R2_ACCESS_KEY_ID` | Your R2 Access Key ID |
-| `R2_SECRET_ACCESS_KEY` | Your R2 Secret Access Key |
-| `R2_BUCKET` | Your R2 bucket name (e.g., `nix-cache`) |
-| `R2_ENDPOINT` | `https://<ACCOUNT_ID>.r2.cloudflarestorage.com` |
-| `NIX_SECRET_KEY` | Content of `cache-priv-key.pem` generated above |
+| Secret                 | Value                                           |
+| ---------------------- | ----------------------------------------------- |
+| `R2_ACCESS_KEY_ID`     | Your R2 Access Key ID                           |
+| `R2_SECRET_ACCESS_KEY` | Your R2 Secret Access Key                       |
+| `R2_BUCKET`            | Your R2 bucket name (e.g., `nix-cache`)         |
+| `R2_ENDPOINT`          | `https://<ACCOUNT_ID>.r2.cloudflarestorage.com` |
+| `NIX_SECRET_KEY`       | Content of `cache-priv-key.pem` generated above |
 
 ## 4. Setup Public Access (Custom Domain)
 
@@ -55,19 +55,36 @@ The upload URL (S3 API) and public URL (HTTP read-only) are separate:
 ## 5. Workflows
 
 ### `build.yml` — Build + push
+
 Triggers on push to `main` touching nix files. Builds all packages for `x86_64-linux`, signs, copies to R2.
 
 ### `gc.yml` — Garbage collection (cron weekly)
+
 Runs every Sunday at 06:00. Re-builds and re-pushes current packages (keeps them fresh), then prunes any store path objects older than 30 days.
 
 ### Lifecycle policy (safety net)
+
 Also set up a lifecycle rule in R2 Dashboard (`Bucket -> Settings -> Lifecycle Rules`) to auto-delete objects after 90 days. This catches anything the GC workflow misses.
 
 ## 6. Using the Cache
 
-Add to your `nix.conf` or `flake.nix` on any machine that should consume the cache:
+Pick one approach:
+
+### Via nix.conf (system-wide)
 
 ```conf
 substituters = https://nix.aspian.my.id
-trusted-public-keys = "github-ci-1:qjsecsjhdp0svqh6aXFEaaYtsTh5U+Ca6Jzmk46wXOY="
+trusted-public-keys = github-ci-1:qjsecsjhdp0svqh6aXFEaaYtsTh5U+Ca6Jzmk46wXOY=
+```
+
+**Multi-user Nix (non-NixOS):**
+
+```bash
+echo "trusted-users = root $(whoami)" | sudo tee -a /etc/nix/nix.conf
+```
+
+**NixOS:**
+
+```nix
+nix.settings.trusted-users = [ "@wheel" ];
 ```
