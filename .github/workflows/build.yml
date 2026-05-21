@@ -23,17 +23,14 @@ jobs:
       - id: set-matrix
         run: |
           MATRIX=$(nix eval .#packages --json | jq -c '
-            to_entries | map({
-              system: .key,
-              package: .value[]
-            }) | map(select(.system == "x86_64-linux" or .system == "aarch64-linux"))
+            [to_entries[] | {system: .key, package: .value | keys[]}] | map(select(.system == "x86_64-linux"))
           ')
           echo "matrix={\"include\":$MATRIX}" >> "$GITHUB_OUTPUT"
 
   build:
     needs: generate-matrix
     name: Build ${{ matrix.package }} (${{ matrix.system }})
-    runs-on: ${{ matrix.system == 'aarch64-linux' && 'ubuntu-24.04-arm' || 'ubuntu-latest' }}
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix: ${{ fromJson(needs.generate-matrix.outputs.matrix) }}
@@ -45,11 +42,6 @@ jobs:
 
       # Magic Nix Cache for general GitHub Actions caching (saves time on dependencies)
       - uses: DeterminateSystems/magic-nix-cache-action@v9
-
-      # Setup for qemu if building aarch64 on x86_64 (if not using ARM runners)
-      - name: Set up QEMU
-        if: matrix.system == 'aarch64-linux' && runner.arch != 'ARM64'
-        uses: docker/setup-qemu-action@v3
 
       - name: Build package
         run: nix build .#packages.${{ matrix.system }}.${{ matrix.package }} --print-build-logs
