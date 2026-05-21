@@ -20,6 +20,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: DeterminateSystems/nix-installer-action@v16
+        with:
+          cache: true
       - id: set-matrix
         run: |
           MATRIX=$(nix eval .#packages --json | jq -c '
@@ -39,9 +41,8 @@ jobs:
       - uses: actions/checkout@v4
 
       - uses: DeterminateSystems/nix-installer-action@v16
-
-      # Magic Nix Cache for general GitHub Actions caching (saves time on dependencies)
-      - uses: DeterminateSystems/magic-nix-cache-action@v9
+        with:
+          cache: true
 
       - name: Build package
         run: nix build .#packages.${{ matrix.system }}.${{ matrix.package }} --print-build-logs
