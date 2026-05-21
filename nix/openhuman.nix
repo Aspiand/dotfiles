@@ -43,8 +43,9 @@ let
         pkgs.cups
         pkgs.libxshmfence
         pkgs.udev
+        pkgs.libgbm
       ];
-      cefRoot = pkgs.runCommandNoCC "openhuman-cef-${cefVersion}" {
+      cefRoot = pkgs.runCommand "openhuman-cef-${cefVersion}" {
         nativeBuildInputs = with pkgs; [
           gnutar
           bzip2
@@ -144,6 +145,7 @@ let
         gdk-pixbuf
         glib
         libglvnd
+        libgbm
       ];
 
       LIBCLANG_PATH = "${pkgs.llvmPackages.libclang.lib}/lib";
