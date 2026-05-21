@@ -30,7 +30,7 @@ let
         {
           name,
           sourceRoot ? "source",
-          outputHash ? "sha256-AUvC25sUrNHikt+VmiA9dMRQ43BG2k4S87ueIVSIVaw=",
+          outputHash ? "sha256-PghmKnWL11A1LAFfuGsN7+egrMrDmdUPGiSTRdyaIEg=",
         }:
         pkgs.stdenv.mkDerivation {
           inherit name src sourceRoot;
