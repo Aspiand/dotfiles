@@ -65,7 +65,7 @@ let
       cliPackageLock = mkPackageLock {
         name = "${pname}-cli-package-lock-${version}";
         sourceRoot = "source/cli";
-        outputHash = "sha256-H6Am7fLAGXv/kzV4OUbZ5lN6c7Psrbu+wVgvrX8Qdoo=";
+        outputHash = "sha256-fMuxy+0tfqnoXrL1G3c36mtlOJZH76MWi+b4hKErD0U=";
       };
 
       appNpmDeps = pkgs.fetchNpmDeps {
