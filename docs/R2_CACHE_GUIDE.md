@@ -52,13 +52,16 @@ The upload URL (S3 API) and public URL (HTTP read-only) are separate:
 - **Upload** (GitHub Actions): `R2_ENDPOINT` — the S3 endpoint.
 - **Download** (consumers): `https://nix.aspian.my.id`.
 
-## 5. Workflow
+## 5. Workflows
 
-The workflow at `.github/workflows/build.yml` is already active. It:
+### `build.yml` — Build + push
+Triggers on push to `main` touching nix files. Builds all packages for `x86_64-linux`, signs, copies to R2.
 
-1. Builds the package.
-2. Signs it with `NIX_SECRET_KEY`.
-3. Copies to R2 via S3 API using the configured secrets.
+### `gc.yml` — Garbage collection (cron weekly)
+Runs every Sunday at 06:00. Re-builds and re-pushes current packages (keeps them fresh), then prunes any store path objects older than 30 days.
+
+### Lifecycle policy (safety net)
+Also set up a lifecycle rule in R2 Dashboard (`Bucket -> Settings -> Lifecycle Rules`) to auto-delete objects after 90 days. This catches anything the GC workflow misses.
 
 ## 6. Using the Cache
 

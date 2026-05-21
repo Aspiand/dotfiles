@@ -1,0 +1,62 @@
+name: GC R2 Cache
+
+on:
+  schedule:
+    - cron: "0 6 * * 0"
+  workflow_dispatch:
+
+jobs:
+  gc:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: DeterminateSystems/nix-installer-action@v16
+        with:
+          cache: true
+
+      - name: Keep fresh — build + copy current packages
+        run: |
+          PACKAGES=$(nix eval .#packages.x86_64-linux --json | jq -r 'keys[]')
+          for pkg in $PACKAGES; do
+            nix build ".#packages.x86_64-linux.$pkg" --print-build-logs
+            echo "$NIX_SECRET_KEY" > ./secret-key
+            nix store sign --key-file ./secret-key $(readlink -f result)
+            rm -f ./secret-key
+            nix copy --to "s3://${{ secrets.R2_BUCKET }}?endpoint=${{ secrets.R2_ENDPOINT }}&region=auto" $(readlink -f result)
+          done
+
+      - name: Prune objects older than 30 days
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+        run: |
+          CUTOFF=$(date -u -d "-30 days" +%Y-%m-%dT%H:%M:%SZ)
+
+          aws s3api list-objects \
+            --bucket "${{ secrets.R2_BUCKET }}" \
+            --endpoint "${{ secrets.R2_ENDPOINT }}" \
+            --region auto \
+            --query "Contents[?LastModified<=\`$CUTOFF\`].[Key]" \
+            --output text \
+          | while read -r key; do
+              [ -z "$key" ] && continue
+              aws s3api delete-object \
+                --bucket "${{ secrets.R2_BUCKET }}" \
+                --endpoint "${{ secrets.R2_ENDPOINT }}" \
+                --region auto \
+                --key "$key"
+            done
+
+      - name: Report
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+        run: |
+          COUNT=$(aws s3api list-objects \
+            --bucket "${{ secrets.R2_BUCKET }}" \
+            --endpoint "${{ secrets.R2_ENDPOINT }}" \
+            --region auto \
+            --query "length(Contents[])" \
+            --output text 2>/dev/null || echo "0")
+          echo "Objects remaining in bucket: $COUNT"
