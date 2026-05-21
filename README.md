@@ -10,6 +10,17 @@ inputs.dotfiles.url = "github:aspiand/dotfiles";
 
 ### 1. Using Overlays
 
+All packages at once:
+
+```nix
+{
+  nixpkgs.overlays = [ inputs.dotfiles.overlays.default ];
+  environment.systemPackages = with pkgs; [ codegraph hanabi 9router openhuman ];
+}
+```
+
+Or individually:
+
 ```nix
 {
   nixpkgs.overlays = [ inputs.dotfiles.overlays.codegraph ];

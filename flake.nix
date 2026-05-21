@@ -25,13 +25,22 @@
 
       importTree = path: toList (fileFilter isNixModule path);
       mkFlake = inputs.flake-parts.lib.mkFlake { inherit inputs; };
-    in
-    mkFlake {
-      systems = [
-        "x86_64-linux"
-        "aarch64-linux"
-      ];
 
-      imports = importTree ./nix;
+      flakeOutputs = mkFlake {
+        systems = [
+          "x86_64-linux"
+          "aarch64-linux"
+        ];
+
+        imports = importTree ./nix;
+      };
+    in
+    flakeOutputs // {
+      overlays = flakeOutputs.overlays // {
+        default = final: prev:
+          lib.foldl' (acc: overlay: acc // (overlay final acc)) {} (
+            lib.attrValues (lib.removeAttrs flakeOutputs.overlays [ "default" ])
+          );
+      };
     };
 }
