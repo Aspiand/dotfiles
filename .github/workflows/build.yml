@@ -24,8 +24,8 @@ jobs:
           cache: true
       - id: set-matrix
         run: |
-          MATRIX=$(nix eval .#packages --json | jq -c '
-            [to_entries[] | {system: .key, package: .value | keys[]}] | map(select(.system == "x86_64-linux"))
+          MATRIX=$(nix eval .#packages.x86_64-linux --json | jq -c '
+            keys | map({system: "x86_64-linux", package: .})
           ')
           echo "matrix={\"include\":$MATRIX}" >> "$GITHUB_OUTPUT"
 
