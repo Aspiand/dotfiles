@@ -84,7 +84,7 @@ let
         inherit src;
         name = "${pname}-cli-npm-deps-${version}";
         sourceRoot = "source/cli";
-        hash = "sha256-TKjR5M5W7kVM8yC89eXQM5aVi2YBxqRw7AzLV9QhW98=";
+        hash = "sha256-RK0r/7inecjLM8vvGEaeNKoYoUNxhI74PGLD6K/HrRE=";
         postPatch = ''
           cp ${cliPackageLock} package-lock.json
         '';
