@@ -186,6 +186,7 @@ let
 
         makeWrapper "$app_dir/OpenHuman" "$out/bin/openhuman" \
           --prefix LD_LIBRARY_PATH : "$app_dir:${pkgs.lib.makeLibraryPath buildInputs}" \
+          --prefix PATH : "${pkgs.lib.makeBinPath [ pkgs.xdg-utils pkgs.desktop-file-utils ]}" \
           --chdir "$app_dir"
       '';
 
