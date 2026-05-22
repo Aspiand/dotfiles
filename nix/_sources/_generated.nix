@@ -19,13 +19,13 @@
   };
   codegraph = {
     pname = "codegraph";
-    version = "v0.9.2";
+    version = "v0.9.3";
     src = fetchFromGitHub {
       owner = "colbymchenry";
       repo = "codegraph";
-      rev = "v0.9.2";
+      rev = "v0.9.3";
       fetchSubmodules = false;
-      sha256 = "sha256-kmz2dmIvoJ/eGLsXSmGWb1jOhk+AIFIBeThi5dr8f8A=";
+      sha256 = "sha256-EapQQKH+GTcNWw0c/nypCOtpuoAgXnBgCbEVfQrLoL8=";
     };
   };
   hanabi = {

@@ -34,12 +34,12 @@
             "name": null,
             "owner": "colbymchenry",
             "repo": "codegraph",
-            "rev": "v0.9.2",
-            "sha256": "sha256-kmz2dmIvoJ/eGLsXSmGWb1jOhk+AIFIBeThi5dr8f8A=",
+            "rev": "v0.9.3",
+            "sha256": "sha256-EapQQKH+GTcNWw0c/nypCOtpuoAgXnBgCbEVfQrLoL8=",
             "sparseCheckout": [],
             "type": "github"
         },
-        "version": "v0.9.2"
+        "version": "v0.9.3"
     },
     "hanabi": {
         "cargoLock": null,
