@@ -23,6 +23,8 @@ jobs:
         with:
           cache: true
       - id: set-matrix
+        env:
+          NIXPKGS_ALLOW_UNFREE: 1
         run: |
           MATRIX=$(nix eval .#packages.x86_64-linux --json | jq -c '
             keys | map({system: "x86_64-linux", package: .})
@@ -45,6 +47,8 @@ jobs:
           cache: true
 
       - name: Build package
+        env:
+          NIXPKGS_ALLOW_UNFREE: 1
         run: nix build .#packages.${{ matrix.system }}.${{ matrix.package }} --print-build-logs
 
       - name: Push to R2
