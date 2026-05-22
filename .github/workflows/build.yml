@@ -16,7 +16,7 @@ on:
         description: "Git ref to checkout (defaults to current ref)"
         type: string
         required: false
-        default: ''
+        default: ""
 
 jobs:
   # Job to generate the matrix of packages and systems
@@ -25,13 +25,13 @@ jobs:
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           ref: ${{ inputs.ref || github.ref }}
       - uses: DeterminateSystems/nix-installer-action@v16
-        with:
-          cache: true
       - id: set-matrix
+        env:
+          NIXPKGS_ALLOW_UNFREE: 1
         run: |
           MATRIX=$(nix eval .#packages.x86_64-linux --json --impure | jq -c '
             keys | map({system: "x86_64-linux", package: .})
@@ -47,15 +47,15 @@ jobs:
       matrix: ${{ fromJson(needs.generate-matrix.outputs.matrix) }}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           ref: ${{ inputs.ref || github.ref }}
 
       - uses: DeterminateSystems/nix-installer-action@v16
-        with:
-          cache: true
 
       - name: Build package
+        env:
+          NIXPKGS_ALLOW_UNFREE: 1
         run: nix build .#packages.${{ matrix.system }}.${{ matrix.package }} --print-build-logs --impure
 
       - name: Push to R2

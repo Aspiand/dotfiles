@@ -20,13 +20,11 @@ jobs:
     outputs:
       has_changes: ${{ steps.commit.outputs.has_changes }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           ref: main
 
       - uses: DeterminateSystems/nix-installer-action@v16
-        with:
-          cache: true
 
       - name: Generate sources
         run: nix run github:berberman/nvfetcher -- --build-dir nix/_sources
@@ -69,7 +67,7 @@ jobs:
     if: needs.update.outputs.has_changes == 'true'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           ref: main
       - run: |
