@@ -1,0 +1,101 @@
+{
+    "9router": {
+        "cargoLock": null,
+        "date": null,
+        "extract": null,
+        "name": "9router",
+        "passthru": null,
+        "pinned": true,
+        "src": {
+            "deepClone": false,
+            "fetchSubmodules": false,
+            "leaveDotGit": false,
+            "name": null,
+            "owner": "decolua",
+            "repo": "9router",
+            "rev": "v0.4.59",
+            "sha256": "sha256-O1JzMmH3ERpOv+HJw58s0EP1WNWGNAe709wX5APR6uc=",
+            "sparseCheckout": [],
+            "type": "github"
+        },
+        "version": "v0.4.59"
+    },
+    "codegraph": {
+        "cargoLock": null,
+        "date": null,
+        "extract": null,
+        "name": "codegraph",
+        "passthru": null,
+        "pinned": true,
+        "src": {
+            "deepClone": false,
+            "fetchSubmodules": false,
+            "leaveDotGit": false,
+            "name": null,
+            "owner": "colbymchenry",
+            "repo": "codegraph",
+            "rev": "v0.9.2",
+            "sha256": "sha256-kmz2dmIvoJ/eGLsXSmGWb1jOhk+AIFIBeThi5dr8f8A=",
+            "sparseCheckout": [],
+            "type": "github"
+        },
+        "version": "v0.9.2"
+    },
+    "hanabi": {
+        "cargoLock": null,
+        "date": "2026-05-10",
+        "extract": null,
+        "name": "hanabi",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "deepClone": false,
+            "fetchSubmodules": false,
+            "leaveDotGit": false,
+            "name": null,
+            "owner": "jeffshee",
+            "repo": "gnome-ext-hanabi",
+            "rev": "033dc86a6502400c52cc19af134a629d76cbb8a5",
+            "sha256": "sha256-s0N63C9FYFeljEitHbgC9OxRJqdeqvYlaCr0GE6+fDo=",
+            "sparseCheckout": [],
+            "type": "github"
+        },
+        "version": "033dc86a6502400c52cc19af134a629d76cbb8a5"
+    },
+    "openhuman": {
+        "cargoLock": null,
+        "date": null,
+        "extract": null,
+        "name": "openhuman",
+        "passthru": null,
+        "pinned": true,
+        "src": {
+            "deepClone": false,
+            "fetchSubmodules": false,
+            "leaveDotGit": false,
+            "name": null,
+            "owner": "tinyhumansai",
+            "repo": "openhuman",
+            "rev": "v0.54.0",
+            "sha256": "sha256-q8ZdTjpPWStkE0xD4Iy4FZDTC5DGuyviTCml7CdiiA8=",
+            "sparseCheckout": [],
+            "type": "github"
+        },
+        "version": "v0.54.0"
+    },
+    "tlauncher": {
+        "cargoLock": null,
+        "date": null,
+        "extract": null,
+        "name": "tlauncher",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "name": null,
+            "sha256": "sha256-xht2qWiXbOi6ezHziEcSVCxN6BPKDG8yQZSvULnLRW8=",
+            "type": "url",
+            "url": "https://tlauncher.org/jar"
+        },
+        "version": "2.9319"
+    }
+}

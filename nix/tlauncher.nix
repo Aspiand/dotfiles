@@ -3,11 +3,14 @@
 let
   mkTLauncher =
     pkgs:
+    let
+      sources = import ./_sources/_default.nix { inherit pkgs; };
+      tlauncher = sources.tlauncher;
+    in
     pkgs.callPackage (
       {
         lib,
         stdenv,
-        fetchurl,
         unzip,
         makeDesktopItem,
         copyDesktopItems,
@@ -16,12 +19,7 @@ let
       }:
       stdenv.mkDerivation rec {
         pname = "tlauncher";
-        version = "2.83";
-
-        src = fetchurl {
-          url = "https://tlauncher.org/jar";
-          hash = "sha256-xht2qWiXbOi6ezHziEcSVCxN6BPKDG8yQZSvULnLRW8=";
-        };
+        inherit (tlauncher) version src;
 
         dontUnpack = true;
 

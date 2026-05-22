@@ -1,0 +1,42 @@
+name: Auto-Update Nix Packages
+
+on:
+  schedule:
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: DeterminateSystems/nix-installer-action@v16
+        with:
+          cache: true
+
+      - name: Generate sources
+        run: nix run github:berberman/nvfetcher -- --build-dir nix/_sources
+
+      - name: Rename generated files
+        run: |
+          mv nix/_sources/generated.nix nix/_sources/_generated.nix
+          mv nix/_sources/generated.json nix/_sources/_generated.json
+
+      - name: Build verification
+        env:
+          NIXPKGS_ALLOW_UNFREE: 1
+        run: |
+          set -e
+          PACKAGES=$(nix eval --impure '.#packages.x86_64-linux' --json | jq -r 'keys[]')
+          for pkg in $PACKAGES; do
+            nix build --impure ".#packages.x86_64-linux.$pkg" --no-link --print-build-logs &
+          done
+          for job in $(jobs -p); do
+            wait "$job" || exit 1
+          done
+
+      - uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: auto-update nix packages"
+          file_pattern: nix/_sources/

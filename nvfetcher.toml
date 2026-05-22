@@ -1,0 +1,23 @@
+[codegraph]
+src.github = "colbymchenry/codegraph"
+fetch.github = "colbymchenry/codegraph"
+pinned = true
+
+[hanabi]
+src.git = "https://github.com/jeffshee/gnome-ext-hanabi.git"
+fetch.github = "jeffshee/gnome-ext-hanabi"
+
+[openhuman]
+src.github = "tinyhumansai/openhuman"
+fetch.github = "tinyhumansai/openhuman"
+pinned = true
+
+[9router]
+src.github = "decolua/9router"
+fetch.github = "decolua/9router"
+pinned = true
+
+[tlauncher]
+src.webpage = "https://tlauncher.org/"
+src.regex = 'TLauncher ([\d.]+)'
+fetch.url = "https://tlauncher.org/jar"

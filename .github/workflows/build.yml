@@ -10,6 +10,7 @@ on:
       - "flake.lock"
       - ".github/workflows/build.yml"
   workflow_dispatch:
+  workflow_call:
 
 jobs:
   # Job to generate the matrix of packages and systems
