@@ -43,12 +43,7 @@
             grub2-themes.nixosModules.default
             home-manager.nixosModules.home-manager
             {
-              nixpkgs.overlays = with inputs.dotfiles.overlays; [
-                codegraph
-                hanabi
-              ];
-            }
-            {
+              nixpkgs.overlays = [ inputs.dotfiles.overlays.default ];
               home-manager = {
                 extraSpecialArgs = { inherit inputs; };
                 useGlobalPkgs = true;
