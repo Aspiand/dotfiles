@@ -24,7 +24,7 @@ jobs:
         with:
           ref: main
 
-      - uses: DeterminateSystems/nix-installer-action@v16
+      - uses: DeterminateSystems/nix-installer-action@v22
 
       - name: Generate sources
         run: nix run github:berberman/nvfetcher -- --build-dir nix/_sources
