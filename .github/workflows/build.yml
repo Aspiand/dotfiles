@@ -1,5 +1,8 @@
 name: Build Nix Packages
 
+env:
+  EXCLUDED_PACKAGES: '["9router"]'
+
 on:
   push:
     branches:
@@ -33,8 +36,8 @@ jobs:
         env:
           NIXPKGS_ALLOW_UNFREE: 1
         run: |
-          MATRIX=$(nix eval .#packages.x86_64-linux --json --impure | jq -c '
-            keys | map({system: "x86_64-linux", package: .})
+          MATRIX=$(nix eval .#packages.x86_64-linux --json --impure | jq -c --argjson excluded "$EXCLUDED_PACKAGES" '
+            keys | map(select(. as $p | $excluded | index($p) | not)) | map({system: "x86_64-linux", package: .})
           ')
           echo "matrix={\"include\":$MATRIX}" >> "$GITHUB_OUTPUT"
 
