@@ -189,7 +189,12 @@ File: `.github/workflows/update.yml`
 on:
   schedule:
     - cron: '0 6 * * 1'   # Every Monday at 06:00 UTC
-  workflow_dispatch:        # Manual trigger from any branch
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "Force test — commit dummy change and run build+promote"
+        type: boolean
+        default: false
 ```
 
 Jobs:
@@ -223,6 +228,12 @@ When all builds pass:
 ## Manual run
 
 Go to **Actions → Auto-Update Nix Packages → Run workflow** — you can select any branch.
+
+### Force-test mode (when no upstream updates)
+
+Set `force: true` in the manual trigger. This creates an empty commit and runs the full pipeline:
+staging branch → build → promote. Since no files are changed, all builds should pass (verifying
+the pipeline works end-to-end). The empty commit reaches `main` and can be reverted manually.
 
 ## Extending to new packages
 
