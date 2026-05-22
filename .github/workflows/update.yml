@@ -8,8 +8,12 @@ on:
 jobs:
   update:
     runs-on: ubuntu-latest
+    outputs:
+      has_changes: ${{ steps.commit.outputs.has_changes }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: main
 
       - uses: DeterminateSystems/nix-installer-action@v16
         with:
@@ -23,20 +27,39 @@ jobs:
           mv nix/_sources/generated.nix nix/_sources/_generated.nix
           mv nix/_sources/generated.json nix/_sources/_generated.json
 
-      - name: Build verification
-        env:
-          NIXPKGS_ALLOW_UNFREE: 1
+      - name: Commit to staging branch
+        id: commit
         run: |
-          set -e
-          PACKAGES=$(nix eval --impure '.#packages.x86_64-linux' --json | jq -r 'keys[]')
-          for pkg in $PACKAGES; do
-            nix build --impure ".#packages.x86_64-linux.$pkg" --no-link --print-build-logs &
-          done
-          for job in $(jobs -p); do
-            wait "$job" || exit 1
-          done
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add nix/_sources/
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git commit -m "chore: auto-update nix packages"
+          git push origin HEAD:refs/heads/auto-update/${{ github.run_id }}
+          echo "has_changes=true" >> "$GITHUB_OUTPUT"
 
-      - uses: stefanzweifel/git-auto-commit-action@v5
+  build:
+    needs: update
+    if: needs.update.outputs.has_changes == 'true'
+    uses: ./.github/workflows/build.yml
+    with:
+      ref: auto-update/${{ github.run_id }}
+
+  promote:
+    needs: [update, build]
+    if: needs.update.outputs.has_changes == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
         with:
-          commit_message: "chore: auto-update nix packages"
-          file_pattern: nix/_sources/
+          ref: main
+      - run: |
+          BRANCH="auto-update/${{ github.run_id }}"
+          git fetch origin "$BRANCH"
+          git merge --ff-only FETCH_HEAD
+          git push origin main
+          git push origin --delete "$BRANCH"
