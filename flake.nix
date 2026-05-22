@@ -11,7 +11,8 @@
       "https://nix.aspian.my.id"
     ];
     trusted-public-keys = [
-      "github-ci-1:qjsecsjhdp0svqh6aXFEaaYtsTh5U+Ca6Jzmk46wXOY="
+      "github-ci-1:qjsecsjhdp0svqh6aXFEaaYtsTh5U+Ca6Jzmk46wXOY=" # TODO: remove
+      "github-ci-2:eUvIhhjHCO/kJVGcFNd/sNCGSx59tj1QAXmb477OO00="
     ];
   };
 
@@ -35,10 +36,12 @@
         imports = importTree ./nix;
       };
     in
-    flakeOutputs // {
+    flakeOutputs
+    // {
       overlays = flakeOutputs.overlays // {
-        default = final: prev:
-          lib.foldl' (acc: overlay: acc // (overlay final acc)) {} (
+        default =
+          final: prev:
+          lib.foldl' (acc: overlay: acc // (overlay final acc)) { } (
             lib.attrValues (lib.removeAttrs flakeOutputs.overlays [ "default" ])
           );
       };
