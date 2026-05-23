@@ -64,6 +64,12 @@ jobs:
           echo "changelog<<EOF" >> "$GITHUB_OUTPUT"
           echo "$CHANGELOG" >> "$GITHUB_OUTPUT"
           echo "EOF" >> "$GITHUB_OUTPUT"
+          if [ -n "$CHANGELOG" ]; then
+            echo "### Package updates" >> "$GITHUB_STEP_SUMMARY"
+            echo "$CHANGELOG" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "No package updates" >> "$GITHUB_STEP_SUMMARY"
+          fi
 
       - name: Commit to staging branch
         id: commit

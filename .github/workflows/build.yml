@@ -117,9 +117,8 @@ jobs:
       - name: Build package
         env:
           NIXPKGS_ALLOW_UNFREE: 1
-          FORCE: ${{ inputs.force || '' }}
         run: |
-          nix build .#packages.${{ matrix.system }}.${{ matrix.package }} --print-build-logs --impure
+          nix build .#packages.${{ matrix.system }}.${{ matrix.package }} --print-build-logs --impure --accept-flake-config
 
       - name: Show build size
         run: |
