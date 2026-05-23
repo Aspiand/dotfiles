@@ -208,7 +208,7 @@ jobs:
             echo "| Metric | Value |"
             echo "|---|---|"
             echo "| Objects to delete | $(wc -l < /tmp/to-delete.txt) |"
-            echo "| Storage reclaimed | $(numfmt --to=iec "${{ env.RECLAIMABLE_SIZE }}" 2>/dev/null || echo "${{ env.RECLAIMABLE_SIZE }}B") |"
+            echo "| Storage reclaimed | $(numfmt --to=iec "${RECLAIMABLE_SIZE:-0}" 2>/dev/null || echo "${RECLAIMABLE_SIZE:-0}")B |"
             echo "| Objects remaining | $REMAINING |"
             echo "| Dry run | ${{ inputs.dry-run || false }} |"
           } >> "$GITHUB_STEP_SUMMARY"

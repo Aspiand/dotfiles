@@ -160,7 +160,7 @@ jobs:
             echo "| NAR files | ${{ steps.list.outputs.total_nar }} |"
             echo "| Total size | $TOTAL_HUMAN |"
             echo "| Issues found | $TOTAL_FAIL |"
-            echo "| Packages missing from cache | ${{ env.MISSING_PACKAGES }} |"
+            echo "| Packages missing from cache | ${MISSING_PACKAGES:-0} |"
             echo ""
           } >> "$GITHUB_STEP_SUMMARY"
 
