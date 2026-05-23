@@ -37,37 +37,36 @@ jobs:
           echo "total_nar=$TOTAL_NAR" >> "$GITHUB_OUTPUT"
           echo "total_size=$TOTAL_SIZE" >> "$GITHUB_OUTPUT"
 
-      - name: Check each narinfo
+      - name: Download all narinfos
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
         run: |
-          FAIL_DOWNLOAD=0
-          FAIL_SIG=0
-          FAIL_NAR=0
-          FAIL_CACHE=0
+          mkdir -p /tmp/narinfos
+          aws s3 cp "s3://${{ secrets.R2_BUCKET }}/nar/" /tmp/narinfos/ \
+            --endpoint "${{ secrets.R2_ENDPOINT }}" \
+            --region auto \
+            --recursive \
+            --exclude "*" \
+            --include "*.narinfo" \
+            --only-show-errors
+
+      - name: Check each narinfo
+        run: |
           ISSUES_LOG="/tmp/issues.txt"
           > "$ISSUES_LOG"
+          CURL_QUEUE="/tmp/curl-queue.txt"
+          > "$CURL_QUEUE"
 
-          jq -c '.[]' /tmp/narinfos.json | while read -r obj; do
-            KEY=$(echo "$obj" | jq -r '.Key')
+          cd /tmp/narinfos
+          for NARINFO in *.narinfo; do
+            [ -f "$NARINFO" ] || continue
+            KEY="nar/$NARINFO"
             echo "--- $KEY ---"
 
-            if ! aws s3api get-object \
-              --bucket "${{ secrets.R2_BUCKET }}" \
-              --endpoint "${{ secrets.R2_ENDPOINT }}" \
-              --region auto \
-              --key "$KEY" \
-              /tmp/nar.txt > /dev/null 2>&1
-            then
-              echo "  FAILED to fetch narinfo"
-              echo "download_fail:$KEY" >> "$ISSUES_LOG"
-              continue
-            fi
-
-            STORE_PATH=$(grep '^StorePath:' /tmp/nar.txt 2>/dev/null | sed 's/^StorePath: //')
-            SIG=$(grep '^Sig:' /tmp/nar.txt 2>/dev/null | sed 's/^Sig: //')
-            NAR_URL=$(grep '^URL:' /tmp/nar.txt 2>/dev/null | sed 's/^URL: //')
+            STORE_PATH=$(grep '^StorePath:' "$NARINFO" 2>/dev/null | sed 's/^StorePath: //')
+            SIG=$(grep '^Sig:' "$NARINFO" 2>/dev/null | sed 's/^Sig: //')
+            NAR_URL=$(grep '^URL:' "$NARINFO" 2>/dev/null | sed 's/^URL: //')
 
             echo "  StorePath: $STORE_PATH"
             echo "  Has signature: $([ -n "$SIG" ] && echo yes || echo no) ($(echo "$SIG" | cut -d: -f1))"
@@ -78,15 +77,10 @@ jobs:
               echo "no_sig:$KEY" >> "$ISSUES_LOG"
             fi
 
-            # Check referenced NAR file exists
+            # Check referenced NAR file exists (from objects.json — no S3 call)
             if [ -n "$NAR_URL" ]; then
-              if aws s3api head-object \
-                --bucket "${{ secrets.R2_BUCKET }}" \
-                --endpoint "${{ secrets.R2_ENDPOINT }}" \
-                --region auto \
-                --key "$NAR_URL" \
-                --no-sign-request > /dev/null 2>&1
-              then
+              NAR_EXISTS=$(jq -r --arg url "$NAR_URL" '[.Contents // [] | .[] | select(.Key == $url)] | length > 0' /tmp/objects.json 2>/dev/null || echo "false")
+              if [ "$NAR_EXISTS" = "true" ]; then
                 echo "  Nar exists: yes"
               else
                 echo "  ✗ NAR MISSING: $NAR_URL"
@@ -94,15 +88,20 @@ jobs:
               fi
             fi
 
-            # Check public cache
-            HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" "$PUBLIC_CACHE_URL/$KEY" 2>/dev/null || echo "error")
-            echo "  Public cache HTTP: $HTTP_CODE"
-            if [ "$HTTP_CODE" != "200" ]; then
-              echo "  ✗ PUBLIC CACHE UNREACHABLE"
-              echo "cache_unreachable:$KEY (HTTP $HTTP_CODE)" >> "$ISSUES_LOG"
-            fi
+            echo "$KEY" >> "$CURL_QUEUE"
+          done
 
-            rm -f /tmp/nar.txt
+          # Parallel public cache check
+          echo "--- Checking public cache ---"
+          export PUBLIC_CACHE_URL
+          xargs -P 20 -I{} sh -c '
+            c=$(curl -s -o /dev/null -w "%{http_code}" "$PUBLIC_CACHE_URL/{}" 2>/dev/null || echo "error")
+            echo "$c {}"
+          ' < "$CURL_QUEUE" 2>/dev/null | while read -r code key; do
+            echo "  Public cache $key: HTTP $code"
+            if [ "$code" != "200" ]; then
+              echo "cache_unreachable:$key (HTTP $code)" >> "$ISSUES_LOG"
+            fi
           done
 
       - name: Cross-reference with flake packages

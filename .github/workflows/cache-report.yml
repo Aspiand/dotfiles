@@ -25,23 +25,27 @@ jobs:
 
           > /tmp/report-data.txt
 
-          jq -r '.Contents // [] | .[] | select(.Key | endswith(".narinfo")) | [.Key, .Size, .LastModified] | @tsv' \
-            /tmp/objects.json > /tmp/narinfo-list.tsv
+          # Batch download all narinfos
+          mkdir -p /tmp/narinfos
+          aws s3 cp "s3://${{ secrets.R2_BUCKET }}/nar/" /tmp/narinfos/ \
+            --endpoint "${{ secrets.R2_ENDPOINT }}" \
+            --region auto \
+            --recursive \
+            --exclude "*" \
+            --include "*.narinfo" \
+            --only-show-errors
 
-          while IFS=$'\t' read -r KEY NARINFO_SIZE LASTMOD; do
-            aws s3api get-object \
-              --bucket "${{ secrets.R2_BUCKET }}" \
-              --endpoint "${{ secrets.R2_ENDPOINT }}" \
-              --region auto \
-              --key "$KEY" \
-              /tmp/nar.txt > /dev/null 2>&1
+          cd /tmp/narinfos
+          for NARINFO in *.narinfo; do
+            [ -f "$NARINFO" ] || continue
+            KEY="nar/$NARINFO"
 
-            STORE_PATH=$(grep '^StorePath:' /tmp/nar.txt 2>/dev/null | sed 's/^StorePath: //')
-            NAR_URL=$(grep '^URL:' /tmp/nar.txt 2>/dev/null | sed 's/^URL: //')
-            SIG=$(grep '^Sig:' /tmp/nar.txt 2>/dev/null | sed 's/^Sig: //')
+            STORE_PATH=$(grep '^StorePath:' "$NARINFO" 2>/dev/null | sed 's/^StorePath: //')
+            NAR_URL=$(grep '^URL:' "$NARINFO" 2>/dev/null | sed 's/^URL: //')
+            SIG=$(grep '^Sig:' "$NARINFO" 2>/dev/null | sed 's/^Sig: //')
             HASH="${KEY%.narinfo}"
 
-            # Get NAR file size
+            # Get NAR file size from objects.json
             NAR_SIZE=0
             if [ -n "$NAR_URL" ]; then
               NAR_SIZE=$(jq -r --arg url "$NAR_URL" '
@@ -52,10 +56,12 @@ jobs:
             if [ -n "$STORE_PATH" ]; then
               NAME=$(basename "$STORE_PATH")
               PACKAGE=$(echo "$NAME" | sed 's/^[^-]*-//' | sed 's/-[0-9].*//')
+              NARINFO_SIZE=$(jq -r --arg key "$KEY" '[.Contents // [] | .[] | select(.Key == $key) | .Size] | if length > 0 then .[0] else "0" end' /tmp/objects.json)
+              LASTMOD=$(jq -r --arg key "$KEY" '[.Contents // [] | .[] | select(.Key == $key) | .LastModified] | if length > 0 then .[0] else "" end' /tmp/objects.json)
 
               echo "$PACKAGE|$STORE_PATH|$NARINFO_SIZE|$NAR_SIZE|$LASTMOD|$HASH|$SIG" >> /tmp/report-data.txt
             fi
-          done < /tmp/narinfo-list.tsv
+          done
 
       - name: Generate report
         run: |
