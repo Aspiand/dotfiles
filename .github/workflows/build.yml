@@ -124,8 +124,8 @@ jobs:
       - name: Show build size
         run: |
           STORE_PATH=$(readlink -f result)
-          RAW_SIZE=$(nix path-info -Sh "$STORE_PATH" | awk '{print $2}')
-          CLOSURE_SIZE=$(nix path-info -Sh "$STORE_PATH" --recursive | tail -1 | awk '{print $2}')
+          RAW_SIZE=$(nix path-info -Sh "$STORE_PATH" | awk '{print $2, $3}')
+          CLOSURE_SIZE=$(nix path-info -Sh "$STORE_PATH" --recursive | tail -1 | awk '{print $2, $3}')
           echo "### Build size: ${{ matrix.package }} (${{ matrix.system }})" >> "$GITHUB_STEP_SUMMARY"
           echo "| Metric | Size |" >> "$GITHUB_STEP_SUMMARY"
           echo "|---|---|" >> "$GITHUB_STEP_SUMMARY"
@@ -144,8 +144,8 @@ jobs:
           nix store sign --key-file ./secret-key "$STORE_PATH"
           rm -f ./secret-key
 
-          COPY_SIZE=$(nix path-info -Sh "$STORE_PATH" | awk '{print $2}')
-          CLOSURE_SIZE=$(nix path-info -Sh "$STORE_PATH" --recursive | tail -1 | awk '{print $2}')
+          COPY_SIZE=$(nix path-info -Sh "$STORE_PATH" | awk '{print $2, $3}')
+          CLOSURE_SIZE=$(nix path-info -Sh "$STORE_PATH" --recursive | tail -1 | awk '{print $2, $3}')
 
           nix copy --to "s3://${{ secrets.R2_BUCKET }}?endpoint=${{ secrets.R2_ENDPOINT }}&region=auto" "$STORE_PATH"
 
@@ -155,4 +155,4 @@ jobs:
           echo "| Package | ${{ matrix.package }} (${{ matrix.system }}) |" >> "$GITHUB_STEP_SUMMARY"
           echo "| Output path size | $COPY_SIZE |" >> "$GITHUB_STEP_SUMMARY"
           echo "| Closure size | $CLOSURE_SIZE |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| R2 bucket | ${{ secrets.R2_BUCKET }} |" >> "$GITHUB_STEP_SUMMARY"
+
