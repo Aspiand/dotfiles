@@ -119,9 +119,7 @@ jobs:
           NIXPKGS_ALLOW_UNFREE: 1
           FORCE: ${{ inputs.force || '' }}
         run: |
-          FLAGS="--print-build-logs --impure"
-          [ "$FORCE" = "true" ] && FLAGS="$FLAGS --check"
-          nix build .#packages.${{ matrix.system }}.${{ matrix.package }} $FLAGS
+          nix build .#packages.${{ matrix.system }}.${{ matrix.package }} --print-build-logs --impure
 
       - name: Show build size
         run: |
