@@ -36,6 +36,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
+      has_packages: ${{ steps.set-matrix.outputs.has_packages }}
     steps:
       - uses: actions/checkout@v5
         with:
@@ -49,9 +50,6 @@ jobs:
           NIXPKGS_ALLOW_UNFREE: 1
           INPUT_PACKAGE: ${{ inputs.package }}
         run: |
-          echo "::debug::inputs.repository=${{ inputs.repository }}"
-          echo "::debug::github.repository=${{ github.repository }}"
-
           NIX_OUTPUT=$(mktemp)
 
           if [ "$INPUT_PACKAGE" != "ALL" ]; then
@@ -82,16 +80,12 @@ jobs:
 
           COUNT=$(echo "$MATRIX" | jq 'length')
           echo "Packages found: $COUNT"
-          if [ "$COUNT" -eq 0 ]; then
-            echo "== ERROR: no packages to build =="
-            echo "matrix={\"include\":[]}" >> "$GITHUB_OUTPUT"
-            exit 1
-          fi
-
+          echo "has_packages=$([ "$COUNT" -gt 0 ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
           echo "matrix={\"include\":$MATRIX}" >> "$GITHUB_OUTPUT"
 
   build:
     needs: generate-matrix
+    if: needs.generate-matrix.outputs.has_packages == 'true'
     name: Build ${{ matrix.package }} (${{ matrix.system }})
     runs-on: ubuntu-latest
     strategy:
