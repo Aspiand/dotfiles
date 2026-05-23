@@ -15,14 +15,23 @@ on:
   workflow_dispatch:
   workflow_call:
     inputs:
-      ref:
-        description: "Git ref to checkout (defaults to current ref)"
+      repository:
+        description: "Repo to checkout (empty = current repo)"
         type: string
         required: false
         default: ""
+      ref:
+        description: "Git ref to checkout"
+        type: string
+        required: false
+        default: ""
+      package:
+        description: "Package(s) — comma-separated, or 'ALL' for all"
+        type: string
+        required: false
+        default: "ALL"
 
 jobs:
-  # Job to generate the matrix of packages and systems
   generate-matrix:
     runs-on: ubuntu-latest
     outputs:
@@ -30,15 +39,29 @@ jobs:
     steps:
       - uses: actions/checkout@v5
         with:
+          repository: ${{ inputs.repository || github.repository }}
           ref: ${{ inputs.ref || github.ref }}
+
       - uses: DeterminateSystems/nix-installer-action@v22
+
       - id: set-matrix
         env:
           NIXPKGS_ALLOW_UNFREE: 1
+          INPUT_PACKAGE: ${{ inputs.package }}
         run: |
-          MATRIX=$(nix eval .#packages.x86_64-linux --json --impure | jq -c --argjson excluded "$EXCLUDED_PACKAGES" '
-            keys | map(select(. as $p | $excluded | index($p) | not)) | map({system: "x86_64-linux", package: .})
-          ')
+          if [ "$INPUT_PACKAGE" != "ALL" ]; then
+            MATRIX=$(echo "$INPUT_PACKAGE" | jq -Rc '
+              split(",") | map(gsub("^\\s+|\\s+$"; "")) | map({system: "x86_64-linux", package: .})
+            ')
+          elif [ "${{ inputs.repository }}" != "" ] && [ "${{ inputs.repository }}" != "${{ github.repository }}" ]; then
+            MATRIX=$(nix eval .#packages.x86_64-linux --json --impure | jq -c '
+              keys | map({system: "x86_64-linux", package: .})
+            ')
+          else
+            MATRIX=$(nix eval .#packages.x86_64-linux --json --impure | jq -c --argjson excluded "$EXCLUDED_PACKAGES" '
+              keys | map(select(. as $p | $excluded | index($p) | not)) | map({system: "x86_64-linux", package: .})
+            ')
+          fi
           echo "matrix={\"include\":$MATRIX}" >> "$GITHUB_OUTPUT"
 
   build:
@@ -52,25 +75,17 @@ jobs:
     steps:
       - uses: actions/checkout@v5
         with:
+          repository: ${{ inputs.repository || github.repository }}
           ref: ${{ inputs.ref || github.ref }}
 
       - uses: DeterminateSystems/nix-installer-action@v22
 
-      - name: Build package
-        env:
-          NIXPKGS_ALLOW_UNFREE: 1
-        run: nix build .#packages.${{ matrix.system }}.${{ matrix.package }} --print-build-logs --impure
-
-      - name: Push to R2
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
-          NIX_SECRET_KEY: ${{ secrets.NIX_SECRET_KEY }}
-        run: |
-          # Sign paths so consumers can verify integrity
-          echo "$NIX_SECRET_KEY" > ./secret-key
-          nix store sign --key-file ./secret-key $(readlink -f result)
-          rm -f ./secret-key
-
-          # Copy to R2
-          nix copy --to "s3://${{ secrets.R2_BUCKET }}?endpoint=${{ secrets.R2_ENDPOINT }}&region=auto" $(readlink -f result)
+      - uses: ./.github/actions/build-and-cache
+        with:
+          system: ${{ matrix.system }}
+          package: ${{ matrix.package }}
+          r2_access_key_id: ${{ secrets.R2_ACCESS_KEY_ID }}
+          r2_secret_access_key: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          r2_bucket: ${{ secrets.R2_BUCKET }}
+          r2_endpoint: ${{ secrets.R2_ENDPOINT }}
+          nix_secret_key: ${{ secrets.NIX_SECRET_KEY }}
