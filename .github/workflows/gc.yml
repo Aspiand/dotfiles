@@ -4,52 +4,100 @@ on:
   schedule:
     - cron: "0 6 * * 0"
   workflow_dispatch:
+    inputs:
+      dry-run:
+        description: "Dry run — list what would be deleted, skip delete"
+        type: boolean
+        required: false
+        default: false
+
+env:
+  EXCLUDED_PACKAGES: '["9router"]'
 
 jobs:
-  gc:
+  keep-fresh:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: DeterminateSystems/nix-installer-action@v16
-        with:
-          cache: true
+      - uses: DeterminateSystems/nix-installer-action@v22
 
       - name: Keep fresh — build + copy current packages
+        env:
+          NIXPKGS_ALLOW_UNFREE: 1
+          NIX_SECRET_KEY: ${{ secrets.NIX_SECRET_KEY }}
+          R2_BUCKET: ${{ secrets.R2_BUCKET }}
+          R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
         run: |
-          PACKAGES=$(nix eval .#packages.x86_64-linux --json | jq -r 'keys[]')
+          NIX_OUTPUT=$(mktemp)
+          nix eval .#packages.x86_64-linux --json --impure > "$NIX_OUTPUT"
+          PACKAGES=$(jq -c --argjson excluded "$EXCLUDED_PACKAGES" '
+            keys | map(select(. as $p | $excluded | index($p) | not))
+          ' < "$NIX_OUTPUT" | jq -r '.[]')
+          rm -f "$NIX_OUTPUT"
+
           for pkg in $PACKAGES; do
-            nix build ".#packages.x86_64-linux.$pkg" --print-build-logs
+            echo "=== Refreshing: $pkg ==="
+            nix build ".#packages.x86_64-linux.$pkg" \
+              --print-build-logs --impure --accept-flake-config
+
+            STORE_PATH=$(readlink -f result)
+
             echo "$NIX_SECRET_KEY" > ./secret-key
-            nix store sign --key-file ./secret-key $(readlink -f result)
+            nix store sign --key-file ./secret-key "$STORE_PATH"
             rm -f ./secret-key
-            nix copy --to "s3://${{ secrets.R2_BUCKET }}?endpoint=${{ secrets.R2_ENDPOINT }}&region=auto" $(readlink -f result)
+
+            nix copy --to "s3://$R2_BUCKET?endpoint=$R2_ENDPOINT&region=auto" "$STORE_PATH"
+            echo "✓ $pkg refreshed"
           done
 
-      - name: Prune objects older than 30 days
+  prune:
+    needs: keep-fresh
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: List & delete objects older than 30 days
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          DRY_RUN: ${{ inputs.dry-run || false }}
         run: |
           CUTOFF=$(date -u -d "-30 days" +%Y-%m-%dT%H:%M:%SZ)
+          echo "Cutoff date: $CUTOFF"
+          echo "Dry run: $DRY_RUN"
+
+          if [ "$DRY_RUN" = "true" ]; then
+            echo "### Dry run — nothing will be deleted" >> "$GITHUB_STEP_SUMMARY"
+          fi
 
           aws s3api list-objects \
             --bucket "${{ secrets.R2_BUCKET }}" \
             --endpoint "${{ secrets.R2_ENDPOINT }}" \
             --region auto \
-            --query "Contents[?LastModified<=\`$CUTOFF\`].[Key]" \
+            --query "Contents[?LastModified<=\`$CUTOFF\`].[Key,LastModified]" \
             --output text \
-          | while read -r key; do
-              [ -z "$key" ] && continue
-              echo "Deleting: $key"
+            --page-size 1000 \
+          > /tmp/old-objects.txt
+
+          TOTAL=$(wc -l < /tmp/old-objects.txt)
+          echo "Objects to prune: $TOTAL"
+
+          while read -r key lastmod; do
+            [ -z "$key" ] && continue
+            echo "  $key (last modified: $lastmod)"
+
+            if [ "$DRY_RUN" != "true" ]; then
               aws s3api delete-object \
                 --bucket "${{ secrets.R2_BUCKET }}" \
                 --endpoint "${{ secrets.R2_ENDPOINT }}" \
                 --region auto \
                 --key "$key"
-            done
+            fi
+          done < /tmp/old-objects.txt
 
       - name: Report
+        if: always()
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
@@ -60,4 +108,12 @@ jobs:
             --region auto \
             --query "length(Contents[])" \
             --output text 2>/dev/null || echo "0")
-          echo "Objects remaining in bucket: $COUNT"
+
+          {
+            echo "### GC R2 Cache"
+            echo ""
+            echo "| Metric | Value |"
+            echo "|---|---|"
+            echo "| Objects remaining | $COUNT |"
+            echo "| Dry run | ${{ inputs.dry-run || false }} |"
+          } >> "$GITHUB_STEP_SUMMARY"

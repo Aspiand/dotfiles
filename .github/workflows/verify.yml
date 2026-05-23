@@ -1,0 +1,142 @@
+name: Verify R2 Cache
+
+env:
+  PUBLIC_CACHE_URL: https://nix.aspian.my.id
+
+on:
+  workflow_dispatch:
+  workflow_call:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: List narinfo files in R2
+        id: list
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+        run: |
+          aws s3api list-objects \
+            --bucket "${{ secrets.R2_BUCKET }}" \
+            --endpoint "${{ secrets.R2_ENDPOINT }}" \
+            --region auto \
+            --page-size 1000 \
+            --output json \
+          | jq -c '[.Contents[] | select(.Key | endswith(".narinfo"))]' \
+          > /tmp/narinfos.json
+
+          TOTAL=$(jq 'length' /tmp/narinfos.json)
+          TOTAL_NAR=$(aws s3api list-objects \
+            --bucket "${{ secrets.R2_BUCKET }}" \
+            --endpoint "${{ secrets.R2_ENDPOINT }}" \
+            --region auto \
+            --page-size 1000 \
+            --query "length(Contents[?contains(Key, 'nar/')])" \
+            --output text 2>/dev/null || echo "0")
+
+          echo "total_narinfos=$TOTAL" >> "$GITHUB_OUTPUT"
+          echo "total_nar=$TOTAL_NAR" >> "$GITHUB_OUTPUT"
+
+      - name: Check each narinfo
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+        run: |
+          jq -c '.[]' /tmp/narinfos.json | while read -r obj; do
+            KEY=$(echo "$obj" | jq -r '.Key')
+            HASH="${KEY%.narinfo}"
+
+            echo "--- $KEY ---"
+
+            # Download and parse narinfo
+            if aws s3api get-object \
+              --bucket "${{ secrets.R2_BUCKET }}" \
+              --endpoint "${{ secrets.R2_ENDPOINT }}" \
+              --region auto \
+              --key "$KEY" \
+              /tmp/narinfo.txt > /dev/null 2>&1
+            then
+              STORE_PATH=$(grep '^StorePath:' /tmp/narinfo.txt | sed 's/^StorePath: //')
+              SIG=$(grep '^Sig:' /tmp/narinfo.txt | sed 's/^Sig: //')
+              NAR_URL=$(grep '^URL:' /tmp/narinfo.txt | sed 's/^URL: //')
+              FILE_SIZE=$(grep '^FileSize:' /tmp/narinfo.txt | sed 's/^FileSize: //')
+
+              echo "  StorePath: $STORE_PATH"
+              echo "  Has signature: $([ -n "$SIG" ] && echo yes || echo no) ($(echo "$SIG" | cut -d: -f1))"
+              echo "  Nar URL: $NAR_URL"
+
+              # Check referenced NAR file exists
+              if [ -n "$NAR_URL" ]; then
+                if aws s3api head-object \
+                  --bucket "${{ secrets.R2_BUCKET }}" \
+                  --endpoint "${{ secrets.R2_ENDPOINT }}" \
+                  --region auto \
+                  --key "$NAR_URL" \
+                  --no-sign-request > /dev/null 2>&1
+                then
+                  echo "  Nar exists: yes"
+                else
+                  echo "  Nar exists: MISSING"
+                fi
+              fi
+
+              # Check public cache
+              CURL_CODE=$(curl -s -o /dev/null -w "%{http_code}" "$PUBLIC_CACHE_URL/$KEY" 2>/dev/null || echo "error")
+              echo "  Public cache HTTP: $CURL_CODE"
+            else
+              echo "  FAILED to fetch narinfo"
+            fi
+
+            rm -f /tmp/narinfo.txt
+          done
+
+      - name: Cross-reference with flake packages
+        uses: DeterminateSystems/nix-installer-action@v22
+
+      - name: Check known packages against cache
+        run: |
+          MISSING=0
+          PACKAGES=$(nix eval .#packages.x86_64-linux --json --impure 2>/dev/null | jq -r 'keys[]' || echo "")
+
+          for pkg in $PACKAGES; do
+            if [ "$pkg" = "9router" ]; then
+              continue
+            fi
+
+            # Find matching narinfo by package name
+            MATCH=$(jq -r --arg pkg "$pkg" '
+              [.[].Key | select(endswith(".narinfo"))] |
+              map(select(contains($pkg)))
+            ' /tmp/narinfos.json)
+
+            if [ "$(echo "$MATCH" | jq 'length')" -gt 0 ]; then
+              echo "✓ $pkg — found in R2"
+            else
+              echo "✗ $pkg — NOT found in R2"
+              MISSING=$((MISSING + 1))
+            fi
+          done
+
+          echo "MISSING_PACKAGES=$MISSING" >> "$GITHUB_ENV"
+
+      - name: Report
+        if: always()
+        run: |
+          {
+            echo "### Verify R2 Cache"
+            echo ""
+            echo "| Metric | Value |"
+            echo "|---|---|"
+            echo "| Narinfo files | ${{ steps.list.outputs.total_narinfos }} |"
+            echo "| NAR files | ${{ steps.list.outputs.total_nar }} |"
+            echo "| Packages missing from cache | ${{ env.MISSING_PACKAGES }} |"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Fail if packages missing
+        if: env.MISSING_PACKAGES != '0'
+        run: |
+          echo "::error::$MISSING_PACKAGES package(s) not found in R2 cache"
+          exit 1
