@@ -49,19 +49,45 @@ jobs:
           NIXPKGS_ALLOW_UNFREE: 1
           INPUT_PACKAGE: ${{ inputs.package }}
         run: |
+          echo "::debug::inputs.repository=${{ inputs.repository }}"
+          echo "::debug::github.repository=${{ github.repository }}"
+
+          NIX_OUTPUT=$(mktemp)
+
           if [ "$INPUT_PACKAGE" != "ALL" ]; then
             MATRIX=$(echo "$INPUT_PACKAGE" | jq -Rc '
               split(",") | map(gsub("^\\s+|\\s+$"; "")) | map({system: "x86_64-linux", package: .})
             ')
           elif [ "${{ inputs.repository }}" != "" ] && [ "${{ inputs.repository }}" != "${{ github.repository }}" ]; then
-            MATRIX=$(nix eval .#packages.x86_64-linux --json --impure | jq -c '
-              keys | map({system: "x86_64-linux", package: .})
-            ')
+            echo "External flake — no exclusion filter"
+            nix eval .#packages.x86_64-linux --json --impure > "$NIX_OUTPUT" 2>&1 || {
+              echo "=== nix eval stderr ==="
+              cat "$NIX_OUTPUT"
+              exit 1
+            }
+            MATRIX=$(jq -c 'keys | map({system: "x86_64-linux", package: .})' < "$NIX_OUTPUT")
           else
-            MATRIX=$(nix eval .#packages.x86_64-linux --json --impure | jq -c --argjson excluded "$EXCLUDED_PACKAGES" '
+            echo "Local flake — applying EXCLUDED_PACKAGES"
+            nix eval .#packages.x86_64-linux --json --impure > "$NIX_OUTPUT" 2>&1 || {
+              echo "=== nix eval stderr ==="
+              cat "$NIX_OUTPUT"
+              exit 1
+            }
+            MATRIX=$(jq -c --argjson excluded "$EXCLUDED_PACKAGES" '
               keys | map(select(. as $p | $excluded | index($p) | not)) | map({system: "x86_64-linux", package: .})
-            ')
+            ' < "$NIX_OUTPUT")
           fi
+
+          rm -f "$NIX_OUTPUT"
+
+          COUNT=$(echo "$MATRIX" | jq 'length')
+          echo "Packages found: $COUNT"
+          if [ "$COUNT" -eq 0 ]; then
+            echo "== ERROR: no packages to build =="
+            echo "matrix={\"include\":[]}" >> "$GITHUB_OUTPUT"
+            exit 1
+          fi
+
           echo "matrix={\"include\":$MATRIX}" >> "$GITHUB_OUTPUT"
 
   build:
@@ -80,12 +106,43 @@ jobs:
 
       - uses: DeterminateSystems/nix-installer-action@v22
 
-      - uses: ./.github/actions/build-and-cache
-        with:
-          system: ${{ matrix.system }}
-          package: ${{ matrix.package }}
-          r2_access_key_id: ${{ secrets.R2_ACCESS_KEY_ID }}
-          r2_secret_access_key: ${{ secrets.R2_SECRET_ACCESS_KEY }}
-          r2_bucket: ${{ secrets.R2_BUCKET }}
-          r2_endpoint: ${{ secrets.R2_ENDPOINT }}
-          nix_secret_key: ${{ secrets.NIX_SECRET_KEY }}
+      - name: Build package
+        env:
+          NIXPKGS_ALLOW_UNFREE: 1
+        run: nix build .#packages.${{ matrix.system }}.${{ matrix.package }} --print-build-logs --impure
+
+      - name: Show build size
+        run: |
+          STORE_PATH=$(readlink -f result)
+          RAW_SIZE=$(nix path-info -Sh "$STORE_PATH" | awk '{print $2}')
+          CLOSURE_SIZE=$(nix path-info -Sh "$STORE_PATH" --recursive | tail -1 | awk '{print $2}')
+          echo "### Build size: ${{ matrix.package }} (${{ matrix.system }})" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Metric | Size |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|---|---|" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Output path | $RAW_SIZE |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Closure (total with deps) | $CLOSURE_SIZE |" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Sign & copy to R2 cache
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          NIX_SECRET_KEY: ${{ secrets.NIX_SECRET_KEY }}
+        run: |
+          STORE_PATH=$(readlink -f result)
+
+          echo "$NIX_SECRET_KEY" > ./secret-key
+          nix store sign --key-file ./secret-key "$STORE_PATH"
+          rm -f ./secret-key
+
+          COPY_SIZE=$(nix path-info -Sh "$STORE_PATH" | awk '{print $2}')
+          CLOSURE_SIZE=$(nix path-info -Sh "$STORE_PATH" --recursive | tail -1 | awk '{print $2}')
+
+          nix copy --to "s3://${{ secrets.R2_BUCKET }}?endpoint=${{ secrets.R2_ENDPOINT }}&region=auto" "$STORE_PATH"
+
+          echo "### R2 cache result: ${{ matrix.package }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Item | Value |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|---|---|" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Package | ${{ matrix.package }} (${{ matrix.system }}) |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Output path size | $COPY_SIZE |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Closure size | $CLOSURE_SIZE |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| R2 bucket | ${{ secrets.R2_BUCKET }} |" >> "$GITHUB_STEP_SUMMARY"
