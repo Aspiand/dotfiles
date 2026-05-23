@@ -9,9 +9,10 @@
   nixConfig = {
     substituters = [
       "https://nix.aspian.my.id"
+      "https://cache.nixos.org"
     ];
     trusted-public-keys = [
-      "github-ci-1:qjsecsjhdp0svqh6aXFEaaYtsTh5U+Ca6Jzmk46wXOY=" # TODO: remove
+      "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
       "github-ci-2:eUvIhhjHCO/kJVGcFNd/sNCGSx59tj1QAXmb477OO00="
     ];
   };
