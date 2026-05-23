@@ -225,6 +225,11 @@
       enable = false; # Enable CUPS to print documents.
       drivers = [ pkgs.gutenprint ];
     };
+
+    hermes-agent = {
+      enable = true;
+      addToSystemPackages = true;
+    };
   };
 
   virtualisation = {

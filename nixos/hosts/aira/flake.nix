@@ -19,14 +19,18 @@
       url = "github:Gerg-L/spicetify-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    hermes-agent.url = "github:NousResearch/hermes-agent";
   };
 
   outputs =
     inputs@{
+      self,
       nixpkgs,
       home-manager,
       grub2-themes,
       spicetify-nix,
+      hermes-agent,
       ...
     }:
     let
@@ -41,8 +45,10 @@
             ./hardware-configuration.nix
             ./gnome.nix
             grub2-themes.nixosModules.default
+            hermes-agent.nixosModules.default
             home-manager.nixosModules.home-manager
             {
+              system.nixos.revision = nixpkgs.lib.mkDefault (self.rev or self.dirtyRev or "Unknown");
               nixpkgs.overlays = [ inputs.dotfiles.overlays.default ];
               home-manager = {
                 extraSpecialArgs = { inherit inputs; };
