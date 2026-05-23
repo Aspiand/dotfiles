@@ -13,7 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - name: List narinfo files in R2
+      - name: List objects in R2
         id: list
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
@@ -23,74 +23,86 @@ jobs:
             --bucket "${{ secrets.R2_BUCKET }}" \
             --endpoint "${{ secrets.R2_ENDPOINT }}" \
             --region auto \
-            --page-size 1000 \
             --output json \
-          | jq -c '[.Contents[] | select(.Key | endswith(".narinfo"))]' \
-          > /tmp/narinfos.json
+          > /tmp/objects.json
 
-          TOTAL=$(jq 'length' /tmp/narinfos.json)
-          TOTAL_NAR=$(aws s3api list-objects \
-            --bucket "${{ secrets.R2_BUCKET }}" \
-            --endpoint "${{ secrets.R2_ENDPOINT }}" \
-            --region auto \
-            --page-size 1000 \
-            --query "length(Contents[?contains(Key, 'nar/')])" \
-            --output text 2>/dev/null || echo "0")
+          jq -c '[.Contents // [] | .[] | select(.Key | endswith(".narinfo"))]' \
+            /tmp/objects.json > /tmp/narinfos.json
+
+          TOTAL=$(jq '[.Contents // [] | .[] | select(.Key | endswith(".narinfo"))] | length' /tmp/objects.json)
+          TOTAL_NAR=$(jq '[.Contents // [] | .[] | select(.Key | contains("nar/"))] | length' /tmp/objects.json)
+          TOTAL_SIZE=$(jq '[.Contents // [] | .[].Size] | add // 0' /tmp/objects.json)
 
           echo "total_narinfos=$TOTAL" >> "$GITHUB_OUTPUT"
           echo "total_nar=$TOTAL_NAR" >> "$GITHUB_OUTPUT"
+          echo "total_size=$TOTAL_SIZE" >> "$GITHUB_OUTPUT"
 
       - name: Check each narinfo
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
         run: |
+          FAIL_DOWNLOAD=0
+          FAIL_SIG=0
+          FAIL_NAR=0
+          FAIL_CACHE=0
+          ISSUES_LOG="/tmp/issues.txt"
+          > "$ISSUES_LOG"
+
           jq -c '.[]' /tmp/narinfos.json | while read -r obj; do
             KEY=$(echo "$obj" | jq -r '.Key')
-            HASH="${KEY%.narinfo}"
-
             echo "--- $KEY ---"
 
-            # Download and parse narinfo
-            if aws s3api get-object \
+            if ! aws s3api get-object \
               --bucket "${{ secrets.R2_BUCKET }}" \
               --endpoint "${{ secrets.R2_ENDPOINT }}" \
               --region auto \
               --key "$KEY" \
-              /tmp/narinfo.txt > /dev/null 2>&1
+              /tmp/nar.txt > /dev/null 2>&1
             then
-              STORE_PATH=$(grep '^StorePath:' /tmp/narinfo.txt | sed 's/^StorePath: //')
-              SIG=$(grep '^Sig:' /tmp/narinfo.txt | sed 's/^Sig: //')
-              NAR_URL=$(grep '^URL:' /tmp/narinfo.txt | sed 's/^URL: //')
-              FILE_SIZE=$(grep '^FileSize:' /tmp/narinfo.txt | sed 's/^FileSize: //')
-
-              echo "  StorePath: $STORE_PATH"
-              echo "  Has signature: $([ -n "$SIG" ] && echo yes || echo no) ($(echo "$SIG" | cut -d: -f1))"
-              echo "  Nar URL: $NAR_URL"
-
-              # Check referenced NAR file exists
-              if [ -n "$NAR_URL" ]; then
-                if aws s3api head-object \
-                  --bucket "${{ secrets.R2_BUCKET }}" \
-                  --endpoint "${{ secrets.R2_ENDPOINT }}" \
-                  --region auto \
-                  --key "$NAR_URL" \
-                  --no-sign-request > /dev/null 2>&1
-                then
-                  echo "  Nar exists: yes"
-                else
-                  echo "  Nar exists: MISSING"
-                fi
-              fi
-
-              # Check public cache
-              CURL_CODE=$(curl -s -o /dev/null -w "%{http_code}" "$PUBLIC_CACHE_URL/$KEY" 2>/dev/null || echo "error")
-              echo "  Public cache HTTP: $CURL_CODE"
-            else
               echo "  FAILED to fetch narinfo"
+              echo "download_fail:$KEY" >> "$ISSUES_LOG"
+              continue
             fi
 
-            rm -f /tmp/narinfo.txt
+            STORE_PATH=$(grep '^StorePath:' /tmp/nar.txt 2>/dev/null | sed 's/^StorePath: //')
+            SIG=$(grep '^Sig:' /tmp/nar.txt 2>/dev/null | sed 's/^Sig: //')
+            NAR_URL=$(grep '^URL:' /tmp/nar.txt 2>/dev/null | sed 's/^URL: //')
+
+            echo "  StorePath: $STORE_PATH"
+            echo "  Has signature: $([ -n "$SIG" ] && echo yes || echo no) ($(echo "$SIG" | cut -d: -f1))"
+
+            # Check signature
+            if [ -z "$SIG" ]; then
+              echo "  ✗ MISSING SIGNATURE"
+              echo "no_sig:$KEY" >> "$ISSUES_LOG"
+            fi
+
+            # Check referenced NAR file exists
+            if [ -n "$NAR_URL" ]; then
+              if aws s3api head-object \
+                --bucket "${{ secrets.R2_BUCKET }}" \
+                --endpoint "${{ secrets.R2_ENDPOINT }}" \
+                --region auto \
+                --key "$NAR_URL" \
+                --no-sign-request > /dev/null 2>&1
+              then
+                echo "  Nar exists: yes"
+              else
+                echo "  ✗ NAR MISSING: $NAR_URL"
+                echo "nar_missing:$KEY ($NAR_URL)" >> "$ISSUES_LOG"
+              fi
+            fi
+
+            # Check public cache
+            HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" "$PUBLIC_CACHE_URL/$KEY" 2>/dev/null || echo "error")
+            echo "  Public cache HTTP: $HTTP_CODE"
+            if [ "$HTTP_CODE" != "200" ]; then
+              echo "  ✗ PUBLIC CACHE UNREACHABLE"
+              echo "cache_unreachable:$KEY (HTTP $HTTP_CODE)" >> "$ISSUES_LOG"
+            fi
+
+            rm -f /tmp/nar.txt
           done
 
       - name: Cross-reference with flake packages
@@ -98,15 +110,15 @@ jobs:
 
       - name: Check known packages against cache
         run: |
-          MISSING=0
+          MISSING_PKG=0
           PACKAGES=$(nix eval .#packages.x86_64-linux --json --impure 2>/dev/null | jq -r 'keys[]' || echo "")
 
+          > /tmp/pkg-issues.txt
           for pkg in $PACKAGES; do
             if [ "$pkg" = "9router" ]; then
               continue
             fi
 
-            # Find matching narinfo by package name
             MATCH=$(jq -r --arg pkg "$pkg" '
               [.[].Key | select(endswith(".narinfo"))] |
               map(select(contains($pkg)))
@@ -116,27 +128,70 @@ jobs:
               echo "✓ $pkg — found in R2"
             else
               echo "✗ $pkg — NOT found in R2"
-              MISSING=$((MISSING + 1))
+              echo "missing_pkg:$pkg" >> /tmp/pkg-issues.txt
+              MISSING_PKG=$((MISSING_PKG + 1))
             fi
           done
 
-          echo "MISSING_PACKAGES=$MISSING" >> "$GITHUB_ENV"
+          echo "MISSING_PACKAGES=$MISSING_PKG" >> "$GITHUB_ENV"
 
       - name: Report
         if: always()
         run: |
+          TOTAL_ISSUES=0
+          if [ -f /tmp/issues.txt ]; then
+            TOTAL_ISSUES=$(wc -l < /tmp/issues.txt)
+          fi
+          PKG_ISSUES=$(wc -l < /tmp/pkg-issues.txt 2>/dev/null || echo "0")
+          TOTAL_FAIL=$((TOTAL_ISSUES + PKG_ISSUES))
+
+          TOTAL_BYTES=${{ steps.list.outputs.total_size }}
+          TOTAL_HUMAN=$(numfmt --to=iec "$TOTAL_BYTES" 2>/dev/null || echo "${TOTAL_BYTES}B")
+
           {
-            echo "### Verify R2 Cache"
+            echo "## Verify R2 Cache"
             echo ""
             echo "| Metric | Value |"
             echo "|---|---|"
             echo "| Narinfo files | ${{ steps.list.outputs.total_narinfos }} |"
             echo "| NAR files | ${{ steps.list.outputs.total_nar }} |"
+            echo "| Total size | $TOTAL_HUMAN |"
+            echo "| Issues found | $TOTAL_FAIL |"
             echo "| Packages missing from cache | ${{ env.MISSING_PACKAGES }} |"
+            echo ""
           } >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Fail if packages missing
-        if: env.MISSING_PACKAGES != '0'
+          if [ "$TOTAL_FAIL" -gt 0 ]; then
+            {
+              echo "### Issues"
+              echo ""
+              echo "**Narinfo integrity:**"
+              echo "\`\`\`"
+              cat /tmp/issues.txt 2>/dev/null || echo "(none)"
+              echo "\`\`\`"
+              echo ""
+              echo "**Missing packages:**"
+              echo "\`\`\`"
+              cat /tmp/pkg-issues.txt 2>/dev/null || echo "(none)"
+              echo "\`\`\`"
+            } >> "$GITHUB_STEP_SUMMARY"
+
+            echo "::warning::Verification found $TOTAL_FAIL issue(s)"
+          fi
+
+      - name: Fail on any issue
+        if: always()
         run: |
-          echo "::error::$MISSING_PACKAGES package(s) not found in R2 cache"
-          exit 1
+          TOTAL_ISSUES=0
+          if [ -f /tmp/issues.txt ]; then
+            TOTAL_ISSUES=$(wc -l < /tmp/issues.txt)
+          fi
+          PKG_ISSUES=$(wc -l < /tmp/pkg-issues.txt 2>/dev/null || echo "0")
+          TOTAL_FAIL=$((TOTAL_ISSUES + PKG_ISSUES))
+
+          if [ "$TOTAL_FAIL" -gt 0 ]; then
+            echo "::error::$TOTAL_FAIL issue(s) found during verification"
+            cat /tmp/issues.txt 2>/dev/null
+            cat /tmp/pkg-issues.txt 2>/dev/null
+            exit 1
+          fi

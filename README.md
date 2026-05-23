@@ -48,3 +48,4 @@ Or individually:
 **Using the Binary Cache:**
 
 - Set yourself as `trusted-users` (see [docs/R2_CACHE_GUIDE.md](docs/R2_CACHE_GUIDE.md)) to use the flake's built-in Nix binary cache automatically.
+- Cache operations: [CACHE_REPORT.md](CACHE_REPORT.md) — generate report, clean packages, run GC.

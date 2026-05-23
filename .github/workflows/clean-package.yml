@@ -1,0 +1,110 @@
+name: Clean Package from Cache
+
+on:
+  workflow_dispatch:
+    inputs:
+      package:
+        description: "Package name (e.g., codegraph, hanabi)"
+        required: true
+
+jobs:
+  clean:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Collect objects from R2
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+        run: |
+          PACKAGE="${{ inputs.package }}"
+
+          aws s3api list-objects \
+            --bucket "${{ secrets.R2_BUCKET }}" \
+            --endpoint "${{ secrets.R2_ENDPOINT }}" \
+            --region auto \
+            --output json \
+          > /tmp/objects.json
+
+          jq -r '.Contents // [] | .[] | select(.Key | endswith(".narinfo")) | [.Key, .LastModified] | @tsv' \
+            /tmp/objects.json > /tmp/narinfo-list.tsv
+
+          > /tmp/pkg-entries.txt
+          while IFS=$'\t' read -r KEY LASTMOD; do
+            aws s3api get-object \
+              --bucket "${{ secrets.R2_BUCKET }}" \
+              --endpoint "${{ secrets.R2_ENDPOINT }}" \
+              --region auto \
+              --key "$KEY" \
+              /tmp/nar.txt > /dev/null 2>&1
+
+            STORE_PATH=$(grep '^StorePath:' /tmp/nar.txt 2>/dev/null | sed 's/^StorePath: //')
+            if echo "$STORE_PATH" | grep -qiF "$PACKAGE"; then
+              echo "$KEY|$LASTMOD|$STORE_PATH" >> /tmp/pkg-entries.txt
+            fi
+          done < /tmp/narinfo-list.tsv
+
+      - name: Delete old versions (keep latest 1)
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+        run: |
+          PACKAGE="${{ inputs.package }}"
+          TOTAL=$(wc -l < /tmp/pkg-entries.txt)
+          echo "Found $TOTAL version(s) of $PACKAGE"
+
+          if [ "$TOTAL" -le 1 ]; then
+            echo "Only 1 version — nothing to clean"
+            echo "### Clean $PACKAGE" >> "$GITHUB_STEP_SUMMARY"
+            echo "Only 1 version in cache — nothing to remove." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          # Sort by LastModified (oldest first), delete all but newest
+          sort -t'|' -k2 /tmp/pkg-entries.txt | head -n $((TOTAL - 1)) > /tmp/to-delete.txt
+
+          echo "Deleting older versions:"
+          while IFS='|' read -r KEY LASTMOD STORE_PATH; do
+            HASH="${KEY%.narinfo}"
+            echo "  $KEY → $STORE_PATH"
+
+            aws s3api delete-object \
+              --bucket "${{ secrets.R2_BUCKET }}" \
+              --endpoint "${{ secrets.R2_ENDPOINT }}" \
+              --region auto \
+              --key "$KEY"
+
+            # Also delete paired NAR
+            grep "^nar/.*${HASH}" /tmp/narinfo-list.tsv 2>/dev/null | while IFS=$'\t' read -r NAR_KEY _; do
+              aws s3api delete-object \
+                --bucket "${{ secrets.R2_BUCKET }}" \
+                --endpoint "${{ secrets.R2_ENDPOINT }}" \
+                --region auto \
+                --key "$NAR_KEY"
+              echo "  Deleted NAR: $NAR_KEY"
+            done || true
+
+            # Try nar/<hash>.nar.zst too
+            aws s3api list-objects \
+              --bucket "${{ secrets.R2_BUCKET }}" \
+              --endpoint "${{ secrets.R2_ENDPOINT }}" \
+              --region auto \
+              --prefix "nar/$HASH" \
+              --query "Contents[].Key" \
+              --output text 2>/dev/null | tr '\t' '\n' | while read -r NAR_KEY; do
+                [ -z "$NAR_KEY" ] && continue
+                aws s3api delete-object \
+                  --bucket "${{ secrets.R2_BUCKET }}" \
+                  --endpoint "${{ secrets.R2_ENDPOINT }}" \
+                  --region auto \
+                  --key "$NAR_KEY"
+                echo "  Deleted: $NAR_KEY"
+              done
+          done < /tmp/to-delete.txt
+
+          {
+            echo "### Clean $PACKAGE"
+            echo ""
+            echo "Removed $((TOTAL - 1)) old version(s), kept latest."
+          } >> "$GITHUB_STEP_SUMMARY"

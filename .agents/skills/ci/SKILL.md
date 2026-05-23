@@ -19,7 +19,9 @@ and cache details. Read it first when you need a quick reference.
 |---|---|---|
 | `build.yml` | Build, sign, push to R2 | Push main (nix/**, flake.*), dispatch, call |
 | `verify.yml` | Check R2 cache integrity (list narinfos, parse signatures, check NAR files exist, cross-ref packages) | Dispatch, call |
-| `gc.yml` | `keep-fresh` job (rebuild + re-push), `prune` job (delete objects >30 days) | Cron Sun 06:00, dispatch (supports `dry-run`) |
+| `gc.yml` | Smart prune: orphan NARs, stale packages, age-based (>30d), keep latest 2 per package | Cron Sun 06:00, dispatch (supports `dry-run`) |
+| `clean-package.yml` | Remove all but latest version of a specific package | Dispatch (`package` input) |
+| `cache-report.yml` | Generate package table with sizes, hashes, timestamps | Dispatch |
 | `update.yml` | nvfetcher → staging branch → build.yml → promote to main | Cron Mon 06:00, dispatch |
 | `check.yml` | `nix flake check` on all flakes in repo | Every push |
 | `build-external.yml` | Thin wrapper calling build.yml on an external flake | Dispatch |
@@ -65,14 +67,30 @@ Pure R2 inspection — no package building:
 5. Cross-reference: `nix eval` flake packages → check each has a matching narinfo
 6. Fail if any package (except 9router) has no narinfo in R2
 
-### gc.yml
+### gc.yml (no build — pure inspection)
 
-Two sequential jobs:
+Single `prune` job with 4 phases:
 
-- **keep-fresh** — Build all packages (same as build.yml matrix), sign, copy to R2
-- **prune** — `aws s3api list-objects` with date filter >30 days → delete
+1. **Orphan NARs** — NAR files with no corresponding narinfo → delete
+2. **Stale packages** — Store paths not matching any current flake package → delete all
+3. **Age-based** — Objects with `LastModified` older than 30 days → delete
+4. **Keep latest 2** — Per package, sort by timestamp, keep newest 2 versions
 
-`dry-run: true` for safe testing (lists without deleting).
+Phases are cumulative. Delete list is deduplicated before execution.
+
+`dry-run: true` — list only, no delete.
+
+### clean-package.yml
+
+Targeted cleanup for a single package. Takes `package` input, removes all
+but the latest 1 version from R2. Useful for reclaiming space after a
+package gets many updates.
+
+### cache-report.yml
+
+Lists every narinfo in R2, downloads each to extract `StorePath`, `Sig`,
+`URL`, and cross-references with `objects.json` for file sizes. Outputs a
+markdown table to `GITHUB_STEP_SUMMARY` and saves raw data as an artifact.
 
 ### update.yml
 

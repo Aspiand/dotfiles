@@ -6,95 +6,170 @@ on:
   workflow_dispatch:
     inputs:
       dry-run:
-        description: "Dry run — list what would be deleted, skip delete"
+        description: "List what would be deleted, skip actual deletion"
         type: boolean
-        required: false
         default: false
 
 env:
+  CUTOFF_DAYS: 30
+  KEEP_VERSIONS: 2
   EXCLUDED_PACKAGES: '["9router"]'
 
 jobs:
-  keep-fresh:
+  prune:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
 
       - uses: DeterminateSystems/nix-installer-action@v22
 
-      - name: Keep fresh — build + copy current packages
+      - name: Collect R2 objects & narinfo metadata
         env:
-          NIXPKGS_ALLOW_UNFREE: 1
-          NIX_SECRET_KEY: ${{ secrets.NIX_SECRET_KEY }}
-          R2_BUCKET: ${{ secrets.R2_BUCKET }}
-          R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
         run: |
-          NIX_OUTPUT=$(mktemp)
-          nix eval .#packages.x86_64-linux --json --impure > "$NIX_OUTPUT"
-          PACKAGES=$(jq -c --argjson excluded "$EXCLUDED_PACKAGES" '
-            keys | map(select(. as $p | $excluded | index($p) | not))
-          ' < "$NIX_OUTPUT" | jq -r '.[]')
-          rm -f "$NIX_OUTPUT"
+          aws s3api list-objects \
+            --bucket "${{ secrets.R2_BUCKET }}" \
+            --endpoint "${{ secrets.R2_ENDPOINT }}" \
+            --region auto \
+            --output json \
+          > /tmp/objects.json
 
-          for pkg in $PACKAGES; do
-            echo "=== Refreshing: $pkg ==="
-            nix build ".#packages.x86_64-linux.$pkg" \
-              --print-build-logs --impure --accept-flake-config
+          ALL_KEYS=$(jq -r '.Contents // [] | .[].Key' /tmp/objects.json)
+          echo "$ALL_KEYS" > /tmp/all-keys.txt
 
-            STORE_PATH=$(readlink -f result)
+          jq -r '.Contents // [] | .[] | select(.Key | endswith(".narinfo")) | [.Key, .LastModified] | @tsv' \
+            /tmp/objects.json > /tmp/narinfo-list.tsv
 
-            echo "$NIX_SECRET_KEY" > ./secret-key
-            nix store sign --key-file ./secret-key "$STORE_PATH"
-            rm -f ./secret-key
+      - name: Download & parse narinfos
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+        run: |
+          > /tmp/narinfo-data.txt
 
-            nix copy --to "s3://$R2_BUCKET?endpoint=$R2_ENDPOINT&region=auto" "$STORE_PATH"
-            echo "✓ $pkg refreshed"
+          while IFS=$'\t' read -r KEY LASTMOD; do
+            aws s3api get-object \
+              --bucket "${{ secrets.R2_BUCKET }}" \
+              --endpoint "${{ secrets.R2_ENDPOINT }}" \
+              --region auto \
+              --key "$KEY" \
+              /tmp/nar.txt > /dev/null 2>&1
+
+            STORE_PATH=$(grep '^StorePath:' /tmp/nar.txt 2>/dev/null | sed 's/^StorePath: //')
+            if [ -n "$STORE_PATH" ]; then
+              echo "$KEY|$LASTMOD|$STORE_PATH" >> /tmp/narinfo-data.txt
+            fi
+          done < /tmp/narinfo-list.tsv
+
+          echo "Narinfos parsed: $(wc -l < /tmp/narinfo-data.txt)"
+
+      - name: Build delete list
+        run: |
+          > /tmp/to-delete.txt
+          CUTOFF=$(date -u -d "-$CUTOFF_DAYS days" +%s)
+          PACKAGES=$(nix eval .#packages.x86_64-linux --json --impure 2>/dev/null | jq -r 'keys[]' || echo "")
+
+          # ── Phase A: Orphan NAR files ──
+          echo "=== Phase A: Orphan NAR files ==="
+          while IFS= read -r KEY; do
+            if echo "$KEY" | grep -q '^nar/'; then
+              NAR_HASH=$(basename "$KEY")
+              if ! grep -q "$NAR_HASH" /tmp/narinfo-data.txt 2>/dev/null; then
+                echo "$KEY" >> /tmp/to-delete.txt
+                echo "  Orphan NAR: $KEY"
+              fi
+            fi
+          done < /tmp/all-keys.txt
+
+          # ── Phase B: Stale packages (not in flake) ──
+          echo "=== Phase B: Stale packages (not in flake) ==="
+          while IFS='|' read -r KEY LASTMOD STORE_PATH; do
+            MATCHED=false
+            for PKG in $PACKAGES; do
+              if echo "$STORE_PATH" | grep -qiF "$PKG"; then
+                MATCHED=true
+                break
+              fi
+            done
+            if [ "$MATCHED" = false ]; then
+              HASH="${KEY%.narinfo}"
+              echo "${HASH}.narinfo" >> /tmp/to-delete.txt
+              grep "^nar/.*${HASH}" /tmp/all-keys.txt >> /tmp/to-delete.txt 2>/dev/null || true
+              echo "  Stale: $KEY → $STORE_PATH"
+            fi
+          done < /tmp/narinfo-data.txt
+
+          # ── Phase C: Age-based — objects older than CUTOFF_DAYS ──
+          echo "=== Phase C: Age-based (> ${CUTOFF_DAYS} days) ==="
+          while IFS='|' read -r KEY LASTMOD STORE_PATH; do
+            OBJ_TS=$(date -u -d "$LASTMOD" +%s 2>/dev/null || echo "0")
+            if [ "$OBJ_TS" -lt "$CUTOFF" ] 2>/dev/null; then
+              HASH="${KEY%.narinfo}"
+              echo "${HASH}.narinfo" >> /tmp/to-delete.txt
+              grep "^nar/.*${HASH}" /tmp/all-keys.txt >> /tmp/to-delete.txt 2>/dev/null || true
+              echo "  Old: $KEY ($LASTMOD)"
+            fi
+          done < /tmp/narinfo-data.txt
+
+          # ── Phase D: Keep latest N per package ──
+          echo "=== Phase D: Keep latest $KEEP_VERSIONS per package ==="
+          for PKG in $PACKAGES; do
+            if echo "$EXCLUDED_PACKAGES" | jq -e --arg p "$PKG" 'index($p) != null' > /dev/null 2>&1; then
+              continue
+            fi
+
+            grep -iF "$PKG" /tmp/narinfo-data.txt \
+              | sort -t'|' -k2 \
+              > /tmp/pkg-entries.txt
+
+            TOTAL=$(wc -l < /tmp/pkg-entries.txt)
+
+            if [ "$TOTAL" -le "$KEEP_VERSIONS" ]; then
+              echo "  $PKG: $TOTAL versions, ≤ $KEEP_VERSIONS — keeping all"
+              continue
+            fi
+
+            HEAD_COUNT=$((TOTAL - KEEP_VERSIONS))
+            head -n "$HEAD_COUNT" /tmp/pkg-entries.txt | while IFS='|' read -r KEY LASTMOD STORE_PATH; do
+              HASH="${KEY%.narinfo}"
+              echo "${HASH}.narinfo" >> /tmp/to-delete.txt
+              grep "^nar/.*${HASH}" /tmp/all-keys.txt >> /tmp/to-delete.txt 2>/dev/null || true
+              echo "  Old version of $PKG: $STORE_PATH ($LASTMOD)"
+            done
           done
 
-  prune:
-    needs: keep-fresh
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v5
+          sort -u /tmp/to-delete.txt > /tmp/to-delete-dedup.txt
+          mv /tmp/to-delete-dedup.txt /tmp/to-delete.txt
 
-      - name: List & delete objects older than 30 days
+          echo ""
+          echo "Total objects to delete: $(wc -l < /tmp/to-delete.txt)"
+
+      - name: Execute deletions
+        if: always()
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
           DRY_RUN: ${{ inputs.dry-run || false }}
         run: |
-          CUTOFF=$(date -u -d "-30 days" +%Y-%m-%dT%H:%M:%SZ)
-          echo "Cutoff date: $CUTOFF"
-          echo "Dry run: $DRY_RUN"
+          TOTAL=$(wc -l < /tmp/to-delete.txt)
 
           if [ "$DRY_RUN" = "true" ]; then
-            echo "### Dry run — nothing will be deleted" >> "$GITHUB_STEP_SUMMARY"
-          fi
-
-          aws s3api list-objects \
-            --bucket "${{ secrets.R2_BUCKET }}" \
-            --endpoint "${{ secrets.R2_ENDPOINT }}" \
-            --region auto \
-            --query "Contents[?LastModified<=\`$CUTOFF\`].[Key,LastModified]" \
-            --output text \
-            --page-size 1000 \
-          > /tmp/old-objects.txt
-
-          TOTAL=$(wc -l < /tmp/old-objects.txt)
-          echo "Objects to prune: $TOTAL"
-
-          while read -r key lastmod; do
-            [ -z "$key" ] && continue
-            echo "  $key (last modified: $lastmod)"
-
-            if [ "$DRY_RUN" != "true" ]; then
+            echo "### Dry run — nothing deleted" >> "$GITHUB_STEP_SUMMARY"
+            echo "Would delete $TOTAL objects:"
+            cat /tmp/to-delete.txt
+          else
+            echo "Deleting $TOTAL objects..."
+            while IFS= read -r KEY; do
+              [ -z "$KEY" ] && continue
+              echo "  Deleting: $KEY"
               aws s3api delete-object \
                 --bucket "${{ secrets.R2_BUCKET }}" \
                 --endpoint "${{ secrets.R2_ENDPOINT }}" \
                 --region auto \
-                --key "$key"
-            fi
-          done < /tmp/old-objects.txt
+                --key "$KEY"
+            done < /tmp/to-delete.txt
+          fi
 
       - name: Report
         if: always()
@@ -102,7 +177,7 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
         run: |
-          COUNT=$(aws s3api list-objects \
+          REMAINING=$(aws s3api list-objects \
             --bucket "${{ secrets.R2_BUCKET }}" \
             --endpoint "${{ secrets.R2_ENDPOINT }}" \
             --region auto \
@@ -114,6 +189,7 @@ jobs:
             echo ""
             echo "| Metric | Value |"
             echo "|---|---|"
-            echo "| Objects remaining | $COUNT |"
+            echo "| Objects to delete | $(wc -l < /tmp/to-delete.txt) |"
+            echo "| Objects remaining | $REMAINING |"
             echo "| Dry run | ${{ inputs.dry-run || false }} |"
           } >> "$GITHUB_STEP_SUMMARY"

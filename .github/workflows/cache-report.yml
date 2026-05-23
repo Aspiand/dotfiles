@@ -1,0 +1,115 @@
+name: Generate Cache Report
+
+on:
+  workflow_dispatch:
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: DeterminateSystems/nix-installer-action@v22
+
+      - name: Collect & parse all narinfos
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+        run: |
+          aws s3api list-objects \
+            --bucket "${{ secrets.R2_BUCKET }}" \
+            --endpoint "${{ secrets.R2_ENDPOINT }}" \
+            --region auto \
+            --output json \
+          > /tmp/objects.json
+
+          > /tmp/report-data.txt
+
+          jq -r '.Contents // [] | .[] | select(.Key | endswith(".narinfo")) | [.Key, .Size, .LastModified] | @tsv' \
+            /tmp/objects.json > /tmp/narinfo-list.tsv
+
+          while IFS=$'\t' read -r KEY NARINFO_SIZE LASTMOD; do
+            aws s3api get-object \
+              --bucket "${{ secrets.R2_BUCKET }}" \
+              --endpoint "${{ secrets.R2_ENDPOINT }}" \
+              --region auto \
+              --key "$KEY" \
+              /tmp/nar.txt > /dev/null 2>&1
+
+            STORE_PATH=$(grep '^StorePath:' /tmp/nar.txt 2>/dev/null | sed 's/^StorePath: //')
+            NAR_URL=$(grep '^URL:' /tmp/nar.txt 2>/dev/null | sed 's/^URL: //')
+            SIG=$(grep '^Sig:' /tmp/nar.txt 2>/dev/null | sed 's/^Sig: //')
+            HASH="${KEY%.narinfo}"
+
+            # Get NAR file size
+            NAR_SIZE=0
+            if [ -n "$NAR_URL" ]; then
+              NAR_SIZE=$(jq -r --arg url "$NAR_URL" '
+                [.Contents // [] | .[] | select(.Key == $url) | .Size] | if length > 0 then .[0] else "0" end
+              ' /tmp/objects.json)
+            fi
+
+            if [ -n "$STORE_PATH" ]; then
+              NAME=$(basename "$STORE_PATH")
+              PACKAGE=$(echo "$NAME" | sed 's/^[^-]*-//' | sed 's/-[0-9].*//')
+
+              echo "$PACKAGE|$STORE_PATH|$NARINFO_SIZE|$NAR_SIZE|$LASTMOD|$HASH|$SIG" >> /tmp/report-data.txt
+            fi
+          done < /tmp/narinfo-list.tsv
+
+      - name: Generate report
+        run: |
+          {
+            echo "## R2 Cache Report"
+            echo ""
+            echo "Generated: $(date -u)"
+            echo ""
+            echo "### Package Overview"
+            echo ""
+            echo "| Package | Store Path | Narinfo Size | NAR Size | Last Modified | Signed |"
+            echo "|---|---|---|---|---|---|"
+
+            sort -t'|' -k1,1 -k4,4rn /tmp/report-data.txt | while IFS='|' read -r PACKAGE STORE_PATH NARINFO_SIZE NAR_SIZE LASTMOD HASH SIG; do
+              NARINFO_HUMAN=$(numfmt --to=iec "$NARINFO_SIZE" 2>/dev/null || echo "${NARINFO_SIZE}B")
+              NAR_HUMAN=$(numfmt --to=iec "$NAR_SIZE" 2>/dev/null || echo "${NAR_SIZE}B")
+              SIG_STATUS="${SIG:+yes}"
+              echo "| $PACKAGE | \`$STORE_PATH\` | $NARINFO_HUMAN | $NAR_HUMAN | $LASTMOD | ${SIG_STATUS:-no} |"
+            done
+
+            echo ""
+            echo "### Actions"
+            echo ""
+            echo "| Package | Clean (keep latest 1) |"
+            echo "|---|---|"
+
+            PACKAGES=$(nix eval .#packages.x86_64-linux --json --impure 2>/dev/null | jq -r 'keys[]' || echo "")
+            for PKG in $PACKAGES; do
+              if [ "$PKG" = "9router" ]; then continue; fi
+              echo "| $PKG | [Clean →](https://github.com/aspiand/dotfiles/actions/workflows/clean-package.yml) |"
+            done
+
+            echo ""
+            echo "### How to use"
+            echo ""
+            echo "1. **Generate fresh report** — run [cache-report.yml](https://github.com/aspiand/dotfiles/actions/workflows/cache-report.yml)"
+            echo "2. **Clean a package** — run [clean-package.yml](https://github.com/aspiand/dotfiles/actions/workflows/clean-package.yml) with the package name"
+            echo "3. **Full GC** — run [gc.yml](https://github.com/aspiand/dotfiles/actions/workflows/gc.yml) (dry-run first)"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          # Also save as artifact
+          cp /tmp/report-data.txt /tmp/cache-report.txt
+          {
+            echo "R2 Cache Report"
+            echo "==============="
+            echo "Generated: $(date -u)"
+            echo ""
+            echo "Package | Store Path | Narinfo Size | NAR Size | Last Modified | Hash | Signed"
+            echo "--------|------------|--------------|----------|--------------|------|-------"
+            sort -t'|' -k1,1 -k4,4rn /tmp/report-data.txt
+          } > /tmp/cache-report.txt
+
+      - name: Upload report artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: cache-report
+          path: /tmp/cache-report.txt
