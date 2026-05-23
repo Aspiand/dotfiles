@@ -229,6 +229,7 @@
     hermes-agent = {
       enable = true;
       addToSystemPackages = true;
+      extraDependencyGroups = [ "messaging" ];
     };
   };
 
