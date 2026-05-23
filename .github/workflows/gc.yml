@@ -48,19 +48,26 @@ jobs:
         run: |
           > /tmp/narinfo-data.txt
 
-          while IFS=$'\t' read -r KEY LASTMOD; do
-            aws s3api get-object \
-              --bucket "${{ secrets.R2_BUCKET }}" \
-              --endpoint "${{ secrets.R2_ENDPOINT }}" \
-              --region auto \
-              --key "$KEY" \
-              /tmp/nar.txt > /dev/null 2>&1
+          mkdir -p /tmp/narinfos
+          aws s3 cp "s3://${{ secrets.R2_BUCKET }}/" /tmp/narinfos/ \
+            --endpoint "${{ secrets.R2_ENDPOINT }}" \
+            --region auto \
+            --recursive \
+            --exclude "*" \
+            --include "*.narinfo" \
+            --only-show-errors
 
-            STORE_PATH=$(grep '^StorePath:' /tmp/nar.txt 2>/dev/null | sed 's/^StorePath: //')
+          cd /tmp/narinfos
+          for NARINFO in *.narinfo; do
+            [ -f "$NARINFO" ] || continue
+            KEY="$NARINFO"
+            STORE_PATH=$(grep '^StorePath:' "$NARINFO" 2>/dev/null | sed 's/^StorePath: //')
+            LASTMOD=$(jq -r --arg key "$KEY" '[.Contents // [] | .[] | select(.Key == $key) | .LastModified] | if length > 0 then .[0] else "" end' /tmp/objects.json)
+
             if [ -n "$STORE_PATH" ]; then
               echo "$KEY|$LASTMOD|$STORE_PATH" >> /tmp/narinfo-data.txt
             fi
-          done < /tmp/narinfo-list.tsv
+          done
 
           echo "Narinfos parsed: $(wc -l < /tmp/narinfo-data.txt)"
 
@@ -160,15 +167,12 @@ jobs:
             cat /tmp/to-delete.txt
           else
             echo "Deleting $TOTAL objects..."
-            while IFS= read -r KEY; do
-              [ -z "$KEY" ] && continue
-              echo "  Deleting: $KEY"
-              aws s3api delete-object \
-                --bucket "${{ secrets.R2_BUCKET }}" \
-                --endpoint "${{ secrets.R2_ENDPOINT }}" \
-                --region auto \
-                --key "$KEY"
-            done < /tmp/to-delete.txt
+            xargs -P 10 -I{} aws s3api delete-object \
+              --bucket "${{ secrets.R2_BUCKET }}" \
+              --endpoint "${{ secrets.R2_ENDPOINT }}" \
+              --region auto \
+              --key "{}" \
+            < /tmp/to-delete.txt
           fi
 
       - name: Report
