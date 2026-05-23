@@ -43,7 +43,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
         run: |
           mkdir -p /tmp/narinfos
-          aws s3 cp "s3://${{ secrets.R2_BUCKET }}/nar/" /tmp/narinfos/ \
+          aws s3 cp "s3://${{ secrets.R2_BUCKET }}/" /tmp/narinfos/ \
             --endpoint "${{ secrets.R2_ENDPOINT }}" \
             --region auto \
             --recursive \
@@ -61,7 +61,7 @@ jobs:
           cd /tmp/narinfos
           for NARINFO in *.narinfo; do
             [ -f "$NARINFO" ] || continue
-            KEY="nar/$NARINFO"
+            KEY="$NARINFO"
             echo "--- $KEY ---"
 
             STORE_PATH=$(grep '^StorePath:' "$NARINFO" 2>/dev/null | sed 's/^StorePath: //')
