@@ -26,6 +26,10 @@ jobs:
 
       - uses: DeterminateSystems/nix-installer-action@v22
 
+      - name: Clear installer summary
+        run: |
+          > "$GITHUB_STEP_SUMMARY"
+
       - name: Save current sources
         run: |
           if [ -f nix/_sources/_generated.json ]; then

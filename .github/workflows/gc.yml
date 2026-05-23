@@ -23,6 +23,10 @@ jobs:
 
       - uses: DeterminateSystems/nix-installer-action@v22
 
+      - name: Clear installer summary
+        run: |
+          > "$GITHUB_STEP_SUMMARY"
+
       - name: Collect R2 objects & narinfo metadata
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
@@ -149,6 +153,16 @@ jobs:
           sort -u /tmp/to-delete.txt > /tmp/to-delete-dedup.txt
           mv /tmp/to-delete-dedup.txt /tmp/to-delete.txt
 
+          # Calculate total reclaimable size
+          jq -Rn '[inputs | select(length > 0)]' /tmp/to-delete.txt > /tmp/delete-keys.json
+          RECLAIMABLE_SIZE=$(jq -r '
+            [.Contents // [] | .[] | select(
+              .Key as $k | ($delete_keys[0] | index($k)) != null
+            ) | .Size] | add // 0
+          ' --slurpfile delete_keys /tmp/delete-keys.json /tmp/objects.json)
+          echo "RECLAIMABLE_SIZE=$RECLAIMABLE_SIZE" >> "$GITHUB_ENV"
+          echo "Reclaimable size: $(numfmt --to=iec "$RECLAIMABLE_SIZE" 2>/dev/null || echo "${RECLAIMABLE_SIZE}B")"
+
           echo ""
           echo "Total objects to delete: $(wc -l < /tmp/to-delete.txt)"
 
@@ -194,6 +208,7 @@ jobs:
             echo "| Metric | Value |"
             echo "|---|---|"
             echo "| Objects to delete | $(wc -l < /tmp/to-delete.txt) |"
+            echo "| Storage reclaimed | $(numfmt --to=iec "${{ env.RECLAIMABLE_SIZE }}" 2>/dev/null || echo "${{ env.RECLAIMABLE_SIZE }}B") |"
             echo "| Objects remaining | $REMAINING |"
             echo "| Dry run | ${{ inputs.dry-run || false }} |"
           } >> "$GITHUB_STEP_SUMMARY"

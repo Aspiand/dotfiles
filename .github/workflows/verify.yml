@@ -107,6 +107,10 @@ jobs:
       - name: Cross-reference with flake packages
         uses: DeterminateSystems/nix-installer-action@v22
 
+      - name: Clear installer summary
+        run: |
+          > "$GITHUB_STEP_SUMMARY"
+
       - name: Check known packages against cache
         run: |
           MISSING_PKG=0
