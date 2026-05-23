@@ -43,7 +43,7 @@
     },
     "hanabi": {
         "cargoLock": null,
-        "date": "2026-05-10",
+        "date": "2026-05-22",
         "extract": null,
         "name": "hanabi",
         "passthru": null,
@@ -55,12 +55,12 @@
             "name": null,
             "owner": "jeffshee",
             "repo": "gnome-ext-hanabi",
-            "rev": "033dc86a6502400c52cc19af134a629d76cbb8a5",
-            "sha256": "sha256-s0N63C9FYFeljEitHbgC9OxRJqdeqvYlaCr0GE6+fDo=",
+            "rev": "854f3a93665e9d09edb3f944a8bce8d368a2e17f",
+            "sha256": "sha256-+BrCMh6hDGNDVsReNoPzG3kNpnstjj0Cwdo/r2QIEkQ=",
             "sparseCheckout": [],
             "type": "github"
         },
-        "version": "033dc86a6502400c52cc19af134a629d76cbb8a5"
+        "version": "854f3a93665e9d09edb3f944a8bce8d368a2e17f"
     },
     "openhuman": {
         "cargoLock": null,

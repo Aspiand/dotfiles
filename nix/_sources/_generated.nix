@@ -30,15 +30,15 @@
   };
   hanabi = {
     pname = "hanabi";
-    version = "033dc86a6502400c52cc19af134a629d76cbb8a5";
+    version = "854f3a93665e9d09edb3f944a8bce8d368a2e17f";
     src = fetchFromGitHub {
       owner = "jeffshee";
       repo = "gnome-ext-hanabi";
-      rev = "033dc86a6502400c52cc19af134a629d76cbb8a5";
+      rev = "854f3a93665e9d09edb3f944a8bce8d368a2e17f";
       fetchSubmodules = false;
-      sha256 = "sha256-s0N63C9FYFeljEitHbgC9OxRJqdeqvYlaCr0GE6+fDo=";
+      sha256 = "sha256-+BrCMh6hDGNDVsReNoPzG3kNpnstjj0Cwdo/r2QIEkQ=";
     };
-    date = "2026-05-10";
+    date = "2026-05-22";
   };
   openhuman = {
     pname = "openhuman";
