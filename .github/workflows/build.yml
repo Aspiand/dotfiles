@@ -74,17 +74,15 @@ jobs:
             ')
           elif [ "${{ inputs.repository }}" != "" ] && [ "${{ inputs.repository }}" != "${{ github.repository }}" ]; then
             echo "External flake — no exclusion filter"
-            nix eval .#packages.x86_64-linux --json --impure > "$NIX_OUTPUT" 2>&1 || {
-              echo "=== nix eval stderr ==="
-              cat "$NIX_OUTPUT"
+            nix eval .#packages.x86_64-linux --json --impure > "$NIX_OUTPUT" || {
+              echo "=== nix eval failed ==="
               exit 1
             }
             MATRIX=$(jq -c 'keys | map({system: "x86_64-linux", package: .})' < "$NIX_OUTPUT")
           else
             echo "Local flake — applying EXCLUDED_PACKAGES"
-            nix eval .#packages.x86_64-linux --json --impure > "$NIX_OUTPUT" 2>&1 || {
-              echo "=== nix eval stderr ==="
-              cat "$NIX_OUTPUT"
+            nix eval .#packages.x86_64-linux --json --impure > "$NIX_OUTPUT" || {
+              echo "=== nix eval failed ==="
               exit 1
             }
             MATRIX=$(jq -c --argjson excluded "$EXCLUDED_PACKAGES" '
