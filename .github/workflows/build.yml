@@ -13,6 +13,17 @@ on:
       - "flake.lock"
       - ".github/workflows/build.yml"
   workflow_dispatch:
+    inputs:
+      package:
+        description: "Package(s) — comma-separated, or 'ALL' for all"
+        type: string
+        required: false
+        default: "ALL"
+      force:
+        description: "Force rebuild even if already cached"
+        type: boolean
+        required: false
+        default: false
   workflow_call:
     inputs:
       repository:
@@ -30,6 +41,11 @@ on:
         type: string
         required: false
         default: "ALL"
+      force:
+        description: "Force rebuild even if already cached"
+        type: boolean
+        required: false
+        default: false
 
 jobs:
   generate-matrix:
@@ -103,7 +119,11 @@ jobs:
       - name: Build package
         env:
           NIXPKGS_ALLOW_UNFREE: 1
-        run: nix build .#packages.${{ matrix.system }}.${{ matrix.package }} --print-build-logs --impure
+          FORCE: ${{ inputs.force || '' }}
+        run: |
+          FLAGS="--print-build-logs --impure"
+          [ "$FORCE" = "true" ] && FLAGS="$FLAGS --check"
+          nix build .#packages.${{ matrix.system }}.${{ matrix.package }} $FLAGS
 
       - name: Show build size
         run: |
