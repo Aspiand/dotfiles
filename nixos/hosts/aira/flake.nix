@@ -47,7 +47,6 @@
             ./hermes.nix
             grub2-themes.nixosModules.default
             hermes-agent.nixosModules.default
-            inputs.dotfiles.nixosModules.hermes-agent
             home-manager.nixosModules.home-manager
             {
               system.nixos.revision = nixpkgs.lib.mkDefault (self.rev or self.dirtyRev or "Unknown");
