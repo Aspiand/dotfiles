@@ -121,13 +121,34 @@
 
     # documents.USER.md = ./USER.md;
 
-    # mcpServers.filesystem = {
-    #   command = "npx";
-    #   args = [ "-y" "@modelcontextprotocol/server-filesystem" "/data/workspace" ];
+    # mcpServers = {
+    #   filesystem = {
+    #     command = "npx";
+    #     args = [
+    #       "-y"
+    #       "@modelcontextprotocol/server-filesystem"
+    #       "/data/workspace"
+    #     ];
+    #   };
+
+    #   actual-budget = {
+    #     command = "npx";
+    #     args = [
+    #       "-y"
+    #       "actual-mcp"
+    #     ];
+    #     env = {
+    #       ACTUAL_SERVER_URL = "";
+    #       ACTUAL_PASSWORD = "";
+    #       ACTUAL_BUDGET_SYNC_ID = "";
+    #     };
+    #   };
     # };
 
     # extraPackages = [ pkgs.pandoc pkgs.imagemagick ];
     # restart = "always";
     # restartSec = 5;
   };
+
+  users.users.hermes.extraGroups = [ "users" ];
 }
