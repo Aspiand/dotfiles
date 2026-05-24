@@ -109,6 +109,7 @@
       # };
 
       # delegation = {
+      #   max_concurrent_children = 5;
       #   max_iterations = 50;
       #   reasoning_effort = "medium";
       # };
