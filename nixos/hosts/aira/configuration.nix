@@ -113,6 +113,7 @@
     description = "Aspian";
     packages = with pkgs; [ ];
     extraGroups = [
+    	"hermes"
       "dialout"
       "docker"
       "networkmanager"
@@ -224,13 +225,6 @@
     printing = {
       enable = false; # Enable CUPS to print documents.
       drivers = [ pkgs.gutenprint ];
-    };
-
-    hermes-agent = {
-      enable = true;
-      addToSystemPackages = true;
-      extraDependencyGroups = [ "messaging" ];
-      gateway.enable = true;
     };
   };
 

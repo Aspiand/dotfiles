@@ -15,8 +15,8 @@
     };
 
     config = mkIf cfg.gateway.enable {
-      systemd.user.services.hermes-gateway = {
-        description = "Hermes Agent Gateway (user service)";
+      systemd.services.hermes-gateway = {
+        description = "Hermes Agent Gateway";
         after = [ "network-online.target" ];
         wants = [ "network-online.target" ];
         serviceConfig = {
@@ -24,8 +24,10 @@
           ExecStart = "${hermesBin} gateway run";
           Restart = "always";
           RestartSec = 10;
+          DynamicUser = true;
+          WorkingDirectory = "/tmp";
         };
-        wantedBy = [ "default.target" ];
+        wantedBy = [ "multi-user.target" ];
       };
     };
   };

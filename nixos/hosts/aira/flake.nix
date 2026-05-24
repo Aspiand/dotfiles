@@ -44,6 +44,7 @@
             ./configuration.nix
             ./hardware-configuration.nix
             ./gnome.nix
+            ./hermes.nix
             grub2-themes.nixosModules.default
             hermes-agent.nixosModules.default
             inputs.dotfiles.nixosModules.hermes-agent
