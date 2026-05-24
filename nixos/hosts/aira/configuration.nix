@@ -230,6 +230,7 @@
       enable = true;
       addToSystemPackages = true;
       extraDependencyGroups = [ "messaging" ];
+      gateway.enable = true;
     };
   };
 
