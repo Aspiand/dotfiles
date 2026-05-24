@@ -13,6 +13,9 @@
       extraVolumes = [
         "/home/ao/Kode:/host/Kode:rw"
         "/home/ao/.config/dotfiles:/host/dotfiles:rw"
+
+        # TODO: later
+        # "/:/host:ro"
       ];
     };
 
