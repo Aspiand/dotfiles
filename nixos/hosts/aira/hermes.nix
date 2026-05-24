@@ -3,7 +3,7 @@
     enable = true;
     addToSystemPackages = true;
     stateDir = "/var/lib/hermes";
-    extraDependencyGroups = [ "messaging" ];
+    extraDependencyGroups = [ "messaging" "firecrawl" "mcp" "voice" "edge-tts" ];
 
     container = {
       enable = true;
