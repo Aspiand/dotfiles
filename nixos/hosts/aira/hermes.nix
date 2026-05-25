@@ -1,3 +1,5 @@
+{pkgs, ...}:
+
 {
   services.hermes-agent = {
     enable = true;
@@ -146,7 +148,35 @@
     #   };
     # };
 
-    # extraPackages = [ pkgs.pandoc pkgs.imagemagick ];
+    # ── CLI tools (replace ad-hoc scripts) ──
+    extraPackages = with pkgs; [
+      # Data serialization
+      yq              # JSON/YAML/TOML/XML/CSV/INI — universal processor
+      jq              # JSON query
+      jc              # convert command output → JSON
+      jo              # create JSON from CLI
+      gron            # flatten JSON into greppable format
+
+      # HTTP / API
+      xh              # HTTP client with JSON support — replace curl | python3
+
+      # Text / file manipulation
+      sd              # find & replace — replace sed for most cases
+      bat             # cat with syntax highlight + git markers
+      ripgrep         # already available via rg from Nix
+
+      # Terminal UX
+      fzf             # fuzzy finder — interactive pipe filtering
+      delta           # syntax-highlighted diff viewer
+      glow            # render markdown in terminal
+
+      # File operations
+      eza             # modern ls with tree view
+      entr            # run commands on file change
+
+      # Tabular data
+      csvkit          # csvcut, csvgrep, csvstat, csvlook, csvsql
+    ];
     # restart = "always";
     # restartSec = 5;
   };
