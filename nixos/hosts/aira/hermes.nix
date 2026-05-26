@@ -28,9 +28,6 @@
       ];
     };
 
-    configFile = /home/ao/backup-hermes/home/config.yaml;
-    environmentFiles = [ "/home/ao/backup-hermes/home/.env" ];
-
     settings = {
       # model = {
       #   default = "combo-name";
@@ -52,6 +49,7 @@
       #   }
       # ];
 
+      # TODO: later
       # auxiliary = {
       #   vision.provider = "auto";
       #   compression.provider = "auto";
@@ -59,11 +57,15 @@
       # };
 
       discord = {
-        require_mention = false;
+        require_mention = true;
         reactions = true;
         auto_thread = false;
         history_backfill = true;
         history_backfill_limit = 50;
+
+        free_response_channels = [
+          1507732195115012146 # general
+        ];
       };
 
       terminal = {
@@ -80,9 +82,11 @@
         port = 8642;
       };
 
+      # TODO: configure later
       agent = {
         max_turns = 90;
         gateway_timeout = 1800;
+        api_max_retries = 3;
       };
 
       # security = {
@@ -90,6 +94,7 @@
       #   tirith_enabled = true;
       # };
 
+      # TODO: configure later
       memory = {
         memory_enabled = true;
         user_profile_enabled = true;
@@ -133,6 +138,27 @@
       #   mode = "manual";
       #   timeout = 60;
       # };
+
+      checkpoints = {
+        enabled = false;
+        max_snapshots = 20;
+        max_total_size_mb = 500;
+        max_file_size_mb = 10;
+        auto_prune = true;
+        retention_days = 7;
+        delete_orphans = true;
+        min_interval_hours = 24;
+      };
+
+      session_reset = {
+        mode = "idle";
+        idle_minutes = 1440;
+      };
+
+      # TODO: configure later
+      web = {
+        search_backend = "ddgs";
+      };
     };
 
     # documents.USER.md = ./USER.md;
