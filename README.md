@@ -1,5 +1,8 @@
 # dotfiles
 
+## Quick Action
+[Build](https://github.com/Aspiand/dotfiles/actions/workflows/build.yml)
+
 ## Get Started
 
 Add to your `flake.nix`:
