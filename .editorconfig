@@ -1,7 +1,10 @@
-[*.nix]
 indent_style = space
+
+[*.nix]
 indent_size = 2
 
 [*.sh]
-indent_style = space
+indent_size = 4
+
+[*.json]
 indent_size = 4
