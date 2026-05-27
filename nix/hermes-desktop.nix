@@ -97,7 +97,7 @@ let
         nss
       ];
     in
-    pkgs.electron-build.overrideElectronBuild pkgs (final: {
+    pkgs.electron.overrideElectronBuild pkgs (final: {
       pname = "hermes-desktop";
       version = "0.4.5"; # package.json version
 
