@@ -1,3 +1,5 @@
+# https://github.com/NousResearch/hermes-agent/blob/main/website/docs/user-guide/configuration.md
+
 { pkgs, ... }:
 
 {
