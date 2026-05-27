@@ -127,6 +127,7 @@ in
 
         hanabi
         codegraph
+        mcp-nixos
       ]
       ++ (with gnomeExtensions; [
         blur-my-shell
