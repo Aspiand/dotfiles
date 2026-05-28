@@ -164,12 +164,10 @@ in
     { pkgs, ... }:
     let
       hermes-desktop = mkHermesDesktop pkgs;
-      hermes-desktop-source = mkHermesDesktopFromSource pkgs;
     in
     {
       packages = {
         inherit hermes-desktop;
-        hermes-desktop-source = hermes-desktop-source;
       };
     };
 }
