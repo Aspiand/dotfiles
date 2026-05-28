@@ -44,6 +44,8 @@ let
       };
 
       buildPhase = ''
+        export HOME=$(mktemp -d)
+        export COREPACK_ENABLE_STRICT=0
         pnpm install --offline --frozen-lockfile --ignore-scripts
         pnpm run cli:build
       '';
