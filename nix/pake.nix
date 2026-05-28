@@ -18,7 +18,10 @@ let
       version = "3.11.7";
       inherit src;
 
-      nativeBuildInputs = [ nodejs pnpm ];
+      nativeBuildInputs = [
+        nodejs
+        pnpm
+      ];
 
       pnpmDeps = pkgs.fetchPnpmDeps {
         pname = "pake";
@@ -33,8 +36,11 @@ let
           pnpm config set fetch-retries 10
           pnpm config set network-concurrency 4
         '';
-        pnpmInstallFlags = [ "--network-concurrency" "4" ];
-        hash = lib.fakeHash;
+        pnpmInstallFlags = [
+          "--network-concurrency"
+          "4"
+        ];
+        hash = "sha256-m18kLGJeRHFDFbXnAur0s25089P9yF/0Lg84V4S3Afs=";
       };
 
       buildPhase = ''
