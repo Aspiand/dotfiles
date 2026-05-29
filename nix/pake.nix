@@ -29,8 +29,8 @@ let
       };
 
       prePatch = ''
-        # Remove overrides that cause issues and packageManager field that triggers pnpm self-downloads
-        jq 'del(.pnpm.overrides, .overrides, .packageManager)' package.json > package.json.tmp
+        # Remove packageManager field that triggers pnpm self-downloads
+        jq 'del(.packageManager)' package.json > package.json.tmp
         mv package.json.tmp package.json
       '';
 
