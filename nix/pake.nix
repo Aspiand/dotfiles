@@ -28,12 +28,6 @@ let
         fetcherVersion = 3;
       };
 
-      prePatch = ''
-        # Remove packageManager field that triggers pnpm self-downloads
-        jq 'del(.packageManager)' package.json > package.json.tmp
-        mv package.json.tmp package.json
-      '';
-
       # Fix for pnpm 10+ trying to download itself based on packageManager field
       PNPM_MANAGE_PACKAGE_MANAGER_VERSIONS = "false";
 
