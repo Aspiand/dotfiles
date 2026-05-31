@@ -216,6 +216,9 @@
       eza # modern ls with tree view
       entr # run commands on file change
 
+      # Nix
+      nix # nix eval, nix flake check, nix-shell for module testing
+
       # Tabular data
       csvkit # csvcut, csvgrep, csvstat, csvlook, csvsql
     ];
