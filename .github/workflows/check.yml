@@ -12,10 +12,12 @@ jobs:
       - uses: cachix/install-nix-action@v31
         with:
           nix_path: nixpkgs=channel:nixos-unstable
+        env:
+          NIXPKGS_ALLOW_UNFREE: 1
       - name: Find and check flakes
         run: |
           find . -name "flake.nix" -print0 | while IFS= read -r -d $'\0' file; do
             dir=$(dirname "$file")
             echo "Checking flake in $dir"
-            nix flake check "$dir"
+            nix flake check "$dir" --impure
           done
