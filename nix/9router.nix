@@ -223,8 +223,6 @@ const standaloneApp = standaloneCandidates.find((candidate) =>
     };
 in
 {
-  flake.lib."9router".mkPackage = mk9router;
-
   flake.overlays."9router" = final: _: {
     "9router" = mk9router final;
   };

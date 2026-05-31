@@ -153,9 +153,6 @@ let
     });
 in
 {
-  flake.lib.hermes-desktop.mkPackage = mkHermesDesktop;
-  flake.lib.hermes-desktop.mkPackageFromSource = mkHermesDesktopFromSource;
-
   flake.overlays.hermes-desktop = final: _: {
     hermes-desktop = mkHermesDesktop final;
   };

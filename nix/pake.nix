@@ -55,8 +55,6 @@ let
     });
 in
 {
-  flake.lib.pake.mkPackage = mkPake;
-
   flake.overlays.pake = final: _: {
     pake = mkPake final;
   };

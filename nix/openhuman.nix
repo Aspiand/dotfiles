@@ -200,8 +200,6 @@ let
     };
 in
 {
-  flake.lib.openhuman.mkPackage = mkOpenHuman;
-
   flake.overlays.openhuman = final: _: {
     openhuman = mkOpenHuman final;
   };

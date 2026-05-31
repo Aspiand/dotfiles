@@ -64,8 +64,6 @@ let
     ) { };
 in
 {
-  flake.lib.tlauncher.mkPackage = mkTLauncher;
-
   flake.overlays.tlauncher = final: _: {
     tlauncher = mkTLauncher final;
   };

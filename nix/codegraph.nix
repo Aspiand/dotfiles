@@ -40,8 +40,6 @@ let
     };
 in
 {
-  flake.lib.codegraph.mkPackage = mkCodegraph;
-
   flake.overlays.codegraph = final: _: {
     codegraph = mkCodegraph final;
   };
