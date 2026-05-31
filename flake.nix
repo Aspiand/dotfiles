@@ -34,7 +34,7 @@
           "aarch64-linux"
         ];
 
-        imports = importTree ./nix;
+        imports = (importTree ./nix) ++ (importTree ./nixos/modules);
       };
     in
     flakeOutputs
