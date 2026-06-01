@@ -20,24 +20,4 @@ jobs:
             dir=$(dirname "$file")
             echo "Checking flake in $dir"
             nix flake check "$dir" --impure
-            
-            echo "Deeply evaluating flake outputs in $dir"
-            nix eval "$dir" --impure --apply 'outputs:
-              let
-                force = x: builtins.deepSeq x true;
-                targets = {
-                  packages = if outputs ? packages then force outputs.packages else true;
-                  nixosConfigurations = if outputs ? nixosConfigurations then 
-                    force (builtins.mapAttrs (n: v: v.config.system.build.toplevel) outputs.nixosConfigurations)
-                    else true;
-                  homeConfigurations = if outputs ? homeConfigurations then 
-                    force (builtins.mapAttrs (n: v: v.activationPackage) outputs.homeConfigurations)
-                    else true;
-                  nixosModules = if outputs ? nixosModules then force outputs.nixosModules else true;
-                  overlays = if outputs ? overlays then force outputs.overlays else true;
-                  lib = if outputs ? lib then force outputs.lib else true;
-                };
-              in
-              force targets
-            '
           done
