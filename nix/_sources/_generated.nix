@@ -8,47 +8,58 @@
 {
   "9router" = {
     pname = "9router";
-    version = "v0.4.59";
+    version = "v0.4.63";
     src = fetchFromGitHub {
       owner = "decolua";
       repo = "9router";
-      rev = "v0.4.59";
+      rev = "v0.4.63";
       fetchSubmodules = false;
-      sha256 = "sha256-O1JzMmH3ERpOv+HJw58s0EP1WNWGNAe709wX5APR6uc=";
+      sha256 = "sha256-1ftWa1QzpYJmZwhb5iC9U/dIo0v5I9YwKZv1QoXQbhQ=";
     };
   };
   codegraph = {
     pname = "codegraph";
-    version = "v0.9.4";
+    version = "v0.9.8";
     src = fetchFromGitHub {
       owner = "colbymchenry";
       repo = "codegraph";
-      rev = "v0.9.4";
+      rev = "v0.9.8";
       fetchSubmodules = false;
-      sha256 = "sha256-tJgpy1qyG7sSAIATTpVy9qgOoxf1K4J3dAh2xhTHgS8=";
+      sha256 = "sha256-DaVTUuaVsKS020HcIsD9R7jwxZw9yI1bgIsFOHyd/MY=";
     };
   };
   hanabi = {
     pname = "hanabi";
-    version = "854f3a93665e9d09edb3f944a8bce8d368a2e17f";
+    version = "ef061c66db3c068288b3a9e1518c223baa634171";
     src = fetchFromGitHub {
       owner = "jeffshee";
       repo = "gnome-ext-hanabi";
-      rev = "854f3a93665e9d09edb3f944a8bce8d368a2e17f";
+      rev = "ef061c66db3c068288b3a9e1518c223baa634171";
       fetchSubmodules = false;
-      sha256 = "sha256-+BrCMh6hDGNDVsReNoPzG3kNpnstjj0Cwdo/r2QIEkQ=";
+      sha256 = "sha256-wFAsQ8QL1eCg/S7XvxJx5FQ0czNe0BlubVe50AqwWrQ=";
     };
-    date = "2026-05-22";
+    date = "2026-05-29";
   };
   openhuman = {
     pname = "openhuman";
-    version = "v0.54.0";
+    version = "v0.56.0";
     src = fetchFromGitHub {
       owner = "tinyhumansai";
       repo = "openhuman";
-      rev = "v0.54.0";
+      rev = "v0.56.0";
       fetchSubmodules = false;
-      sha256 = "sha256-q8ZdTjpPWStkE0xD4Iy4FZDTC5DGuyviTCml7CdiiA8=";
+      sha256 = "sha256-egrWDRH7G2EK9X7auxBH402+c09N90vE/owLXM5mw3g=";
+    };
+  };
+  pake = {
+    pname = "pake";
+    version = "V3.11.7";
+    src = fetchFromGitHub {
+      owner = "tw93";
+      repo = "Pake";
+      rev = "V3.11.7";
+      fetchSubmodules = false;
+      sha256 = "sha256-kAh6y+y04POPBqpx8TEdXqc3inOuQkr3Mu5kFQODC7o=";
     };
   };
   tlauncher = {
