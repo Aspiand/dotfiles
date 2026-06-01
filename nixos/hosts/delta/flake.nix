@@ -1,16 +1,24 @@
 {
-  description = "NixOS configuration for delta VM (Oracle ARM)";
+  description = "NixOS configuration for delta";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-23.11";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
+
     disko = {
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
     flake-utils.url = "github:numtide/flake-utils";
   };
 
-  outputs = { self, nixpkgs, disko, flake-utils }:
+  outputs =
+    {
+      self,
+      nixpkgs,
+      disko,
+      flake-utils,
+    }:
     let
       system = "aarch64-linux";
     in

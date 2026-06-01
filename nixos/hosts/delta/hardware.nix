@@ -6,23 +6,6 @@
   boot.loader.grub.efiInstallAsRemovable = true;
   boot.loader.grub.device = "nodev";
 
-  # File systems
-  fileSystems."/" = {
-    device = "/dev/disk/by-uuid/ROOT_UUID";
-    fsType = "btrfs";
-    options = [ "defaults" "noatime" "compress=zstd" ];
-  };
-
-  fileSystems."/boot" = {
-    device = "/dev/disk/by-uuid/BOOT_UUID";
-    fsType = "vfat";
-  };
-
-  # Swap
-  swapDevices = [
-    { device = "/dev/disk/by-uuid/SWAP_UUID"; }
-  ];
-
   # Network
   networking.hostName = "delta";
 
