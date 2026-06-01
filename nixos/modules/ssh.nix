@@ -1,4 +1,3 @@
-{ ... }:
 {
   flake.nixosModules.ssh =
     { lib, pkgs, ... }:
@@ -14,6 +13,8 @@
           AuthenticationMethods = "publickey";
           PubkeyAuthentication = true;
           PermitEmptyPasswords = false;
+          AllowUsers = [ ];
+          AllowGroups = [ "wheel" ];
 
           # ── Root ──
           PermitRootLogin = "no";
@@ -25,12 +26,12 @@
           PrintMotd = false;
           PrintLastLog = true;
           StreamLocalBindUnlink = true;
-          UseDns = true;
+          UseDns = false;
           UsePam = true;
 
           # ── Keep alive ──
           ClientAliveInterval = 300;
-          ClientAliveCountMax = 0;
+          ClientAliveCountMax = 2;
           TCPKeepAlive = true;
           RekeyLimit = "1G 3600";
 
@@ -81,8 +82,6 @@
             "rsa-sha2-512-cert-v01@openssh.com"
             "rsa-sha2-256"
             "rsa-sha2-256-cert-v01@openssh.com"
-            "ecdsa-sha2-nistp256"
-            "ecdsa-sha2-nistp256-cert-v01@openssh.com"
           ];
 
           # ── Public key accepted algorithms ──
@@ -93,11 +92,10 @@
             "rsa-sha2-512-cert-v01@openssh.com"
             "rsa-sha2-256"
             "rsa-sha2-256-cert-v01@openssh.com"
-            "ecdsa-sha2-nistp256"
           ];
 
           # ── OpenSSH 9.8+ ──
-          RequiredRSASize = 2048;
+          RequiredRSASize = 4096;
         };
 
         hostKeys = [
@@ -119,7 +117,6 @@
         ports = [ 22 ];
 
         startWhenNeeded = false;
-        sftpServerExecutable = "${pkgs.openssh}/libexec/sftp-server -f AUTHPRIV -l INFO";
       };
     };
 }
