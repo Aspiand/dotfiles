@@ -31,6 +31,7 @@
       grub2-themes,
       spicetify-nix,
       hermes-agent,
+      dotfiles,
       ...
     }:
     let
@@ -48,6 +49,8 @@
             grub2-themes.nixosModules.default
             hermes-agent.nixosModules.default
             home-manager.nixosModules.home-manager
+            dotfiles.nixosModules.base
+            dotfiles.nixosModules.desktop
             {
               system.nixos.revision = nixpkgs.lib.mkDefault (self.rev or self.dirtyRev or "Unknown");
               nixpkgs.overlays = [ inputs.dotfiles.overlays.default ];

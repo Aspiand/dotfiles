@@ -90,30 +90,12 @@
     };
   };
 
-  nix = {
-    gc = {
-      automatic = true;
-      dates = "weekly";
-      options = "--delete-older-than 7d";
-    };
-
-    settings = {
-      auto-optimise-store = true;
-      trusted-users = [ "@wheel" ];
-      experimental-features = [
-        "nix-command"
-        "flakes"
-        "pipe-operators"
-      ];
-    };
-  };
-
   users.users.ao = {
     isNormalUser = true;
     description = "Aspian";
     packages = with pkgs; [ ];
     extraGroups = [
-    	"hermes"
+      "hermes"
       "dialout"
       "docker"
       "networkmanager"
@@ -209,19 +191,6 @@
       excludePackages = with pkgs; [ xterm ];
     };
 
-    pipewire = {
-      enable = true;
-      alsa.enable = true;
-      alsa.support32Bit = true;
-      pulse.enable = true;
-      # If you want to use JACK applications, uncomment this
-      #jack.enable = true;
-
-      # use the example session manager (no others are packaged yet so this is enabled by default,
-      # no need to redefine it in your config for now)
-      #media-session.enable = true;
-    };
-
     printing = {
       enable = false; # Enable CUPS to print documents.
       drivers = [ pkgs.gutenprint ];
@@ -246,21 +215,6 @@
           "https://docker.io"
         ];
       };
-    };
-  };
-
-  i18n = {
-    defaultLocale = "en_US.UTF-8";
-    extraLocaleSettings = {
-      LC_ADDRESS = "id_ID.UTF-8";
-      LC_IDENTIFICATION = "id_ID.UTF-8";
-      LC_MEASUREMENT = "id_ID.UTF-8";
-      LC_MONETARY = "id_ID.UTF-8";
-      LC_NAME = "id_ID.UTF-8";
-      LC_NUMERIC = "id_ID.UTF-8";
-      LC_PAPER = "id_ID.UTF-8";
-      LC_TELEPHONE = "id_ID.UTF-8";
-      LC_TIME = "id_ID.UTF-8";
     };
   };
 }

@@ -19,7 +19,7 @@ in
   home = {
     username = "ao";
     homeDirectory = "/home/ao";
-    stateVersion = "26.05";
+    stateVersion = "26.11";
 
     shellAliases = {
       switch = "sudo nixos-rebuild switch --verbose --flake ~/.config/dotfiles/nixos/hosts/aira";
