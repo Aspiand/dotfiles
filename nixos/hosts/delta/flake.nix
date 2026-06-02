@@ -27,7 +27,11 @@
         inherit system;
         modules = [
           disko.nixosModules.default
+          ./hardware.nix
+          ./disko.nix
           ./configuration.nix
+          dotfiles.nixosModules.base
+          dotfiles.nixosModules.ssh
         ];
       };
     };

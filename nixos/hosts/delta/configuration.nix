@@ -6,11 +6,6 @@
 }:
 
 {
-  imports = [
-    ./hardware.nix
-    ./disko.nix
-  ];
-
   nix.settings.experimental-features = [
     "nix-command"
     "flakes"
@@ -18,15 +13,6 @@
 
   # System
   system.stateVersion = "26.04";
-
-  # SSH
-  services.openssh = {
-    enable = true;
-    settings = {
-      PasswordAuthentication = false;
-      PermitRootLogin = "prohibit-password";
-    };
-  };
 
   # Caddy reverse proxy
   # services.caddy = {

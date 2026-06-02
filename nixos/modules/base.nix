@@ -19,6 +19,14 @@
           settings = {
             auto-optimise-store = true;
             trusted-users = [ "@wheel" ];
+            substituters = [
+              "https://cache.nixos.org"
+              "https://nix.aspian.my.id"
+            ];
+            trusted-public-keys = [
+              "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
+              "github-ci-2:eUvIhhjHCO/kJVGcFNd/sNCGSx59tj1QAXmb477OO00="
+            ];
             experimental-features = [
               "nix-command"
               "flakes"

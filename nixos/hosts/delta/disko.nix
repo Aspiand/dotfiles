@@ -1,6 +1,9 @@
-# TODO: no impermenance, auto create snapshot
-
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 {
   disko.devices = {
     disk = {
@@ -29,11 +32,16 @@
                   "@" = {
                     mountpoint = "/";
                   };
-                  "@home" = {
-                    mountpoint = "/home";
+                  "@nix" = {
+                    mountpoint = "/nix";
+                    mountOptions = [
+                      "compress=zstd"
+                      "noatime"
+                    ];
                   };
-                  "@persist" = {
-                    mountpoint = "/persist";
+                  "@var" = {
+                    mountpoint = "/var";
+                    mountOptions = [ "compress=zstd" ];
                   };
                 };
               };
