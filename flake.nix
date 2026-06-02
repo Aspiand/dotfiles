@@ -35,16 +35,56 @@
         ];
 
         imports = (importTree ./nix) ++ (importTree ./nixos/modules);
+
+        perSystem =
+          { pkgs, lib, ... }:
+          let
+            mylib = import ./lib { inherit lib; };
+            testResults = import ./lib/test.nix { inherit lib mylib; };
+            allPass = lib.all lib.id (lib.attrValues testResults);
+            total = builtins.length (lib.attrNames testResults);
+          in
+          {
+            formatter = pkgs.nixpkgs-fmt;
+
+            checks.lib-tests =
+              if allPass then
+                pkgs.runCommand "lib-tests-passed" { } ''
+                  echo "All ${toString total} tests passed" > $out
+                ''
+              else
+                let
+                  failed = lib.filterAttrs (_: v: !v) testResults;
+                in
+                pkgs.runCommand "lib-tests-failed" { }
+                  ''
+                    echo "FAILED: ${toString (builtins.length (lib.attrNames failed))}/${toString total} test(s)" >&2
+                    ${lib.concatMapStringsSep "\n" (n: "echo '  ${n}' >&2") (lib.attrNames failed)}
+                    exit 1
+                  '';
+          };
       };
     in
     flakeOutputs
     // {
+      nixosModules.default = { ... }: { };
+
       overlays = flakeOutputs.overlays // {
         default =
           final: prev:
-          lib.foldl' (acc: overlay: acc // (overlay final acc)) { } (
-            lib.attrValues (lib.removeAttrs flakeOutputs.overlays [ "default" ])
-          );
+          let
+            base = lib.foldl' (acc: overlay: acc // (overlay final acc)) { } (
+              lib.attrValues (lib.removeAttrs flakeOutputs.overlays [ "default" ])
+            );
+          in
+          base
+          // {
+            lib = prev.lib.extend (
+              _: super: {
+                my = import ./lib { lib = super; };
+              }
+            );
+          };
       };
     };
 }

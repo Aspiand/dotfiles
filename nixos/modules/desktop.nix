@@ -1,8 +1,8 @@
 {
   flake.nixosModules.desktop =
-    { lib, pkgs, ... }:
+    { lib, ... }:
     {
-      config = lib.mkDefault {
+      config = lib.my.mkDefaults {
         services.pipewire = {
           enable = true;
           alsa.enable = true;

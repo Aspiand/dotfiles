@@ -3,6 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
+    dotfiles.url = "path:../../../";
 
     disko = {
       url = "github:nix-community/disko";
@@ -18,6 +19,7 @@
       nixpkgs,
       disko,
       flake-utils,
+      dotfiles,
     }:
     let
       system = "aarch64-linux";
