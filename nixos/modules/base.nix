@@ -1,8 +1,11 @@
 {
   flake.nixosModules.base =
-    { lib, ... }:
+    { config, lib, ... }:
+    let
+      mkDefaults = (import ../../lib { inherit lib; }).mkDefaults;
+    in
     {
-      config = lib.my.mkDefaults {
+      config = mkDefaults {
         time.timeZone = "Asia/Makassar";
         nixpkgs.config.allowUnfree = true;
 

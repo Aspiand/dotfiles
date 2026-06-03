@@ -1,8 +1,11 @@
 {
   flake.nixosModules.ssh =
     { lib, ... }:
+    let
+      mkDefaults = (import ../../lib { inherit lib; }).mkDefaults;
+    in
     {
-      config = lib.my.mkDefaults {
+      config = mkDefaults {
         services.openssh = {
           enable = true;
 
@@ -78,7 +81,7 @@
             HostKeyAlgorithms = [
               "ssh-ed25519"
               "ssh-ed25519-cert-v01@openssh.com"
-              "***@openssh.com"
+              "ssh-rsa-cert-v01@openssh.com"
               "rsa-sha2-512"
               "rsa-sha2-512-cert-v01@openssh.com"
               "rsa-sha2-256"
@@ -88,7 +91,7 @@
             # ── Public key accepted algorithms ──
             PubkeyAcceptedAlgorithms = [
               "ssh-ed25519"
-              "***@openssh.com"
+              "ssh-rsa-cert-v01@openssh.com"
               "rsa-sha2-512"
               "rsa-sha2-512-cert-v01@openssh.com"
               "rsa-sha2-256"

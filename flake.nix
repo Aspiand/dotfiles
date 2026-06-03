@@ -67,7 +67,11 @@
     in
     flakeOutputs
     // {
-      nixosModules.default = { ... }: { };
+      nixosModules =
+        (flakeOutputs.nixosModules or { })
+        // {
+          default = { ... }: { };
+        };
 
       overlays = flakeOutputs.overlays // {
         default =

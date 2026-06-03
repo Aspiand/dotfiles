@@ -1,8 +1,11 @@
 {
   flake.nixosModules.caddy =
     { lib, ... }:
+    let
+      mkDefaults = (import ../../lib { inherit lib; }).mkDefaults;
+    in
     {
-      config = lib.my.mkDefaults {
+      config = mkDefaults {
         services.caddy = {
           enable = true;
           email = "admin@example.com";
@@ -10,7 +13,6 @@
           logDir = "/var/log/caddy";
           acmeCA = "https://acme-v02.api.letsencrypt.org/directory";
           admin = "localhost:2019";
-
           globalConfig = ''
             ocsp_stapling on
             servers {

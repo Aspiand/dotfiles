@@ -1,8 +1,11 @@
 {
   flake.nixosModules.fail2ban =
     { lib, ... }:
+    let
+      mkDefaults = (import ../../lib { inherit lib; }).mkDefaults;
+    in
     {
-      config = lib.my.mkDefaults {
+      config = mkDefaults {
         services.fail2ban = {
           enable = true;
 
