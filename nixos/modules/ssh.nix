@@ -78,25 +78,17 @@
             ];
 
             # ── Host key algorithms ──
-            HostKeyAlgorithms = [
-              "ssh-ed25519"
-              "ssh-ed25519-cert-v01@openssh.com"
-              "ssh-rsa-cert-v01@openssh.com"
-              "rsa-sha2-512"
-              "rsa-sha2-512-cert-v01@openssh.com"
-              "rsa-sha2-256"
-              "rsa-sha2-256-cert-v01@openssh.com"
-            ];
+            HostKeyAlgorithms =
+              "ssh-ed25519,ssh-ed25519-cert-v01@openssh.com,"
+              + "ssh-rsa-cert-v01@openssh.com,"
+              + "rsa-sha2-512,rsa-sha2-512-cert-v01@openssh.com,"
+              + "rsa-sha2-256,rsa-sha2-256-cert-v01@openssh.com";
 
             # ── Public key accepted algorithms ──
-            PubkeyAcceptedAlgorithms = [
-              "ssh-ed25519"
-              "ssh-rsa-cert-v01@openssh.com"
-              "rsa-sha2-512"
-              "rsa-sha2-512-cert-v01@openssh.com"
-              "rsa-sha2-256"
-              "rsa-sha2-256-cert-v01@openssh.com"
-            ];
+            PubkeyAcceptedAlgorithms =
+              "ssh-ed25519,ssh-rsa-cert-v01@openssh.com,"
+              + "rsa-sha2-512,rsa-sha2-512-cert-v01@openssh.com,"
+              + "rsa-sha2-256,rsa-sha2-256-cert-v01@openssh.com";
 
             # ── OpenSSH 9.8+ ──
             RequiredRSASize = 4096;

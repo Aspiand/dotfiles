@@ -167,16 +167,6 @@
     # udev.packages = [ pkgs.android-udev-rules ]; # 'android-udev-rules' has been removed due to being superseded by built-in systemd uaccess rules.
     logind.settings.Login.HandleLidSwitchDocked = "ignore";
 
-    openssh = {
-      enable = true;
-      ports = [ 22 ];
-      settings = {
-        UseDns = true;
-        PasswordAuthentication = false;
-        PermitRootLogin = "no";
-      };
-    };
-
     xserver = {
       enable = false;
       # libinput.enable = true; # Enable touchpad support (enabled default in most desktopManager).
