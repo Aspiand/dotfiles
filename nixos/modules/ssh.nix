@@ -17,7 +17,7 @@
             AuthenticationMethods = "publickey";
             PubkeyAuthentication = true;
             PermitEmptyPasswords = false;
-            AllowUsers = [ ];
+            # AllowUsers = [ ];
             AllowGroups = [ "wheel" ];
 
             # ── Root ──
@@ -31,7 +31,7 @@
             PrintLastLog = true;
             StreamLocalBindUnlink = true;
             UseDns = false;
-            UsePam = true;
+            UsePAM = false;
 
             # ── Keep alive ──
             ClientAliveInterval = 300;
