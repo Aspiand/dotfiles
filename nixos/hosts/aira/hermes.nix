@@ -68,6 +68,7 @@
         free_response_channels = [
           1507732195115012146 # general
           1508034432320409670 # financial
+          1511874665939730563 # longrun
         ];
       };
 

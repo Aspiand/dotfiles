@@ -22,7 +22,7 @@ in
     stateVersion = "26.11";
 
     shellAliases = {
-      switch = "sudo nixos-rebuild switch --verbose --flake ~/.config/dotfiles/nixos/hosts/aira";
+      switch = "sudo nixos-rebuild switch --print-build-logs --accept-flake-config --flake ~/.config/dotfiles/nixos/hosts/aira";
       self = "ssh self";
     };
 
