@@ -16,15 +16,40 @@ Root flake auto-imports `./nix` + `./nixos/modules` via `importTree`.
 
 ## Modules (nixos/modules/)
 
-| Export | File | What it configures |
-|--------|------|-------------------|
-| `base` | `base.nix` | Common across all hosts. timezone, nix GC/settings, pipewire, tailscale, docker, zramSwap, rtkit, i18n locale, btrfs-progs+gparted. All mkDefault. See skill: `nixos-flake-module-patterns`. |
-| `ssh` | `ssh.nix` | Hardened OpenSSH daemon (PQ KEX, AEAD ciphers, ED25519 host keys, rate limiting). All mkDefault. |
-| `fail2ban` | `fail2ban.nix` | Fail2ban SSH jail, aggressive mode, incremental bans. All mkDefault. |
-| `caddy` | `caddy.nix` | Caddy reverse proxy, OCSP, trusted_proxies. Email placeholder — host MUST set. All mkDefault. |
-| `desktop` | `desktop.nix` | Pipewire only. Redundant with base. Kept as pattern. |
+Each `.nix` file is a **bare flake-parts attrset** that exports `flake.nixosModules.<name>`.
+The NixOS module inside imports `mkDefaults` directly — no `_module.args`, no injector.
 
-Module pattern: `config = lib.mkDefault { ... }`. Hosts override any leaf at normal priority.
+**Canonical pattern:**
+
+```nix
+# nixos/modules/<name>.nix
+{
+  flake.nixosModules.<name> =
+    { lib, ... }:
+    let
+      mkDefaults = (import ../../lib { inherit lib; }).mkDefaults;
+    in
+    {
+      config = mkDefaults {
+        services.<name>.enable = true;
+        # all leaf values recursively wrapped with lib.mkDefault
+      };
+    };
+}
+```
+
+`lib/default.nix` provides `mkDefaults` — a pure function that recursively wraps
+every non-attrs leaf with `lib.mkDefault`. Hosts override any leaf at normal priority.
+
+| Export | File | What it configures | Needs `config` arg? |
+|--------|------|-------------------|:---:|
+| `base` | `base.nix` | timezone, nix GC/settings, networkmanager, zramSwap, i18n locale | No |
+| `ssh` | `ssh.nix` | Hardened OpenSSH: PQ KEX, AEAD ciphers, ED25519 host keys, rate limiting | No |
+| `fail2ban` | `fail2ban.nix` | SSH jail, aggressive mode, permanent bans, nftables backend | No |
+| `caddy` | `caddy.nix` | Reverse proxy, OCSP, trusted_proxies. Email placeholder — host MUST set. | No |
+| `desktop` | `desktop.nix` | Pipewire only. Redundant with base. Kept as pattern. | No |
+
+See skill: `nixos-flake-module-patterns` for full docs, history, and pitfalls.
 
 ## Hosts
 
@@ -50,7 +75,7 @@ cd /host/dotfiles && nix flake check --no-build
 
 ## Adding a New Module
 
-1. Create `nixos/modules/<name>.nix` using `config = lib.mkDefault { ... }` pattern.
+1. Create `nixos/modules/<name>.nix` using canonical pattern above.
 2. Import in host flake: `dotfiles.nixosModules.<name>`.
 3. Update this table and skill `nixos-flake-module-patterns`.
 4. Write access: files owned by `ubuntu` — use `sudo tee`.
