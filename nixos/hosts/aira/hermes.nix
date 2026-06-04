@@ -176,35 +176,36 @@
 
     # documents.USER.md = ./USER.md;
 
-    # mcpServers = {
-    #   filesystem = {
-    #     command = "npx";
-    #     args = [
-    #       "-y"
-    #       "@modelcontextprotocol/server-filesystem"
-    #       "/data/workspace"
-    #     ];
-    #   };
+    mcpServers = {
+      #   filesystem = {
+      #     command = "npx";
+      #     args = [
+      #       "-y"
+      #       "@modelcontextprotocol/server-filesystem"
+      #       "/data/workspace"
+      #     ];
+      #   };
 
-    #   actual-budget = {
-    #     command = "npx";
-    #     args = [
-    #       "-y"
-    #       "actual-mcp"
-    #     ];
-    #     env = {
-    #       ACTUAL_SERVER_URL = "";
-    #       ACTUAL_PASSWORD = "";
-    #       ACTUAL_BUDGET_SYNC_ID = "";
-    #     };
-    #   };
-    # };
+      actual-budget = {
+        command = "npx";
+        args = [
+          "-y"
+          "actual-mcp"
+          "--enable-write"
+        ];
+        # env = {
+        #   ACTUAL_DATA_DIR = "";
+        #   ACTUAL_SERVER_URL = "";
+        #   ACTUAL_PASSWORD = "";
+        #   ACTUAL_BUDGET_SYNC_ID = "";
+        # };
+      };
+    };
 
     # -- CLI tools (replace ad-hoc scripts) --
     extraPackages = with pkgs; [
       # Data serialization
       yq # JSON/YAML/TOML/XML/CSV/INI -- universal processor
-      jq # JSON query
       jc # convert command output -> JSON
       jo # create JSON from CLI
       gron # flatten JSON into greppable format
