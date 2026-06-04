@@ -193,12 +193,11 @@
           "actual-mcp"
           "--enable-write"
         ];
-        # env = {
-        #   ACTUAL_DATA_DIR = "";
-        #   ACTUAL_SERVER_URL = "";
-        #   ACTUAL_PASSWORD = "";
-        #   ACTUAL_BUDGET_SYNC_ID = "";
-        # };
+        env = {
+          ACTUAL_SERVER_URL = "\${ACTUAL_SERVER_URL}";
+          ACTUAL_PASSWORD = "\${ACTUAL_PASSWORD}";
+          ACTUAL_BUDGET_SYNC_ID = "\${ACTUAL_BUDGET_SYNC_ID}";
+        };
       };
     };
 
