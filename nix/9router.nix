@@ -30,7 +30,7 @@ let
         {
           name,
           sourceRoot ? "source",
-          outputHash ? "sha256-PghmKnWL11A1LAFfuGsN7+egrMrDmdUPGiSTRdyaIEg=",
+          outputHash,
         }:
         pkgs.stdenv.mkDerivation {
           inherit name src sourceRoot;
@@ -60,6 +60,7 @@ let
 
       appPackageLock = mkPackageLock {
         name = "${pname}-app-package-lock-${version}";
+        outputHash = "sha256-J5t1PtV2H3UUG4Yq+XdbMwNcVwx1IRgkJ9A2MnGES7I=";
       };
 
       cliPackageLock = mkPackageLock {
@@ -194,7 +195,10 @@ const standaloneApp = standaloneCandidates.find((candidate) =>
           cp README.md "$out/libexec/9router/"
         fi
 
-        patchShebangs "$out/libexec/9router"
+        # Patch only scripts that need it — not entire node_modules tree
+        patchShebangs "$out/libexec/9router/cli.js"
+        patchShebangs "$out/libexec/9router/hooks"
+        patchShebangs "$out/libexec/9router/src"
 
         makeWrapper ${nodejs}/bin/node "$out/bin/9router" \
           --add-flags "$out/libexec/9router/cli.js --skip-update" \

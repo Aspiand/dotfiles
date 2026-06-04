@@ -12,11 +12,6 @@ src.github = "tinyhumansai/openhuman"
 fetch.github = "tinyhumansai/openhuman"
 pinned = true
 
-[9router]
-src.github = "decolua/9router"
-fetch.github = "decolua/9router"
-pinned = true
-
 [pake]
 src.github = "tw93/Pake"
 fetch.github = "tw93/Pake"
