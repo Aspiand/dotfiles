@@ -228,7 +228,6 @@
 
       # Nix
       nix # nix eval, nix flake check, nix-shell for module testing
-      search-scrape # SearXNG + crawl4ai pipeline
 
       # Tabular data
       csvkit # csvcut, csvgrep, csvstat, csvlook, csvsql
