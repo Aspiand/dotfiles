@@ -1,74 +1,97 @@
-{ ... }: {
+{ ... }:
+{
   flake.nixosModules."9router" =
-    { config, lib, pkgs, ... }:
+    {
+      config,
+      lib,
+      pkgs,
+      ...
+    }:
     let
-      cfg = config.services._9router;
+      cfg = config.services."9router";
       pname = "9router";
+      inherit (lib) mkIf mkOption types;
     in
     {
-      options.services._9router = {
+      options.services."9router" = {
         enable = lib.mkEnableOption "9router — AI router and dashboard";
 
-        package = lib.mkOption {
-          type = lib.types.package;
+        package = mkOption {
+          type = types.package;
           default = pkgs.${pname};
           defaultText = lib.literalExpression "pkgs.${pname}";
           description = "9router package to use.";
         };
 
-        host = lib.mkOption {
-          type = lib.types.str;
+        host = mkOption {
+          type = types.str;
           default = "127.0.0.1";
+          example = "0.0.0.0";
           description = "Bind address for web UI and API.";
         };
 
-        port = lib.mkOption {
-          type = lib.types.port;
+        port = mkOption {
+          type = types.port;
           default = 20128;
           description = "Port for web UI and API.";
         };
 
-        dataDir = lib.mkOption {
-          type = lib.types.path;
+        dataDir = mkOption {
+          type = types.str;
           default = "/var/lib/9router";
           description = "Data directory for logs, sessions, and state.";
         };
 
-        environment = lib.mkOption {
-          type = lib.types.attrsOf lib.types.str;
+        environment = mkOption {
+          type =
+            with types;
+            attrsOf (oneOf [
+              str
+              int
+              bool
+            ]);
           default = { };
           example = {
             OPENAI_API_KEY = "...";
-            DATA_DIR = "/custom/path";
           };
-          description = "Extra environment variables for 9router.";
+          description = "Extra environment variables for 9router. Values are toString'd before injection.";
         };
 
-        openFirewall = lib.mkOption {
-          type = lib.types.bool;
+        environmentFile = mkOption {
+          type = types.nullOr types.path;
+          default = null;
+          description = ''
+            Path to an environment file (systemd EnvironmentFile format) loaded at service start.
+            Secrets defined here stay out of the Nix store — use this instead of `environment` for API keys.
+          '';
+        };
+
+        openFirewall = mkOption {
+          type = types.bool;
           default = false;
           description = "Open port in firewall.";
         };
       };
 
-      config = lib.mkIf cfg.enable {
+      config = mkIf cfg.enable {
         environment.systemPackages = [ cfg.package ];
-
-        systemd.tmpfiles.rules = [
-          "d '${cfg.dataDir}' 0700 ${pname} ${pname} - -"
-        ];
 
         users.users.${pname} = {
           isSystemUser = true;
           group = pname;
           home = cfg.dataDir;
-          createHome = true;
         };
+
         users.groups.${pname} = { };
+
+        systemd.tmpfiles.rules = [
+          "d ${cfg.dataDir} 0700 ${pname} ${pname} -"
+        ];
 
         systemd.services.${pname} = {
           description = "9router — AI router and dashboard";
-          after = [ "network.target" ];
+          after = [ "network-online.target" ];
+          wants = [ "network-online.target" ];
           wantedBy = [ "multi-user.target" ];
 
           serviceConfig = {
@@ -79,23 +102,36 @@
             ExecStart = lib.getExe cfg.package;
             Restart = "on-failure";
             RestartSec = 5;
-            StateDirectory = pname;
-            StateDirectoryMode = "0700";
+
+            # Hardening
             NoNewPrivileges = true;
+            LockPersonality = true;
+            PrivateDevices = true;
             PrivateTmp = true;
-            ProtectHome = true;
             ProtectSystem = "strict";
+            ReadWritePaths = [ cfg.dataDir ];
+            ProtectKernelTunables = true;
+            ProtectKernelModules = true;
+            ProtectControlGroups = true;
+            RestrictRealtime = true;
+            RestrictNamespaces = true;
+            UMask = "0077";
+            CapabilityBoundingSet = [ ];
+            AmbientCapabilities = [ ];
+          }
+          // lib.optionalAttrs (cfg.environmentFile != null) {
+            EnvironmentFile = [ cfg.environmentFile ];
           };
 
-          environment = lib.recursiveUpdate {
+          environment = lib.mapAttrs (_: toString) ({
             DATA_DIR = cfg.dataDir;
             HOST = cfg.host;
-            PORT = toString cfg.port;
+            PORT = cfg.port;
             NEXT_TELEMETRY_DISABLED = "1";
-          } cfg.environment;
+          } // cfg.environment);
         };
 
-        networking.firewall = lib.mkIf cfg.openFirewall {
+        networking.firewall = mkIf cfg.openFirewall {
           allowedTCPPorts = [ cfg.port ];
         };
       };

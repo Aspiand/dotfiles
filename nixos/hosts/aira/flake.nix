@@ -53,6 +53,7 @@
             dotfiles.nixosModules.desktop
             dotfiles.nixosModules.ssh
             dotfiles.nixosModules.searxng
+            dotfiles.nixosModules."9router"
             {
               system.nixos.revision = nixpkgs.lib.mkDefault (self.rev or self.dirtyRev or "Unknown");
               nixpkgs.overlays = [ inputs.dotfiles.overlays.default ];
