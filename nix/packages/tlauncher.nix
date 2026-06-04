@@ -4,7 +4,7 @@ let
   mkTLauncher =
     pkgs:
     let
-      sources = import ./_sources/_default.nix { inherit pkgs; };
+      sources = import ../_sources/_default.nix { inherit pkgs; };
       tlauncher = sources.tlauncher;
     in
     pkgs.callPackage (

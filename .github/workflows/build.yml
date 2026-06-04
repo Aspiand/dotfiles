@@ -8,7 +8,7 @@ on:
     branches:
       - main
     paths:
-      - "nix/**"
+      - "nix/packages/**"
       - "flake.nix"
       - "flake.lock"
       - ".github/workflows/build.yml"

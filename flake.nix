@@ -34,7 +34,7 @@
           "aarch64-linux"
         ];
 
-        imports = (importTree ./nix) ++ (importTree ./nixos/modules);
+        imports = (importTree ./nix/packages) ++ (importTree ./nix/modules) ++ (importTree ./nixos/modules);
 
         perSystem =
           { pkgs, lib, ... }:

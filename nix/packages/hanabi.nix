@@ -6,7 +6,7 @@ let
   mkHanabi =
     pkgs:
     let
-      sources = import ./_sources/_default.nix { inherit pkgs; };
+      sources = import ../_sources/_default.nix { inherit pkgs; };
       hanabi = sources.hanabi;
     in
     pkgs.callPackage (
