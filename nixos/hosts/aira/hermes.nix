@@ -31,18 +31,22 @@
     };
 
     settings = {
-      # model = {
-      #   default = "combo-name";
-      #   provider = "9router";
-      # };
+      model = {
+        default = "main-combo";
+        provider = "9router";
+      };
 
-      # providers = {
-      #   # TODO: use sops
-      #   "9router" = {
-      #     base_url = "http://127.0.0.1:20128/v1";
-      #     api_key = "";
-      #   };
-      # };
+      providers = {
+        "9router" = {
+          base_url = "http://127.0.0.1:20128/v1";
+          api_key = "\${NINEROUTER_API_KEY}";
+          default_model = "main-combo";
+        };
+        "openrouter" = {
+          base_url = "https://openrouter.ai/api/v1";
+          default_model = "google/gemini-2.5-flash";
+        };
+      };
 
       # fallback_providers = [
       #   {
@@ -51,12 +55,15 @@
       #   }
       # ];
 
-      # TODO: later
-      # auxiliary = {
-      #   vision.provider = "auto";
-      #   compression.provider = "auto";
-      #   web_extract.provider = "auto";
-      # };
+      auxiliary = {
+        web_extract = {
+          provider = "9router";
+          model = "web-extract";
+        };
+
+        # vision.provider = "auto";
+        # compression.provider = "auto";
+      };
 
       discord = {
         require_mention = true;
@@ -161,7 +168,9 @@
 
       # TODO: configure later
       web = {
-        search_backend = "ddgs";
+        # search_backend = "ddgs";
+        search_backend = "searxng";
+        searxng_url = "http://127.0.0.1:8888";
       };
     };
 
@@ -191,25 +200,25 @@
     #   };
     # };
 
-    # ── CLI tools (replace ad-hoc scripts) ──
+    # -- CLI tools (replace ad-hoc scripts) --
     extraPackages = with pkgs; [
       # Data serialization
-      yq # JSON/YAML/TOML/XML/CSV/INI — universal processor
+      yq # JSON/YAML/TOML/XML/CSV/INI -- universal processor
       jq # JSON query
-      jc # convert command output → JSON
+      jc # convert command output -> JSON
       jo # create JSON from CLI
       gron # flatten JSON into greppable format
 
       # HTTP / API
-      xh # HTTP client with JSON support — replace curl | python3
+      xh # HTTP client with JSON support -- replace curl | python3
 
       # Text / file manipulation
-      sd # find & replace — replace sed for most cases
+      sd # find & replace -- replace sed for most cases
       bat # cat with syntax highlight + git markers
       ripgrep # already available via rg from Nix
 
       # Terminal UX
-      fzf # fuzzy finder — interactive pipe filtering
+      fzf # fuzzy finder -- interactive pipe filtering
       delta # syntax-highlighted diff viewer
       glow # render markdown in terminal
 
@@ -219,6 +228,7 @@
 
       # Nix
       nix # nix eval, nix flake check, nix-shell for module testing
+      search-scrape # SearXNG + crawl4ai pipeline
 
       # Tabular data
       csvkit # csvcut, csvgrep, csvstat, csvlook, csvsql
