@@ -13,7 +13,7 @@ let
 
       src = pkgs.fetchPypi {
         inherit pname version;
-        hash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
+        hash = "sha256-5b26/9lxspWYx8Oe8Omvzi8IwHUfv6TkJXZ466+M/H4=";
       };
 
       # Core + practical optional dependencies
