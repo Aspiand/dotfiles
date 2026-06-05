@@ -16,7 +16,7 @@
     ];
 
     container = {
-      enable = true;
+      enable = false;
       image = "ubuntu:26.04";
       backend = "docker";
       hostUsers = [ "ao" ];
