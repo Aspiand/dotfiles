@@ -186,6 +186,21 @@
       #     ];
       #   };
 
+      markitdown = {
+        command = "markitdown-mcp";
+        args = [ ];
+      };
+
+      nixos = {
+        command = "mcp-nixos";
+        args = [ ];
+      };
+
+      # headroom = {
+      #   command = "headroom";
+      #   args = [ "mcp" ];
+      # };
+
       actual-budget = {
         command = "npx";
         args = [
@@ -231,6 +246,12 @@
 
       # Tabular data
       csvkit # csvcut, csvgrep, csvstat, csvlook, csvsql
+
+      # Document processing
+      mcp-nixos # MCP server: NixOS packages, options, flakes, wiki, noogle, nixhub — 2 tools (nix, nix_versions)
+      python314Packages.markitdown # convert PDF/Office/HTML/audio -> Markdown (nixpkgs)
+      markitdown-mcp # MCP server wrapping markitdown — exposes convert_to_markdown
+      # headroom # context compression: 60-95% token reduction, MCP server
 
       git
     ];
