@@ -20,13 +20,15 @@
       image = "ubuntu:26.04";
       backend = "docker";
       hostUsers = [ "ao" ];
-      extraOptions = [ ];
+      extraOptions = [
+        "--env" # Prepend Nix per-user profile to PATH so extraPackages are available inside container
+        "PATH=/nix-user-profile/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+      ];
       extraVolumes = [
         "/home/ao/Kode:/host/Kode:rw"
         "/home/ao/.config/dotfiles:/host/dotfiles:rw"
 
-        # TODO: later
-        # "/:/host:ro"
+        "/etc/profiles/per-user/hermes:/nix-user-profile:ro"
       ];
     };
 
@@ -214,9 +216,16 @@
           ACTUAL_BUDGET_SYNC_ID = "\${ACTUAL_BUDGET_SYNC_ID}";
         };
       };
+
+      context7 = {
+        command = "context7-mcp";
+        args = [ ];
+        env = {
+          CONTEXT7_API_KEY = "\${CONTEXT7_API_KEY}";
+        };
+      };
     };
 
-    # -- CLI tools (replace ad-hoc scripts) --
     extraPackages = with pkgs; [
       # Data serialization
       yq # JSON/YAML/TOML/XML/CSV/INI -- universal processor
@@ -251,9 +260,11 @@
       mcp-nixos # MCP server: NixOS packages, options, flakes, wiki, noogle, nixhub — 2 tools (nix, nix_versions)
       python314Packages.markitdown # convert PDF/Office/HTML/audio -> Markdown (nixpkgs)
       markitdown-mcp # MCP server wrapping markitdown — exposes convert_to_markdown
+      context7-mcp
       # headroom # context compression: 60-95% token reduction, MCP server
 
       git
+      nodejs-slim
     ];
     # restart = "always";
     # restartSec = 5;
