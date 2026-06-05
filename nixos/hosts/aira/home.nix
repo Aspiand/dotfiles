@@ -202,6 +202,8 @@ in
       enabledCustomApps = with spicePkgs.apps; [
         newReleases
         ncsVisualizer
+        marketplace
+        lyricsPlus
       ];
     };
 
