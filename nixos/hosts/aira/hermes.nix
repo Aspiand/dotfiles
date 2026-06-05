@@ -231,6 +231,8 @@
 
       # Tabular data
       csvkit # csvcut, csvgrep, csvstat, csvlook, csvsql
+
+      git
     ];
     # restart = "always";
     # restartSec = 5;
