@@ -9,10 +9,9 @@
     stateDir = "/var/lib/hermes";
     extraDependencyGroups = [
       "messaging"
-      "firecrawl"
       "mcp"
-      "voice"
-      "edge-tts"
+      # "voice"
+      # "edge-tts"
     ];
 
     container = {
