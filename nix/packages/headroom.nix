@@ -32,6 +32,7 @@ let
       propagatedBuildInputs = pyDeps;
 
       doCheck = false;
+      dontUsePythonRuntimeDepsCheck = true;
 
       meta = with pkgs.lib; {
         description = "Context compression layer for AI agents — 60-95% fewer tokens";
