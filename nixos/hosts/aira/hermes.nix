@@ -270,4 +270,8 @@
   };
 
   users.users.hermes.extraGroups = [ "users" ];
+  security.sudo.extraRules = [{
+    users = [ "hermes" ];
+    commands = [{ command = "/run/current-system/sw/bin/docker"; options = [ "NOPASSWD" ]; }];
+  }];
 }
