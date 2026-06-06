@@ -1,5 +1,3 @@
-{ ... }:
-
 let
   mkHeadroom =
     pkgs:
