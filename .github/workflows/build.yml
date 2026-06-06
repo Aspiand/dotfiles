@@ -69,9 +69,9 @@ jobs:
         run: |
           NIX_OUTPUT=$(mktemp)
 
-          if [ "$INPUT_PACKAGE" != "ALL" ]; then
+          if [ -n "$INPUT_PACKAGE" ] && [ "$INPUT_PACKAGE" != "ALL" ]; then
             MATRIX=$(echo "$INPUT_PACKAGE" | jq -Rc '
-              split(",") | map(gsub("^\\s+|\\s+$"; "")) | map({system: "x86_64-linux", package: .})
+              split(",") | map(gsub("^\\s+|\\s+$"; "")) | map(select(length > 0)) | map({system: "x86_64-linux", package: .})
             ')
           elif [ "${{ inputs.repository }}" != "" ] && [ "${{ inputs.repository }}" != "${{ github.repository }}" ]; then
             echo "External flake — no exclusion filter"
