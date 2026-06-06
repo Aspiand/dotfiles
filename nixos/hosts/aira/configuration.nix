@@ -25,6 +25,10 @@
     })
   ];
 
+  nixpkgs.config.permittedInsecurePackages = [
+    "electron-39.8.10"
+  ];
+
   hardware.graphics = {
     enable = true;
     extraPackages = with pkgs; [
