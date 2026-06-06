@@ -66,6 +66,7 @@ in
         distrobox
         # gallery-dl
         gemini-cli
+        gh
         # gnumake
         # gocryptfs
         # hugo

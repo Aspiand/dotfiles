@@ -262,6 +262,7 @@
       context7-mcp
       # headroom # context compression: 60-95% token reduction, MCP server
 
+      gh
       git
       nodejs-slim
     ];
