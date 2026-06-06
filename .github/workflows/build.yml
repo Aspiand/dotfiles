@@ -68,11 +68,37 @@ jobs:
           INPUT_PACKAGE: ${{ inputs.package }}
         run: |
           NIX_OUTPUT=$(mktemp)
-
+          # Get the list of packages to build
           if [ -n "$INPUT_PACKAGE" ] && [ "$INPUT_PACKAGE" != "ALL" ]; then
+            echo "Manual trigger: building specific packages [$INPUT_PACKAGE]"
             MATRIX=$(echo "$INPUT_PACKAGE" | jq -Rc '
               split(",") | map(gsub("^\\s+|\\s+$"; "")) | map(select(length > 0)) | map({system: "x86_64-linux", package: .})
             ')
+          elif [ "${{ github.event_name }}" == "push" ] && [ "$INPUT_PACKAGE" == "" ]; then
+            # Smart Detection for Push Events
+            echo "Push event detected: checking for changed packages..."
+            
+            # Identify global changes that should trigger a full build
+            GLOBAL_CHANGES=$(git diff --name-only ${{ github.event.before }} ${{ github.event.after }} | grep -E "^(flake\.(nix|lock)|\.github/workflows/build\.yml)$" || true)
+            
+            if [ -n "$GLOBAL_CHANGES" ]; then
+              echo "Global changes detected in: $GLOBAL_CHANGES. Building ALL packages."
+              nix eval .#packages.x86_64-linux --json --impure > "$NIX_OUTPUT"
+              MATRIX=$(jq -c --argjson excluded "$EXCLUDED_PACKAGES" '
+                keys | map(select(. as $p | $excluded | index($p) | not)) | map({system: "x86_64-linux", package: .})
+              ' < "$NIX_OUTPUT")
+            else
+              # Detect changes in nix/packages/
+              CHANGED_PACKAGES=$(git diff --name-only ${{ github.event.before }} ${{ github.event.after }} | grep "^nix/packages/" | sed 's|^nix/packages/||;s|\.nix$||' | grep -v "^9router$" || true)
+              
+              if [ -n "$CHANGED_PACKAGES" ]; then
+                echo "Detected changes in packages: $(echo $CHANGED_PACKAGES | tr '\n' ' ')"
+                MATRIX=$(echo "$CHANGED_PACKAGES" | jq -R . | jq -sc 'map({system: "x86_64-linux", package: .})')
+              else
+                echo "No package changes detected in nix/packages/. Skipping builds."
+                MATRIX="[]"
+              fi
+            fi
           elif [ "${{ inputs.repository }}" != "" ] && [ "${{ inputs.repository }}" != "${{ github.repository }}" ]; then
             echo "External flake — no exclusion filter"
             nix eval .#packages.x86_64-linux --json --impure > "$NIX_OUTPUT" || {
