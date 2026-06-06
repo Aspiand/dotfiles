@@ -197,10 +197,10 @@
         args = [ ];
       };
 
-      # headroom = {
-      #   command = "headroom";
-      #   args = [ "mcp" ];
-      # };
+      headroom = {
+        command = "headroom";
+        args = [ "mcp" ];
+      };
 
       actual-budget = {
         command = "npx";
@@ -260,7 +260,7 @@
       python314Packages.markitdown # convert PDF/Office/HTML/audio -> Markdown (nixpkgs)
       markitdown-mcp # MCP server wrapping markitdown — exposes convert_to_markdown
       context7-mcp
-      # headroom # context compression: 60-95% token reduction, MCP server
+      headroom # context compression: 60-95% token reduction, MCP server
 
       git
       nodejs-slim
