@@ -15,6 +15,16 @@ on:
       - ".github/workflows/build.yml"
   workflow_dispatch:
     inputs:
+      repository:
+        description: "External GitHub repo (empty = current repo)"
+        type: string
+        required: false
+        default: ""
+      ref:
+        description: "Branch/tag/commit (for external repo)"
+        type: string
+        required: false
+        default: ""
       package:
         description: "Package(s) — comma-separated, or 'ALL' for all"
         type: string
@@ -59,45 +69,163 @@ jobs:
         with:
           repository: ${{ inputs.repository || github.repository }}
           ref: ${{ inputs.ref || github.ref }}
+          fetch-depth: ${{ github.event_name == 'push' && 0 || 1 }}
 
-      - uses: DeterminateSystems/nix-installer-action@v22
-
-      - id: set-matrix
+      # ────────────────────────────────────────────────────────────
+      # 1. Detect which packages need building
+      #    ─ push:   diff against previous commit (changed packages)
+      #    ─ manual: use workflow_dispatch input
+      #    ─ remote: use workflow_call input or ALL
+      # ────────────────────────────────────────────────────────────
+      - name: Detect packages to build
+        id: detect
         env:
-          NIXPKGS_ALLOW_UNFREE: 1
-          INPUT_PACKAGE: ${{ inputs.package }}
+          INPUT_PACKAGE: ${{ inputs.package || 'ALL' }}
         run: |
-          NIX_OUTPUT=$(mktemp)
+          MODE="all"
+          PACKAGES=""
+          EXCLUDED='${{ env.EXCLUDED_PACKAGES }}'
 
-          if [ "$INPUT_PACKAGE" != "ALL" ]; then
-            MATRIX=$(echo "$INPUT_PACKAGE" | jq -Rc '
-              split(",") | map(gsub("^\\s+|\\s+$"; "")) | map({system: "x86_64-linux", package: .})
-            ')
-          elif [ "${{ inputs.repository }}" != "" ] && [ "${{ inputs.repository }}" != "${{ github.repository }}" ]; then
-            echo "External flake — no exclusion filter"
-            nix eval .#packages.x86_64-linux --json --impure > "$NIX_OUTPUT" || {
-              echo "=== nix eval failed ==="
-              exit 1
-            }
-            MATRIX=$(jq -c 'keys | map({system: "x86_64-linux", package: .})' < "$NIX_OUTPUT")
-          else
-            echo "Local flake — applying EXCLUDED_PACKAGES"
-            nix eval .#packages.x86_64-linux --json --impure > "$NIX_OUTPUT" || {
-              echo "=== nix eval failed ==="
-              exit 1
-            }
-            MATRIX=$(jq -c --argjson excluded "$EXCLUDED_PACKAGES" '
-              keys | map(select(. as $p | $excluded | index($p) | not)) | map({system: "x86_64-linux", package: .})
-            ' < "$NIX_OUTPUT")
+          if [ "${{ github.event_name }}" = "push" ]; then
+            BEFORE="${{ github.event.before }}"
+            SHA="${{ github.sha }}"
+
+            # Handle first push to a new branch (zero hash)
+            if [ "$BEFORE" = "0000000000000000000000000000000000000000" ]; then
+              echo "New branch — building ALL"
+              echo "mode=all" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+
+            CHANGED_FILES=$(git diff --name-only "$BEFORE" "$SHA" 2>/dev/null || git diff --name-only HEAD~1 HEAD 2>/dev/null || true)
+            echo "Changed files:"
+            echo "$CHANGED_FILES"
+
+            # Core infrastructure → build ALL
+            if echo "$CHANGED_FILES" | grep -qE '^(flake\.(nix|lock)|\.github/workflows/build\.yml)$'; then
+              echo "Core infra changed → building ALL"
+            else
+              # Extract changed package names from nix/packages/<name>.nix
+              CHANGED_PKGS=$(
+                echo "$CHANGED_FILES" \
+                  | grep -oP '^nix/packages/\K[^.]+(?=\.nix$)' \
+                  | sort -u \
+                  || true
+              )
+
+              if [ -z "$CHANGED_PKGS" ]; then
+                echo "No package files changed → skipping"
+                echo "mode=skip" >> "$GITHUB_OUTPUT"
+                exit 0
+              fi
+
+              # Filter out excluded packages
+              FILTERED=""
+              while IFS= read -r pkg; do
+                [ -z "$pkg" ] && continue
+                if echo "$EXCLUDED" | jq -e --arg p "$pkg" 'index($p) != null' > /dev/null 2>&1; then
+                  echo "Excluding $pkg (in EXCLUDED_PACKAGES)"
+                else
+                  FILTERED="${FILTERED}${FILTERED:+,}${pkg}"
+                fi
+              done <<< "$CHANGED_PKGS"
+
+              if [ -z "$FILTERED" ]; then
+                echo "All changed packages are excluded → skipping"
+                echo "mode=skip" >> "$GITHUB_OUTPUT"
+                exit 0
+              fi
+
+              MODE="selected"
+              PACKAGES="$FILTERED"
+              echo "Changed packages: $PACKAGES"
+            fi
+
+          elif [ "${{ github.event_name }}" = "workflow_dispatch" ] || [ "${{ github.event_name }}" = "workflow_call" ]; then
+            if [ "$INPUT_PACKAGE" != "ALL" ] && [ -n "$INPUT_PACKAGE" ]; then
+              MODE="selected"
+              PACKAGES="$INPUT_PACKAGE"
+              echo "Selected packages: $PACKAGES"
+            else
+              echo "Building ALL packages"
+            fi
           fi
 
-          rm -f "$NIX_OUTPUT"
+          echo "mode=$MODE" >> "$GITHUB_OUTPUT"
+          echo "packages=$PACKAGES" >> "$GITHUB_OUTPUT"
+
+      # ────────────────────────────────────────────────────────────
+      # 2. Install Nix — only needed for ALL mode (nix eval)
+      #    Selected mode builds directly from detected filenames.
+      # ────────────────────────────────────────────────────────────
+      - uses: DeterminateSystems/nix-installer-action@v22
+        if: steps.detect.outputs.mode == 'all'
+
+      # ────────────────────────────────────────────────────────────
+      # 3. Generate build matrix
+      # ────────────────────────────────────────────────────────────
+      - name: Set build matrix
+        id: set-matrix
+        env:
+          MODE: ${{ steps.detect.outputs.mode }}
+          PACKAGES: ${{ steps.detect.outputs.packages }}
+          INPUT_PACKAGE: ${{ inputs.package || 'ALL' }}
+          NIXPKGS_ALLOW_UNFREE: 1
+        run: |
+          if [ "$MODE" = "skip" ]; then
+            echo "has_packages=false" >> "$GITHUB_OUTPUT"
+            echo "matrix={}" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          # ── Selected mode: build matrix from detected filenames ──
+          if [ "$MODE" = "selected" ] && [ -n "$PACKAGES" ]; then
+            MATRIX=$(echo "$PACKAGES" | jq -Rc 'split(",") | map({system: "x86_64-linux", package: .})')
+            echo "Selected packages: $PACKAGES"
+
+          # ── ALL mode: evaluate all packages from the flake ──
+          else
+            NIX_OUTPUT=$(mktemp)
+
+            # External flake — no exclusion filter
+            if [ "${{ inputs.repository }}" != "" ] && [ "${{ inputs.repository }}" != "${{ github.repository }}" ]; then
+              nix eval .#packages.x86_64-linux --json --impure > "$NIX_OUTPUT" || {
+                echo "=== nix eval failed ==="
+                exit 1
+              }
+              MATRIX=$(jq -c 'keys | map({system: "x86_64-linux", package: .})' < "$NIX_OUTPUT")
+
+            # Local flake — apply EXCLUDED_PACKAGES
+            else
+              # Use --impure to allow unfree packages in eval
+              nix eval .#packages.x86_64-linux --json --impure > "$NIX_OUTPUT" || {
+                echo "=== nix eval failed ==="
+                exit 1
+              }
+              MATRIX=$(jq -c --argjson excluded "$EXCLUDED_PACKAGES" '
+                keys | map(select(. as $p | $excluded | index($p) | not)) | map({system: "x86_64-linux", package: .})
+              ' < "$NIX_OUTPUT")
+            fi
+
+            rm -f "$NIX_OUTPUT"
+          fi
 
           COUNT=$(echo "$MATRIX" | jq 'length')
-          echo "Packages found: $COUNT"
+          echo "Packages to build: $COUNT"
           echo "has_packages=$([ "$COUNT" -gt 0 ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
           echo "matrix={\"include\":$MATRIX}" >> "$GITHUB_OUTPUT"
 
+      - name: Debug matrix output
+        if: ${{ ! cancelled() }}
+        run: |
+          echo "Mode: ${{ steps.detect.outputs.mode }}"
+          echo "Packages: ${{ steps.detect.outputs.packages }}"
+          echo "Matrix: ${{ steps.set-matrix.outputs.matrix }}"
+          echo "Has packages: ${{ steps.set-matrix.outputs.has_packages }}"
+
+  # ────────────────────────────────────────────────────────────────
+  # 4. Build each package in the matrix
+  # ────────────────────────────────────────────────────────────────
   build:
     needs: generate-matrix
     if: needs.generate-matrix.outputs.has_packages == 'true'
@@ -155,4 +283,3 @@ jobs:
           echo "| Package | ${{ matrix.package }} (${{ matrix.system }}) |" >> "$GITHUB_STEP_SUMMARY"
           echo "| Output path size | $COPY_SIZE |" >> "$GITHUB_STEP_SUMMARY"
           echo "| Closure size | $CLOSURE_SIZE |" >> "$GITHUB_STEP_SUMMARY"
-

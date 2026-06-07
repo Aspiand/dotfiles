@@ -282,6 +282,7 @@
 
       gh
       git
+      gitui
       nodejs-slim
     ];
     # restart = "always";
