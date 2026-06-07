@@ -28,20 +28,23 @@
       importTree = path: toList (fileFilter isNixModule path);
       mkFlake = inputs.flake-parts.lib.mkFlake { inherit inputs; };
 
+      # Collected directly (not through flake-parts) to avoid type-checking
+      # issues with NixOS module functions.
+      customModuleDir = ./nix/modules;
+      customModuleFiles = lib.filterAttrs (n: v:
+        v == "regular" && lib.hasSuffix ".nix" n && n != "flake.nix" && !lib.hasPrefix "_" n
+      ) (builtins.readDir customModuleDir);
+      customModulePaths = map (n: customModuleDir + "/${n}") (builtins.attrNames customModuleFiles);
+      customModuleDefs = map (f: (import f { }).flake.customModules or { }) customModulePaths;
+      mergedCustomModules = builtins.foldl' (acc: m: acc // m) { } customModuleDefs;
+
       flakeOutputs = mkFlake {
         systems = [
           "x86_64-linux"
           "aarch64-linux"
         ];
 
-        imports = (importTree ./nix/packages) ++ (importTree ./nix/modules) ++ (importTree ./nixos/modules) ++ [
-          ({ lib, ... }: {
-            options.flake.customModules = lib.mkOption {
-              type = lib.types.lazyAttrsOf lib.types.anything;
-              default = { };
-            };
-          })
-        ];
+        imports = (importTree ./nix/packages) ++ (importTree ./nixos/modules);
 
         perSystem =
           { pkgs, lib, ... }:
@@ -80,10 +83,10 @@
           default = { ... }: { };
         };
 
-      customModules = flakeOutputs.customModules or { };
+      customModules = mergedCustomModules;
 
       modules = {
-        imports = builtins.attrValues (flakeOutputs.customModules or { });
+        imports = builtins.attrValues mergedCustomModules;
       };
 
       overlays = flakeOutputs.overlays // {
