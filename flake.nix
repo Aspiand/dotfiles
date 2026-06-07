@@ -34,7 +34,14 @@
           "aarch64-linux"
         ];
 
-        imports = (importTree ./nix/packages) ++ (importTree ./nix/modules) ++ (importTree ./nixos/modules);
+        imports = (importTree ./nix/packages) ++ (importTree ./nix/modules) ++ (importTree ./nixos/modules) ++ [
+          ({ lib, ... }: {
+            options.flake.customModules = lib.mkOption {
+              type = lib.types.lazyAttrsOf lib.types.anything;
+              default = { };
+            };
+          })
+        ];
 
         perSystem =
           { pkgs, lib, ... }:
@@ -72,6 +79,12 @@
         // {
           default = { ... }: { };
         };
+
+      customModules = flakeOutputs.customModules or { };
+
+      modules = {
+        imports = builtins.attrValues (flakeOutputs.customModules or { });
+      };
 
       overlays = flakeOutputs.overlays // {
         default =

@@ -1,6 +1,6 @@
 { ... }:
 {
-  flake.nixosModules."9router" =
+  flake.customModules."9router" =
     {
       config,
       lib,

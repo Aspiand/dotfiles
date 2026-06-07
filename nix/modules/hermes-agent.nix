@@ -1,5 +1,5 @@
 { ... }: {
-  flake.nixosModules.hermes-agent = { config, lib, pkgs, ... }:
+  flake.customModules.hermes-agent = { config, lib, pkgs, ... }:
   let
     inherit (lib) mkIf mkEnableOption;
     cfg = config.services.hermes-agent;
