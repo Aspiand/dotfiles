@@ -33,7 +33,7 @@
 
     settings = {
       model = {
-        default = "main-combo";
+        default = "deepseek-flash";
         provider = "9router";
       };
 
@@ -41,11 +41,22 @@
         "9router" = {
           base_url = "http://127.0.0.1:20128/v1";
           api_key = "\${NINEROUTER_API_KEY}";
-          default_model = "main-combo";
+          default_model = "deepseek-flash";
+
+          "deepseek-flash".context_length = 1000000;
+          "sp/deepseek-v4-pro".context_length = 1000000;
         };
+
         "openrouter" = {
           base_url = "https://openrouter.ai/api/v1";
           default_model = "google/gemini-2.5-flash";
+        };
+      };
+
+      model_aliases = {
+        "deepseek-pro" = {
+          model = "sp/deepseek-v4-pro";
+          provider = "9router";
         };
       };
 
@@ -62,8 +73,15 @@
           model = "web-extract";
         };
 
-        # vision.provider = "auto";
-        # compression.provider = "auto";
+        vision = {
+          provider = "9router";
+          model = "vision";
+        };
+
+        compression = {
+          provider = "9router";
+          model = "deepseek-flash";
+        };
       };
 
       discord = {
@@ -271,8 +289,15 @@
   };
 
   users.users.hermes.extraGroups = [ "users" ];
-  security.sudo.extraRules = [{
-    users = [ "hermes" ];
-    commands = [{ command = "/run/current-system/sw/bin/docker"; options = [ "NOPASSWD" ]; }];
-  }];
+  security.sudo.extraRules = [
+    {
+      users = [ "hermes" ];
+      commands = [
+        {
+          command = "/run/current-system/sw/bin/docker";
+          options = [ "NOPASSWD" ];
+        }
+      ];
+    }
+  ];
 }
