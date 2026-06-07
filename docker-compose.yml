@@ -59,6 +59,19 @@ services:
     environment:
       DATA_DIR: /app/data
 
+  freebuff2api:
+    container_name: freebuff2api
+    image: ghcr.io/quorinex/freebuff2api:latest
+    restart: unless-stopped
+    ports:
+      - 127.0.0.1:8080:8080
+    environment:
+      AUTH_TOKENS: ${FREEBUFF_AUTH_TOKENS}
+      ROTATION_INTERVAL: ${FREEBUFF_ROTATION_INTERVAL:-6h}
+      REQUEST_TIMEOUT: ${FREEBUFF_REQUEST_TIMEOUT:-15m}
+      API_KEYS: ${FREEBUFF_API_KEYS}
+      HTTP_PROXY: ${FREEBUFF_HTTP_PROXY}
+
 volumes:
   database:
   immich-model-cache:
