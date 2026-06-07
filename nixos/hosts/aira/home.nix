@@ -59,7 +59,7 @@ in
         # android-tools
         # ansible
         # bitwarden-cli
-        # claude-code
+        claude-code
         codex
         copyparty-most
         delta
