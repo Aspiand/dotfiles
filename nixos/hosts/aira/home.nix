@@ -55,6 +55,7 @@ in
         protonplus
         # spotify
         tor-browser
+        zoom-us
 
         # CLI
         # act
