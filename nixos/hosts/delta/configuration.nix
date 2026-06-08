@@ -11,8 +11,8 @@
 
   zramSwap.memoryMax = 2048;
 
-  boot.kernel.sysctl."vm.swappiness" = mkDefault 10;
-  boot.kernel.sysctl."vm.vfs_cache_pressure" = mkDefault 50;
+  boot.kernel.sysctl."vm.swappiness" = lib.mkDefault 10;
+  boot.kernel.sysctl."vm.vfs_cache_pressure" = lib.mkDefault 50;
 
   networking.firewall = {
     enable = true;
