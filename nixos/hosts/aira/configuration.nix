@@ -16,6 +16,16 @@
   nixpkgs.config.allowUnfree = true;
   security.rtkit.enable = true;
 
+  security.sudo.extraRules = [
+    {
+      users = [ "ao" ];
+      runAs = "hermes";
+      commands = [
+        { command = "ALL"; options = [ "NOPASSWD" "SETENV" ]; }
+      ];
+    }
+  ];
+
   # TODO: remove later
   nixpkgs.overlays = [
     (final: prev: {
