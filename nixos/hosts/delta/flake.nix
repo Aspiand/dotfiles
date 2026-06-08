@@ -10,7 +10,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    flake-utils.url = "github:numtide/flake-utils";
   };
 
   outputs =
@@ -18,7 +17,6 @@
       self,
       nixpkgs,
       disko,
-      flake-utils,
       dotfiles,
     }:
     let
@@ -32,8 +30,10 @@
           ./hardware.nix
           ./disko.nix
           ./configuration.nix
+          ./services.nix
           dotfiles.nixosModules.base
           dotfiles.nixosModules.ssh
+          dotfiles.nixosModules.fail2ban
         ];
       };
     };

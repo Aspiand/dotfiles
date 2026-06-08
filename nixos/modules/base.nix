@@ -9,8 +9,6 @@
         time.timeZone = "Asia/Makassar";
         nixpkgs.config.allowUnfree = true;
 
-        networking.networkmanager.enable = true;
-
         nix = {
           gc = {
             automatic = true;

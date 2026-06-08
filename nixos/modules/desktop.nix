@@ -6,6 +6,8 @@
     in
     {
       config = mkDefaults {
+        networking.networkmanager.enable = true;
+
         services.pipewire = {
           enable = true;
           alsa.enable = true;
