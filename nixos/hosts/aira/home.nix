@@ -58,6 +58,7 @@ in
         zoom-us
 
         # CLI
+        python314Packages.markitdown
         # act
         # android-tools
         # ansible
