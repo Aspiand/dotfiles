@@ -217,7 +217,7 @@
 
       headroom = {
         command = "headroom";
-        args = [ "mcp", "serve" ];
+        args = [ "mcp" "serve" ];
       };
 
       actual-budget = {
