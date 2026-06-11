@@ -124,10 +124,10 @@
       #   tirith_enabled = true;
       # };
 
-      # TODO: configure later
       memory = {
         memory_enabled = true;
         user_profile_enabled = true;
+        provider = "holographic";
       };
 
       compression = {
