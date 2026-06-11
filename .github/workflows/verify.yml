@@ -77,7 +77,7 @@ jobs:
               echo "no_sig:$KEY" >> "$ISSUES_LOG"
             fi
 
-            # Check referenced NAR file exists (from objects.json — no S3 call)
+            # Check referenced NAR file exists
             if [ -n "$NAR_URL" ]; then
               NAR_EXISTS=$(jq -r --arg url "$NAR_URL" '[.Contents // [] | .[] | select(.Key == $url)] | length > 0' /tmp/objects.json 2>/dev/null || echo "false")
               if [ "$NAR_EXISTS" = "true" ]; then
@@ -91,10 +91,10 @@ jobs:
             echo "$KEY" >> "$CURL_QUEUE"
           done
 
-          # Parallel public cache check
+          # Parallel public cache check (limited concurrency)
           echo "--- Checking public cache ---"
           export PUBLIC_CACHE_URL
-          xargs -P 20 -I{} sh -c '
+          xargs -P 10 -I{} sh -c '
             c=$(curl -s -o /dev/null -w "%{http_code}" "$PUBLIC_CACHE_URL/{}" 2>/dev/null || echo "error")
             echo "$c {}"
           ' < "$CURL_QUEUE" 2>/dev/null | while read -r code key; do
@@ -169,14 +169,14 @@ jobs:
               echo "### Issues"
               echo ""
               echo "**Narinfo integrity:**"
-              echo "\`\`\`"
+              echo '```'
               cat /tmp/issues.txt 2>/dev/null || echo "(none)"
-              echo "\`\`\`"
+              echo '```'
               echo ""
               echo "**Missing packages:**"
-              echo "\`\`\`"
+              echo '```'
               cat /tmp/pkg-issues.txt 2>/dev/null || echo "(none)"
-              echo "\`\`\`"
+              echo '```'
             } >> "$GITHUB_STEP_SUMMARY"
 
             echo "::warning::Verification found $TOTAL_FAIL issue(s)"

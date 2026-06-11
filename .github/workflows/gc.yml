@@ -9,11 +9,15 @@ on:
         description: "List what would be deleted, skip actual deletion"
         type: boolean
         default: false
+      package:
+        description: "Delete ALL versions of a specific package (e.g., test-pkg)"
+        type: string
+        required: false
+        default: ""
 
 env:
   CUTOFF_DAYS: 30
   KEEP_VERSIONS: 2
-  EXCLUDED_PACKAGES: '["9router"]'
 
 jobs:
   prune:
@@ -26,6 +30,12 @@ jobs:
       - name: Clear installer summary
         run: |
           > "$GITHUB_STEP_SUMMARY"
+
+      - name: Read excluded packages
+        id: excluded
+        run: |
+          EXCLUDED=$(cat .github/excluded-packages.json 2>/dev/null || echo '[]')
+          echo "excluded=$EXCLUDED" >> "$GITHUB_OUTPUT"
 
       - name: Collect R2 objects & narinfo metadata
         env:
@@ -75,7 +85,47 @@ jobs:
 
           echo "Narinfos parsed: $(wc -l < /tmp/narinfo-data.txt)"
 
-      - name: Build delete list
+      # ──────────────────────────────────────────────────────
+      # SPECIFIC PACKAGE REMOVAL MODE
+      # If inputs.package is set, skip 4-phase GC entirely.
+      # Delete ALL versions of that package, then exit.
+      # ──────────────────────────────────────────────────────
+      - name: Filter specific package (if input provided)
+        if: inputs.package != ''
+        env:
+          TARGET_PKG: ${{ inputs.package }}
+        run: |
+          echo "=== Specific package mode: $TARGET_PKG ==="
+          > /tmp/to-delete.txt
+
+          while IFS='|' read -r KEY LASTMOD STORE_PATH; do
+            if echo "$STORE_PATH" | grep -qiF "$TARGET_PKG"; then
+              HASH="${KEY%.narinfo}"
+              echo "${HASH}.narinfo" >> /tmp/to-delete.txt
+              grep "^nar/.*${HASH}" /tmp/all-keys.txt >> /tmp/to-delete.txt 2>/dev/null || true
+              echo "  Marked for delete: $KEY → $STORE_PATH"
+            fi
+          done < /tmp/narinfo-data.txt
+
+          sort -u /tmp/to-delete.txt > /tmp/to-delete-dedup.txt
+          mv /tmp/to-delete-dedup.txt /tmp/to-delete.txt
+
+          TOTAL=$(wc -l < /tmp/to-delete.txt)
+          echo "Total objects to delete for $TARGET_PKG: $TOTAL"
+          echo "SPECIFIC_PKG_DELETE=true" >> "$GITHUB_ENV"
+
+      # ──────────────────────────────────────────────────────
+      # BUILD DELETE LIST (4-phase GC, skipped in specific-pkg mode)
+      # Phase order: A → B → D → C
+      #   A: Orphan NAR files (no matching narinfo)
+      #   B: Stale packages (not in flake anymore)
+      #   D: Keep latest N versions per package
+      #   C: Age-based cleanup (only what's left after D)
+      # ──────────────────────────────────────────────────────
+      - name: Build delete list (full GC)
+        if: inputs.package == ''
+        env:
+          EXCLUDED: ${{ steps.excluded.outputs.excluded }}
         run: |
           > /tmp/to-delete.txt
           CUTOFF=$(date -u -d "-$CUTOFF_DAYS days" +%s)
@@ -98,7 +148,8 @@ jobs:
           while IFS='|' read -r KEY LASTMOD STORE_PATH; do
             MATCHED=false
             for PKG in $PACKAGES; do
-              if echo "$STORE_PATH" | grep -qiF "$PKG"; then
+              # Match on package name in store path (e.g. "codegraph" in "codegraph-0.1.0")
+              if echo "$STORE_PATH" | grep -qiE "/${PKG}-[0-9]"; then
                 MATCHED=true
                 break
               fi
@@ -111,26 +162,14 @@ jobs:
             fi
           done < /tmp/narinfo-data.txt
 
-          # ── Phase C: Age-based — objects older than CUTOFF_DAYS ──
-          echo "=== Phase C: Age-based (> ${CUTOFF_DAYS} days) ==="
-          while IFS='|' read -r KEY LASTMOD STORE_PATH; do
-            OBJ_TS=$(date -u -d "$LASTMOD" +%s 2>/dev/null || echo "0")
-            if [ "$OBJ_TS" -lt "$CUTOFF" ] 2>/dev/null; then
-              HASH="${KEY%.narinfo}"
-              echo "${HASH}.narinfo" >> /tmp/to-delete.txt
-              grep "^nar/.*${HASH}" /tmp/all-keys.txt >> /tmp/to-delete.txt 2>/dev/null || true
-              echo "  Old: $KEY ($LASTMOD)"
-            fi
-          done < /tmp/narinfo-data.txt
-
-          # ── Phase D: Keep latest N per package ──
+          # ── Phase D: Keep latest N per package (run BEFORE age-based) ──
           echo "=== Phase D: Keep latest $KEEP_VERSIONS per package ==="
           for PKG in $PACKAGES; do
-            if echo "$EXCLUDED_PACKAGES" | jq -e --arg p "$PKG" 'index($p) != null' > /dev/null 2>&1; then
+            if echo "$EXCLUDED" | jq -e --arg p "$PKG" 'index($p) != null' > /dev/null 2>&1; then
               continue
             fi
 
-            grep -iF "$PKG" /tmp/narinfo-data.txt \
+            grep -iF "/${PKG}-" /tmp/narinfo-data.txt \
               | sort -t'|' -k2 \
               > /tmp/pkg-entries.txt
 
@@ -150,6 +189,19 @@ jobs:
             done
           done
 
+          # ── Phase C: Age-based (only what's left after D) ──
+          echo "=== Phase C: Age-based (> ${CUTOFF_DAYS} days) ==="
+          while IFS='|' read -r KEY LASTMOD STORE_PATH; do
+            OBJ_TS=$(date -u -d "$LASTMOD" +%s 2>/dev/null || echo "0")
+            if [ "$OBJ_TS" -lt "$CUTOFF" ] 2>/dev/null; then
+              HASH="${KEY%.narinfo}"
+              echo "${HASH}.narinfo" >> /tmp/to-delete.txt
+              grep "^nar/.*${HASH}" /tmp/all-keys.txt >> /tmp/to-delete.txt 2>/dev/null || true
+              echo "  Old: $KEY ($LASTMOD) → $STORE_PATH"
+            fi
+          done < /tmp/narinfo-data.txt
+
+          # ── Deduplicate ──
           sort -u /tmp/to-delete.txt > /tmp/to-delete-dedup.txt
           mv /tmp/to-delete-dedup.txt /tmp/to-delete.txt
 
@@ -167,12 +219,17 @@ jobs:
           echo "Total objects to delete: $(wc -l < /tmp/to-delete.txt)"
 
       - name: Execute deletions
-        if: always()
+        if: always() && hashFiles('/tmp/to-delete.txt') != ''
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
           DRY_RUN: ${{ inputs.dry-run || false }}
         run: |
+          if [ ! -f /tmp/to-delete.txt ] || [ ! -s /tmp/to-delete.txt ]; then
+            echo "Nothing to delete"
+            exit 0
+          fi
+
           TOTAL=$(wc -l < /tmp/to-delete.txt)
 
           if [ "$DRY_RUN" = "true" ]; then
@@ -181,12 +238,35 @@ jobs:
             cat /tmp/to-delete.txt
           else
             echo "Deleting $TOTAL objects..."
-            xargs -P 10 -I{} aws s3api delete-object \
-              --bucket "${{ secrets.R2_BUCKET }}" \
-              --endpoint "${{ secrets.R2_ENDPOINT }}" \
-              --region auto \
-              --key "{}" \
-            < /tmp/to-delete.txt
+            # Batch delete — 1000 objects per batch (S3 API limit)
+            # Group narinfos + NARs together, delete in batches
+            sort -u /tmp/to-delete.txt | split -l 1000 - /tmp/delete-batch-
+
+            for BATCH in /tmp/delete-batch-*; do
+              [ -f "$BATCH" ] || continue
+              KEYS=$(jq -Rn '[inputs | select(length > 0) | {Key: .}]' < "$BATCH")
+              OBJECTS=$(echo "$KEYS" | jq '{Objects: ., Quiet: true}')
+
+              aws s3api delete-objects \
+                --bucket "${{ secrets.R2_BUCKET }}" \
+                --endpoint "${{ secrets.R2_ENDPOINT }}" \
+                --region auto \
+                --delete "$OBJECTS" \
+                --output json > /tmp/delete-result.json 2>&1 || {
+                echo "Batch delete failed, falling back to per-item..."
+                xargs -P 10 -I{} aws s3api delete-object \
+                  --bucket "${{ secrets.R2_BUCKET }}" \
+                  --endpoint "${{ secrets.R2_ENDPOINT }}" \
+                  --region auto \
+                  --key "{}" \
+                < "$BATCH"
+              }
+
+              DELETED=$(jq -r '.Deleted | length' /tmp/delete-result.json 2>/dev/null || echo "0")
+              echo "  Batch: $(wc -l < "$BATCH") objects → $DELETED deleted"
+            done
+
+            rm -f /tmp/delete-batch-*
           fi
 
       - name: Report
@@ -195,20 +275,29 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
         run: |
-          REMAINING=$(aws s3api list-objects \
-            --bucket "${{ secrets.R2_BUCKET }}" \
-            --endpoint "${{ secrets.R2_ENDPOINT }}" \
-            --region auto \
-            --query "length(Contents[])" \
-            --output text 2>/dev/null || echo "0")
+          if [ -z "$SPECIFIC_PKG_DELETE" ]; then
+            REMAINING=$(aws s3api list-objects \
+              --bucket "${{ secrets.R2_BUCKET }}" \
+              --endpoint "${{ secrets.R2_ENDPOINT }}" \
+              --region auto \
+              --query "length(Contents[])" \
+              --output text 2>/dev/null || echo "0")
 
-          {
-            echo "### GC R2 Cache"
-            echo ""
-            echo "| Metric | Value |"
-            echo "|---|---|"
-            echo "| Objects to delete | $(wc -l < /tmp/to-delete.txt) |"
-            echo "| Storage reclaimed | $(numfmt --to=iec "${RECLAIMABLE_SIZE:-0}" 2>/dev/null || echo "${RECLAIMABLE_SIZE:-0}")B |"
-            echo "| Objects remaining | $REMAINING |"
-            echo "| Dry run | ${{ inputs.dry-run || false }} |"
-          } >> "$GITHUB_STEP_SUMMARY"
+            {
+              echo "### GC R2 Cache"
+              echo ""
+              echo "| Metric | Value |"
+              echo "|---|---|"
+              echo "| Objects to delete | $(wc -l < /tmp/to-delete.txt 2>/dev/null || echo 0) |"
+              echo "| Storage reclaimed | $(numfmt --to=iec "${RECLAIMABLE_SIZE:-0}" 2>/dev/null || echo "${RECLAIMABLE_SIZE:-0}")B |"
+              echo "| Objects remaining | $REMAINING |"
+              echo "| Dry run | ${{ inputs.dry-run || false }} |"
+            } >> "$GITHUB_STEP_SUMMARY"
+          else
+            {
+              echo "### Package Removal: ${{ inputs.package }}"
+              echo ""
+              echo "All cached versions of \`${{ inputs.package }}\` removed."
+              echo "Objects deleted: $(wc -l < /tmp/to-delete.txt 2>/dev/null || echo 0)"
+            } >> "$GITHUB_STEP_SUMMARY"
+          fi

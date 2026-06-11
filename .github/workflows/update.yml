@@ -43,8 +43,12 @@ jobs:
 
       - name: Rename generated files
         run: |
-          mv nix/_sources/generated.nix nix/_sources/_generated.nix
-          mv nix/_sources/generated.json nix/_sources/_generated.json
+          if [ -f nix/_sources/generated.nix ]; then
+            mv nix/_sources/generated.nix nix/_sources/_generated.nix
+          fi
+          if [ -f nix/_sources/generated.json ]; then
+            mv nix/_sources/generated.json nix/_sources/_generated.json
+          fi
 
       - name: Build changelog
         id: changelog

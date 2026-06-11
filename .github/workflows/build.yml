@@ -1,18 +1,15 @@
 name: Build Nix Packages
 
-env:
-  EXCLUDED_PACKAGES: '["9router"]'
-
 on:
   push:
     branches:
       - main
-      - nix/**
     paths:
       - "nix/packages/**"
       - "flake.nix"
       - "flake.lock"
       - ".github/workflows/build.yml"
+      - ".github/excluded-packages.json"
   workflow_dispatch:
     inputs:
       repository:
@@ -72,7 +69,17 @@ jobs:
           fetch-depth: ${{ github.event_name == 'push' && 0 || 1 }}
 
       # ────────────────────────────────────────────────────────────
-      # 1. Detect which packages need building
+      # 1. Read excluded packages from external file
+      # ────────────────────────────────────────────────────────────
+      - name: Read excluded packages
+        id: excluded
+        run: |
+          EXCLUDED=$(cat .github/excluded-packages.json 2>/dev/null || echo '[]')
+          echo "excluded=$EXCLUDED" >> "$GITHUB_OUTPUT"
+          echo "Excluded packages: $EXCLUDED"
+
+      # ────────────────────────────────────────────────────────────
+      # 2. Detect which packages need building
       #    ─ push:   diff against previous commit (changed packages)
       #    ─ manual: use workflow_dispatch input
       #    ─ remote: use workflow_call input or ALL
@@ -81,10 +88,10 @@ jobs:
         id: detect
         env:
           INPUT_PACKAGE: ${{ inputs.package || 'ALL' }}
+          EXCLUDED: ${{ steps.excluded.outputs.excluded }}
         run: |
           MODE="all"
           PACKAGES=""
-          EXCLUDED='${{ env.EXCLUDED_PACKAGES }}'
 
           if [ "${{ github.event_name }}" = "push" ]; then
             BEFORE="${{ github.event.before }}"
@@ -102,7 +109,7 @@ jobs:
             echo "$CHANGED_FILES"
 
             # Core infrastructure → build ALL
-            if echo "$CHANGED_FILES" | grep -qE '^(flake\.(nix|lock)|\.github/workflows/build\.yml)$'; then
+            if echo "$CHANGED_FILES" | grep -qE '^(flake\.(nix|lock)|\.github/workflows/build\.yml|\.github/excluded-packages\.json)$'; then
               echo "Core infra changed → building ALL"
             else
               # Extract changed package names from nix/packages/<name>.nix
@@ -124,7 +131,7 @@ jobs:
               while IFS= read -r pkg; do
                 [ -z "$pkg" ] && continue
                 if echo "$EXCLUDED" | jq -e --arg p "$pkg" 'index($p) != null' > /dev/null 2>&1; then
-                  echo "Excluding $pkg (in EXCLUDED_PACKAGES)"
+                  echo "Excluding $pkg (in excluded-packages.json)"
                 else
                   FILTERED="${FILTERED}${FILTERED:+,}${pkg}"
                 fi
@@ -155,14 +162,14 @@ jobs:
           echo "packages=$PACKAGES" >> "$GITHUB_OUTPUT"
 
       # ────────────────────────────────────────────────────────────
-      # 2. Install Nix — only needed for ALL mode (nix eval)
+      # 3. Install Nix — only needed for ALL mode (nix eval)
       #    Selected mode builds directly from detected filenames.
       # ────────────────────────────────────────────────────────────
       - uses: DeterminateSystems/nix-installer-action@v22
         if: steps.detect.outputs.mode == 'all'
 
       # ────────────────────────────────────────────────────────────
-      # 3. Generate build matrix
+      # 4. Generate build matrix
       # ────────────────────────────────────────────────────────────
       - name: Set build matrix
         id: set-matrix
@@ -170,6 +177,7 @@ jobs:
           MODE: ${{ steps.detect.outputs.mode }}
           PACKAGES: ${{ steps.detect.outputs.packages }}
           INPUT_PACKAGE: ${{ inputs.package || 'ALL' }}
+          EXCLUDED: ${{ steps.excluded.outputs.excluded }}
           NIXPKGS_ALLOW_UNFREE: 1
         run: |
           if [ "$MODE" = "skip" ]; then
@@ -197,12 +205,11 @@ jobs:
 
             # Local flake — apply EXCLUDED_PACKAGES
             else
-              # Use --impure to allow unfree packages in eval
               nix eval .#packages.x86_64-linux --json --impure > "$NIX_OUTPUT" || {
                 echo "=== nix eval failed ==="
                 exit 1
               }
-              MATRIX=$(jq -c --argjson excluded "$EXCLUDED_PACKAGES" '
+              MATRIX=$(jq -c --argjson excluded "$EXCLUDED" '
                 keys | map(select(. as $p | $excluded | index($p) | not)) | map({system: "x86_64-linux", package: .})
               ' < "$NIX_OUTPUT")
             fi
@@ -224,7 +231,7 @@ jobs:
           echo "Has packages: ${{ steps.set-matrix.outputs.has_packages }}"
 
   # ────────────────────────────────────────────────────────────────
-  # 4. Build each package in the matrix
+  # 5. Build each package in the matrix
   # ────────────────────────────────────────────────────────────────
   build:
     needs: generate-matrix
@@ -268,9 +275,12 @@ jobs:
         run: |
           STORE_PATH=$(readlink -f result)
 
-          echo "$NIX_SECRET_KEY" > ./secret-key
-          nix store sign --key-file ./secret-key "$STORE_PATH"
-          rm -f ./secret-key
+          # Sign — pass key via stdin to avoid writing to disk
+          echo "$NIX_SECRET_KEY" | nix store sign --key-file /dev/stdin "$STORE_PATH" 2>/dev/null || {
+            echo "$NIX_SECRET_KEY" > ./secret-key
+            nix store sign --key-file ./secret-key "$STORE_PATH"
+            rm -f ./secret-key
+          }
 
           COPY_SIZE=$(nix path-info -Sh "$STORE_PATH" | awk '{print $2, $3}')
           CLOSURE_SIZE=$(nix path-info -Sh "$STORE_PATH" --recursive | tail -1 | awk '{print $2, $3}')
