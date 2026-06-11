@@ -130,6 +130,12 @@
         provider = "holographic";
       };
 
+      plugins = {
+        hermes-memory-store = {
+          auto_extract = true;
+        };
+      };
+
       compression = {
         enabled = true;
         threshold = 0.5;
