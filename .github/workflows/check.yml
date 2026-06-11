@@ -42,12 +42,13 @@ jobs:
           echo "### nix eval — packages.x86_64-linux" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
 
-          EVAL_OUTPUT=$(nix eval .#packages.x86_64-linux --json --impure 2>&1) || {
+          EVAL_OUTPUT=$(nix eval .#packages.x86_64-linux --json --impure 2>/dev/null) || {
+            EVAL_ERR=$(nix eval .#packages.x86_64-linux --json --impure 2>&1 >/dev/null)
             echo "::error::nix eval failed — check flake for eval errors"
-            echo "$EVAL_OUTPUT"
+            echo "$EVAL_ERR"
             echo "❌ **Eval FAILED**" >> "$GITHUB_STEP_SUMMARY"
             echo '```' >> "$GITHUB_STEP_SUMMARY"
-            echo "$EVAL_OUTPUT" >> "$GITHUB_STEP_SUMMARY"
+            echo "$EVAL_ERR" >> "$GITHUB_STEP_SUMMARY"
             echo '```' >> "$GITHUB_STEP_SUMMARY"
             exit 1
           }
