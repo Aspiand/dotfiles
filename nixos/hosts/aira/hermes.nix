@@ -217,7 +217,10 @@
 
       headroom = {
         command = "headroom";
-        args = [ "mcp" "serve" ];
+        args = [
+          "mcp"
+          "serve"
+        ];
       };
 
       actual-budget = {
@@ -244,46 +247,53 @@
     };
 
     extraPackages = with pkgs; [
-      # Data serialization
-      yq # JSON/YAML/TOML/XML/CSV/INI -- universal processor
-      jc # convert command output -> JSON
-      jo # create JSON from CLI
-      gron # flatten JSON into greppable format
-
-      # HTTP / API
-      xh # HTTP client with JSON support -- replace curl | python3
-
-      # Text / file manipulation
-      sd # find & replace -- replace sed for most cases
-      bat # cat with syntax highlight + git markers
-      ripgrep # already available via rg from Nix
-
-      # Terminal UX
-      fzf # fuzzy finder -- interactive pipe filtering
-      delta # syntax-highlighted diff viewer
-      glow # render markdown in terminal
-
-      # File operations
+      # Shell & CLI
+      bat # cat with syntax highlight
       eza # modern ls with tree view
+      ripgrep # recursive grep
+      sd # find & replace (sed replacement)
+      fzf # fuzzy finder
+      delta # syntax-highlighted diff
       entr # run commands on file change
 
-      # Nix
-      nix # nix eval, nix flake check, nix-shell for module testing
+      # Data processing
+      yq # YAML/JSON/TOML/XML/CSV processor
+      jc # command output → JSON
+      jo # create JSON from CLI
+      gron # flatten JSON into greppable lines
+      csvkit # CSV tools (cut, grep, stat, look, sql)
 
-      # Tabular data
-      csvkit # csvcut, csvgrep, csvstat, csvlook, csvsql
+      # HTTP
+      xh # HTTP client (curl | python3 replacement)
 
-      # Document processing
-      mcp-nixos # MCP server: NixOS packages, options, flakes, wiki, noogle, nixhub — 2 tools (nix, nix_versions)
-      python314Packages.markitdown # convert PDF/Office/HTML/audio -> Markdown (nixpkgs)
-      markitdown-mcp # MCP server wrapping markitdown — exposes convert_to_markdown
-      context7-mcp
-      headroom # context compression: 60-95% token reduction, MCP server
-
+      # Version control
       gh
       git
       gitui
+
+      # Nix
+      nix # nix eval, flake check, nix-shell
+
+      # Runtime
       nodejs-slim
+
+      # MCP servers (in-container binaries for mcpServers section)
+      mcp-nixos
+      markitdown-mcp
+      context7-mcp
+      headroom # context compression MCP server
+
+      # Document conversion
+      python314Packages.markitdown
+
+      # OSINT
+      sherlock # username 400+ platforms
+      maigret # username 3000+ sites + profile parsing
+      instaloader # IG download + metadata
+      holehe # email check across sites
+      h8mail # email breach hunting
+      bbot # OSINT automation
+      exiftool # EXIF metadata read/write
     ];
     # restart = "always";
     # restartSec = 5;
