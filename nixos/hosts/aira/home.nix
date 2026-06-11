@@ -55,7 +55,6 @@ in
         protonplus
         # spotify
         tor-browser
-        zoom-us
 
         # CLI
         python314Packages.markitdown
