@@ -3,6 +3,7 @@
 {
   programs.git = {
     enable = true;
+    delta.enable = true;
     settings = {
       pull.rebase = true;
       init.defaultBranch = "main";
@@ -18,7 +19,6 @@
       };
 
       delta = {
-        enable = true;
         dark = true;
         navigate = true;
         line-numbers = true;
@@ -26,7 +26,7 @@
       };
 
       interactive = {
-        diffFilter = lib.mkIf config.programs.git.settings.delta.enable "${pkgs.delta}/bin/delta --color-only";
+        diffFilter = lib.mkIf config.programs.git.delta.enable "${pkgs.delta}/bin/delta --color-only";
       };
     };
 
