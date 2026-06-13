@@ -230,10 +230,8 @@
       };
 
       actual-budget = {
-        command = "npx";
+        command = "actual-mcp";
         args = [
-          "-y"
-          "actual-mcp"
           "--enable-write"
         ];
         env = {
@@ -291,13 +289,14 @@
 
       # Runtime
       nodejs-slim
-      bun # JS runtime for trello MCP
+      bun
 
-      # MCP servers (in-container binaries for mcpServers section)
+      # MCP servers
       mcp-nixos
       markitdown-mcp
       context7-mcp
       headroom # context compression MCP server
+      actual-mcp # Actual Budget MCP server
 
       # Document conversion
       python314Packages.markitdown
