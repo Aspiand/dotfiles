@@ -5,31 +5,25 @@
     enable = lib.mkDefault true;
     enableDefaultConfig = false;
 
-    matchBlocks = {
+    settings = {
       dalet = {
-        hostname = "192.168.7.6";
-        user = "nix-on-droid";
-        port = 3022;
-        identityFile = [
-          "~/.ssh/id_ed25519"
-        ];
+        HostName = "192.168.7.6";
+        User = "nix-on-droid";
+        Port = 3022;
+        IdentityFile = [ "~/.ssh/id_ed25519" ];
       };
 
       self = {
-        hostname = "agarta";
-        port = 23231;
-        identityFile = [
-          "~/.ssh/id_ed25519"
-        ];
+        HostName = "agarta";
+        Port = 23231;
+        IdentityFile = [ "~/.ssh/id_ed25519" ];
       };
 
       github = {
-        hostname = "github.com";
-        user = "git";
-        forwardAgent = true;
-        identityFile = [
-          "~/.ssh/id_ed25519"
-        ];
+        HostName = "github.com";
+        User = "git";
+        ForwardAgent = true;
+        IdentityFile = [ "~/.ssh/id_ed25519" ];
       };
     };
   };
