@@ -107,7 +107,7 @@
       toolsets = [ "all" ];
 
       api_server = {
-        enabled = true;
+        enabled = false;
         host = "0.0.0.0";
         port = 8642;
       };
@@ -250,6 +250,15 @@
           CONTEXT7_API_KEY = "\${CONTEXT7_API_KEY}";
         };
       };
+
+      trello = {
+        command = "bunx";
+        args = [ "@delorenj/mcp-server-trello" ];
+        env = {
+          TRELLO_API_KEY = "\${TRELLO_API_KEY}";
+          TRELLO_TOKEN = "\${TRELLO_TOKEN}";
+        };
+      };
     };
 
     extraPackages = with pkgs; [
@@ -282,6 +291,7 @@
 
       # Runtime
       nodejs-slim
+      bun # JS runtime for trello MCP
 
       # MCP servers (in-container binaries for mcpServers section)
       mcp-nixos
