@@ -250,8 +250,8 @@
       };
 
       trello = {
-        command = "bunx";
-        args = [ "@delorenj/mcp-server-trello" ];
+        command = "mcp-server-trello";
+        args = [ ];
         env = {
           TRELLO_API_KEY = "\${TRELLO_API_KEY}";
           TRELLO_TOKEN = "\${TRELLO_TOKEN}";
@@ -297,6 +297,7 @@
       context7-mcp
       headroom # context compression MCP server
       actual-mcp # Actual Budget MCP server
+      mcp-server-trello # Trello MCP server
 
       # Document conversion
       python314Packages.markitdown
