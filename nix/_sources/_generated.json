@@ -97,5 +97,20 @@
             "url": "https://tlauncher.org/jar"
         },
         "version": "2.9319"
+    },
+    "mcp-server-trello": {
+        "cargoLock": null,
+        "date": null,
+        "extract": null,
+        "name": "mcp-server-trello",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "name": null,
+            "sha256": "sha256-JfjYy5CGJhtj5RCfMnrmFtqIXmPff9KbMl/0HPAj4l8=",
+            "type": "url",
+            "url": "https://registry.npmjs.org/@delorenj/mcp-server-trello/-/mcp-server-trello-1.7.1.tgz"
+        },
+        "version": "1.7.1"
     }
 }

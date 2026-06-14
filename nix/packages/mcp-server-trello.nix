@@ -3,14 +3,13 @@
 let
   mkMcpServerTrello =
     pkgs:
+    let
+      sources = import ../_sources/_default.nix { inherit pkgs; };
+      pkg = sources.mcp-server-trello;
+    in
     pkgs.stdenv.mkDerivation rec {
       pname = "mcp-server-trello";
-      version = "1.7.1";
-
-      src = pkgs.fetchurl {
-        url = "https://registry.npmjs.org/@delorenj/mcp-server-trello/-/mcp-server-trello-${version}.tgz";
-        hash = "sha512-PPHQGeQsiXypw5e321oGp5Rz+lmdPV82Fm0HCCnI9abpZQNmKoK6FJk9y4O5i1aydbalhgzwIw/AiNuhK+BTdg==";
-      };
+      inherit (pkg) version src;
 
       sourceRoot = "package";
 

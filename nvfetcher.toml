@@ -20,3 +20,8 @@ fetch.github = "tw93/Pake"
 src.webpage = "https://tlauncher.org/"
 src.regex = 'TLauncher ([\d.]+)'
 fetch.url = "https://tlauncher.org/jar"
+
+[mcp-server-trello]
+src.webpage = "https://registry.npmjs.org/@delorenj/mcp-server-trello/latest"
+src.regex = '"version":"([^"]+)"'
+fetch.url = "https://registry.npmjs.org/@delorenj/mcp-server-trello/-/mcp-server-trello-{{version}}.tgz"

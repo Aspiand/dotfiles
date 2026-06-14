@@ -59,4 +59,12 @@
       sha256 = "sha256-xht2qWiXbOi6ezHziEcSVCxN6BPKDG8yQZSvULnLRW8=";
     };
   };
+  mcp-server-trello = {
+    pname = "mcp-server-trello";
+    version = "1.7.1";
+    src = fetchurl {
+      url = "https://registry.npmjs.org/@delorenj/mcp-server-trello/-/mcp-server-trello-1.7.1.tgz";
+      sha256 = "sha256-JfjYy5CGJhtj5RCfMnrmFtqIXmPff9KbMl/0HPAj4l8=";
+    };
+  };
 }
