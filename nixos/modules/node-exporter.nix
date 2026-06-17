@@ -1,0 +1,57 @@
+{ ... }:
+{
+  flake.nixosModules.node-exporter =
+    { lib, ... }:
+    let
+      mkDefaults = (import ../../lib { inherit lib; }).mkDefaults;
+    in
+    {
+      config = mkDefaults {
+        services.prometheus.exporters.node = {
+          enable = true;
+
+          port = 9100;
+          listenAddress = "127.0.0.1";
+
+          enabledCollectors = [
+            "conntrack"
+            "cpu"
+            "diskstats"
+            "entropy"
+            "fibrechannel"
+            "filefd"
+            "filesystem"
+            "loadavg"
+            "mdadm"
+            "meminfo"
+            "netclass"
+            "netdev"
+            "netstat"
+            "nfs"
+            "nfsd"
+            "sockstat"
+            "softnet"
+            "stat"
+            "textfile"
+            "time"
+            "uname"
+            "vmstat"
+            "systemd"
+            "logind"
+            "monotonic_time"
+            "os"
+            "pressure"
+
+          ];
+
+          extraFlags = [
+            "--collector.textfile.directory=/var/lib/node_exporter/textfile_collector"
+          ];
+        };
+
+        systemd.tmpfiles.rules = [
+          "d /var/lib/node_exporter/textfile_collector 0755 node_exporter node_exporter -"
+        ];
+      };
+    };
+}
