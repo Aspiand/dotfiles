@@ -14,7 +14,6 @@ jobs:
           fetch-depth: 0
 
       - uses: DeterminateSystems/nix-installer-action@v22
-      - uses: DeterminateSystems/magic-nix-cache-action@v9
 
       - name: Build NixOS system closure
         env:

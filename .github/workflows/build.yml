@@ -169,8 +169,6 @@ jobs:
       # ────────────────────────────────────────────────────────────
       - uses: DeterminateSystems/nix-installer-action@v22
         if: steps.detect.outputs.mode == 'all'
-      - uses: DeterminateSystems/magic-nix-cache-action@v9
-        if: steps.detect.outputs.mode == 'all'
 
       # ────────────────────────────────────────────────────────────
       # 4. Generate build matrix
@@ -253,7 +251,6 @@ jobs:
           ref: ${{ inputs.ref || github.ref }}
 
       - uses: DeterminateSystems/nix-installer-action@v22
-      - uses: DeterminateSystems/magic-nix-cache-action@v9
 
       - name: Build package
         env:

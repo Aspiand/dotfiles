@@ -25,7 +25,6 @@ jobs:
           ref: main
 
       - uses: DeterminateSystems/nix-installer-action@v22
-      - uses: DeterminateSystems/magic-nix-cache-action@v9
 
       - name: Clear installer summary
         run: |
