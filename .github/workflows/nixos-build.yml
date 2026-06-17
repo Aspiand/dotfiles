@@ -1,0 +1,64 @@
+name: Build NixOS System
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build aira
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - uses: DeterminateSystems/nix-installer-action@v22
+      - uses: DeterminateSystems/magic-nix-cache-action@v9
+
+      - name: Build NixOS system closure
+        env:
+          NIXPKGS_ALLOW_UNFREE: 1
+        run: |
+          echo "Building: aira"
+          nix build ./nixos/hosts/aira#nixosConfigurations.aira.config.system.build.toplevel \
+            --print-build-logs \
+            --impure \
+            --accept-flake-config
+
+      - name: Show build size
+        run: |
+          STORE_PATH=$(readlink -f result)
+          RAW_SIZE=$(nix path-info -Sh "$STORE_PATH" | awk '{print $2, $3}')
+          CLOSURE_SIZE=$(nix path-info -Sh "$STORE_PATH" --recursive | tail -1 | awk '{print $2, $3}')
+          echo "### Build size: aira" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Metric | Size |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|---|---|" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Output path | $RAW_SIZE |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Closure (total with deps) | $CLOSURE_SIZE |" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Sign & copy to R2 cache
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          NIX_SECRET_KEY: ${{ secrets.NIX_SECRET_KEY }}
+        run: |
+          STORE_PATH=$(readlink -f result)
+
+          echo "$NIX_SECRET_KEY" | nix store sign --key-file /dev/stdin "$STORE_PATH" 2>/dev/null || {
+            echo "$NIX_SECRET_KEY" > ./secret-key
+            nix store sign --key-file ./secret-key "$STORE_PATH"
+            rm -f ./secret-key
+          }
+
+          COPY_SIZE=$(nix path-info -Sh "$STORE_PATH" | awk '{print $2, $3}')
+          CLOSURE_SIZE=$(nix path-info -Sh "$STORE_PATH" --recursive | tail -1 | awk '{print $2, $3}')
+
+          nix copy --to "s3://${{ secrets.R2_BUCKET }}?endpoint=${{ secrets.R2_ENDPOINT }}&region=auto" "$STORE_PATH"
+
+          echo "### R2 cache result: aira" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Item | Value |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|---|---|" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Host | aira |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Output path size | $COPY_SIZE |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Closure size | $CLOSURE_SIZE |" >> "$GITHUB_STEP_SUMMARY"
