@@ -16,7 +16,6 @@
           # ── Global defaults (DEFAULT jail) ──
           bantime = "1h";        # 1h, escalated by bantime-increment
           maxretry = 5;
-          findtime = "10m";      # sliding window
 
           # ── Escalating bans for repeat offenders ──
           # multipliers: 1h → 2h → 4h → 8h → 16h → 32h → 64h → 168h cap
@@ -40,7 +39,6 @@
             sshd = {
               settings = {
                 enabled = true;
-                port = "ssh";
                 filter = "sshd[mode=aggressive]";
                 logpath = "/var/log/auth.log";
                 maxretry = 3;
