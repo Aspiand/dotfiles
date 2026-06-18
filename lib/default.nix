@@ -5,7 +5,7 @@ let
   mkDefaults = attrs:
     lib.mapAttrs
       (name: value:
-        if builtins.isAttrs value
+        if builtins.isAttrs value && (value.type or null) != "derivation"
         then mkDefaults value
         else lib.mkDefault value
       )

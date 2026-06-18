@@ -49,11 +49,14 @@
             grub2-themes.nixosModules.default
             hermes-agent.nixosModules.default
             home-manager.nixosModules.home-manager
+            dotfiles.modules
             dotfiles.nixosModules.base
             dotfiles.nixosModules.desktop
             dotfiles.nixosModules.ssh
             dotfiles.nixosModules.searxng
-            dotfiles.modules
+            dotfiles.nixosModules.grafana
+            dotfiles.nixosModules.victoriametrics
+            dotfiles.nixosModules.victorialogs
             {
               system.nixos.revision = nixpkgs.lib.mkDefault (self.rev or self.dirtyRev or "Unknown");
               nixpkgs.overlays = [ inputs.dotfiles.overlays.default ];

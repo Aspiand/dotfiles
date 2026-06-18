@@ -1,7 +1,7 @@
 { ... }:
 {
   flake.nixosModules.victoriametrics =
-    { lib, ... }:
+    { lib, pkgs, ... }:
     let
       mkDefaults = (import ../../lib { inherit lib; }).mkDefaults;
     in
@@ -24,7 +24,8 @@
                 ];
               }
               {
-                job_name = "node";
+                job_name = "node-exporter";
+                scrape_interfal = "60s";
                 static_configs = [
                   {
                     targets = [ "127.0.0.1:9100" ];
@@ -37,6 +38,10 @@
             ];
           };
         };
+
+        services.grafana.declarativePlugins = with pkgs.grafanaPlugins; [
+          victoriametrics-metrics-datasource
+        ];
       };
     };
 }

@@ -1,7 +1,12 @@
 { ... }:
 {
   flake.nixosModules.grafana =
-    { lib, ... }:
+    {
+      config,
+      lib,
+      pkgs,
+      ...
+    }:
     let
       mkDefaults = (import ../../lib { inherit lib; }).mkDefaults;
     in
@@ -9,14 +14,18 @@
       config = mkDefaults {
         services.grafana = {
           enable = true;
-
           settings = {
             server = {
+              enable_gzip = true;
+              # enforce_domain = true;
               http_addr = "127.0.0.1";
               http_port = 3000;
               domain = "localhost";
-              root_url = "http://localhost:3000";
-              serve_from_sub_path = false;
+
+              # Alternatively, if you want to serve Grafana from a subpath:
+              # domain = "your.domain";
+              # root_url = "https://your.domain/grafana/";
+              # serve_from_sub_path = true;
             };
 
             database = {
@@ -26,7 +35,8 @@
 
             security = {
               admin_user = "admin";
-              admin_password = "admin"; # change after first login
+              admin_password = "admin"; # change after first login # TODO: sops?
+              secret_key = "mana-sprei-gratis-yang-kau-janjikan-itu-wok";
               disable_gravatar = true;
             };
 
@@ -57,31 +67,49 @@
 
           provision = {
             enable = true;
-            settings.datasources = [
-              {
-                name = "Prometheus";
-                type = "prometheus";
-                access = "proxy";
-                url = "http://127.0.0.1:9090";
-                isDefault = true;
-                editable = true;
-              }
-            ];
-            settings.providers = [
-              {
-                name = "default";
-                orgId = 1;
-                folder = "";
-                type = "file";
-                disableDeletion = false;
-                updateIntervalSeconds = 30;
-                options = {
-                  path = "/var/lib/grafana/dashboards/ready";
-                  foldersFromFilesStructure = false;
-                };
-              }
-            ];
+            datasources.settings = {
+              apiVersion = 1;
+              datasources = [
+                {
+                  name = "Prometheus";
+                  type = "prometheus";
+                  url = "http://${config.services.prometheus.listenAddress}:${toString config.services.prometheus.port}";
+                  isDefault = config.services.prometheus.enable; # handle bentrok
+                  editable = false;
+                }
+                {
+                  name = "VictoriaMetrics";
+                  type = "prometheus";
+                  access = "proxy";
+                  url = "http://${config.services.victoriametrics.listenAddress}";
+                  isDefault = config.services.victoriametrics.enable; # handle bentrok
+                  editable = false;
+                }
+              ];
+            };
+            dashboards.settings = {
+              apiVersion = 1;
+              providers = [
+                # {
+                #   name = "default";
+                #   orgId = 1;
+                #   folder = "";
+                #   type = "file";
+                #   disableDeletion = false;
+                #   updateIntervalSeconds = 30;
+                #   options = {
+                #     path = "/var/lib/grafana/dashboards/ready";
+                #     foldersFromFilesStructure = false;
+                #   };
+                # }
+              ];
+            };
           };
+        };
+
+        environment.etc."grafana-dashboards/node-exporter.json".source = pkgs.fetchurl {
+          url = "https://grafana.com/api/dashboards/1860/revisions/45/download";
+          hash = lib.fakeHash;
         };
 
         systemd.tmpfiles.rules = [
