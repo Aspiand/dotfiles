@@ -9,6 +9,10 @@
     }:
     let
       mkDefaults = (import ../../lib { inherit lib; }).mkDefaults;
+      hasVM = config.services.victoriametrics.enable or false;
+      hasVL = config.services.victorialogs.enable or false;
+      hasPrometheus = config.services.prometheus.enable or false;
+      hasNodeExporter = config.services.prometheus.exporters.node.enable or false;
     in
     {
       config = mkDefaults {
@@ -69,52 +73,53 @@
             enable = true;
             datasources.settings = {
               apiVersion = 1;
-              datasources = [
-                {
+              datasources =
+                lib.optional hasPrometheus {
                   name = "Prometheus";
                   type = "prometheus";
                   url = "http://${config.services.prometheus.listenAddress}:${toString config.services.prometheus.port}";
-                  isDefault = config.services.prometheus.enable; # handle bentrok
+                  isDefault = !hasVM; # handle bentrok
                   editable = false;
                 }
-                {
+                ++ lib.optional hasVM {
                   name = "VictoriaMetrics";
                   type = "prometheus";
                   access = "proxy";
                   url = "http://${config.services.victoriametrics.listenAddress}";
-                  isDefault = config.services.victoriametrics.enable; # handle bentrok
+                  isDefault = true; # handle bentrok
                   editable = false;
                 }
-              ];
-            };
-            dashboards.settings = {
-              apiVersion = 1;
-              providers = [
-                # {
-                #   name = "default";
-                #   orgId = 1;
-                #   folder = "";
-                #   type = "file";
-                #   disableDeletion = false;
-                #   updateIntervalSeconds = 30;
-                #   options = {
-                #     path = "/var/lib/grafana/dashboards/ready";
-                #     foldersFromFilesStructure = false;
-                #   };
-                # }
-              ];
+                ++ lib.optional hasVL {
+                  name = "VictoriaLogs";
+                  type = "victorialogs-datasource";
+                  url = "http://${config.services.victorialogs.listenAddress}";
+                  access = "proxy";
+                  editable = false;
+                  jsonData = {
+                    victoriametrics.datasource = {
+                      type = "prometheus";
+                      uid = "VictoriaMetrics";
+                    };
+                  };
+                };
             };
           };
+
+          declarativePlugins =
+            lib.optionals hasVM [ pkgs.grafanaPlugins.victoriametrics-metrics-datasource ]
+            ++ lib.optionals hasVL [ pkgs.grafanaPlugins.victoriametrics-logs-datasource ];
         };
 
-        environment.etc."grafana-dashboards/node-exporter.json".source = pkgs.fetchurl {
-          url = "https://grafana.com/api/dashboards/1860/revisions/45/download";
-          hash = "sha256-GExrdAnzBtp1Ul13cvcZRbEM6iOtFrXXjEaY6g6lGYY=";
-        };
+        environment.etc."grafana-dashboards/node-exporter.json".source =
+          pkgs.fetchurl {
+            url = "https://grafana.com/api/dashboards/1860/revisions/45/download";
+            hash = "sha256-GExrdAnzBtp1Ul13cvcZRbEM6iOtFrXXjEaY6g6lGYY=";
+          };
 
-        systemd.tmpfiles.rules = [
-          "d /var/lib/grafana/dashboards/ready 0755 grafana grafana -"
-        ];
+        systemd.tmpfiles.rules =
+          lib.optionals hasNodeExporter [
+            "d /var/lib/grafana/dashboards/ready 0755 grafana grafana -"
+          ];
       };
     };
 }

@@ -1,7 +1,7 @@
 { ... }:
 {
   flake.nixosModules.victorialogs =
-    { lib, pkgs, ... }:
+    { lib, config, ... }:
     let
       mkDefaults = (import ../../lib { inherit lib; }).mkDefaults;
     in
@@ -21,10 +21,6 @@
             settings.Upload.URL = "http://localhost:9428/insert/journald";
           };
         };
-
-        services.grafana.declarativePlugins = with pkgs.grafanaPlugins; [
-          victoriametrics-logs-datasource
-        ];
       };
     };
 }

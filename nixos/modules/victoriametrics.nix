@@ -1,14 +1,10 @@
 { ... }:
 {
   flake.nixosModules.victoriametrics =
-    {
-      config,
-      lib,
-      pkgs,
-      ...
-    }:
+    { lib, config, ... }:
     let
       mkDefaults = (import ../../lib { inherit lib; }).mkDefaults;
+      cfg = config.services.victoriametrics;
     in
     {
       config = mkDefaults {
@@ -24,20 +20,22 @@
                 job_name = "victoriametrics";
                 static_configs = [
                   {
-                    targets = [ config.services.victoriametrics.listenAddress ];
+                    targets = [ cfg.listenAddress ];
                   }
                 ];
               }
+            ]
+            ++ lib.optionals (config.services.prometheus.exporters.node.enable or false) [
               {
                 job_name = "node-exporter";
                 scrape_interval = "60s";
                 static_configs = [
                   {
                     targets = [
-                      "${toString config.services.prometheus.exporters.node.listenAddress}:${toString config.services.prometheus.exporters.node.port}"
+                      "${config.services.prometheus.exporters.node.listenAddress}:${toString config.services.prometheus.exporters.node.port}"
                     ];
                     labels = {
-                      instance = "localhost";
+                      instance = config.networking.hostName or "localhost";
                     };
                   }
                 ];
@@ -45,10 +43,6 @@
             ];
           };
         };
-
-        services.grafana.declarativePlugins = with pkgs.grafanaPlugins; [
-          victoriametrics-metrics-datasource
-        ];
       };
     };
 }
