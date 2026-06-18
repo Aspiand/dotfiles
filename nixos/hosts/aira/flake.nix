@@ -57,6 +57,7 @@
             dotfiles.nixosModules.grafana
             dotfiles.nixosModules.victoriametrics
             dotfiles.nixosModules.victorialogs
+            dotfiles.nixosModules.node-exporter
             {
               system.nixos.revision = nixpkgs.lib.mkDefault (self.rev or self.dirtyRev or "Unknown");
               nixpkgs.overlays = [ inputs.dotfiles.overlays.default ];

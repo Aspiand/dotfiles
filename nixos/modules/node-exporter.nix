@@ -9,9 +9,8 @@
       config = mkDefaults {
         services.prometheus.exporters.node = {
           enable = true;
-
-          port = 9100;
           listenAddress = "127.0.0.1";
+          port = 9100;
 
           enabledCollectors = [
             "conntrack"
@@ -38,7 +37,6 @@
             "vmstat"
             "systemd"
             "logind"
-            "monotonic_time"
             "os"
             "pressure"
 

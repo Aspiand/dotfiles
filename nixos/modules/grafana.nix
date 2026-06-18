@@ -109,7 +109,7 @@
 
         environment.etc."grafana-dashboards/node-exporter.json".source = pkgs.fetchurl {
           url = "https://grafana.com/api/dashboards/1860/revisions/45/download";
-          hash = lib.fakeHash;
+          hash = "sha256-GExrdAnzBtp1Ul13cvcZRbEM6iOtFrXXjEaY6g6lGYY=";
         };
 
         systemd.tmpfiles.rules = [

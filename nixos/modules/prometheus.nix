@@ -1,7 +1,7 @@
 { ... }:
 {
   flake.nixosModules.prometheus =
-    { lib, ... }:
+    { config, lib, ... }:
     let
       mkDefaults = (import ../../lib { inherit lib; }).mkDefaults;
     in
@@ -31,7 +31,9 @@
               job_name = "prometheus";
               static_configs = [
                 {
-                  targets = [ "127.0.0.1:9090" ];
+                  targets = [
+                    "${toString config.services.prometheus.listenAddress}:${toString config.services.prometheus.port}"
+                  ];
                 }
               ];
             }
@@ -39,7 +41,9 @@
               job_name = "node";
               static_configs = [
                 {
-                  targets = [ "127.0.0.1:9100" ];
+                  targets = [
+                    "${toString config.services.prometheus.exporters.node.listenAddress}:${toString config.services.prometheus.exporters.node.port}"
+                  ];
                   labels = {
                     instance = "localhost";
                   };

@@ -1,7 +1,12 @@
 { ... }:
 {
   flake.nixosModules.victoriametrics =
-    { lib, pkgs, ... }:
+    {
+      config,
+      lib,
+      pkgs,
+      ...
+    }:
     let
       mkDefaults = (import ../../lib { inherit lib; }).mkDefaults;
     in
@@ -19,16 +24,18 @@
                 job_name = "victoriametrics";
                 static_configs = [
                   {
-                    targets = [ "127.0.0.1:8428" ];
+                    targets = [ config.services.victoriametrics.listenAddress ];
                   }
                 ];
               }
               {
                 job_name = "node-exporter";
-                scrape_interfal = "60s";
+                scrape_interval = "60s";
                 static_configs = [
                   {
-                    targets = [ "127.0.0.1:9100" ];
+                    targets = [
+                      "${toString config.services.prometheus.exporters.node.listenAddress}:${toString config.services.prometheus.exporters.node.port}"
+                    ];
                     labels = {
                       instance = "localhost";
                     };
