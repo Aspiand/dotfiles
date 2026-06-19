@@ -299,8 +299,9 @@
       actual-mcp # Actual Budget MCP server
       mcp-server-trello # Trello MCP server
 
-      # Document conversion
-      python314Packages.markitdown
+	  # Python
+      python314Packages.markitdown # document conversion
+      python313Packages.youtube-transcript-api # fetch video transcripts
 
       # OSINT
       sherlock # username 400+ platforms
