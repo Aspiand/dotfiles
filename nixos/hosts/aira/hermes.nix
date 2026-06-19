@@ -82,6 +82,12 @@
           provider = "9router";
           model = "deepseek-flash";
         };
+
+        curator = {
+          provider = "9router";
+          model = "deepseek-flash";
+          timeout = 600;
+        };
       };
 
       discord = {
@@ -138,8 +144,8 @@
 
       compression = {
         enabled = true;
-        threshold = 0.5;
-        target_ratio = 0.2;
+        threshold = 0.7;
+        target_ratio = 0.5;
       };
 
       # display = {
@@ -159,16 +165,25 @@
       #   edge.voice = "en-US-AriaNeural";
       # };
 
-      # curator = {
-      #   enabled = true;
-      #   interval_hours = 168;
-      # };
+      curator = {
+        enabled = true;
+        interval_hours = 168; # 7 days
+        min_idle_hours = 2; # wait 2h idle before running
+        stale_after_days = 30; # unused 30 days → stale
+        archive_after_days = 90; # unused 90 days → archive
+        consolidate = false; # no LLM pass (prune-only)
+        prune_builtins = true; # clean unused built-in skills
+        backup = {
+          enabled = true;
+          keep = 5; # keep 5 recent backups
+        };
+      };
 
-      # delegation = {
-      #   max_concurrent_children = 5;
-      #   max_iterations = 50;
-      #   reasoning_effort = "medium";
-      # };
+      delegation = {
+        max_concurrent_children = 3;
+        max_iterations = 50;
+        reasoning_effort = "low";
+      };
 
       # approvals = {
       #   mode = "manual";
@@ -176,7 +191,7 @@
       # };
 
       checkpoints = {
-        enabled = false;
+        enabled = true;
         max_snapshots = 20;
         max_total_size_mb = 500;
         max_file_size_mb = 10;
@@ -299,7 +314,7 @@
       actual-mcp # Actual Budget MCP server
       mcp-server-trello # Trello MCP server
 
-	  # Python
+      # Python
       python314Packages.markitdown # document conversion
       python313Packages.youtube-transcript-api # fetch video transcripts
 
