@@ -1,3 +1,4 @@
 creation_rules:
   - path_regex: secrets/.*\.(yml|yaml|json|ini|conf|env)$
     pgp: "FD3C42F89023104781B277154D127FC4BFC2713D"
+    age: "age17txvx845prfasyjqlfc7a5mzas2fl2u6k8wmel4a4m4v4pr5jcashkdm0m"
