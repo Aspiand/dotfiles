@@ -33,7 +33,7 @@
       extraOptions = [
         "--env" # Prepend Nix per-user profile to PATH so extraPackages are available inside container
         "PATH=/nix-user-profile/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
-        "--env-file"
+        "--env-file" # TODO: switch to Docker secrets (file mount) — env vars visible in `docker inspect` and /proc/*/environ
         "${config.sops.secrets.hermes.path}"
       ];
       extraVolumes = [
