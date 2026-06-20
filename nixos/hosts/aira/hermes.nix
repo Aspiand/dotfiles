@@ -1,18 +1,29 @@
 # https://github.com/NousResearch/hermes-agent/blob/main/website/docs/user-guide/configuration.md
 
-{ pkgs, ... }:
+{ config, pkgs, ... }:
 
 {
   services.hermes-agent = {
     enable = true;
     addToSystemPackages = true;
     stateDir = "/var/lib/hermes";
+
     extraDependencyGroups = [
       "messaging"
       "mcp"
       # "voice"
       # "edge-tts"
     ];
+
+    environmentFiles = [
+      config.sops.secrets."hermes".path
+    ];
+
+    environment = {
+      SEARXNG_URL = "http://${config.services.searx.settings.server.bind_address or "127.0.0.1"}:${
+        toString (config.services.searx.settings.server.port or 8000)
+      }";
+    };
 
     container = {
       enable = true;
@@ -22,6 +33,8 @@
       extraOptions = [
         "--env" # Prepend Nix per-user profile to PATH so extraPackages are available inside container
         "PATH=/nix-user-profile/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+        "--env-file"
+        "${config.sops.secrets.hermes.path}"
       ];
       extraVolumes = [
         "/home/ao/Kode:/host/Kode:rw"
@@ -343,4 +356,11 @@
       ];
     }
   ];
+
+  sops.secrets.hermes = {
+    sopsFile = ../../../secrets/hermes.yml;
+    owner = "hermes";
+    group = "hermes";
+    mode = "0400";
+  };
 }

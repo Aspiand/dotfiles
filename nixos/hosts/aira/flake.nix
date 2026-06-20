@@ -21,6 +21,11 @@
     };
 
     hermes-agent.url = "github:NousResearch/hermes-agent";
+
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -31,6 +36,7 @@
       grub2-themes,
       spicetify-nix,
       hermes-agent,
+      sops-nix,
       dotfiles,
       ...
     }:
@@ -48,6 +54,7 @@
             ./hermes.nix
             grub2-themes.nixosModules.default
             hermes-agent.nixosModules.default
+            sops-nix.nixosModules.sops
             home-manager.nixosModules.home-manager
             dotfiles.modules
             dotfiles.nixosModules.base
