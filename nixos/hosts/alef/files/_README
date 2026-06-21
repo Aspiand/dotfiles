@@ -1,0 +1,5 @@
+Copy your u-boot.ext here from Armbian:
+
+  cp /boot/u-boot.ext /home/ao/.config/dotfiles/nixos/hosts/alef/files/u-boot.ext
+
+This gets flashed to /dev/sda at offset 1 (bs=1 seek=1) after disko runs.
