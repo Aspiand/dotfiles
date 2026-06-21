@@ -5,10 +5,6 @@
 let
   mkHanabi =
     pkgs:
-    let
-      sources = import ../_sources/_default.nix { inherit pkgs; };
-      hanabi = sources.hanabi;
-    in
     pkgs.callPackage (
       {
         lib,
@@ -34,7 +30,14 @@ let
       in
       stdenv.mkDerivation rec {
         pname = "gnome-ext-hanabi";
-        inherit (hanabi) version src;
+        version = "unstable-2026-06-07";
+
+        src = pkgs.fetchFromGitHub {
+          owner = "jeffshee";
+          repo = "gnome-ext-hanabi";
+          rev = "1ba3be9474555a1298fa5067e1f9d4fbe3901fbb";
+          hash = "sha256-/pLLg0J9QanaUjQl0iP6u0CxAeEDweTJYREs1XuhAsQ=";
+        };
 
         nativeBuildInputs = [
           meson

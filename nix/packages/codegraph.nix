@@ -5,13 +5,13 @@ let
     pkgs:
     pkgs.buildNpmPackage rec {
       pname = "codegraph";
-      version = "0.9.6";
+      version = "0.9.9";
 
       src = pkgs.fetchFromGitHub {
         owner = "colbymchenry";
         repo = "codegraph";
-        rev = "625e5663c439ca9c4dba4df95c5050d1dfc1a2c6";
-        hash = "sha256-8dL83yxhDfSKWn12q8GMhonvPwPIUP9YVOZ9vDL6Les=";
+        rev = "v0.9.9";
+        hash = "sha256-Oy0WpllYQDmKpVhf+xI3Y18s+0x2bzkN8DDgTOJf4B4=";
       };
 
       npmDepsHash = "sha256-y9nlK+fVCDGhFqXNX4PLoj8D4Fo8s8WNQPAvxYyTE40=";

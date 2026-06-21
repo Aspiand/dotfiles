@@ -3,10 +3,6 @@
 let
   mkTLauncher =
     pkgs:
-    let
-      sources = import ../_sources/_default.nix { inherit pkgs; };
-      tlauncher = sources.tlauncher;
-    in
     pkgs.callPackage (
       {
         lib,
@@ -19,7 +15,12 @@ let
       }:
       stdenv.mkDerivation rec {
         pname = "tlauncher";
-        inherit (tlauncher) version src;
+        version = "2.9319";
+
+        src = pkgs.fetchurl {
+          url = "https://tlauncher.org/jar";
+          hash = "sha256-xht2qWiXbOi6ezHziEcSVCxN6BPKDG8yQZSvULnLRW8=";
+        };
 
         dontUnpack = true;
 

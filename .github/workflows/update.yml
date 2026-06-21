@@ -30,66 +30,70 @@ jobs:
         run: |
           > "$GITHUB_STEP_SUMMARY"
 
-      - name: Save current sources
+      - name: Save current lock
         run: |
-          if [ -f nix/_sources/_generated.json ]; then
-            cp nix/_sources/_generated.json /tmp/old-sources.json
-          else
-            echo '{}' > /tmp/old-sources.json
-          fi
+          cp flake.lock /tmp/old-flake.lock 2>/dev/null || true
 
-      - name: Generate sources
-        run: nix run github:berberman/nvfetcher -- --build-dir nix/_sources
-
-      - name: Rename generated files
+      - name: Update packages with nix-update
+        id: nix-update
         run: |
-          if [ -f nix/_sources/generated.nix ]; then
-            mv nix/_sources/generated.nix nix/_sources/_generated.nix
-          fi
-          if [ -f nix/_sources/generated.json ]; then
-            mv nix/_sources/generated.json nix/_sources/_generated.json
-          fi
+          nix profile install nixpkgs#nix-update
+
+          UPDATED=""
+          FAILED=""
+
+          for nixfile in nix/packages/*.nix; do
+            pkg=$(basename "$nixfile" .nix)
+            if nix-update "$pkg" --no-commit; then
+              UPDATED="$UPDATED $pkg"
+            else
+              FAILED="$FAILED $pkg"
+            fi
+          done
+
+          echo "updated=$UPDATED" >> "$GITHUB_OUTPUT"
+          echo "failed=$FAILED" >> "$GITHUB_OUTPUT"
+
+      - name: Update flake lock
+        run: nix flake update --no-commit
 
       - name: Build changelog
         id: changelog
         run: |
-          CHANGELOG=$(jq -r --slurpfile old /tmp/old-sources.json '
-            . as $new |
-            $old[0] as $old |
-            [
-              ($new | keys) as $all |
-              ($all | map(select($old[.] | not))) as $added |
-              ($old | keys | map(select($new[.] | not))) as $removed |
-              ($all | map(select(
-                ($old[.] | .version) and ($new[.] | .version) and
-                ($old[.] | .version) != ($new[.] | .version)
-              ))) as $updated |
-              (if ($added | length) > 0 then "## Added\n" + ($added | map("- \(.)") | join("\n")) else "" end),
-              (if ($removed | length) > 0 then "## Removed\n" + ($removed | map("- \(.)") | join("\n")) else "" end),
-              (if ($updated | length) > 0 then "## Updated\n" + ($updated | map("- \(.): \($old[.].version) → \($new[.].version)") | join("\n")) else "" end)
-            ] | map(select(. != "")) | join("\n\n")
-          ' nix/_sources/_generated.json)
+          UPDATED="${{ steps.nix-update.outputs.updated }}"
+          FAILED="${{ steps.nix-update.outputs.failed }}"
+          CHANGELOG=""
+
+          if [ -n "$UPDATED" ]; then
+            CHANGELOG="## Updated"$'\n'"Updated:$UPDATED"
+          fi
+          if [ -n "$FAILED" ]; then
+            CHANGELOG="${CHANGELOG}"$'\n'"## Failed"$'\n'"Failed to update:$FAILED"
+          fi
+
+          if [ -z "$CHANGELOG" ]; then
+            CHANGELOG="No package updates"
+          fi
+
           echo "changelog<<EOF" >> "$GITHUB_OUTPUT"
           echo "$CHANGELOG" >> "$GITHUB_OUTPUT"
           echo "EOF" >> "$GITHUB_OUTPUT"
-          if [ -n "$CHANGELOG" ]; then
-            echo "### Package updates" >> "$GITHUB_STEP_SUMMARY"
-            echo "$CHANGELOG" >> "$GITHUB_STEP_SUMMARY"
-          else
-            echo "No package updates" >> "$GITHUB_STEP_SUMMARY"
-          fi
+
+          echo "### Package updates" >> "$GITHUB_STEP_SUMMARY"
+          echo "$CHANGELOG" >> "$GITHUB_STEP_SUMMARY"
 
       - name: Commit to staging branch
         id: commit
         env:
           CHANGELOG: ${{ steps.changelog.outputs.changelog }}
+          FORCE: ${{ inputs.force }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add nix/_sources/_generated.nix nix/_sources/_generated.json
+          git add -A
           if git diff --cached --quiet; then
             echo "has_changes=false" >> "$GITHUB_OUTPUT"
-            if [[ "${{ inputs.force }}" != "true" ]]; then
+            if [[ "$FORCE" != "true" ]]; then
               exit 0
             fi
             git commit --allow-empty -m "chore: force-test auto-update pipeline"
@@ -97,12 +101,8 @@ jobs:
             echo "has_changes=true" >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          if [ -n "$CHANGELOG" ]; then
-            { echo "chore: auto-update nix packages"; echo ""; echo "$CHANGELOG"; } > /tmp/commit-msg
-            git commit --file /tmp/commit-msg
-          else
-            git commit -m "chore: auto-update nix packages"
-          fi
+          { echo "chore: auto-update nix packages"; echo ""; echo "$CHANGELOG"; } > /tmp/commit-msg
+          git commit --file /tmp/commit-msg
           git push origin HEAD:refs/heads/auto-update/${{ github.run_id }}-${{ github.run_attempt }}
           echo "has_changes=true" >> "$GITHUB_OUTPUT"
 
