@@ -14,7 +14,7 @@ let
         hash = "sha256-Oy0WpllYQDmKpVhf+xI3Y18s+0x2bzkN8DDgTOJf4B4=";
       };
 
-      npmDepsHash = "sha256-y9nlK+fVCDGhFqXNX4PLoj8D4Fo8s8WNQPAvxYyTE40=";
+      npmDepsHash = "sha256-PnD1POY39S/qaS4fOwJyYnRsCxbJ9pm49yVVAGlGt/E=";
 
       nativeBuildInputs = with pkgs; [
         python3
