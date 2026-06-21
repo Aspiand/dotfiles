@@ -1,6 +1,15 @@
 # https://github.com/NousResearch/hermes-agent/blob/main/website/docs/user-guide/configuration.md
 
-{ config, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
+
+let
+  cfg = config.services.hermes-agent;
+in
 
 {
   services.hermes-agent = {
@@ -344,18 +353,18 @@
     # restartSec = 5;
   };
 
-  users.users.hermes.extraGroups = [ "users" ];
-  security.sudo.extraRules = [
-    {
-      users = [ "hermes" ];
-      commands = [
-        {
-          command = "/run/current-system/sw/bin/docker";
-          options = [ "NOPASSWD" ];
-        }
-      ];
-    }
-  ];
+  # users.users.hermes.extraGroups = lib.mkIf cfg.enable [ "users" ];
+  # security.sudo.extraRules = lib.mkIf cfg.enable [
+  #   {
+  #     users = [ "hermes" ];
+  #     commands = [
+  #       {
+  #         command = "/run/current-system/sw/bin/docker";
+  #         options = [ "NOPASSWD" ];
+  #       }
+  #     ];
+  #   }
+  # ];
 
   sops.secrets.hermes = {
     sopsFile = ../../../secrets/hermes.yml;
