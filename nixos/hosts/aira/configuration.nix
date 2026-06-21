@@ -215,11 +215,6 @@
           "1.1.1.1"
           "8.8.8.8"
         ];
-
-        registry-mirrors = [
-          "https://ghcr.io"
-          "https://docker.io"
-        ];
       };
     };
   };
