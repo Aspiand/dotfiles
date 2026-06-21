@@ -55,6 +55,7 @@
   boot = {
     kernelPackages = pkgs.linuxPackages_7_0; # pkgs.linuxPackages_zen;
     tmp.useTmpfs = false;
+    binfmt.emulatedSystems = [ "aarch64-linux" ];
 
     loader = {
       systemd-boot.enable = false;
@@ -223,7 +224,7 @@
     };
   };
 
-  specialisation = {
-    gaming.configuration = import ./gaming.nix;
-  };
+  # specialisation = {
+  #   gaming.configuration = import ./gaming.nix;
+  # };
 }

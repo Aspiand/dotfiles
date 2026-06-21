@@ -30,11 +30,11 @@
   };
 
   environment.systemPackages = with pkgs; [
-    micro
-    htop
-    curl
-    wget
-    git
-    btrfs-progs
+    # micro
+    # htop
+    # curl
+    # wget
+    # git
+    # btrfs-progs
   ];
 }

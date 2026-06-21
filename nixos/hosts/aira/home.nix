@@ -130,7 +130,7 @@ in
         noto-fonts-cjk-serif
 
         hanabi
-        codegraph
+        # codegraph
         mcp-nixos
       ]
       ++ (with gnomeExtensions; [
