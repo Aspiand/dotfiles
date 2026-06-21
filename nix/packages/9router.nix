@@ -50,6 +50,7 @@ let
               --ignore-scripts \
               --no-audit \
               --no-fund \
+              --legacy-peer-deps \
               --loglevel=warn \
               --registry=https://registry.npmjs.org/
           '';
