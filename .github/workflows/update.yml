@@ -55,7 +55,7 @@ jobs:
           echo "failed=$FAILED" >> "$GITHUB_OUTPUT"
 
       - name: Update flake lock
-        run: nix flake update --no-commit
+        run: nix flake update
 
       - name: Build changelog
         id: changelog
