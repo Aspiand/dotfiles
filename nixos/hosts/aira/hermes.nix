@@ -258,13 +258,13 @@ in
         args = [ ];
       };
 
-      headroom = {
-        command = "headroom";
-        args = [
-          "mcp"
-          "serve"
-        ];
-      };
+      # headroom = {
+      #   command = "headroom";
+      #   args = [
+      #     "mcp"
+      #     "serve"
+      #   ];
+      # };
 
       actual-budget = {
         command = "actual-mcp";
@@ -278,13 +278,13 @@ in
         };
       };
 
-      context7 = {
-        command = "context7-mcp";
-        args = [ ];
-        env = {
-          CONTEXT7_API_KEY = "\${CONTEXT7_API_KEY}";
-        };
-      };
+      # context7 = {
+      #   command = "context7-mcp";
+      #   args = [ ];
+      #   env = {
+      #     CONTEXT7_API_KEY = "\\${CONTEXT7_API_KEY}";
+      #   };
+      # };
 
       trello = {
         command = "mcp-server-trello";
@@ -331,8 +331,8 @@ in
       # MCP servers
       mcp-nixos
       markitdown-mcp
-      context7-mcp
-      headroom # context compression MCP server
+      # context7-mcp
+      # headroom # context compression MCP server
       actual-mcp # Actual Budget MCP server
       mcp-server-trello # Trello MCP server
 
