@@ -112,6 +112,7 @@ in
         # jdk
         # maven
         nixfmt # nix formatter
+        deploy-rs # deploy nixos to remote hosts
         nodejs
         # rustc
         php85
