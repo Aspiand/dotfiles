@@ -9,6 +9,11 @@
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -16,6 +21,7 @@
       self,
       nixpkgs,
       disko,
+      sops-nix,
       dotfiles,
     }:
     let
@@ -26,6 +32,7 @@
         inherit system;
         modules = [
           disko.nixosModules.default
+          sops-nix.nixosModules.sops
           ./hardware.nix
           ./disko.nix
           ./configuration.nix

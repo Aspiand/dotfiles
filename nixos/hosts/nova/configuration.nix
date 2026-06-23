@@ -23,6 +23,7 @@
     mutableUsers = false;
     users.akira = {
       isNormalUser = true;
+      hashedPassword = "$y$j9T$CwNkRULQT6TeiNfgvXvhC.$SE6BfKqYP5vrn.Aq4.yB0GCUCtTzF8RAcWnsP/GY6J/";
       extraGroups = [
         "wheel"
         "docker"
