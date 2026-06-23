@@ -38,6 +38,8 @@
           ./configuration.nix
           dotfiles.nixosModules.base
           dotfiles.nixosModules.ssh
+          # dotfiles.nixosModules.victoriametrics
+          # dotfiles.nixosModules.node-exporter
         ];
       };
     };
