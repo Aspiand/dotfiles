@@ -84,6 +84,7 @@ in
         # s3fs
         # sqlmap
         # steam-run
+        sops
         # umu-launcher
         # winePackages.wayland
         wl-clipboard
