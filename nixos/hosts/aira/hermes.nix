@@ -294,6 +294,14 @@ in
           TRELLO_TOKEN = "\${TRELLO_TOKEN}";
         };
       };
+
+      github = {
+        command = "github-mcp-server";
+        args = [ "stdio" "--read-only" ];
+        env = {
+          GITHUB_PERSONAL_ACCESS_TOKEN = "\${GITHUB_PERSONAL_ACCESS_TOKEN}";
+        };
+      };
     };
 
     extraPackages = with pkgs; [
@@ -335,6 +343,7 @@ in
       # headroom # context compression MCP server
       actual-mcp # Actual Budget MCP server
       mcp-server-trello # Trello MCP server
+      github-mcp-server # GitHub MCP server
 
       # Python
       python314Packages.markitdown # document conversion
