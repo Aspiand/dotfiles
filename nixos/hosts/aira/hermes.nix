@@ -297,7 +297,10 @@ in
 
       github = {
         command = "github-mcp-server";
-        args = [ "stdio" "--read-only" ];
+        args = [
+          "stdio"
+          "--read-only"
+        ];
         env = {
           GITHUB_PERSONAL_ACCESS_TOKEN = "\${GITHUB_PERSONAL_ACCESS_TOKEN}";
         };

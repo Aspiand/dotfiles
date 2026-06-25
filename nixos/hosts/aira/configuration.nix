@@ -219,6 +219,13 @@
     };
   };
 
+  # setfacl -x u:ao /var/lib/hermes/workspace
+  systemd.tmpfiles.settings."10-hermes-acl" = {
+    "/var/lib/hermes/workspace".a = {
+      mode = "u:ao:rwx";
+    };
+  };
+
   # specialisation = {
   #   gaming.configuration = import ./gaming.nix;
   # };
