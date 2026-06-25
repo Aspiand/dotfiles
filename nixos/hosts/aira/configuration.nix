@@ -16,16 +16,6 @@
   nixpkgs.config.allowUnfree = true;
   security.rtkit.enable = true;
 
-  # security.sudo.extraRules = [
-  #   {
-  #     users = [ "ao" ];
-  #     runAs = "hermes";
-  #     commands = [
-  #       { command = "ALL"; options = [ "NOPASSWD" "SETENV" ]; }
-  #     ];
-  #   }
-  # ];
-
   # TODO: remove later
   nixpkgs.overlays = [
     (final: prev: {
@@ -216,13 +206,6 @@
           "8.8.8.8"
         ];
       };
-    };
-  };
-
-  # setfacl -x u:ao /var/lib/hermes/workspace
-  systemd.tmpfiles.settings."10-hermes-acl" = {
-    "/var/lib/hermes/workspace".a = {
-      mode = "u:ao:rwx";
     };
   };
 
