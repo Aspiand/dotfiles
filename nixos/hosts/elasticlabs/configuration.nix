@@ -10,7 +10,6 @@
 
   boot.loader = {
     systemd-boot.enable = true;
-    tmp.cleanOnBoot = true;
     timeout = 0;
   };
 
