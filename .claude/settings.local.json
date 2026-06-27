@@ -1,13 +1,10 @@
 {
   "permissions": {
     "allow": [
-      "WebFetch(domain:github.com)",
-      "WebFetch(domain:raw.githubusercontent.com)",
-      "WebFetch(domain:www.npmjs.com)",
       "WebSearch",
+      "WebFetch",
       "Bash(nix eval *)",
-      "WebFetch(domain:search.nixos.org)",
-      "WebFetch(domain:wiki.nixos.org)"
+      "Bash(nix build *)"
     ]
   }
 }
