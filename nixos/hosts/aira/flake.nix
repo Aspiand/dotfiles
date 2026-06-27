@@ -61,6 +61,7 @@
             dotfiles.nixosModules.desktop
             dotfiles.nixosModules.ssh
             dotfiles.nixosModules.searxng
+            dotfiles.nixosModules.headroom
             # dotfiles.nixosModules.grafana
             # dotfiles.nixosModules.victoriametrics
             # dotfiles.nixosModules.victorialogs
