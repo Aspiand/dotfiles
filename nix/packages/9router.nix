@@ -5,8 +5,8 @@ let
     pkgs:
     let
       pname = "9router";
-      version = "0.5.4";
-      rev = "v0.5.4";
+      version = "0.5.12";
+      rev = "v0.5.12";
       nodejs = pkgs.nodejs_22;
       runtimePath = pkgs.lib.makeBinPath [
         nodejs
@@ -23,7 +23,7 @@ let
         owner = "decolua";
         repo = "9router";
         inherit rev;
-        hash = "sha256-c2SNAvtSxZ8vjot2ld2QC9hUQjtP4FfyFK9e87veytA=";
+        hash = "sha256-GRPhGoZG20yaWzgFaHERkrYWe+Gi5hgWhVgjvtmrAXE=";
       };
 
       mkPackageLock =
@@ -61,19 +61,19 @@ let
 
       appPackageLock = mkPackageLock {
         name = "${pname}-app-package-lock-${version}";
-        outputHash = "sha256-gWknXPW3YroQtOrRDCS1ytKxPwDt/rkWaDHhEbhir64=";
+        outputHash = "sha256-Scwr6g20uHyvzFMIm/utbrsCavlC/YvOs59Z19AUKEQ=";
       };
 
       cliPackageLock = mkPackageLock {
         name = "${pname}-cli-package-lock-${version}";
         sourceRoot = "source/cli";
-        outputHash = "sha256-niXro5pRo3hR+kNn9pCmJSecNEerBd4kk5hQaZ5pt4k=";
+        outputHash = "sha256-8jMOu26rBUUSbWVsqbYDiWvCHoBRFWXgBjyTXZ/irww=";
       };
 
       appNpmDeps = pkgs.fetchNpmDeps {
         inherit src;
         name = "${pname}-app-npm-deps-${version}";
-        hash = "sha256-C+tgYCJ3l9mPpEn3lHPPwe7Z8rUxlapBBVRHYZdzoms=";
+        hash = "sha256-denff3WVCRAP4DSBhlQjX9eygbuS1H2RWEHJA1IBLKQ=";
         postPatch = ''
           cp ${appPackageLock} package-lock.json
         '';
@@ -86,7 +86,7 @@ let
         inherit src;
         name = "${pname}-cli-npm-deps-${version}";
         sourceRoot = "source/cli";
-        hash = "sha256-ptjGaXKJ4Z+MRcUtlZVKwU5piEEDoB3P60IGr2r2Q70=";
+        hash = "sha256-f4KbhLoIOgFxehtfdUrPfBsePiFnd9+hDOCYGKX0jNE=";
         postPatch = ''
           cp ${cliPackageLock} package-lock.json
         '';
@@ -165,7 +165,7 @@ const standaloneApp = standaloneCandidates.find((candidate) =>
         cp -r ${cliNpmDeps}/. "$TMPDIR/npm-cache-cli"
         chmod -R u+w "$TMPDIR/npm-cache-app" "$TMPDIR/npm-cache-cli"
 
-        npm_config_cache="$TMPDIR/npm-cache-app" npm ci --offline --ignore-scripts
+        npm_config_cache="$TMPDIR/npm-cache-app" npm ci --offline --ignore-scripts --legacy-peer-deps
         patchShebangs node_modules
         (
           cd cli
