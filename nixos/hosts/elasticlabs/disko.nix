@@ -1,11 +1,4 @@
 {
-  config,
-  lib,
-  pkgs,
-  ...
-}:
-
-{
   disko.devices = {
     disk = {
       main = {
@@ -31,17 +24,15 @@
                 subvolumes = {
                   "@" = {
                     mountpoint = "/";
+                    mountOptions = [ "compress=zstd" ];
                   };
                   "@nix" = {
                     mountpoint = "/nix";
-                    mountOptions = [
-                      "compress=zstd"
-                      "noatime"
-                    ];
+                    mountOptions = ["compress=zstd" "noatime"];
                   };
                   "@var" = {
                     mountpoint = "/var";
-                    mountOptions = [ "compress=zstd" ];
+                    mountOptions = ["compress=zstd"];
                   };
                 };
               };
