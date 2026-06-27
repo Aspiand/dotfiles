@@ -258,14 +258,6 @@ in
         args = [ ];
       };
 
-      # headroom = {
-      #   command = "headroom";
-      #   args = [
-      #     "mcp"
-      #     "serve"
-      #   ];
-      # };
-
       actual-budget = {
         command = "actual-mcp";
         args = [
@@ -308,6 +300,14 @@ in
 
       deepwiki = {
         url = "https://mcp.deepwiki.com/mcp";
+      };
+
+      codegraph = {
+        command = "codegraph";
+        args = [
+          "serve"
+          "--mcp"
+        ];
       };
     };
 
@@ -364,6 +364,9 @@ in
       h8mail # email breach hunting
       bbot # OSINT automation
       exiftool # EXIF metadata read/write
+
+      # Code intelligence
+      codegraph # pre-indexed code knowledge graph for AI agents
     ];
     # restart = "always";
     # restartSec = 5;
