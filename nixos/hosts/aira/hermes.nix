@@ -370,17 +370,18 @@ in
   };
 
   # users.users.hermes.extraGroups = lib.mkIf cfg.enable [ "users" ];
-  # security.sudo.extraRules = lib.mkIf cfg.enable [
-  #   {
-  #     users = [ "hermes" ];
-  #     commands = [
-  #       {
-  #         command = "/run/current-system/sw/bin/docker";
-  #         options = [ "NOPASSWD" ];
-  #       }
-  #     ];
-  #   }
-  # ];
+
+  security.sudo.extraRules = lib.mkIf cfg.enable [
+    {
+      users = [ "hermes" ];
+      commands = [
+        {
+          command = "/run/current-system/sw/bin/docker";
+          options = [ "NOPASSWD" ];
+        }
+      ];
+    }
+  ];
 
   sops.secrets.hermes = {
     sopsFile = ../../../secrets/hermes.yml;
