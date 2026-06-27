@@ -305,6 +305,10 @@ in
           GITHUB_PERSONAL_ACCESS_TOKEN = "\${GITHUB_PERSONAL_ACCESS_TOKEN}";
         };
       };
+
+      deepwiki = {
+        url = "https://mcp.deepwiki.com/mcp";
+      };
     };
 
     extraPackages = with pkgs; [
