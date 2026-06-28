@@ -8,10 +8,12 @@
 {
   system.stateVersion = "26.05";
 
-  boot.loader = {
-    systemd-boot.enable = true;
+  boot = {
     tmp.cleanOnBoot = true;
-    timeout = 0;
+    loader = {
+      systemd-boot.enable = true;
+      timeout = 0;
+    };
   };
 
   networking = {
@@ -38,21 +40,21 @@
           "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDofwi7RvZGROLm/bm99T8xB6Tw9jg442wOi1TFudDwb ao@aira"
         ];
       };
-      restic = {
-        group = "restic";
-        isSystemUser = true;
-      };
+      # restic = {
+      #   group = "restic";
+      #   isSystemUser = true;
+      # };
     };
-    groups.restic = { };
+    # groups.restic = { };
   };
 
-  security.wrappers.restic = {
-    source = lib.getExe pkgs.restic;
-    owner = "restic";
-    group = "restic";
-    permissions = "500";
-    capabilities = "cap_dac_read_search+ep";
-  };
+  # security.wrappers.restic = {
+  #   source = lib.getExe pkgs.restic;
+  #   owner = "restic";
+  #   group = "restic";
+  #   permissions = "500";
+  #   capabilities = "cap_dac_read_search+ep";
+  # };
 
   environment.systemPackages = with pkgs; [
     btrfs-progs
@@ -67,8 +69,7 @@
 
   virtualisation.docker.enable = true;
   services = {
-    tailscale.enable = false;
-
+    /*
     restic.backups.nova = {
       initialize = true;
       user = "restic";
@@ -122,11 +123,11 @@
         ];
       }
     ];
+    */
   };
 
-  sops = {
-    defaultSopsFile = ../../../secrets/hosts/nova.yml;
-    "restic/password" = {
+  sops.secrets = {
+    /* "restic/password" = {
       owner = "restic";
       group = "restic";
       mode = "0400";
@@ -135,6 +136,6 @@
       owner = "restic";
       group = "restic";
       mode = "0400";
-    };
+    }; */
   };
 }

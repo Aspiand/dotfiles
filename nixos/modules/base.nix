@@ -18,12 +18,12 @@
 
           settings = {
             auto-optimise-store = true;
-            trusted-users = [ "@wheel" ];
-            substituters = [
+            trusted-users = lib.mkForce [ "@wheel" ];
+            substituters = lib.mkForce [
               "https://cache.nixos.org"
               "https://nix.aspian.my.id"
             ];
-            trusted-public-keys = [
+            trusted-public-keys = lib.mkForce [
               "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
               "github-ci-2:eUvIhhjHCO/kJVGcFNd/sNCGSx59tj1QAXmb477OO00="
             ];

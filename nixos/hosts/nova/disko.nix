@@ -31,6 +31,7 @@
                 subvolumes = {
                   "@" = {
                     mountpoint = "/";
+                    mountOptions = [ "compress=zstd" ];
                   };
                   "@nix" = {
                     mountpoint = "/nix";

@@ -12,8 +12,6 @@
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "24.11"; # Did you read the comment?
 
-  time.timeZone = "Asia/Makassar";
-  nixpkgs.config.allowUnfree = true;
   security.rtkit.enable = true;
 
   # TODO: remove later
@@ -156,11 +154,7 @@
   };
 
   zramSwap = {
-    enable = true;
-    priority = 100;
     swapDevices = 1;
-    memoryPercent = 50;
-    algorithm = "zstd";
     memoryMax = (size: size * 1024 * 1024 * 1024) 4; # GB
   };
 

@@ -14,6 +14,8 @@
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    hermes-agent.url = "github:NousResearch/hermes-agent";
   };
 
   outputs =
@@ -22,14 +24,12 @@
       nixpkgs,
       disko,
       sops-nix,
+      hermes-agent,
       dotfiles,
     }:
-    let
-      system = "x86_64-linux";
-    in
     {
       nixosConfigurations.nova = nixpkgs.lib.nixosSystem {
-        inherit system;
+        system = "x86_64-linux";
         modules = [
           disko.nixosModules.default
           sops-nix.nixosModules.sops
@@ -38,8 +38,13 @@
           ./configuration.nix
           dotfiles.nixosModules.base
           dotfiles.nixosModules.ssh
+          # dotfiles.nixosModules.grafana
           # dotfiles.nixosModules.victoriametrics
+          # dotfiles.nixosModules.victorialogs
           # dotfiles.nixosModules.node-exporter
+
+          # dotfiles.nixosModules.searxng
+          # dotfiles.nixosModules.headroom
         ];
       };
     };
