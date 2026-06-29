@@ -66,20 +66,19 @@ in
           default_model = "deepseek-flash";
 
           "deepseek-flash".context_length = 1000000;
-          "sp/deepseek-v4-pro".context_length = 1000000;
         };
 
         "openrouter" = {
           base_url = "https://openrouter.ai/api/v1";
-          default_model = "google/gemini-2.5-flash";
+          default_model = "openrouter/free";
         };
       };
 
       model_aliases = {
-        "deepseek-pro" = {
-          model = "sp/deepseek-v4-pro";
-          provider = "9router";
-        };
+        # "deepseek-pro" = {
+        #   model = "sp/deepseek-v4-pro";
+        #   provider = "9router";
+        # };
       };
 
       # fallback_providers = [
@@ -147,10 +146,11 @@ in
         api_max_retries = 3;
       };
 
-      # security = {
-      #   redact_secrets = true;
-      #   tirith_enabled = true;
-      # };
+      security = {
+        redact_secrets = true;
+        tirith_enabled = true;
+        allow_lazy_installs = false;
+      };
 
       memory = {
         memory_enabled = true;
@@ -168,12 +168,16 @@ in
         enabled = true;
         threshold = 0.7;
         target_ratio = 0.5;
+        protect_first_n = 5;
+        protect_last_n = 20;
+      };
+
+      context = {
+        engine = "compressor";
       };
 
       # display = {
       #   personality = "kawaii";
-      #   skin = "default";
-      #   streaming = false;
       # };
 
       # stt = {
@@ -190,21 +194,27 @@ in
       curator = {
         enabled = true;
         interval_hours = 168; # 7 days
-        min_idle_hours = 2; # wait 2h idle before running
-        stale_after_days = 30; # unused 30 days → stale
-        archive_after_days = 90; # unused 90 days → archive
-        consolidate = false; # no LLM pass (prune-only)
-        prune_builtins = true; # clean unused built-in skills
+        min_idle_hours = 2;
+        stale_after_days = 30;
+        archive_after_days = 90;
+        consolidate = true;
+        prune_builtins = true;
         backup = {
           enabled = true;
-          keep = 5; # keep 5 recent backups
+          keep = 5;
         };
+      };
+
+      sessions = {
+        retention_days = 90;
+        vacuum_after_prune = false; # #
       };
 
       delegation = {
         max_concurrent_children = 3;
         max_iterations = 50;
         reasoning_effort = "low";
+        orchestrator_enabled = true;
       };
 
       # approvals = {
@@ -233,6 +243,16 @@ in
         # search_backend = "ddgs";
         search_backend = "searxng";
         searxng_url = "http://127.0.0.1:8888";
+      };
+
+      logging = {
+        memory_monitor = {
+          enabled = true;
+        };
+      };
+
+      cron = {
+        wrap_response = true;
       };
     };
 
