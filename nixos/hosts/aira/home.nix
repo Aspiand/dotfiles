@@ -40,6 +40,7 @@ in
         # authenticator
         bitwarden-desktop
         # dbeaver-bin
+        cc-switch
         discord
         firefox
         gnome-tweaks
