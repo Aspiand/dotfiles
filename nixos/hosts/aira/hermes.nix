@@ -38,7 +38,7 @@ in
       enable = true;
       image = "ubuntu:26.04";
       backend = "docker";
-      hostUsers = [ "ao" ];
+      # hostUsers = [ "ao" ];
       extraOptions = [
         "--env" # Prepend Nix per-user profile to PATH so extraPackages are available inside container
         "PATH=/nix-user-profile/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
