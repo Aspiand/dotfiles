@@ -41,7 +41,7 @@ let
         inherit pname version src prePnpmInstall;
         inherit pnpm;
         fetcherVersion = 3;
-        hash = pkgs.lib.fakeHash;
+        hash = "sha256-dGyijgYTKJ+hb0kI1RyvR93sBOGM37FmiWEYdz+xW44=";
       };
 
       buildPhase = ''
