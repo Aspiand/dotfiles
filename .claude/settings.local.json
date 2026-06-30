@@ -4,7 +4,8 @@
       "WebSearch",
       "WebFetch",
       "Bash(nix eval *)",
-      "Bash(nix build *)"
+      "Bash(nix build *)",
+      "mcp__nixos__nix"
     ]
   }
 }
