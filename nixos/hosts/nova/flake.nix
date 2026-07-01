@@ -31,19 +31,21 @@
       nixosConfigurations.nova = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [
+          { nixpkgs.overlays = [ dotfiles.overlays.default ]; }
           disko.nixosModules.default
           sops-nix.nixosModules.sops
           ./hardware.nix
           ./disko.nix
           ./configuration.nix
+          dotfiles.modules
           dotfiles.nixosModules.base
           dotfiles.nixosModules.ssh
-          # dotfiles.nixosModules.grafana
-          # dotfiles.nixosModules.victoriametrics
-          # dotfiles.nixosModules.victorialogs
-          # dotfiles.nixosModules.node-exporter
+          dotfiles.nixosModules.grafana
+          dotfiles.nixosModules.victoriametrics
+          dotfiles.nixosModules.victorialogs
+          dotfiles.nixosModules.node-exporter
 
-          # dotfiles.nixosModules.searxng
+          dotfiles.nixosModules.searxng
           # dotfiles.nixosModules.headroom
         ];
       };
