@@ -47,9 +47,9 @@ in
         # gnome-extension-manager
         gradia
         # heroic
-        # kdePackages.kdenlive
+        kdePackages.kdenlive
         # libreoffice
-        # obs-studio
+        obs-studio
         # onlyoffice-desktopeditors
         # planify
         postman
