@@ -40,7 +40,7 @@ in
         # authenticator
         bitwarden-desktop
         # dbeaver-bin
-        cc-switch
+        # cc-switch
         discord
         firefox
         gnome-tweaks
@@ -52,7 +52,7 @@ in
         obs-studio
         # onlyoffice-desktopeditors
         # planify
-        postman
+        # postman
         protonplus
         # spotify
         tor-browser
@@ -67,7 +67,7 @@ in
         codex
         copyparty-most
         delta
-        distrobox
+        # distrobox
         # gallery-dl
         gemini-cli
         gh
@@ -114,11 +114,11 @@ in
         # jdk
         # maven
         nixfmt # nix formatter
-        deploy-rs # deploy nixos to remote hosts
+        # deploy-rs # deploy nixos to remote hosts
         nodejs
         # rustc
-        php85
-        php85Packages.composer
+        # php85
+        # php85Packages.composer
         # (python3.withPackages (
         #   ps: with ps; [
         #     pip
