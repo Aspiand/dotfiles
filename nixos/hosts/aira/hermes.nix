@@ -56,6 +56,7 @@ in
     settings = {
       model = {
         default = "deepseek-flash";
+        context_length = 1000000;
         provider = "9router";
       };
 
