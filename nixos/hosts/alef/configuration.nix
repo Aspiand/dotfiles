@@ -14,6 +14,13 @@
     };
   };
 
+  zramSwap = {
+    enable = true;
+    algorithm = "zstd";
+    memoryPercent = 50;
+    priority = 100;
+  };
+
   boot.kernel.sysctl = {
     "vm.swappiness" = lib.mkDefault 10;
     "vm.vfs_cache_pressure" = lib.mkDefault 50;

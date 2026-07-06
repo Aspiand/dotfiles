@@ -35,13 +35,6 @@
           };
         };
 
-        zramSwap = {
-          enable = true;
-          algorithm = "zstd";
-          memoryPercent = 50;
-          priority = 100;
-        };
-
         i18n = {
           defaultLocale = "en_US.UTF-8";
           extraLocaleSettings = {
