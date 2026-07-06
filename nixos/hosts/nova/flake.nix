@@ -40,13 +40,16 @@
           dotfiles.modules
           dotfiles.nixosModules.base
           dotfiles.nixosModules.ssh
-          dotfiles.nixosModules.grafana
-          dotfiles.nixosModules.victoriametrics
-          dotfiles.nixosModules.victorialogs
-          dotfiles.nixosModules.node-exporter
 
-          dotfiles.nixosModules.searxng
+          # AI
+          # dotfiles.nixosModules.searxng
           # dotfiles.nixosModules.headroom
+
+          # Monitoring
+          # dotfiles.nixosModules.grafana
+          # dotfiles.nixosModules.victoriametrics
+          # dotfiles.nixosModules.victorialogs
+          # dotfiles.nixosModules.node-exporter
         ];
       };
     };

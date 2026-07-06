@@ -1,4 +1,10 @@
-{ config, lib, pkgs, modulesPath, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  modulesPath,
+  ...
+}:
 
 {
   imports = [
@@ -7,16 +13,13 @@
 
   boot.initrd.availableKernelModules = [
     "xhci_pci"
-    "ehci_pci"
     "ahci"
-    "usb_storage"
-    "nvme"
+    "sd_mod"
   ];
-
-  boot.kernelModules = [ "kvm-intel" ];
-
-  hardware.enableRedistributableFirmware = lib.mkDefault true;
-  hardware.cpu.intel.updateMicrocode = lib.mkDefault true;
+  boot.initrd.kernelModules = [ ];
+  boot.kernelModules = [ ];
+  boot.extraModulePackages = [ ];
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
+  hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 }
