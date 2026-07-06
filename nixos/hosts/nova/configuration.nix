@@ -18,6 +18,7 @@
 
   networking = {
     hostName = "nova";
+    useDHCP = true;
     useNetworkd = true;
     nameservers = [
       "1.1.1.1"
