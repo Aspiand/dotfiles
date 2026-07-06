@@ -9,10 +9,14 @@
   system.stateVersion = "26.05";
 
   boot = {
+    zswap.enable = true;
     tmp.cleanOnBoot = true;
     loader = {
       systemd-boot.enable = true;
       timeout = 0;
+    };
+    kernel.sysctl = {
+      "vm.swappiness" = 10;
     };
   };
 
@@ -158,4 +162,11 @@
       };
     */
   };
+
+  swapDevices = [
+    {
+      device = "/swapfile";
+      size = 8 * 1024;
+    }
+  ];
 }
