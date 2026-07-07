@@ -5,8 +5,8 @@ let
     pkgs:
     let
       pname = "9router";
-      version = "0.5.18";
-      rev = "v0.5.18";
+      version = "0.5.20";
+      rev = "v0.5.20";
       nodejs = pkgs.nodejs_22;
       runtimePath = pkgs.lib.makeBinPath [
         nodejs
@@ -23,7 +23,7 @@ let
         owner = "decolua";
         repo = "9router";
         inherit rev;
-        hash = "sha256-013vKIp4n+ZA50oQ06R8KFWQF9qwMflxqreSsktuV3I=";
+        hash = "sha256-ZdvUnIrqBY6pGXaq4Hkde48BzfwrmtpvPl+EirvP4uA=";
       };
 
       mkPackageLock =
@@ -61,19 +61,19 @@ let
 
       appPackageLock = mkPackageLock {
         name = "${pname}-app-package-lock-${version}";
-        outputHash = "sha256-4TgoX1VwK1aokKctGlkjwZQ7v5gbZ/mfbbpG68wwrxA=";
+        outputHash = "sha256-O4aFbcAhmQVFsXEWFNfHndEfzmfNAW+RGUE4kBlaqnU=";
       };
 
       cliPackageLock = mkPackageLock {
         name = "${pname}-cli-package-lock-${version}";
         sourceRoot = "source/cli";
-        outputHash = "sha256-GWyQoPQUdAMhkHegy/E2mNtaXsv2I4gc+osI8bNnOdA=";
+        outputHash = "sha256-29gQdwl50D/7YRuKdXY2dMUmxUPw4FDtaoJgZa8tDnw=";
       };
 
       appNpmDeps = pkgs.fetchNpmDeps {
         inherit src;
         name = "${pname}-app-npm-deps-${version}";
-        hash = "sha256-HYGZHjAbrVsovILl3sgSEGcNp4LXWMyIUcoeBujmwKE=";
+        hash = "sha256-ziGeQ8xemyNx54+48A82dRmq2C8b5rrZkE9go0z2q6k=";
         postPatch = ''
           cp ${appPackageLock} package-lock.json
         '';
@@ -86,7 +86,7 @@ let
         inherit src;
         name = "${pname}-cli-npm-deps-${version}";
         sourceRoot = "source/cli";
-        hash = "sha256-fWoxdOlhS3zbnldWKehjCezfI0bYkLIl2AG/aVAspwo=";
+        hash = "sha256-ci8yraPioCIyrOfvIjIwl9MO3NptrL1K4ZCp7m15G40=";
         postPatch = ''
           cp ${cliPackageLock} package-lock.json
         '';
