@@ -42,8 +42,10 @@
           dotfiles.nixosModules.ssh
 
           # AI
-          # dotfiles.nixosModules.searxng
-          # dotfiles.nixosModules.headroom
+          hermes-agent.nixosModules.default
+          dotfiles.nixosModules.searxng
+          dotfiles.nixosModules.headroom
+          ./hermes.nix
 
           # Monitoring
           # dotfiles.nixosModules.grafana

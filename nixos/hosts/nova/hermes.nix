@@ -7,10 +7,6 @@
   ...
 }:
 
-let
-  cfg = config.services.hermes-agent;
-in
-
 {
   services.hermes-agent = {
     enable = true;
@@ -30,7 +26,7 @@ in
 
     environment = {
       SEARXNG_URL = "http://${config.services.searx.settings.server.bind_address or "127.0.0.1"}:${
-        toString (config.services.searx.settings.server.port or 8000)
+        toString (config.services.searx.settings.server.port or 8888)
       }";
     };
 
@@ -38,18 +34,13 @@ in
       enable = true;
       image = "ubuntu:26.04";
       backend = "docker";
-      # hostUsers = [ "ao" ];
+      extraVolumes = [
+        "${config.sops.secrets.hermes.path}:/run/secrets/hermes:ro"
+        "/etc/profiles/per-user/hermes:/nix-user-profile:ro"
+      ];
       extraOptions = [
         "--env" # Prepend Nix per-user profile to PATH so extraPackages are available inside container
         "PATH=/nix-user-profile/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
-        "--env-file" # TODO: switch to Docker secrets (file mount) — env vars visible in `docker inspect` and /proc/*/environ
-        "${config.sops.secrets.hermes.path}"
-      ];
-      extraVolumes = [
-        "/home/ao/Kode:/host/Kode:rw"
-        "/home/ao/.config/dotfiles:/host/dotfiles:rw"
-
-        "/etc/profiles/per-user/hermes:/nix-user-profile:ro"
       ];
     };
 
@@ -118,7 +109,6 @@ in
         auto_thread = false;
         history_backfill = true;
         history_backfill_limit = 50;
-
         free_response_channels = [
           1507732195115012146 # general
           1508034432320409670 # financial
@@ -260,15 +250,6 @@ in
     # documents.USER.md = ./USER.md;
 
     mcpServers = {
-      #   filesystem = {
-      #     command = "npx";
-      #     args = [
-      #       "-y"
-      #       "@modelcontextprotocol/server-filesystem"
-      #       "/data/workspace"
-      #     ];
-      #   };
-
       markitdown = {
         command = "markitdown-mcp";
         args = [ ];
@@ -393,9 +374,7 @@ in
     # restartSec = 5;
   };
 
-  # users.users.hermes.extraGroups = lib.mkIf cfg.enable [ "users" ];
-
-  security.sudo.extraRules = lib.mkIf cfg.enable [
+  security.sudo.extraRules = lib.mkIf config.services.hermes-agent.enable [
     {
       users = [ "hermes" ];
       commands = [
