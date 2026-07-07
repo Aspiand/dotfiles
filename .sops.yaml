@@ -1,14 +1,18 @@
 keys:
-  - &aira_system age17txvx845prfasyjqlfc7a5mzas2fl2u6k8wmel4a4m4v4pr5jcashkdm0m
-  - &aira_user FD3C42F89023104781B277154D127FC4BFC2713D
+  - &aira age17txvx845prfasyjqlfc7a5mzas2fl2u6k8wmel4a4m4v4pr5jcashkdm0m
+  - &ao FD3C42F89023104781B277154D127FC4BFC2713D
   - &nova age1uddxf578qvt4vturk0ht9luxe2nalg6vqaf7p6jwrdtsdy0y69xsxg74qy
+  - &akira age19zncvgma25nmfuc8cef94z39qwwc5kgw8pj54s3u63ldr6q7746stdruy6
 
 creation_rules:
   - path_regex: secrets/hermes\.yml$
+    pgp: *ao
     age:
       - *nova
   - path_regex: secrets/.*\.(yml|yaml|json|ini|conf|env)$
-    pgp: *aira_user
+    pgp: *ao
     age:
       - *nova
-      - *aira_system
+      - *akira
+      - *aira
+      - *ao
