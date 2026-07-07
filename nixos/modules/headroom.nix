@@ -9,8 +9,9 @@
         services.headroom = {
           enable = true;
           mode = "proxy";
-          extraEnv = {
-            HEADROOM_WORKSPACE_DIR = "/var/lib/headroom";
+          optimizationMode = "cache";
+          environment = {
+            HEADROOM_CACHE_DIR = "/var/cache/headroom";
           };
         };
       };

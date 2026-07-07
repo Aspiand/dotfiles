@@ -10,7 +10,7 @@
     }:
     let
       cfg = config.services.headroom;
-      inherit (lib) mkIf mkOption types;
+      inherit (lib) mkIf mkOption mkRemovedOptionModule types;
     in
     {
       options.services.headroom = {
@@ -54,15 +54,26 @@
           description = "Open port in firewall for proxy mode.";
         };
 
-        extraEnv = mkOption {
+        environment = mkOption {
           type = types.attrsOf types.str;
           default = { };
           example = {
             ORT_STRATEGY = "system";
             ORT_LIB_LOCATION = "/usr/lib/libonnxruntime.so";
             HF_HUB_OFFLINE = "1";
+            HEADROOM_CACHE_DIR = "/var/cache/headroom";
           };
-          description = "Extra environment variables for the service.";
+          description = "Environment variables for the headroom service.";
+        };
+
+        environmentFile = mkOption {
+          type = types.nullOr (types.listOf types.str);
+          default = null;
+          example = [ "/run/secrets/headroom.env" ];
+          description = ''
+            Environment files loaded by systemd (EnvironmentFile=).
+            Each file should contain KEY=value pairs, one per line.
+          '';
         };
 
         extraArgs = mkOption {
@@ -73,6 +84,68 @@
             "info"
           ];
           description = "Extra CLI arguments passed to headroom.";
+        };
+
+        optimizationMode = mkOption {
+          type = types.nullOr (types.enum [
+            "token"
+            "cache"
+          ]);
+          default = null;
+          description = ''
+            Headroom proxy optimization strategy (--mode).
+            - token: max compression, rewrite prior turns for token savings
+            - cache: freeze prior turns, stabilise prefix for KV cache hits
+            - null:  don't pass --mode, use Headroom default
+          '';
+        };
+
+        backend = mkOption {
+          type = types.nullOr types.str;
+          default = null;
+          example = "anyllm";
+          description = ''
+            Upstream LLM backend (--backend).
+            - anthropic: direct Anthropic API
+            - litellm:   via LiteLLM
+            - anyllm:    via any-llm provider
+            - null: use Headroom default
+          '';
+        };
+
+        budget = mkOption {
+          type = types.nullOr types.float;
+          default = null;
+          example = 10.00;
+          description = ''
+            Daily budget limit in USD (--budget).
+            null = no limit.
+          '';
+        };
+
+        log = {
+          destination = mkOption {
+            type = types.str;
+            default = "journald";
+            example = "/var/log/headroom/headroom.jsonl";
+            description = ''
+              Where headroom sends logs.
+              - "journald": no --log-file flag, systemd journal captures stdout/stderr
+              - "stderr":   explicit --log-file /dev/stderr
+              - <path>:     --log-file <path>, e.g. "/var/log/headroom/headroom.log"
+            '';
+          };
+
+          level = mkOption {
+            type = types.nullOr types.str;
+            default = null;
+            example = "info";
+            description = ''
+              Log verbosity (--log-level).
+              Common values: debug, info, warn, error.
+              null = don't pass flag, use Headroom default.
+            '';
+          };
         };
       };
 
@@ -106,8 +179,23 @@
                       "mcp"
                       "serve"
                     ];
+                # Build optional flag pairs: [flag, value] or nothing
+                optFlag = flag: value:
+                  lib.optionals (value != null) [ flag (toString value) ];
               in
-              lib.escapeShellArgs ([ baseCmd ] ++ modeArgs ++ cfg.extraArgs);
+              lib.escapeShellArgs (
+                [ baseCmd ]
+                ++ modeArgs
+                ++ optFlag "--backend" cfg.backend
+                ++ optFlag "--mode" cfg.optimizationMode
+                ++ optFlag "--budget" cfg.budget
+                ++ optFlag "--log-level" cfg.log.level
+                ++ lib.optionals (cfg.log.destination != "journald") [
+                  "--log-file"
+                  (if cfg.log.destination == "stderr" then "/dev/stderr" else cfg.log.destination)
+                ]
+                ++ cfg.extraArgs
+              );
 
             Restart = "on-failure";
             RestartSec = 5;
@@ -126,9 +214,12 @@
             UMask = "0077";
             CapabilityBoundingSet = [ ];
             AmbientCapabilities = [ ];
+          }
+          // lib.optionalAttrs (cfg.environmentFile != null) {
+            EnvironmentFile = cfg.environmentFile;
           };
 
-          environment = cfg.extraEnv;
+          environment = cfg.environment;
         };
 
         networking.firewall = mkIf (cfg.openFirewall && cfg.mode == "proxy") {
