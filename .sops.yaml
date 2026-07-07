@@ -4,6 +4,9 @@ keys:
   - &nova age1uddxf578qvt4vturk0ht9luxe2nalg6vqaf7p6jwrdtsdy0y69xsxg74qy
 
 creation_rules:
+  - path_regex: secrets/hermes\.yml$
+    age:
+      - *nova
   - path_regex: secrets/.*\.(yml|yaml|json|ini|conf|env)$
     pgp: *aira_user
     age:
