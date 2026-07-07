@@ -111,12 +111,14 @@
   services = {
     "9router" = {
       enable = true;
+      host = "0.0.0.0";
     };
 
     tailscale = {
       enable = true;
       openFirewall = true;
       useRoutingFeatures = "server";
+      extraSetFlags = [ "--operator=akira" ];
       extraUpFlags = [ "--advertise-exit-node" ];
     };
 
@@ -209,6 +211,10 @@
       "TS_DEBUG_FIREWALL_MODE=nftables"
     ];
   };
+
+  nix.settings.trusted-users = [
+    "akira"
+  ];
 
   virtualisation.docker.enable = true;
 }
