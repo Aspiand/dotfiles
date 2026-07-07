@@ -99,8 +99,10 @@
     curl
     ethtool
     gitMinimal
+    gitui
     htop
     micro
+    python3Minimal
     restic
     rustic
     wget
