@@ -1,4 +1,11 @@
+keys:
+  - &aira_system age17txvx845prfasyjqlfc7a5mzas2fl2u6k8wmel4a4m4v4pr5jcashkdm0m
+  - &aira_user FD3C42F89023104781B277154D127FC4BFC2713D
+  - &nova age1uddxf578qvt4vturk0ht9luxe2nalg6vqaf7p6jwrdtsdy0y69xsxg74qy
+
 creation_rules:
   - path_regex: secrets/.*\.(yml|yaml|json|ini|conf|env)$
-    pgp: "FD3C42F89023104781B277154D127FC4BFC2713D"
-    age: "age17txvx845prfasyjqlfc7a5mzas2fl2u6k8wmel4a4m4v4pr5jcashkdm0m"
+    pgp: *aira_user
+    age:
+      - *nova
+      - *aira_system
