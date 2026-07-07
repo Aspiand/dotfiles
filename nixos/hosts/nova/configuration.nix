@@ -18,6 +18,7 @@
     kernel.sysctl = {
       "vm.swappiness" = 10;
     };
+    initrd.systemd.network.wait-online.enable = false;
   };
 
   networking = {
@@ -46,7 +47,21 @@
         ];
       };
     };
+
+    nftables.enable = true;
+    firewall = {
+      enable = true;
+      trustedInterfaces = [ config.services.tailscale.interfaceName ];
+      checkReversePath = "loose"; # tailscale exit node needs loose RP filter
+    };
   };
+
+  swapDevices = [
+    {
+      device = "/swapfile";
+      size = 8 * 1024;
+    }
+  ];
 
   users = {
     mutableUsers = false;
@@ -82,15 +97,37 @@
     btrfs-progs
     compsize
     curl
+    ethtool
     gitMinimal
     htop
     micro
     restic
+    rustic
     wget
   ];
 
-  virtualisation.docker.enable = true;
   services = {
+    "9router" = {
+      enable = true;
+    };
+
+    tailscale = {
+      enable = true;
+      openFirewall = true;
+      useRoutingFeatures = "server";
+    };
+
+    # tailscale exit node: GRO forwarding offload avoids checksum bottleneck
+    networkd-dispatcher = {
+      enable = true;
+      rules."50-tailscale-optimizations" = {
+        onState = [ "routable" ];
+        script = ''
+          ${pkgs.ethtool}/bin/ethtool -K enp0s31f6 rx-udp-gro-forwarding on rx-gro-list off
+        '';
+      };
+    };
+
     /*
       restic.backups.nova = {
         initialize = true;
@@ -163,10 +200,12 @@
     */
   };
 
-  swapDevices = [
-    {
-      device = "/swapfile";
-      size = 8 * 1024;
-    }
-  ];
+  systemd = {
+    network.wait-online.enable = false;
+    services.tailscaled.serviceConfig.Environment = [
+      "TS_DEBUG_FIREWALL_MODE=nftables"
+    ];
+  };
+
+  virtualisation.docker.enable = true;
 }
