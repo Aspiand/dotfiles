@@ -117,6 +117,7 @@
       enable = true;
       openFirewall = true;
       useRoutingFeatures = "server";
+      extraUpFlags = [ "--advertise-exit-node" ];
     };
 
     # tailscale exit node: GRO forwarding offload avoids checksum bottleneck
