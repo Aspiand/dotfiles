@@ -8,14 +8,13 @@
       ...
     }:
     let
-      mkDefaults = (import ../../lib { inherit lib; }).mkDefaults;
       hasVM = config.services.victoriametrics.enable or false;
       hasVL = config.services.victorialogs.enable or false;
       hasPrometheus = config.services.prometheus.enable or false;
       hasNodeExporter = config.services.prometheus.exporters.node.enable or false;
     in
     {
-      config = mkDefaults {
+      config = {
         services.grafana = {
           enable = true;
           settings = {

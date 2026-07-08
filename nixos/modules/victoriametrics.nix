@@ -3,11 +3,10 @@
   flake.nixosModules.victoriametrics =
     { lib, config, ... }:
     let
-      mkDefaults = (import ../../lib { inherit lib; }).mkDefaults;
       cfg = config.services.victoriametrics;
     in
     {
-      config = mkDefaults {
+      config = {
         services.victoriametrics = {
           enable = true;
 

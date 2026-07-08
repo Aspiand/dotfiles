@@ -1,12 +1,9 @@
 { ... }:
 {
   flake.nixosModules.victorialogs =
-    { lib, config, ... }:
-    let
-      mkDefaults = (import ../../lib { inherit lib; }).mkDefaults;
-    in
+    { ... }:
     {
-      config = mkDefaults {
+      config = {
         services = {
           victorialogs = {
             enable = true;

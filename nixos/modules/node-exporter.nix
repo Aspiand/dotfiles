@@ -2,11 +2,8 @@
 {
   flake.nixosModules.node-exporter =
     { lib, ... }:
-    let
-      mkDefaults = (import ../../lib { inherit lib; }).mkDefaults;
-    in
     {
-      config = mkDefaults {
+      config = {
         services.prometheus.exporters.node = {
           enable = true;
           listenAddress = "0.0.0.0";
@@ -39,7 +36,6 @@
             "logind"
             "os"
             "pressure"
-
           ];
 
           extraFlags = [
