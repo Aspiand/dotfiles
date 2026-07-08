@@ -75,6 +75,7 @@
       enable = true;
 
       allowedTCPPorts = [
+        9100 # node-exporter
         3003 # immich machine learning
         2121 # ftp
         3923 # copyparty
@@ -164,6 +165,11 @@
     resolved.enable = false; # https://wiki.nixos.org/wiki/Tailscale#DNS
     # udev.packages = [ pkgs.android-udev-rules ]; # 'android-udev-rules' has been removed due to being superseded by built-in systemd uaccess rules.
     logind.settings.Login.HandleLidSwitchDocked = "ignore";
+
+    journald.upload = {
+      enable = true;
+      settings.Upload.URL = "http://nova:9428/insert/journald";
+    };
 
     xserver = {
       enable = false;

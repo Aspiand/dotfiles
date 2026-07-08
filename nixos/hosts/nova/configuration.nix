@@ -174,18 +174,20 @@
         openFirewall = false;
       };
 
-      victoriametrics.prometheusConfig.scrape_configs = lib.mkAfter [
-        {
-          job_name = "restic-exporter";
-          scrape_interval = "60s";
-          static_configs = [
-            {
-              targets = [ "127.0.0.1:9753" ];
-            }
-          ];
-        }
-      ];
     */
+
+    victoriametrics.prometheusConfig.scrape_configs = lib.mkAfter [
+      {
+        job_name = "aira-node-exporter";
+        scrape_interval = "60s";
+        static_configs = [
+          {
+            targets = [ "aira:9100" ];
+            labels.instance = "aira";
+          }
+        ];
+      }
+    ];
   };
 
   sops.secrets = {

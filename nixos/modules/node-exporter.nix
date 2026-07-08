@@ -9,7 +9,7 @@
       config = mkDefaults {
         services.prometheus.exporters.node = {
           enable = true;
-          listenAddress = "127.0.0.1";
+          listenAddress = "0.0.0.0";
           port = 9100;
 
           enabledCollectors = [
