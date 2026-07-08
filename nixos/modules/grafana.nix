@@ -22,7 +22,7 @@
             server = {
               enable_gzip = true;
               # enforce_domain = true;
-              http_addr = "127.0.0.1";
+              http_addr = "0.0.0.0";
               http_port = 3000;
               domain = "localhost";
 
@@ -91,7 +91,7 @@
                 }
                 ++ lib.optional hasVL {
                   name = "VictoriaLogs";
-                  type = "victorialogs-datasource";
+                  type = "victoriametrics-logs-datasource";
                   url = "http://${config.services.victorialogs.listenAddress}";
                   access = "proxy";
                   editable = false;

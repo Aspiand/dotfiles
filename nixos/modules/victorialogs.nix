@@ -10,7 +10,7 @@
         services = {
           victorialogs = {
             enable = true;
-            listenAddress = "127.0.0.1:9428";
+            listenAddress = "0.0.0.0:9428";
             extraOptions = [
               "-retentionPeriod=14d"
             ];

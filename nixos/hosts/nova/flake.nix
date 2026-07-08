@@ -48,10 +48,10 @@
           ./hermes.nix
 
           # Monitoring
-          # dotfiles.nixosModules.grafana
-          # dotfiles.nixosModules.victoriametrics
-          # dotfiles.nixosModules.victorialogs
-          # dotfiles.nixosModules.node-exporter
+          dotfiles.nixosModules.grafana
+          dotfiles.nixosModules.victoriametrics
+          dotfiles.nixosModules.victorialogs
+          dotfiles.nixosModules.node-exporter
         ];
       };
     };

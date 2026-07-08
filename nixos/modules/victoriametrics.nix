@@ -11,7 +11,7 @@
         services.victoriametrics = {
           enable = true;
 
-          listenAddress = "127.0.0.1:8428";
+          listenAddress = "0.0.0.0:8428";
           retentionPeriod = "30d";
 
           prometheusConfig = {
