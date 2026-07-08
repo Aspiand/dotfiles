@@ -5,14 +5,17 @@
 ```
 /host/dotfiles/
 ├── flake.nix                # flake-parts + importTree
-├── nix/                     # Packages & overlays (auto-imported)
+├── nix/
+│   ├── packages/            # Package derivations (auto-imported)
+│   ├── wrappers/            # Wrapped CLI tools (bundled config, auto-imported)
+│   └── modules/             # Custom NixOS module definitions
 ├── nixos/
 │   ├── modules/             # Shared NixOS modules (auto-imported)
 │   └── hosts/{aira,azel,delta}/  # Standalone host flakes
 └── AGENTS.md
 ```
 
-Root flake auto-imports `./nix` + `./nixos/modules` via `importTree`.
+Root flake auto-imports `./nix/packages` + `./nix/wrappers` + `./nixos/modules` via `importTree`.
 
 ## Modules (nixos/modules/)
 
@@ -83,6 +86,34 @@ Individual access still available via `dotfiles.customModules.<name>`.
 |--------|------|----------------|--------|
 | `9router` | `9router.nix` | `services.9router` — AI router systemd service + firewall | `nix/modules/` |
 | `hermes-agent` | `hermes-agent.nix` | `services.hermes-agent.gateway` — Hermes gateway user service | `nix/modules/` |
+
+## Wrapped CLI Tools (nix/wrappers/)
+
+Files under `nix/wrappers/` bundle a CLI tool with its config via `wrapPackage` from `lib/`.
+They auto-import into the flake, exposed as `nix run .#<name>`.
+
+**Canonical pattern:**
+
+```nix
+# nix/wrappers/<name>.nix
+{ ... }: {
+  perSystem = { pkgs, lib, ... }: let
+    wrapPackage = (import ../../lib { inherit lib; }).wrapPackage;
+    conf = pkgs.writeText "<name>.conf" '' ... '';
+  in {
+    packages.<name> = wrapPackage {
+      inherit pkgs;
+      package = pkgs.<name>;
+      env.SOME_VAR = conf;
+      flags."-f" = conf;
+    };
+  };
+}
+```
+
+| Export | Run | Description |
+|--------|-----|-------------|
+| `tmux` | `nix run .#tmux` | Prefix C-a, mouse, vim-friendly |
 
 See skill: `nixos-flake-module-patterns` for full docs, history, and pitfalls.
 

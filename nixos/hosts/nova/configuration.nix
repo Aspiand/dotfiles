@@ -98,7 +98,6 @@
     compsize
     curl
     ethtool
-    gitMinimal
     gitui
     htop
     micro
@@ -106,6 +105,7 @@
     restic
     rustic
     wget
+    dotfiles.packages.${pkgs.system}.my-tools
   ];
 
   services = {

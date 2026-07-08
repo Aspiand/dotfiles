@@ -4,6 +4,8 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-parts.url = "github:hercules-ci/flake-parts";
+    wrappers.url = "github:Lassulus/wrappers";
+    wrappers.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   nixConfig = {
@@ -32,7 +34,7 @@
           "aarch64-linux"
         ];
 
-        imports = (flakeLib.importTree ./nix/packages) ++ (flakeLib.importTree ./nixos/modules);
+        imports = (flakeLib.importTree ./nix/packages) ++ (flakeLib.importTree ./nixos/modules) ++ (flakeLib.importTree ./nix/wrappers);
 
         perSystem = { pkgs, lib, ... }: {
           formatter = pkgs.nixpkgs-fmt;
