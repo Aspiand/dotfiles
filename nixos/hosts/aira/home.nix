@@ -63,7 +63,6 @@ in
         # android-tools
         # ansible
         # bitwarden-cli
-        claude-code
         codex
         copyparty-most
         delta
@@ -173,6 +172,8 @@ in
   programs = {
     modern-utils.enable = true;
     password-store.enable = true;
+    claude-code.enable = true;
+    mcp.enable = true;
     home-manager.enable = true;
     bash.enable = true;
     clamav.enable = true;
