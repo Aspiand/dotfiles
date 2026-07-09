@@ -11,5 +11,5 @@ let
     );
 in
 {
-  imports = autoload ./modules;
+  imports = autoload ./modules ++ [ ./profiles/default.nix ];
 }
