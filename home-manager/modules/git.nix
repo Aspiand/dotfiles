@@ -1,9 +1,8 @@
-{ lib, ... }:
+{ config, pkgs, lib, ... }:
 
 {
-  programs = {
-    git = {
-      enable = true;
+  config = lib.mkIf config.programs.git.enable {
+    programs.git = {
       settings = {
         pull.rebase = true;
         init.defaultBranch = "main";
@@ -27,9 +26,9 @@
       ];
     };
 
-    delta = {
-      enable = true;
-      enableGitIntegration = true;
+    programs.delta = {
+      enable = lib.mkDefault true;
+      enableGitIntegration = lib.mkDefault true;
       options = {
         dark = true;
         navigate = true;
@@ -37,5 +36,6 @@
         side-by-side = false;
       };
     };
+
   };
 }

@@ -15,7 +15,7 @@ in
     inputs.dms-plugin-registry.modules.default
     inputs.danksearch.homeModules.dsearch
     inputs.spicetify-nix.homeManagerModules.default
-    ../../../home-manager/default.nix
+    inputs.home-config.homeModules.default
   ];
 
   xdg.configFile."niri".source =

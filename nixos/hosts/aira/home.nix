@@ -13,7 +13,7 @@ in
 {
   imports = [
     inputs.spicetify-nix.homeManagerModules.default
-    ../../../home-manager/default.nix
+    inputs.home-config.homeModules.default
   ];
 
   home = {

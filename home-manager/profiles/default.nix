@@ -1,9 +1,4 @@
-{
-  config,
-  pkgs,
-  lib,
-  ...
-}:
+{ config, pkgs, lib, ... }:
 
 {
   home.sessionVariables = {
@@ -20,13 +15,36 @@
     ncl = "nix-channel --list";
     nclg = "nix-channel --list-generations";
     news = "${pkgs.home-manager}/bin/home-manager news";
-    rm = "${pkgs.trash-cli}/bin/trash-put"; # don't change this line
+    rm = "${pkgs.trash-cli}/bin/trash-put";
     remove = "${pkgs.coreutils}/bin/rm";
     tree = "${pkgs.eza}/bin/eza --tree";
   };
 
+  home.packages = with pkgs; [
+    # Archive
+    gnutar
+    gzip
+    unzip
+    xz
+    zip
+
+    # Network
+    aria2
+    curl
+    sshfs
+    wget
+
+    # Base Utils
+    coreutils
+    rsync
+    trash-cli
+  ];
+
   programs = with lib; {
     home-manager.enable = true;
+    bash.enable = mkDefault true;
+    git.enable = mkDefault true;
+    tmux.enable = mkDefault true;
     fastfetch.enable = mkDefault true;
     micro.enable = mkDefault true;
     modern-utils.enable = mkDefault true;

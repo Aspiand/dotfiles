@@ -11,5 +11,5 @@ let
     );
 in
 {
-  imports = autoload ./configs ++ autoload ./modules;
+  imports = autoload ./modules;
 }

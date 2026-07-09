@@ -1,6 +1,6 @@
 { config, pkgs, ... }:
 {
-  xdg.configFile."fresh/config.json".source = config.lib.file.mkOutOfStoreSymlink ./fresh.json;
+  xdg.configFile."fresh/config.json".source = config.lib.file.mkOutOfStoreSymlink ../../.config/fresh/config.json;
 
   home.packages = with pkgs; [
     # Language Servers

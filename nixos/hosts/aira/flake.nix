@@ -4,6 +4,7 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     dotfiles.url = "path:../../../";
+    home-config.url = "path:../../../home-manager";
 
     home-manager = {
       url = "github:nix-community/home-manager";

@@ -1,37 +1,45 @@
 {
-  description = "A very basic flake";
+  description = "Home Manager configuration";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-  };
-
-  outputs = { self, nixpkgs, home-manager, ... }: let
-    pkgs = import nixpkgs { system = "x86_64-linux"; };
-  in {
-    homeConfigurations = {
-      "manjaro" = home-manager.lib.homeManagerConfiguration {
-        inherit pkgs;
-        modules = [ ./profiles/manjaro.nix ];
-      };
-
-      "mint" = home-manager.lib.homeManagerConfiguration {
-        inherit pkgs;
-        modules = [ ./profiles/mint.nix ];
-      };
-
-      "pc" = home-manager.lib.homeManagerConfiguration {
-        inherit pkgs;
-        modules = [ ./profiles/work.nix ];
-      };
-
-      "yuki" = home-manager.lib.homeManagerConfiguration {
-        pkgs = import nixpkgs { system = "aarch64-linux"; };
-        modules = [ ./profiles/yuki.nix ];
-      };
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
   };
+
+  outputs =
+    {
+      nixpkgs,
+      home-manager,
+      sops-nix,
+      ...
+    }:
+    let
+      mkHome =
+        system: modules:
+        home-manager.lib.homeManagerConfiguration {
+          pkgs = import nixpkgs { inherit system; };
+          modules = [ ./default.nix ] ++ modules;
+          extraSpecialArgs = { inherit sops-nix; };
+        };
+
+      # Auto-discover host profiles under profiles/
+      profileFiles = builtins.readDir ./profiles;
+      hostProfiles = builtins.mapAttrs
+        (name: _: mkHome "x86_64-linux" [ (./profiles + "/${name}") ])
+        (nixpkgs.lib.filterAttrs
+          (name: type: type == "regular" && nixpkgs.lib.hasSuffix ".nix" name && name != "default.nix")
+          profileFiles
+        );
+    in
+    {
+      homeModules.default = ./default.nix;
+      homeConfigurations = hostProfiles;
+    };
 }

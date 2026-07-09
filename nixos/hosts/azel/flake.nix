@@ -4,6 +4,7 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     impermanence.url = "github:nix-community/impermanence";
+    home-config.url = "path:../../../home-manager";
 
     disko = {
       url = "github:nix-community/disko";
