@@ -15,6 +15,8 @@
       systemd-boot.enable = true;
       timeout = 0;
     };
+    # snd_soc_avs (Intel AVS) blocks snd_hda_intel, leaving /dev/snd empty.
+    blacklistedKernelModules = [ "snd_soc_avs" ];
     kernel.sysctl = {
       "vm.swappiness" = 10;
     };
@@ -72,6 +74,7 @@
         extraGroups = [
           "wheel"
           "docker"
+          "audio"
         ];
         openssh.authorizedKeys.keys = [
           "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDofwi7RvZGROLm/bm99T8xB6Tw9jg442wOi1TFudDwb ao@aira"
@@ -108,6 +111,8 @@
     wget
   ];
 
+  hardware.alsa.enablePersistence = true;
+
   services = {
     "9router" = {
       enable = true;
@@ -118,6 +123,13 @@
       openFirewall = true;
       useRoutingFeatures = "server";
       extraUpFlags = [ "--advertise-exit-node" ];
+    };
+
+
+    pipewire = {
+      enable = true;
+      pulse.enable = true;
+      wireplumber.enable = true;
     };
 
     # tailscale exit node: GRO forwarding offload avoids checksum bottleneck
