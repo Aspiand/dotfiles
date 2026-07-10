@@ -15,4 +15,3 @@ creation_rules:
       - *nova
       - *akira
       - *aira
-      - *ao
