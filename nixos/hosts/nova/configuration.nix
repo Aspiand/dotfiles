@@ -203,6 +203,11 @@
   };
 
   sops.secrets = {
+    zerobyte = {
+      sopsFile = ../../../secrets/zerobyte.env;
+      format = "dotenv";
+    };
+
     /*
       "restic/password" = {
         owner = "restic";
@@ -224,5 +229,40 @@
     ];
   };
 
-  virtualisation.docker.enable = true;
+  virtualisation = {
+    docker = {
+      enable = true;
+      storageDriver = "btrfs";
+      autoPrune = {
+        enable = true;
+        dates = "weekly";
+      };
+    };
+
+    oci-containers = {
+      backend = "docker";
+      containers = {
+        zerobyte = {
+          image = "ghcr.io/nicotsx/zerobyte:v0.40";
+          autoStart = true;
+          pull = "newer";
+          ports = [ "127.0.0.1:4096:4096" ];
+          environment = {
+            TZ = "Asia/Jakarta";
+            BASE_URL = "http://127.0.0.1:4096";
+            LOG_LEVEL = "info";
+          };
+          environmentFiles = [ config.sops.secrets.zerobyte.path ];
+          volumes = [
+            "/var/lib/zerobyte:/var/lib/zerobyte"
+            "/etc/localtime:/etc/localtime:ro"
+          ];
+          capabilities = {
+            SYS_ADMIN = true;
+          };
+          devices = [ "/dev/fuse:/dev/fuse" ];
+        };
+      };
+    };
+  };
 }
