@@ -7,7 +7,10 @@
       "Bash(nix build *)",
       "mcp__nixos__nix",
       "mcp__codegraph__codegraph_search",
-      "mcp__codegraph__codegraph_files"
+      "mcp__codegraph__codegraph_files",
+      "mcp__plugin_mempalace_mempalace__mempalace_status",
+      "mcp__plugin_mempalace_mempalace__mempalace_list_rooms",
+      "mcp__plugin_claude-code-home-manager_nixos__nix"
     ]
   }
 }
