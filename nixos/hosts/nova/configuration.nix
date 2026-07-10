@@ -245,7 +245,7 @@
         zerobyte = {
           image = "ghcr.io/nicotsx/zerobyte:v0.40";
           autoStart = true;
-          pull = "newer";
+          pull = "missing";
           ports = [ "127.0.0.1:4096:4096" ];
           environment = {
             TZ = "Asia/Jakarta";
