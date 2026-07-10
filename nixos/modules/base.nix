@@ -8,6 +8,9 @@
     {
       sops.secrets.env = {
         sopsFile = ../../secrets/common.yml;
+        mode = "0440";
+        owner = "root";
+        group = "users";
       };
 
       environment.extraInit = ''

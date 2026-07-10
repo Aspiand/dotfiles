@@ -49,40 +49,36 @@
       # ── Indexing ──
       set -g base-index 1
       set -g pane-base-index 1
-      set -g renumber-windows on
 
       # ── Mouse ──
       set -g mouse on
 
-      # ── Scrollback ──
-      set -g history-limit 10000
-      set -g escape-time 0
-
       # ── UI ──
-      set -g default-terminal "tmux-256color"
-      set -ga terminal-overrides ",*:Co256"
-      set -g focus-events on
-      set -g set-clipboard on
+      set -g default-terminal "screen-256color"
 
-      # ── Splits (intuitive) ──
-      bind | split-window -h
-      bind - split-window -v
+      # ── Windows ──
+      setw -g aggressive-resize on
+      setw -g clock-mode-style 24
+
+      new-session -A -s 0
 
       # ── Status bar ──
-      set -g status-interval 5
-      set -g status-left-length 30
-      set -g status-right-length 80
+      set -g status-right "#(${networkSpeed}) "
 
       # ── Status position ──
       set-option -g status-position top
 
-      # ── Status right (network speed) ──
-      set -g status-right "#(${networkSpeed}) "
-
-      # ── Plugins (non-theme only) ──
+      # ── Plugins ──
       run-shell '${pkgs.tmuxPlugins.sensible}/share/tmux-plugins/sensible/sensible.tmux'
       run-shell '${pkgs.tmuxPlugins.yank}/share/tmux-plugins/yank/yank.tmux'
       run-shell '${pkgs.tmuxPlugins.better-mouse-mode}/share/tmux-plugins/better-mouse-mode/better-mouse-mode.tmux'
+      run-shell '${pkgs.tmuxPlugins.continuum}/share/tmux-plugins/continuum/continuum.tmux'
+      run-shell '${pkgs.tmuxPlugins.copycat}/share/tmux-plugins/copycat/copycat.tmux'
+      run-shell '${pkgs.tmuxPlugins.logging}/share/tmux-plugins/logging/logging.tmux'
+      run-shell '${pkgs.tmuxPlugins.pain-control}/share/tmux-plugins/pain-control/pain_control.tmux'
+      run-shell '${pkgs.tmuxPlugins.prefix-highlight}/share/tmux-plugins/prefix-highlight/prefix_highlight.tmux'
+      run-shell '${pkgs.tmuxPlugins.resurrect}/share/tmux-plugins/resurrect/resurrect.tmux'
+      run-shell '${pkgs.tmuxPlugins.sidebar}/share/tmux-plugins/sidebar/sidebar.tmux'
       # run-shell '${pkgs.tmuxPlugins.nord}/share/tmux-plugins/nord/nord.tmux'  # theme, skip for now
     '';
   in {
