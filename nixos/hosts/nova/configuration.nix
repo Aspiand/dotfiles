@@ -206,6 +206,11 @@
       format = "dotenv";
     };
 
+    tsdproxy = {
+      sopsFile = ../../../secrets/tsdproxy.env;
+      format = "dotenv";
+    };
+
     /*
       "restic/password" = {
         owner = "restic";
