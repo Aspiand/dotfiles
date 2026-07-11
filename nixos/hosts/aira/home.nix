@@ -29,7 +29,7 @@ in
     sessionVariables = {
       GOPATH = "${config.xdg.dataHome}/go";
       QT_QPA_PLATFORM = "wayland";
-      ANTHROPIC_BASE_URL = "http://nova:20128/v1";
+      ANTHROPIC_BASE_URL = "https://9router.astrapia-kokanue.ts.net/v1";
       ANTHROPIC_API_KEY = "sk-dc180c793b48d514-wiipho-392f44a7"; # TODO: sops
     };
 
