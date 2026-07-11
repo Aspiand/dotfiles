@@ -240,6 +240,10 @@
         enable = true;
         dates = "weekly";
       };
+      daemon.settings = {
+        log-driver = "journald";
+        live-restore = true;
+      };
     };
 
     oci-containers = {
