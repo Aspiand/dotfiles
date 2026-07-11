@@ -53,6 +53,9 @@
       };
       effortLevel = "low";
       skipWorkflowUsageWarning = true;
+    };
+
+    tui = {
       theme = "dark";
       editorMode = "normal";
       preferredNotifChannel = "notifications_disabled";

@@ -38,7 +38,7 @@ in
       [
         # Desktop
         # authenticator
-        bitwarden-desktop
+        # bitwarden-desktop
         # dbeaver-bin
         # cc-switch
         discord
@@ -77,7 +77,6 @@ in
         # kando
         lazydocker
         nmap
-        opencode
         nvtopPackages.intel
         restic
         rustic
