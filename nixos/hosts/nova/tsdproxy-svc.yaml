@@ -5,7 +5,7 @@ grafana:
   ports:
     443/https:
       targets:
-        - http://host.docker.internal:3000
+        - http://127.0.0.1:3000
   dashboard:
     label: Grafana
     icon: si/grafana
@@ -17,7 +17,7 @@ victoriametrics:
   ports:
     443/https:
       targets:
-        - http://host.docker.internal:8428
+        - http://127.0.0.1:8428
   dashboard:
     label: VictoriaMetrics
     icon: si/victoriametrics
@@ -29,7 +29,7 @@ victorialogs:
   ports:
     443/https:
       targets:
-        - http://host.docker.internal:9428
+        - http://127.0.0.1:9428
   dashboard:
     label: VictoriaLogs
     icon: si/victorialogs
@@ -41,6 +41,6 @@ victorialogs:
   ports:
     443/https:
       targets:
-        - http://host.docker.internal:20128
+        - http://127.0.0.1:20128
   dashboard:
     label: 9Router

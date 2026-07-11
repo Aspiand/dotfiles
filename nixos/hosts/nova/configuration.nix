@@ -274,7 +274,6 @@
           image = "almeidapaulopt/tsdproxy:dev";
           autoStart = true;
           pull = "missing";
-          ports = [ "8080:8080" ];
           environmentFiles = [ config.sops.secrets.tsdproxy.path ];
           volumes = [
             "/var/lib/tsdproxy:/data"
@@ -282,7 +281,7 @@
             "${toString ./tsdproxy-svc.yaml}:/config/services.yaml:ro"
           ];
           extraOptions = [
-            "--add-host=host.docker.internal:host-gateway"
+            "--network=host"
           ];
         };
       };
