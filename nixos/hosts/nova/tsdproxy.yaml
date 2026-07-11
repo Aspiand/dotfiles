@@ -11,6 +11,7 @@ tailscale:
       tags: "tag:tsdproxy"
       services: true
       hostname: "tsdproxy"
+      ephemeral: true
       autoApproveDevices: true
       autoProvisionAcl: true
       preventDuplicates: true
@@ -22,4 +23,5 @@ http:
 
 log:
   level: info
-  proxyAccessLog: true
+  json: false
+proxyAccessLog: true

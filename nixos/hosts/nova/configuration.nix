@@ -267,7 +267,7 @@
         # };
 
         tsdproxy = {
-          image = "almeidapaulopt/tsdproxy:2";
+          image = "almeidapaulopt/tsdproxy:dev";
           autoStart = true;
           pull = "missing";
           ports = [ "8080:8080" ];
