@@ -56,3 +56,15 @@ searxng:
         - http://127.0.0.1:20128
   dashboard:
     label: 9Router
+
+immich:
+  proxyProvider: default
+  tailscale:
+    ephemeral: true
+    hostname: gallery
+  ports:
+    443/https:
+      targets:
+        - http://127.0.0.1:2283
+  dashboard:
+    label: Immich
