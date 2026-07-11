@@ -125,7 +125,6 @@
       extraUpFlags = [ "--advertise-exit-node" ];
     };
 
-
     pipewire = {
       enable = true;
       pulse.enable = true;
@@ -185,7 +184,6 @@
         port = 9753;
         openFirewall = false;
       };
-
     */
 
     victoriametrics.prometheusConfig.scrape_configs = lib.mkAfter [
@@ -242,26 +240,42 @@
     oci-containers = {
       backend = "docker";
       containers = {
-#         zerobyte = {
-#           image = "ghcr.io/nicotsx/zerobyte:v0.40";
-#           autoStart = true;
-#           pull = "missing";
-#           ports = [ "4096:4096" ];
-#           environment = {
-#             TZ = "Asia/Jakarta";
-#             BASE_URL = "http://nova:4096";
-#             LOG_LEVEL = "info";
-#           };
-#           environmentFiles = [ config.sops.secrets.zerobyte.path ];
-#           volumes = [
-#             "/var/lib/zerobyte:/var/lib/zerobyte"
-#             "/etc/localtime:/etc/localtime:ro"
-#           ];
-#           capabilities = {
-#             SYS_ADMIN = true;
-#           };
-#           devices = [ "/dev/fuse:/dev/fuse" ];
-#         };
+        # zerobyte = {
+        #   image = "ghcr.io/nicotsx/zerobyte:v0.40";
+        #   autoStart = true;
+        #   pull = "missing";
+        #   ports = [ "4096:4096" ];
+        #   environment = {
+        #     TZ = "Asia/Jakarta";
+        #     BASE_URL = "http://nova:4096";
+        #     LOG_LEVEL = "info";
+        #   };
+        #   environmentFiles = [ config.sops.secrets.zerobyte.path ];
+        #   volumes = [
+        #     "/var/lib/zerobyte:/var/lib/zerobyte"
+        #     "/etc/localtime:/etc/localtime:ro"
+        #   ];
+        #   capabilities = {
+        #     SYS_ADMIN = true;
+        #   };
+        #   devices = [ "/dev/fuse:/dev/fuse" ];
+        # };
+
+        tsdproxy = {
+          image = "almeidapaulopt/tsdproxy:2";
+          autoStart = true;
+          pull = "newer";
+          ports = [ "8080:8080" ];
+          environmentFiles = [ config.sops.secrets.tsdproxy.path ];
+          volumes = [
+            "/var/lib/tsdproxy:/data"
+            "${toString ./tsdproxy.yaml}:/config/tsdproxy.yaml:ro"
+            "${toString ./tsdproxy-svc.yaml}:/config/services.yaml:ro"
+          ];
+          extraOptions = [
+            "--add-host=host.docker.internal:host-gateway"
+          ];
+        };
       };
     };
   };
