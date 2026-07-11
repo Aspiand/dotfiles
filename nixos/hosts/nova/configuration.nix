@@ -269,7 +269,7 @@
         tsdproxy = {
           image = "almeidapaulopt/tsdproxy:2";
           autoStart = true;
-          pull = "newer";
+          pull = "missing";
           ports = [ "8080:8080" ];
           environmentFiles = [ config.sops.secrets.tsdproxy.path ];
           volumes = [
