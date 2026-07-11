@@ -1,5 +1,7 @@
 grafana:
   proxyProvider: default
+  tailscale:
+    ephemeral: true
   ports:
     443/https:
       targets:
@@ -10,6 +12,8 @@ grafana:
 
 victoriametrics:
   proxyProvider: default
+  tailscale:
+    ephemeral: true
   ports:
     443/https:
       targets:
@@ -20,6 +24,8 @@ victoriametrics:
 
 victorialogs:
   proxyProvider: default
+  tailscale:
+    ephemeral: true
   ports:
     443/https:
       targets:
@@ -30,6 +36,8 @@ victorialogs:
 
 9router:
   proxyProvider: default
+  tailscale:
+    ephemeral: true
   ports:
     443/https:
       targets:
