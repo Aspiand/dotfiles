@@ -34,6 +34,18 @@ victorialogs:
     label: VictoriaLogs
     icon: si/victorialogs
 
+searxng:
+  proxyProvider: default
+  tailscale:
+    ephemeral: true
+  ports:
+    443/https:
+      targets:
+        - http://127.0.0.1:8888
+  dashboard:
+    label: SearXNG
+    icon: si/magnifyingglass
+
 9router:
   proxyProvider: default
   tailscale:
