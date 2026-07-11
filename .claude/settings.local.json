@@ -10,7 +10,8 @@
       "mcp__codegraph__codegraph_files",
       "mcp__plugin_mempalace_mempalace__mempalace_status",
       "mcp__plugin_mempalace_mempalace__mempalace_list_rooms",
-      "mcp__plugin_claude-code-home-manager_nixos__nix"
+      "mcp__plugin_claude-code-home-manager_nixos__nix",
+      "mcp__plugin_claude-code-home-manager_codegraph__codegraph_files"
     ]
   }
 }

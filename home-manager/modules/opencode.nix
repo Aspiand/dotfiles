@@ -1,10 +1,9 @@
 { config, pkgs, ... }:
 
 {
-  programs.claude-code = {
+  programs.opencode = {
     enable = true;
     enableMcpIntegration = true;
-    configDir = "${config.xdg.configHome}/claude";
 
     settings = {
       model = "oc/deepseek-v4-flash-free";
@@ -15,48 +14,6 @@
           "WebSearch"
         ];
         defaultMode = "default";
-      };
-      hooks = {
-        SessionStart = [
-          {
-            hooks = [
-              {
-                type = "command";
-                command = "mempalace hook run --hook session-start --harness claude-code";
-              }
-            ];
-          }
-        ];
-        Stop = [
-          {
-            hooks = [
-              {
-                type = "command";
-                command = "mempalace hook run --hook stop --harness claude-code";
-              }
-            ];
-          }
-        ];
-        SessionEnd = [
-          {
-            hooks = [
-              {
-                type = "command";
-                command = "mempalace hook run --hook session-end --harness claude-code";
-              }
-            ];
-          }
-        ];
-        PreCompact = [
-          {
-            hooks = [
-              {
-                type = "command";
-                command = "mempalace hook run --hook precompact --harness claude-code";
-              }
-            ];
-          }
-        ];
       };
       worktree = {
         baseRef = "fresh";
@@ -100,5 +57,13 @@
       editorMode = "normal";
       preferredNotifChannel = "notifications_disabled";
     };
+
+    extraPackages = with pkgs; [
+      mempalace
+    ];
+
+    context = ''
+      You are Aspian's opencode agent.
+    '';
   };
 }
