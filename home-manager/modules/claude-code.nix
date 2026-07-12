@@ -12,6 +12,7 @@
         allow = [
           "Bash(nix build *)"
           "Bash(nix eval *)"
+          "Read"
           "WebSearch"
         ];
         defaultMode = "default";
