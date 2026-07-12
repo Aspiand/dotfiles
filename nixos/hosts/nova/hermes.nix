@@ -370,12 +370,17 @@
   # Dashboard web UI — native process, shares HERMES_HOME with gateway container
   systemd.services.hermes-dashboard = {
     description = "Hermes Dashboard Web UI";
-    after = [ "network-online.target" "docker.service" ];
+    after = [
+      "network-online.target"
+      "docker.service"
+    ];
     wants = [ "network-online.target" ];
     requires = [ "docker.service" ];
     wantedBy = [ "multi-user.target" ];
 
     environment.HERMES_HOME = "/var/lib/hermes/.hermes";
+
+    path = [ pkgs.docker ];
 
     serviceConfig = {
       User = "hermes";
