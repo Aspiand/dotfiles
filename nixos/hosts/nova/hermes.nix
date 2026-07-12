@@ -367,7 +367,8 @@
     # restartSec = 5;
   };
 
-  # Dashboard web UI — native process, shares HERMES_HOME with gateway container
+  users.users.hermes.extraGroups = [ "docker" ];
+
   systemd.services.hermes-dashboard = {
     description = "Hermes Dashboard Web UI";
     after = [
@@ -385,10 +386,10 @@
     serviceConfig = {
       User = "hermes";
       Group = "hermes";
+      SupplementaryGroups = [ "docker" ];
       ExecStart = "${config.services.hermes-agent.package}/bin/hermes dashboard --host 127.0.0.1 --port 9119 --no-open";
       Restart = "always";
       RestartSec = 10;
-      NoNewPrivileges = true;
     };
   };
 
