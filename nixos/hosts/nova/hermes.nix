@@ -13,13 +13,6 @@
     addToSystemPackages = true;
     stateDir = "/var/lib/hermes";
 
-    extraDependencyGroups = [
-      "messaging"
-      "mcp"
-      # "voice"
-      # "edge-tts"
-    ];
-
     environmentFiles = [
       config.sops.secrets."hermes".path
     ];
@@ -372,6 +365,26 @@
     ];
     # restart = "always";
     # restartSec = 5;
+  };
+
+  # Dashboard web UI — native process, shares HERMES_HOME with gateway container
+  systemd.services.hermes-dashboard = {
+    description = "Hermes Dashboard Web UI";
+    after = [ "network-online.target" "docker.service" ];
+    wants = [ "network-online.target" ];
+    requires = [ "docker.service" ];
+    wantedBy = [ "multi-user.target" ];
+
+    environment.HERMES_HOME = "/var/lib/hermes/.hermes";
+
+    serviceConfig = {
+      User = "hermes";
+      Group = "hermes";
+      ExecStart = "${config.services.hermes-agent.package}/bin/hermes dashboard --host 127.0.0.1 --port 9119 --no-open";
+      Restart = "always";
+      RestartSec = 10;
+      NoNewPrivileges = true;
+    };
   };
 
   security.sudo.extraRules = lib.mkIf config.services.hermes-agent.enable [

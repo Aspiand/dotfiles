@@ -57,6 +57,18 @@ searxng:
   dashboard:
     label: 9Router
 
+hermes:
+  proxyProvider: default
+  tailscale:
+    ephemeral: true
+  ports:
+    443/https:
+      targets:
+        - http://127.0.0.1:9119
+  dashboard:
+    label: Hermes Dashboard
+    icon: si/robot
+
 immich:
   proxyProvider: default
   tailscale:
