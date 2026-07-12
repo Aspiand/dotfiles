@@ -9,7 +9,7 @@ creation_rules:
     pgp: *ao
     age:
       - *nova
-  - path_regex: secrets/.*\.(yml|yaml|json|ini|conf|env)$
+  - path_regex: secrets/.*\.(yml|yaml|json|ini|conf|env|enc)$
     pgp: *ao
     age:
       - *nova
