@@ -23,6 +23,19 @@
                   }
                 ];
               }
+              {
+                job_name = "tsdproxy";
+                scrape_interval = "30s";
+                metrics_path = "/metrics";
+                static_configs = [
+                  {
+                    targets = [ "localhost:8080" ];
+                    labels = {
+                      instance = config.networking.hostName or "localhost";
+                    };
+                  }
+                ];
+              }
             ]
             ++ lib.optionals (config.services.prometheus.exporters.node.enable or false) [
               {
