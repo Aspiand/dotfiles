@@ -66,6 +66,12 @@
     }
   ];
 
+  fileSystems."/mnt/adata_su650_500" = {
+    device = "/dev/disk/by-uuid/d4eb84bb-fe23-418a-9cc5-82ce45b7ebad";
+    fsType = "ext4";
+    options = [ "nofail" ];
+  };
+
   users = {
     mutableUsers = false;
     users = {
@@ -216,7 +222,7 @@
       redis.enable = true;
       database.enable = true;
       machine-learning.enable = true;
-      # mediaLocation = "/var/lib/immich";
+      mediaLocation = "/mnt/adata_su650_500/data/immich";
       environment = {
         IMMICH_LOG_LEVEL = "info";
         IMMICH_TELEMETRY_INCLUDE = "all";
@@ -274,6 +280,18 @@
     services.tailscaled.serviceConfig.Environment = [
       "TS_DEBUG_FIREWALL_MODE=nftables"
     ];
+
+    services.immich-server = {
+      unitConfig.ConditionPathIsMountPoint = "/mnt/adata_su650_500";
+      serviceConfig.RequiresMountsFor = "/mnt/adata_su650_500";
+      bindsTo = [ "mnt-adata_su650_500.mount" ];
+    };
+
+    services.immich-machine-learning = {
+      unitConfig.ConditionPathIsMountPoint = "/mnt/adata_su650_500";
+      serviceConfig.RequiresMountsFor = "/mnt/adata_su650_500";
+      bindsTo = [ "mnt-adata_su650_500.mount" ];
+    };
   };
 
   virtualisation = {
