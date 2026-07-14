@@ -224,7 +224,7 @@
       machine-learning.enable = true;
       mediaLocation = "/mnt/adata_su650_500/data/immich";
       environment = {
-        IMMICH_LOG_LEVEL = "info";
+        IMMICH_LOG_LEVEL = "log";
         IMMICH_TELEMETRY_INCLUDE = "all";
       };
     };
