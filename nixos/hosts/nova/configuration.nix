@@ -294,6 +294,9 @@
     "copyparty/as" = {
       sopsFile = ../../../secrets/hosts/nova.yml;
       format = "yaml";
+      owner = "copyparty";
+      group = "copyparty";
+      mode = "0400";
     };
 
     "gocryptfs/pandora" = {
