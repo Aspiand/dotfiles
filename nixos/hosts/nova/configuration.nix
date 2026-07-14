@@ -305,7 +305,7 @@
     };
 
     cloudflared = {
-      sopsFile = ../../../secrets/cloudflared.json.enc;
+      sopsFile = ../../../secrets/cloudflared.json;
       format = "binary";
     };
 
