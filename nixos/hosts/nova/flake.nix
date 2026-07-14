@@ -17,6 +17,11 @@
     };
 
     hermes-agent.url = "github:NousResearch/hermes-agent";
+
+    copyparty = {
+      url = "github:9001/copyparty/hovudstraum";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -27,6 +32,7 @@
       disko,
       sops-nix,
       hermes-agent,
+      copyparty,
       dotfiles,
     }:
     {
@@ -42,6 +48,7 @@
           { nixpkgs.overlays = [ dotfiles.overlays.default ]; }
           disko.nixosModules.default
           sops-nix.nixosModules.sops
+          copyparty.nixosModules.default
           ./hardware.nix
           ./disko.nix
           ./configuration.nix

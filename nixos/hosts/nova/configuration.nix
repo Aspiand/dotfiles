@@ -56,6 +56,7 @@
       enable = true;
       trustedInterfaces = [ config.services.tailscale.interfaceName ];
       checkReversePath = "loose"; # tailscale exit node needs loose RP filter
+      allowedTCPPorts = [ 3923 ];
     };
   };
 
@@ -71,6 +72,14 @@
     fsType = "ext4";
     options = [ "nofail" ];
   };
+
+  systemd.mounts = [{
+    what = "/mnt/adata_su650_500/pandora";
+    where = "/mnt/copyparty/pandora";
+    type = "fuse.gocryptfs";
+    options = "allow_other,passfile=${config.sops.secrets."gocryptfs/pandora".path},noauto";
+    wantedBy = [ "multi-user.target" ];
+  }];
 
   users = {
     mutableUsers = false;
@@ -119,6 +128,7 @@
     python3Minimal
     restic
     rustic
+    gocryptfs
     wget
   ];
 
@@ -152,6 +162,30 @@
       enable = true;
       pulse.enable = true;
       wireplumber.enable = true;
+    };
+
+    copyparty = {
+      enable = true;
+      package = pkgs-unstable.copyparty;
+      settings = {
+        i = "0.0.0.0";
+        p = 3923;
+        usernames = true;
+        e2dsa = true;
+        e2ts = true;
+        grid = true;
+      };
+      accounts.as.passwordFile = config.sops.secrets."copyparty/as".path;
+      volumes = {
+        "/corn" = {
+          path = "/mnt/copyparty/pandora";
+          access = { "rwmd." = "as"; };
+        };
+        "/shared" = {
+          path = "/mnt/adata_su650_500/data/shared";
+          access = { "rwmd." = "as"; };
+        };
+      };
     };
 
     # tailscale exit node: GRO forwarding offload avoids checksum bottleneck
@@ -255,6 +289,16 @@
     tsdproxy = {
       sopsFile = ../../../secrets/tsdproxy.env;
       format = "dotenv";
+    };
+
+    "copyparty/as" = {
+      sopsFile = ../../../secrets/hosts/nova.yml;
+      format = "yaml";
+    };
+
+    "gocryptfs/pandora" = {
+      sopsFile = ../../../secrets/hosts/nova.yml;
+      format = "yaml";
     };
 
     cloudflared = {
