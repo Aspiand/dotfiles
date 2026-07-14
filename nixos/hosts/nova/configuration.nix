@@ -283,14 +283,18 @@
     ];
 
     services.immich-server = {
-      unitConfig.ConditionPathIsMountPoint = "/mnt/adata_su650_500";
-      serviceConfig.RequiresMountsFor = "/mnt/adata_su650_500";
+      unitConfig = {
+        ConditionPathIsMountPoint = "/mnt/adata_su650_500";
+        RequiresMountsFor = "/mnt/adata_su650_500";
+      };
       bindsTo = [ "mnt-adata_su650_500.mount" ];
     };
 
     services.immich-machine-learning = {
-      unitConfig.ConditionPathIsMountPoint = "/mnt/adata_su650_500";
-      serviceConfig.RequiresMountsFor = "/mnt/adata_su650_500";
+      unitConfig = {
+        ConditionPathIsMountPoint = "/mnt/adata_su650_500";
+        RequiresMountsFor = "/mnt/adata_su650_500";
+      };
       bindsTo = [ "mnt-adata_su650_500.mount" ];
     };
   };
