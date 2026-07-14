@@ -2,6 +2,7 @@
   config,
   pkgs,
   lib,
+  pkgs-unstable,
   ...
 }:
 
@@ -84,6 +85,10 @@
       #   group = "restic";
       #   isSystemUser = true;
       # };
+      immich.extraGroups = [
+        "video"
+        "render"
+      ];
     };
     # groups.restic = { };
   };
@@ -112,6 +117,7 @@
   ];
 
   hardware.alsa.enablePersistence = true;
+  hardware.graphics.enable = true;
 
   services = {
     "9router" = {
@@ -197,6 +203,28 @@
       };
     */
 
+    postgresql = {
+      enable = true;
+    };
+
+    immich = {
+      enable = true;
+      package = pkgs-unstable.immich;
+      port = 2283;
+      openFirewall = true;
+      accelerationDevices = null; # all devices for HW transcoding
+      redis.enable = true;
+      database.enable = true;
+      machine-learning.enable = true;
+      # mediaLocation = "/var/lib/immich";
+      environment = {
+        IMMICH_LOG_LEVEL = "info";
+        IMMICH_TELEMETRY_INCLUDE = "all";
+      };
+    };
+
+    redis.servers.immich.logLevel = "warning";
+
     victoriametrics.prometheusConfig.scrape_configs = lib.mkAfter [
       {
         job_name = "aira-node-exporter";
@@ -219,11 +247,6 @@
 
     tsdproxy = {
       sopsFile = ../../../secrets/tsdproxy.env;
-      format = "dotenv";
-    };
-
-    immich = {
-      sopsFile = ../../../secrets/immich.env;
       format = "dotenv";
     };
 
@@ -306,42 +329,6 @@
           ];
         };
 
-        # immich-server = {
-        #   image = "ghcr.io/immich-app/immich-server:release";
-        #   autoStart = true;
-        #   pull = "missing";
-        #   ports = [ "2283:2283" ];
-        #   environment = {
-        #     IMMICH_ENV = "production";
-        #     TZ = "Asia/Makassar";
-        #     DB_HOSTNAME = "localhost";
-        #     REDIS_HOSTNAME = "localhost";
-        #   };
-        #   environmentFiles = [ config.sops.secrets.immich.path ];
-        #   volumes = [
-        #     "/var/lib/immich/upload:/usr/src/app/upload"
-        #     "/etc/localtime:/etc/localtime:ro"
-        #   ];
-        # };
-
-        # immich-redis = {
-        #   image = "valkey/valkey:9@sha256:3b55fbaa0cd93cf0d9d961f405e4dfcc70efe325e2d84da207a0a8e6d8fde4f9";
-        #   autoStart = true;
-        #   pull = "missing";
-        # };
-
-        # immich-postgres = {
-        #   image = "ghcr.io/immich-app/postgres:14-vectorchord0.4.3-pgvectors0.2.0@sha256:bcf63357191b76a916ae5eb93464d65c07511da41e3bf7a8416db519b40b1c23";
-        #   autoStart = true;
-        #   pull = "missing";
-        #   environment = {
-        #     POSTGRES_INITDB_ARGS = "--data-checksums";
-        #   };
-        #   environmentFiles = [ config.sops.secrets.immich.path ];
-        #   volumes = [
-        #     "/var/lib/immich/database:/var/lib/postgresql/data"
-        #   ];
-        # };
       };
     };
   };
