@@ -345,10 +345,10 @@
       bindsTo = [ "mnt-adata_su650_500.mount" ];
     };
 
-    copyparty = {
+    services.copyparty = {
       after = [ "mnt-copyparty-pandora.mount" ];
       requires = [ "mnt-copyparty-pandora.mount" ];
-      requiresMountsFor = [ "/mnt/copyparty/pandora" ];
+      unitConfig.RequiresMountsFor = [ "/mnt/copyparty/pandora" ];
     };
   };
 
