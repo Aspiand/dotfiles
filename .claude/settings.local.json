@@ -14,7 +14,8 @@
       "mcp__plugin_claude-code-home-manager_codegraph__codegraph_files",
       "mcp__plugin_claude-code-home-manager_deepwiki__read_wiki_structure",
       "mcp__plugin_claude-code-home-manager_deepwiki__read_wiki_contents",
-      "mcp__plugin_claude-code-home-manager_deepwiki__ask_question"
+      "mcp__plugin_claude-code-home-manager_deepwiki__ask_question",
+      "mcp__plugin_claude-code-home-manager_fetch__fetch"
     ]
   }
 }

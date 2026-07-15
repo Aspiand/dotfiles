@@ -2,7 +2,6 @@
 
 {
   programs.claude-code = {
-    enable = true;
     enableMcpIntegration = true;
     configDir = "${config.xdg.configHome}/claude";
 
