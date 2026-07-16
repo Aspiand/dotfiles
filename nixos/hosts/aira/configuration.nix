@@ -20,9 +20,6 @@
       openldap = prev.openldap.overrideAttrs (old: {
         doCheck = false;
       });
-      gnome-control-center = prev.gnome-control-center.overrideAttrs (old: {
-        doCheck = false;
-      });
     })
   ];
 
@@ -44,7 +41,7 @@
   };
 
   boot = {
-    kernelPackages = pkgs.linuxPackages_zen;
+    kernelPackages = pkgs.linuxPackages_7_0; # pkgs.linuxPackages_zen;
     tmp.useTmpfs = false;
     binfmt.emulatedSystems = [ "aarch64-linux" ];
 
