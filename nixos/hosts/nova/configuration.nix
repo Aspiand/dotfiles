@@ -205,50 +205,6 @@
       };
     };
 
-    /*
-      restic.backups.nova = {
-        initialize = true;
-        user = "restic";
-        package = pkgs.writeShellScriptBin "restic" ''
-          exec /run/wrappers/bin/restic "$@"
-        '';
-        repositoryFile = config.sops.secrets."restic/env".path;
-        passwordFile = config.sops.secrets."restic/password".path;
-        environmentFile = config.sops.secrets."restic/env".path;
-        paths = [
-          "/var"
-          "/etc"
-          "/home"
-        ];
-        pruneOpts = [
-          "--keep-daily 14"
-          "--keep-weekly 8"
-          "--keep-monthly 24"
-          "--keep-yearly 4"
-        ];
-        timerConfig = {
-          OnCalendar = "*-*-* 0/2:00:00";
-          Persistent = true;
-        };
-
-        # extraBackupArgs = [ "--one-file-system" ];
-
-        serviceConfig = {
-          ProtectSystem = "strict";
-        };
-      };
-
-      prometheus.exporters.restic = {
-        enable = true;
-        repositoryFile = config.sops.secrets."restic/env".path;
-        environmentFile = config.sops.secrets."restic/env".path;
-        passwordFile = config.sops.secrets."restic/password".path;
-        listenAddress = "127.0.0.1";
-        port = 9753;
-        openFirewall = false;
-      };
-    */
-
     postgresql = {
       enable = true;
     };
@@ -284,6 +240,46 @@
         ];
       }
     ];
+
+    rustic = {
+      enable = true;
+      prometheus.enable = true;
+      backups.services = {
+        enable = true;
+        sources = [
+          "/var/lib/9router"
+          "/var/lib/hermes"
+          "/var/lib/tsdproxy"
+        ];
+        environmentFile = config.sops.secrets."rustic/services".path;
+        settings = {
+          global.check-index = true;
+          backup.skip-if-unchanged = true;
+          backup."exclude-if-present" = [ ".nobackup" ];
+          forget."keep-daily" = 14;
+          forget."keep-weekly" = 8;
+          forget."keep-monthly" = 24;
+        };
+      };
+      backups.media = {
+        enable = true;
+        environmentFile = config.sops.secrets."rustic/media".path;
+        settings = {
+          backup = {
+            skip-if-unchanged = true;
+            exclude-if-present = [ ".nobackup" ];
+            globs = [
+              "!encoded-video"
+              "!thumbs"
+              # "!backups"
+            ];
+          };
+          forget."keep-daily" = 14;
+          forget."keep-weekly" = 8;
+          forget."keep-monthly" = 24;
+        };
+      };
+    };
   };
 
   sops.secrets = {
@@ -317,54 +313,16 @@
 
     "rustic/services" = {
       sopsFile = ../../../secrets/rustic.yml;
-      format = "dotenv";
+      format = "yaml";
+      key = "services";
       mode = "0400";
     };
 
     "rustic/media" = {
       sopsFile = ../../../secrets/rustic.yml;
-      format = "dotenv";
+      format = "yaml";
+      key = "media";
       mode = "0400";
-    };
-  };
-
-  services.rustic = {
-    enable = true;
-    prometheus.enable = true;
-    backups.services = {
-      enable = true;
-      sources = [
-        "/var/lib/9router"
-        "/var/lib/hermes"
-        "/var/lib/tsdproxy"
-      ];
-      environmentFile = config.sops.secrets."rustic/services".path;
-      settings = {
-        global.check-index = true;
-        backup.skip-if-unchanged = true;
-        backup."exclude-if-present" = [ ".nobackup" ];
-        forget."keep-daily" = 14;
-        forget."keep-weekly" = 8;
-        forget."keep-monthly" = 24;
-      };
-    };
-    backups.media = {
-      enable = true;
-      environmentFile = config.sops.secrets."rustic/media".path;
-      settings = {
-        backup = {
-          skip-if-unchanged = true;
-          exclude-if-present = [ ".nobackup" ];
-          globs = [
-            "!encoded-video"
-            "!thumbs"
-            # "!backups"
-          ];
-        };
-        forget."keep-daily" = 14;
-        forget."keep-weekly" = 8;
-        forget."keep-monthly" = 24;
-      };
     };
   };
 
