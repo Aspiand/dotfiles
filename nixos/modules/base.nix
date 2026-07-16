@@ -6,17 +6,6 @@
       inherit (lib) mkDefault;
     in
     {
-      sops.secrets.env = {
-        sopsFile = ../../secrets/common.yml;
-        mode = "0440";
-        owner = "root";
-        group = "users";
-      };
-
-      environment.extraInit = ''
-        . /run/secrets/env
-      '';
-
       time.timeZone = mkDefault "Asia/Makassar";
       nixpkgs.config.allowUnfree = true;
 
