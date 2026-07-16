@@ -158,10 +158,13 @@
               Type = "oneshot";
               ExecStart = "${rusticBin} backup -P ${name}${promFlag}";
               EnvironmentFile = lib.mkIf (p.environmentFile != null) [ p.environmentFile ];
-              Environment = [ "RUSTIC_CONFIG_DIR=/etc/rustic" ];
+              Environment = [ "RUSTIC_CONFIG_DIR=/etc/rustic" "RUSTIC_CACHE_DIR=/var/cache/rustic" ];
+              ReadOnlyPaths = p.sources;
+              ReadWritePaths = [ "/var/cache/rustic" ];
+              CacheDirectory = "rustic";
               NoNewPrivileges = true;
-              CapabilityBoundingSet = [ "" ];
-              AmbientCapabilities = [ "" ];
+              CapabilityBoundingSet = [ "CAP_DAC_READ_SEARCH" ];
+              AmbientCapabilities = [ "CAP_DAC_READ_SEARCH" ];
               ProtectSystem = "strict";
               ProtectHome = true;
               PrivateDevices = true;

@@ -246,6 +246,10 @@
       prometheus.enable = true;
       backups.services = {
         enable = true;
+        timerConfig = {
+          OnCalendar = "*:00:00";
+          Persistent = true;
+        };
         sources = [
           "/var/lib/9router"
           "/var/lib/hermes"
@@ -263,6 +267,10 @@
       };
       backups.media = {
         enable = true;
+        timerConfig = {
+          OnCalendar = "*:30:00";
+          Persistent = true;
+        };
         environmentFile = config.sops.secrets."rustic/media".path;
         settings = {
           backup = {
