@@ -16,7 +16,7 @@
     fetch.command = "${pkgs.mcp-server-fetch}/bin/mcp-server-fetch";
     searxng = {
       command = "${pkgs.mcp-searxng}/bin/mcp-searxng";
-      env.SEARXNG_URL = "https://searxng.nova.astrapia-kokanue.ts.net";
+      env.SEARXNG_URL = "https://searxng.astrapia-kokanue.ts.net";
     };
   };
 }
