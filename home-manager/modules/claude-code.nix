@@ -6,6 +6,7 @@
     configDir = "${config.xdg.configHome}/claude";
 
     settings = {
+      agentDefaultModel = "oc/deepseek-v4-flash-free";
       model = "oc/deepseek-v4-flash-free";
       permissions = {
         allow = [
