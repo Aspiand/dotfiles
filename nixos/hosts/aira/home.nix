@@ -34,8 +34,7 @@ in
     };
 
     packages =
-      with pkgs;
-      [
+      (with pkgs; [
         # Desktop
         # authenticator
         # bitwarden-desktop
@@ -134,6 +133,9 @@ in
         codegraph
         mcp-nixos
         mempalace
+      ])
+      ++ [
+        inputs.hermes-agent.packages.${pkgs.system}.desktop
       ]
       ++ (with gnomeExtensions; [
         blur-my-shell
