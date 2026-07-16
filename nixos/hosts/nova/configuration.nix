@@ -73,13 +73,15 @@
     options = [ "nofail" ];
   };
 
-  systemd.mounts = [{
-    what = "/mnt/adata_su650_500/pandora";
-    where = "/mnt/copyparty/pandora";
-    type = "fuse.gocryptfs";
-    options = "allow_other,passfile=${config.sops.secrets."gocryptfs/pandora".path},noauto";
-    wantedBy = [ "multi-user.target" ];
-  }];
+  systemd.mounts = [
+    {
+      what = "/mnt/adata_su650_500/pandora";
+      where = "/mnt/copyparty/pandora";
+      type = "fuse.gocryptfs";
+      options = "allow_other,passfile=${config.sops.secrets."gocryptfs/pandora".path},noauto";
+      wantedBy = [ "multi-user.target" ];
+    }
+  ];
 
   users = {
     mutableUsers = false;
@@ -179,11 +181,15 @@
       volumes = {
         "/corn" = {
           path = "/mnt/copyparty/pandora";
-          access = { "rwmd." = "as"; };
+          access = {
+            "rwmd." = "as";
+          };
         };
         "/shared" = {
           path = "/mnt/adata_su650_500/data/shared";
-          access = { "rwmd." = "as"; };
+          access = {
+            "rwmd." = "as";
+          };
         };
       };
     };
@@ -309,18 +315,57 @@
       format = "binary";
     };
 
-    /*
-      "restic/password" = {
-        owner = "restic";
-        group = "restic";
-        mode = "0400";
+    "rustic/services" = {
+      sopsFile = ../../../secrets/rustic.yml;
+      format = "dotenv";
+      mode = "0400";
+    };
+
+    "rustic/media" = {
+      sopsFile = ../../../secrets/rustic.yml;
+      format = "dotenv";
+      mode = "0400";
+    };
+  };
+
+  services.rustic = {
+    enable = true;
+    prometheus.enable = true;
+    backups.services = {
+      enable = true;
+      sources = [
+        "/var/lib/9router"
+        "/var/lib/hermes"
+        "/var/lib/tsdproxy"
+      ];
+      environmentFile = config.sops.secrets."rustic/services".path;
+      settings = {
+        global.check-index = true;
+        backup.skip-if-unchanged = true;
+        backup."exclude-if-present" = [ ".nobackup" ];
+        forget."keep-daily" = 14;
+        forget."keep-weekly" = 8;
+        forget."keep-monthly" = 24;
       };
-      "restic/env" = {
-        owner = "restic";
-        group = "restic";
-        mode = "0400";
+    };
+    backups.media = {
+      enable = true;
+      environmentFile = config.sops.secrets."rustic/media".path;
+      settings = {
+        backup = {
+          skip-if-unchanged = true;
+          exclude-if-present = [ ".nobackup" ];
+          globs = [
+            "!encoded-video"
+            "!thumbs"
+            # "!backups"
+          ];
+        };
+        forget."keep-daily" = 14;
+        forget."keep-weekly" = 8;
+        forget."keep-monthly" = 24;
       };
-    */
+    };
   };
 
   systemd = {
