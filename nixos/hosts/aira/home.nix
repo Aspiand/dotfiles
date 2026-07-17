@@ -133,8 +133,9 @@ in
         codegraph
         mcp-nixos
         mempalace
-        inputs.hermes-agent.packages.${pkgs.system}.desktop
-      ++ (with gnomeExtensions; [
+        # inputs.hermes-agent.packages.${pkgs.system}.desktop
+      ])
+      ++ (with pkgs.gnomeExtensions; [
         blur-my-shell
         clipboard-indicator
         # kando-integration
@@ -144,7 +145,7 @@ in
         appindicator
         system-monitor
       ])
-      ++ (with nerd-fonts; [
+      ++ (with pkgs.nerd-fonts; [
         _0xproto
         caskaydia-cove
       ]);

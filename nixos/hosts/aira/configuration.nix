@@ -16,11 +16,21 @@
 
   # TODO: remove later
   nixpkgs.overlays = [
-    (final: prev: {
-      openldap = prev.openldap.overrideAttrs (old: {
-        doCheck = false;
-      });
-    })
+    # (final: prev: {
+    #   openldap = prev.openldap.overrideAttrs (old: {
+    #     doCheck = false;
+    #   });
+    #   # python3Packages = prev.python3Packages.overrideScope (pfinal: pprev: {
+    #   #   pandas-stubs = pprev.pandas-stubs.overrideAttrs (old: {
+    #   #     doCheck = false;
+    #   #   });
+    #   # });
+    #   # python314Packages = prev.python314Packages.overrideScope (pfinal: pprev: {
+    #   #   pandas-stubs = pprev.pandas-stubs.overrideAttrs (old: {
+    #   #     doCheck = false;
+    #   #   });
+    #   # });
+    # })
   ];
 
   nixpkgs.config.permittedInsecurePackages = [
@@ -41,7 +51,7 @@
   };
 
   boot = {
-    kernelPackages = pkgs.linuxPackages_7_0; # pkgs.linuxPackages_zen;
+    kernelPackages = pkgs.linuxPackages_zen;
     tmp.useTmpfs = false;
     binfmt.emulatedSystems = [ "aarch64-linux" ];
 
