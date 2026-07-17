@@ -168,7 +168,7 @@
               ProtectSystem = "strict";
               ProtectHome = true;
               PrivateDevices = true;
-              PrivateTmp = true;
+              PrivateTmp = false;
               ProtectKernelTunables = true;
               ProtectKernelModules = true;
               ProtectControlGroups = true;
