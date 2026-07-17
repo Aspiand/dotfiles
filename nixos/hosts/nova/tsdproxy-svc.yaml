@@ -1,7 +1,5 @@
 grafana:
   proxyProvider: default
-  tailscale:
-    ephemeral: true
   ports:
     443/https:
       targets:
@@ -12,8 +10,6 @@ grafana:
 
 victoriametrics:
   proxyProvider: default
-  tailscale:
-    ephemeral: true
   ports:
     443/https:
       targets:
@@ -24,8 +20,6 @@ victoriametrics:
 
 victorialogs:
   proxyProvider: default
-  tailscale:
-    ephemeral: true
   ports:
     443/https:
       targets:
@@ -36,8 +30,6 @@ victorialogs:
 
 searxng:
   proxyProvider: default
-  tailscale:
-    ephemeral: true
   ports:
     443/https:
       targets:
@@ -48,8 +40,6 @@ searxng:
 
 9router:
   proxyProvider: default
-  tailscale:
-    ephemeral: true
   ports:
     443/https:
       targets:
@@ -59,8 +49,6 @@ searxng:
 
 hermes:
   proxyProvider: default
-  tailscale:
-    ephemeral: true
   ports:
     443/https:
       targets:
@@ -71,8 +59,6 @@ hermes:
 
 immich:
   proxyProvider: default
-  tailscale:
-    ephemeral: true
     hostname: gallery
   ports:
     443/https:
