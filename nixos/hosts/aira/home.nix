@@ -133,10 +133,7 @@ in
         codegraph
         mcp-nixos
         mempalace
-      ])
-      ++ [
         inputs.hermes-agent.packages.${pkgs.system}.desktop
-      ]
       ++ (with gnomeExtensions; [
         blur-my-shell
         clipboard-indicator
