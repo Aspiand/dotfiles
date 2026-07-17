@@ -279,11 +279,14 @@
       };
       backups.media = {
         enable = true;
+        environmentFile = config.sops.secrets."rustic/media".path;
         timerConfig = {
           OnCalendar = "*:30:00";
           Persistent = true;
         };
-        environmentFile = config.sops.secrets."rustic/media".path;
+        sources = [
+          "/mnt/adata_su650_500/data/immich"
+        ];
         settings = {
           backup = {
             skip-if-unchanged = true;
