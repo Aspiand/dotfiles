@@ -59,7 +59,7 @@ hermes:
 
 immich:
   proxyProvider: default
-    hostname: gallery
+  hostname: gallery
   ports:
     443/https:
       targets:
