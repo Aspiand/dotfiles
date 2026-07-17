@@ -132,6 +132,18 @@
     rustic
     gocryptfs
     wget
+    (writeShellScriptBin "rustic-services" ''
+      set -a
+      source <(sudo cat ${config.sops.secrets."rustic/services".path})
+      set +a
+      exec rustic "$@"
+    '')
+    (writeShellScriptBin "rustic-media" ''
+      set -a
+      source <(sudo cat ${config.sops.secrets."rustic/media".path})
+      set +a
+      exec rustic "$@"
+    '')
   ];
 
   hardware.alsa.enablePersistence = true;
