@@ -253,6 +253,14 @@
       }
     ];
 
+    swapspace = {
+      enable = true;
+      settings = {
+        min_swapsize = "100m";
+        max_swapsize = "1g";
+      };
+    };
+
     rustic = {
       enable = true;
       prometheus.enable = true;
