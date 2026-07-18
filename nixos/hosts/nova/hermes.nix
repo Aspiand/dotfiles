@@ -249,6 +249,11 @@
         args = [ ];
       };
 
+      fetch = {
+        command = "${pkgs.mcp-server-fetch}/bin/mcp-server-fetch";
+        args = [ ];
+      };
+
       nixos = {
         command = "mcp-nixos";
         args = [ ];
@@ -340,6 +345,7 @@
       bun
 
       # MCP servers
+      mcp-server-fetch
       mcp-nixos
       markitdown-mcp
       # context7-mcp
