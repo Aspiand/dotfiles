@@ -226,6 +226,7 @@
       web = {
         # search_backend = "ddgs";
         search_backend = "searxng";
+        extract_backend = "firecrawl";
         searxng_url = "http://127.0.0.1:8888";
       };
 
