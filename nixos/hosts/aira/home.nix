@@ -133,7 +133,7 @@ in
         codegraph
         mcp-nixos
         mempalace
-        # inputs.hermes-agent.packages.${pkgs.system}.desktop
+        inputs.hermes-agent.packages.${pkgs.system}.desktop
       ])
       ++ (with pkgs.gnomeExtensions; [
         blur-my-shell
@@ -222,17 +222,18 @@ in
     };
   };
 
-  # xdg.configFile."autostart/kando.desktop".text = ''
-  #   [Desktop Entry]
-  #   Type=Application
-  #   Version=1.0
-  #   Name=Kando
-  #   Comment=Start Kando on login
-  #   Exec=${lib.getExe pkgs.kando}
-  #   TryExec=${lib.getExe pkgs.kando}
-  #   Terminal=false
-  #   X-GNOME-Autostart-enabled=true
-  # '';
+  xdg.dataFile."applications/hermes.desktop".text = ''
+    [Desktop Entry]
+    Type=Application
+    Version=1.0
+    Name=Hermes
+    Comment=Hermes AI desktop client
+    Exec=${lib.getExe inputs.hermes-agent.packages.${pkgs.system}.desktop}
+    TryExec=${lib.getExe inputs.hermes-agent.packages.${pkgs.system}.desktop}
+    Icon=${inputs.hermes-agent.packages.${pkgs.system}.desktop}/share/hermes-desktop/dist/hermes.png
+    Terminal=false
+    Categories=Utility;
+  '';
 
   services = {
     kdeconnect = {
