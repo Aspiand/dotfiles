@@ -66,3 +66,10 @@ immich:
         - http://127.0.0.1:2283
   dashboard:
     label: Immich
+
+couchdb:
+  proxyProvider: default
+  ports:
+    443/https:
+      targets:
+        - http://127.0.0.1:5984

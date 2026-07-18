@@ -154,12 +154,46 @@
       enable = true;
     };
 
+    couchdb = {
+      enable = true;
+      bindAddress = "127.0.0.1";
+      extraConfigFiles = [ config.sops.secrets.couchdb.path ];
+      extraConfig = {
+        httpd = {
+          WWW-Authenticate = ''Basic realm="couchdb"'';
+          enable_cors = true;
+        };
+        chttpd = {
+          require_valid_user = true;
+          enable_cors = true;
+          max_http_request_size = "4294967296";
+        };
+        chttpd_auth.require_valid_user = true;
+        couchdb.max_document_size = "50000000";
+        cors = {
+          credentials = true;
+          origins = "app://obsidian.md,capacitor://localhost,http://localhost";
+        };
+      };
+    };
+
+    logrotate = {
+      enable = true;
+      settings."${config.services.couchdb.logFile}" = {
+        rotate = 4;
+        size = "100M";
+        compress = true;
+        postrotate = "systemctl kill -s HUP couchdb.service";
+      };
+    };
+
     cloudflared = {
       enable = true;
       tunnels."50687d84-87ea-4d7c-a635-548cb7dec14c" = {
         credentialsFile = config.sops.secrets.cloudflared.path;
         ingress = {
           "gallery.aspian.my.id" = "http://localhost:2283";
+          "couchdb.aspian.my.id" = "http://localhost:5984";
         };
         default = "http_status:404";
       };
@@ -335,6 +369,11 @@
     "gocryptfs/pandora" = {
       sopsFile = ../../../secrets/hosts/nova.yml;
       format = "yaml";
+    };
+
+    couchdb = {
+      sopsFile = ../../../secrets/couchdb.ini;
+      format = "ini";
     };
 
     cloudflared = {
