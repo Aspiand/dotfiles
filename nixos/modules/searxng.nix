@@ -9,7 +9,7 @@
       config = mkDefaults {
         services.searx = {
           enable = true;
-          redisCreateLocally = true;
+          redisCreateLocally = false;
 
           limiterSettings = {
             real_ip = {
@@ -25,7 +25,7 @@
               bind_address = "127.0.0.1";
               port = 8888;
               secret_key = "@SEARXNG_SECRET@";
-              limiter = true;
+              limiter = false;
             };
 
             search = {
