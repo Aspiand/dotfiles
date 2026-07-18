@@ -133,7 +133,7 @@ in
         codegraph
         mcp-nixos
         mempalace
-        inputs.hermes-agent.packages.${pkgs.system}.desktop
+        inputs.hermes-agent.packages.${pkgs.stdenv.hostPlatform.system}.desktop
       ])
       ++ (with pkgs.gnomeExtensions; [
         blur-my-shell
@@ -228,9 +228,9 @@ in
     Version=1.0
     Name=Hermes
     Comment=Hermes AI desktop client
-    Exec=${lib.getExe inputs.hermes-agent.packages.${pkgs.system}.desktop}
-    TryExec=${lib.getExe inputs.hermes-agent.packages.${pkgs.system}.desktop}
-    Icon=${inputs.hermes-agent.packages.${pkgs.system}.desktop}/share/hermes-desktop/dist/hermes.png
+    Exec=${lib.getExe inputs.hermes-agent.packages.${pkgs.stdenv.hostPlatform.system}.desktop}
+    TryExec=${lib.getExe inputs.hermes-agent.packages.${pkgs.stdenv.hostPlatform.system}.desktop}
+    Icon=${inputs.hermes-agent.packages.${pkgs.stdenv.hostPlatform.system}.desktop}/share/hermes-desktop/dist/hermes.png
     Terminal=false
     Categories=Utility;
   '';

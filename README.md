@@ -35,7 +35,7 @@ Or individually:
 
 ```nix
 {
-  home.packages = [ inputs.dotfiles.packages.${pkgs.system}.codegraph ];
+  home.packages = [ inputs.dotfiles.packages.${pkgs.stdenv.hostPlatform.system}.codegraph ];
 }
 ```
 

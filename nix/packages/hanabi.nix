@@ -30,13 +30,13 @@ let
       in
       stdenv.mkDerivation rec {
         pname = "gnome-ext-hanabi";
-        version = "unstable-2026-06-07";
+        version = "unstable-2026-06-16";
 
         src = pkgs.fetchFromGitHub {
           owner = "jeffshee";
           repo = "gnome-ext-hanabi";
-          rev = "1ba3be9474555a1298fa5067e1f9d4fbe3901fbb";
-          hash = "sha256-/pLLg0J9QanaUjQl0iP6u0CxAeEDweTJYREs1XuhAsQ=";
+          rev = "1b2ba5938a536d208bed8a85eb2fb113537c6f02";
+          hash = "sha256-1I4mB6rJ7XBD+blBFsWcqGUPRXl2wFP/nT3ptV96JLY=";
         };
 
         nativeBuildInputs = [
