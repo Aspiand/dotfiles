@@ -374,6 +374,9 @@
     couchdb = {
       sopsFile = ../../../secrets/couchdb.ini;
       format = "ini";
+      owner = "couchdb";
+      group = "couchdb";
+      mode = "0400";
     };
 
     cloudflared = {
