@@ -374,7 +374,12 @@
     # restartSec = 5;
   };
 
-  users.users.hermes.extraGroups = [ "docker" ];
+  users.users.hermes = {
+    extraGroups = [ "docker" ];
+    openssh.authorizedKeys.keys = [
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDofwi7RvZGROLm/bm99T8xB6Tw9jg442wOi1TFudDwb ao@aira"
+    ];
+  };
 
   systemd.services.hermes-dashboard = {
     description = "Hermes Dashboard Web UI";
