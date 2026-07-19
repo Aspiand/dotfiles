@@ -14,6 +14,15 @@
           "Bash(nix eval *)"
           "Read"
           "WebSearch"
+          "mcp__plugin_claude-code-home-manager_codegraph__codegraph_explore"
+          "mcp__plugin_claude-code-home-manager_codegraph__codegraph_files"
+          "mcp__plugin_claude-code-home-manager_nixos__nix"
+          "mcp__plugin_claude-code-home-manager_deepwiki__read_wiki_structure"
+          "mcp__plugin_claude-code-home-manager_deepwiki__read_wiki_contents"
+          "mcp__plugin_claude-code-home-manager_deepwiki__ask_question"
+          "mcp__plugin_claude-code-home-manager_fetch__fetch"
+          "mcp__plugin_mempalace_mempalace__mempalace_status"
+          "mcp__plugin_mempalace_mempalace__mempalace_list_rooms"
         ];
         defaultMode = "default";
       };
