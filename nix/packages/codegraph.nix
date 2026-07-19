@@ -5,16 +5,16 @@ let
     pkgs:
     pkgs.buildNpmPackage rec {
       pname = "codegraph";
-      version = "0.9.9";
+      version = "1.4.1";
 
       src = pkgs.fetchFromGitHub {
         owner = "colbymchenry";
         repo = "codegraph";
-        rev = "v0.9.9";
-        hash = "sha256-Oy0WpllYQDmKpVhf+xI3Y18s+0x2bzkN8DDgTOJf4B4=";
+        rev = "v1.4.1";
+        hash = "sha256-bZtzBHLbqFqY7vxWqxqKFbBtOZRnTMO/loXcVGPkwgc=";
       };
 
-      npmDepsHash = "sha256-PnD1POY39S/qaS4fOwJyYnRsCxbJ9pm49yVVAGlGt/E=";
+      npmDepsHash = "sha256-HVd/0c0i0g+TjPE7hCXe2GPgbTwMb3nBoepTa3Dbkvo=";
 
       nativeBuildInputs = with pkgs; [
         python3
