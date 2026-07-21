@@ -72,6 +72,7 @@
         baseRef = "fresh";
       };
       enabledPlugins = {
+        "impeccable@impeccable" = true;
         "agent-skills@addy-agent-skills" = true;
         "context7@claude-plugins-official" = true;
         "ponytail@ponytail" = true;
@@ -79,6 +80,12 @@
         "understand-anything@understand-anything" = true;
       };
       extraKnownMarketplaces = {
+        impeccable = {
+          source = {
+            source = "github";
+            repo = "pbakaus/impeccable";
+          };
+        };
         ponytail = {
           source = {
             source = "github";
