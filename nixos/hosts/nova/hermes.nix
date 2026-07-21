@@ -18,6 +18,10 @@
     ];
 
     environment = {
+      HERMES_DASHBOARD = "1";
+      HERMES_DASHBOARD_HOST = "0.0.0.0";
+      HERMES_DASHBOARD_PORT = "9119";
+
       SEARXNG_URL = "http://${config.services.searx.settings.server.bind_address or "127.0.0.1"}:${
         toString (config.services.searx.settings.server.port or 8888)
       }";
@@ -379,30 +383,6 @@
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDofwi7RvZGROLm/bm99T8xB6Tw9jg442wOi1TFudDwb ao@aira"
     ];
-  };
-
-  systemd.services.hermes-dashboard = {
-    description = "Hermes Dashboard Web UI";
-    after = [
-      "network-online.target"
-      "docker.service"
-    ];
-    wants = [ "network-online.target" ];
-    requires = [ "docker.service" ];
-    wantedBy = [ "multi-user.target" ];
-
-    environment.HERMES_HOME = "/var/lib/hermes/.hermes";
-
-    path = [ pkgs.docker ];
-
-    serviceConfig = {
-      User = "hermes";
-      Group = "hermes";
-      SupplementaryGroups = [ "docker" ];
-      ExecStart = "${config.services.hermes-agent.package}/bin/hermes dashboard --host 0.0.0.0 --port 9119 --no-open";
-      Restart = "always";
-      RestartSec = 10;
-    };
   };
 
   security.sudo.extraRules = lib.mkIf config.services.hermes-agent.enable [
