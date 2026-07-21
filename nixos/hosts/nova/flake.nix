@@ -67,6 +67,7 @@
           dotfiles.nixosModules.victoriametrics
           dotfiles.nixosModules.victorialogs
           dotfiles.nixosModules.node-exporter
+          dotfiles.nixosModules.process-exporter
         ];
       };
     };

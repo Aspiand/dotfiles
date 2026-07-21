@@ -37,6 +37,22 @@
                 ];
               }
             ]
+            ++ lib.optionals (config.services.prometheus.exporters.process.enable or false) [
+              {
+                job_name = "process-exporter";
+                scrape_interval = "60s";
+                static_configs = [
+                  {
+                    targets = [
+                      "${config.services.prometheus.exporters.process.listenAddress}:${toString config.services.prometheus.exporters.process.port}"
+                    ];
+                    labels = {
+                      instance = config.networking.hostName or "localhost";
+                    };
+                  }
+                ];
+              }
+            ]
             ++ lib.optionals (config.services.prometheus.exporters.node.enable or false) [
               {
                 job_name = "node-exporter";
