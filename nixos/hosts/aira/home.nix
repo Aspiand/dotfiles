@@ -62,19 +62,19 @@ in
         # android-tools
         # ansible
         # bitwarden-cli
-        codex
+        # codex
         copyparty-most
         delta
         # distrobox
         # gallery-dl
-        gemini-cli
+        # gemini-cli
         gh
         # gnumake
         # gocryptfs
         # hugo
         # immich-go
         # kando
-        lazydocker
+        # lazydocker
         nmap
         nvtopPackages.intel
         restic
