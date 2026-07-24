@@ -1,8 +1,21 @@
 { ... }: {
   flake.customModules.rustic =
-    { config, lib, pkgs, ... }:
+    {
+      config,
+      lib,
+      pkgs,
+      ...
+    }:
     let
-      inherit (lib) mkIf mkEnableOption mkOption filterAttrs mapAttrs' nameValuePair types;
+      inherit (lib)
+        mkIf
+        mkEnableOption
+        mkOption
+        filterAttrs
+        mapAttrs'
+        nameValuePair
+        types
+        ;
 
       format = pkgs.formats.toml { };
 
@@ -11,29 +24,38 @@
       # Merge profile options into a TOML attrset.
       # `snapshot` key from settings → injected into `backup.snapshots` (array of tables).
       # `label` and `sources` come from profile options, not from settings.
-      genProfileConfig = name: p:
+      genProfileConfig =
+        name: p:
         let
           label = if p.label == null then name else p.label;
           baseCfg = builtins.removeAttrs p.settings [ "snapshot" ];
           snapEntry = {
             inherit label;
             sources = p.sources;
-          } // (builtins.removeAttrs (p.settings.snapshot or { }) [ "label" "sources" ]);
+          }
+          // (builtins.removeAttrs (p.settings.snapshot or { }) [
+            "label"
+            "sources"
+          ]);
         in
-        baseCfg // {
+        baseCfg
+        // {
           backup = (baseCfg.backup or { }) // {
             snapshots = [ snapEntry ];
           };
         };
 
       # Resolve timer config: null → global default, {} → disabled, else → override.
-      effectiveTimerConfig = p:
-        if p.timerConfig == null then cfg.timerConfig
-        else if p.timerConfig == { } then null
-        else p.timerConfig;
+      effectiveTimerConfig =
+        p:
+        if p.timerConfig == null then
+          cfg.timerConfig
+        else if p.timerConfig == { } then
+          null
+        else
+          p.timerConfig;
 
       rusticBin = "${cfg.package}/bin/rustic";
-      promFlag = if cfg.prometheus.enable then " --prometheus ${lib.escapeShellArg cfg.prometheus.address}" else "";
     in
     {
       options.services.rustic = {
@@ -52,6 +74,16 @@
             type = types.str;
             default = "http://127.0.0.1:8428/api/v1/import/prometheus";
             description = "Prometheus remote write URL (VictoriaMetrics endpoint).";
+          };
+          user = mkOption {
+            type = types.nullOr types.str;
+            default = null;
+            description = "Basic auth user for Prometheus Pushgateway (env RUSTIC_PROMETHEUS_USER).";
+          };
+          passwordFile = mkOption {
+            type = types.nullOr types.path;
+            default = null;
+            description = "File containing basic auth password for Prometheus Pushgateway (env RUSTIC_PROMETHEUS_PASS).";
           };
         };
 
@@ -72,66 +104,72 @@
         };
 
         backups = mkOption {
-          type = types.attrsOf (types.submodule ({ name, ... }: {
-            options = {
-              enable = mkEnableOption "this backup profile";
+          type = types.attrsOf (
+            types.submodule (
+              { name, ... }: {
+                options = {
+                  enable = mkEnableOption "this backup profile";
 
-              label = mkOption {
-                type = types.nullOr types.str;
-                default = null;
-                example = "services";
-                description = "Snapshot label. Falls back to profile attribute name.";
-              };
+                  label = mkOption {
+                    type = types.nullOr types.str;
+                    default = null;
+                    example = "services";
+                    description = "Snapshot label. Falls back to profile attribute name.";
+                  };
 
-              sources = mkOption {
-                type = types.listOf types.path;
-                example = [ "/var/lib/9router" ];
-                description = "Paths to back up.";
-              };
+                  sources = mkOption {
+                    type = types.listOf types.path;
+                    example = [ "/var/lib/9router" ];
+                    description = "Paths to back up.";
+                  };
 
-              environmentFile = mkOption {
-                type = types.nullOr types.path;
-                default = null;
-                description = ''
-                  Path to environment file with RUSTIC_REPOSITORY, RUSTIC_PASSWORD,
-                  RUSTIC_REPOSITORY_OPTIONS_*. Usually a sops-decrypted dotenv file.
-                '';
-              };
+                  environmentFile = mkOption {
+                    type = types.nullOr types.path;
+                    default = null;
+                    description = ''
+                      Path to environment file with RUSTIC_REPOSITORY, RUSTIC_PASSWORD,
+                      RUSTIC_REPOSITORY_OPTIONS_*. Usually a sops-decrypted dotenv file.
+                    '';
+                  };
 
-              timerConfig = mkOption {
-                type = types.nullOr (types.attrsOf types.anything);
-                default = null;
-                example = {
-                  OnCalendar = "0/12:00:00";
-                  Persistent = true;
+                  timerConfig = mkOption {
+                    type = types.nullOr (types.attrsOf types.anything);
+                    default = null;
+                    example = {
+                      OnCalendar = "0/12:00:00";
+                      Persistent = true;
+                    };
+                    description = ''
+                      Override default timer config for this profile.
+                      null = inherit global default, {} = disable timer.
+                    '';
+                  };
+
+                  # Free-form rustic TOML — each top-level key becomes a [section].
+                  # Use `snapshot = { ... }` for [[snapshot]] entries; sources auto-injected.
+                  settings = mkOption {
+                    type = types.attrsOf types.anything;
+                    default = { };
+                    example = {
+                      global.check-index = true;
+                      backup.skip-if-unchanged = true;
+                      backup."exclude-if-present" = [ ".nobackup" ];
+                      forget."keep-daily" = 14;
+                      forget."keep-weekly" = 8;
+                      forget."keep-monthly" = 24;
+                      snapshot = {
+                        label = "services";
+                      };
+                    };
+                    description = ''
+                      Full rustic TOML config. Each top-level attr = TOML section.
+                      Use `snapshot` for [[snapshot]] entries (sources auto-injected).
+                    '';
+                  };
                 };
-                description = ''
-                  Override default timer config for this profile.
-                  null = inherit global default, {} = disable timer.
-                '';
-              };
-
-              # Free-form rustic TOML — each top-level key becomes a [section].
-              # Use `snapshot = { ... }` for [[snapshot]] entries; sources auto-injected.
-              settings = mkOption {
-                type = types.attrsOf types.anything;
-                default = { };
-                example = {
-                  global.check-index = true;
-                  backup.skip-if-unchanged = true;
-                  backup."exclude-if-present" = [ ".nobackup" ];
-                  forget."keep-daily" = 14;
-                  forget."keep-weekly" = 8;
-                  forget."keep-monthly" = 24;
-                  snapshot = { label = "services"; };
-                };
-                description = ''
-                  Full rustic TOML config. Each top-level attr = TOML section.
-                  Use `snapshot` for [[snapshot]] entries (sources auto-injected).
-                '';
-              };
-            };
-          }));
+              }
+            )
+          );
           default = { };
           description = "Attribute set of backup profiles. Key = profile name.";
         };
@@ -140,14 +178,16 @@
       config = mkIf cfg.enable {
         environment.systemPackages = [ cfg.package ];
 
-        environment.etc = mapAttrs' (name: p:
+        environment.etc = mapAttrs' (
+          name: p:
           nameValuePair "rustic/${name}.toml" {
             source = format.generate "rustic-${name}.toml" (genProfileConfig name p);
             mode = "0440";
           }
         ) (filterAttrs (_: p: p.enable) cfg.backups);
 
-        systemd.services = mapAttrs' (name: p:
+        systemd.services = mapAttrs' (
+          name: p:
           nameValuePair "rustic-${name}" {
             description = "rustic backup — ${name}";
             after = [ "network-online.target" ];
@@ -156,9 +196,20 @@
 
             serviceConfig = {
               Type = "oneshot";
-              ExecStart = "${rusticBin} backup -P ${name}${promFlag}";
-              EnvironmentFile = lib.mkIf (p.environmentFile != null) [ p.environmentFile ];
-              Environment = [ "RUSTIC_CONFIG_DIR=/etc/rustic" "RUSTIC_CACHE_DIR=/var/cache/rustic" ];
+              ExecStart = "${rusticBin} backup -P ${name}";
+              Environment = [
+                "RUSTIC_CONFIG_DIR=/etc/rustic"
+                "RUSTIC_CACHE_DIR=/var/cache/rustic"
+              ]
+              ++ lib.optionals cfg.prometheus.enable [ "RUSTIC_PROMETHEUS=${cfg.prometheus.address}" ]
+              ++ lib.optional (
+                cfg.prometheus.enable && cfg.prometheus.user != null
+              ) "RUSTIC_PROMETHEUS_USER=${cfg.prometheus.user}";
+              EnvironmentFile =
+                lib.optionals (cfg.prometheus.enable && cfg.prometheus.passwordFile != null) [
+                  cfg.prometheus.passwordFile
+                ]
+                ++ lib.optional (p.environmentFile != null) p.environmentFile;
               ReadOnlyPaths = p.sources;
               ReadWritePaths = [ "/var/cache/rustic" ];
               CacheDirectory = "rustic";
@@ -181,7 +232,8 @@
           }
         ) (filterAttrs (_: p: p.enable) cfg.backups);
 
-        systemd.timers = mapAttrs' (name: p:
+        systemd.timers = mapAttrs' (
+          name: p:
           let
             tCfg = effectiveTimerConfig p;
           in
@@ -194,7 +246,9 @@
 
         systemd.targets.rustic = {
           description = "rustic backups";
-          wants = map (n: "rustic-${n}.service") (builtins.attrNames (filterAttrs (_: p: p.enable) cfg.backups));
+          wants = map (n: "rustic-${n}.service") (
+            builtins.attrNames (filterAttrs (_: p: p.enable) cfg.backups)
+          );
         };
       };
     };
