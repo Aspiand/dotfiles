@@ -194,11 +194,6 @@
 
       excludePackages = with pkgs; [ xterm ];
     };
-
-    printing = {
-      enable = false; # Enable CUPS to print documents.
-      drivers = [ pkgs.gutenprint ];
-    };
   };
 
   virtualisation = {
