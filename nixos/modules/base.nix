@@ -18,7 +18,6 @@
 
         settings = {
           auto-optimise-store = true;
-          print-build-logs = true;
           trusted-users = [ "@wheel" ];
           substituters = [
             "https://cache.nixos.org"
