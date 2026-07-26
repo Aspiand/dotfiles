@@ -276,6 +276,16 @@
 
     victoriametrics.prometheusConfig.scrape_configs = lib.mkAfter [
       {
+        job_name = "pushgateway";
+        scrape_interval = "60s";
+        static_configs = [
+          {
+            targets = [ "127.0.0.1:9091" ];
+            labels.instance = "nova";
+          }
+        ];
+      }
+      {
         job_name = "aira-node-exporter";
         scrape_interval = "60s";
         static_configs = [
@@ -295,9 +305,17 @@
       };
     };
 
+    prometheus.pushgateway = {
+      enable = true;
+      web.listen-address = "127.0.0.1:9091";
+    };
+
     rustic = {
       enable = true;
-      prometheus.enable = true;
+      prometheus = {
+        enable = true;
+        address = "http://127.0.0.1:9091";
+      };
       backups.services = {
         enable = true;
         timerConfig = {
