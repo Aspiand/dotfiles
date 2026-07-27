@@ -286,7 +286,7 @@
         ];
       }
       {
-        job_name = "aira-node-exporter";
+        job_name = "node-exporter";
         scrape_interval = "60s";
         static_configs = [
           {
