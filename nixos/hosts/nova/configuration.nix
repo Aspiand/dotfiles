@@ -274,40 +274,12 @@
 
     redis.servers.immich.logLevel = "warning";
 
-    victoriametrics.prometheusConfig.scrape_configs = lib.mkAfter [
-      {
-        job_name = "pushgateway";
-        scrape_interval = "60s";
-        static_configs = [
-          {
-            targets = [ "127.0.0.1:9091" ];
-            labels.instance = "nova";
-          }
-        ];
-      }
-      {
-        job_name = "node-exporter";
-        scrape_interval = "60s";
-        static_configs = [
-          {
-            targets = [ "aira:9100" ];
-            labels.instance = "aira";
-          }
-        ];
-      }
-    ];
-
     swapspace = {
       enable = true;
       settings = {
         min_swapsize = "100m";
         max_swapsize = "1g";
       };
-    };
-
-    prometheus.pushgateway = {
-      enable = true;
-      web.listen-address = "127.0.0.1:9091";
     };
 
     rustic = {

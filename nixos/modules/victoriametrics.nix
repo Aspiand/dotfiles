@@ -66,6 +66,10 @@
                       instance = config.networking.hostName or "localhost";
                     };
                   }
+                  {
+                    targets = [ "aira:9100" ];
+                    labels.instance = "aira";
+                  }
                 ];
               }
             ]
