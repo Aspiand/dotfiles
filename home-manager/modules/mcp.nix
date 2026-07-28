@@ -1,10 +1,23 @@
-{ pkgs, ... }:
+{
+  pkgs,
+  lib,
+  config,
+  ...
+}:
+
+let
+  inherit (lib) mkIf;
+  cfg = config.programs.mcp;
+in
 
 {
   programs.mcp.servers = {
     codegraph = {
       command = "${pkgs.codegraph}/bin/codegraph";
-      args = [ "serve" "--mcp" ];
+      args = [
+        "serve"
+        "--mcp"
+      ];
     };
     deepwiki.url = "https://mcp.deepwiki.com/mcp";
     markitdown.command = "${pkgs.markitdown-mcp}/bin/markitdown-mcp";
@@ -18,5 +31,22 @@
       command = "${pkgs.mcp-searxng}/bin/mcp-searxng";
       env.SEARXNG_URL = "https://searxng.astrapia-kokanue.ts.net";
     };
+    victorialogs = {
+      command = "${pkgs.mcp-victorialogs}/bin/mcp-victorialogs";
+      env.VL_INSTANCE_ENTRYPOINT = "https://victorialogs.astrapia-kokanue.ts.net";
+    };
   };
+
+  home.packages = mkIf cfg.enable (
+    with pkgs;
+    [
+      codegraph
+      markitdown-mcp
+      mempalace
+      mcp-nixos
+      mcp-server-fetch
+      mcp-searxng
+      mcp-victorialogs
+    ]
+  );
 }

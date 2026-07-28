@@ -314,6 +314,13 @@
           "--mcp"
         ];
       };
+
+      victorialogs = {
+        command = "${pkgs.mcp-victorialogs}/bin/mcp-victorialogs";
+        env = {
+          VL_INSTANCE_ENTRYPOINT = "http://localhost:9428";
+        };
+      };
     };
 
     extraPackages = with pkgs; [
@@ -352,6 +359,7 @@
       mcp-server-fetch
       mcp-nixos
       markitdown-mcp
+      mcp-victorialogs
       # context7-mcp
       # headroom # context compression MCP server
       actual-mcp # Actual Budget MCP server
