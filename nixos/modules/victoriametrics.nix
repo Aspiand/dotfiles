@@ -68,8 +68,27 @@
                   }
                 ];
               }
+            ]
+            ++ lib.optionals (config.services.prometheus.pushgateway.enable or false) [
+              {
+                job_name = "pushgateway";
+                scrape_interval = "60s";
+                static_configs = [
+                  {
+                    targets = [ config.services.prometheus.pushgateway.web.listen-address ];
+                    labels = {
+                      instance = config.networking.hostName or "localhost";
+                    };
+                  }
+                ];
+              }
             ];
           };
+        };
+
+        services.prometheus.pushgateway = {
+          enable = true;
+          web.listen-address = "0.0.0.0:9091";
         };
       };
     };
