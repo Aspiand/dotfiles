@@ -73,6 +73,50 @@
                 ];
               }
             ]
+            ++ lib.optionals (config.services.immich.enable or false) [
+              {
+                job_name = "immich-server";
+                scrape_interval = "15s";
+                metrics_path = "/metrics";
+                static_configs = [
+                  {
+                    targets = [ "localhost:8081" ];
+                    labels = {
+                      instance = config.networking.hostName or "localhost";
+                    };
+                  }
+                ];
+              }
+              {
+                job_name = "immich-microservices";
+                scrape_interval = "15s";
+                metrics_path = "/metrics";
+                static_configs = [
+                  {
+                    targets = [ "localhost:8082" ];
+                    labels = {
+                      instance = config.networking.hostName or "localhost";
+                    };
+                  }
+                ];
+              }
+            ]
+            ++ lib.optionals (config.services.prometheus.exporters.postgres.enable or false) [
+              {
+                job_name = "postgres-exporter";
+                scrape_interval = "10s";
+                static_configs = [
+                  {
+                    targets = [
+                      "${config.services.prometheus.exporters.postgres.listenAddress}:${toString config.services.prometheus.exporters.postgres.port}"
+                    ];
+                    labels = {
+                      instance = config.networking.hostName or "localhost";
+                    };
+                  }
+                ];
+              }
+            ]
             ++ lib.optionals (config.services.prometheus.pushgateway.enable or false) [
               {
                 job_name = "pushgateway";
