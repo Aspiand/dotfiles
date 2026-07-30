@@ -52,6 +52,8 @@
           ./hardware.nix
           ./disko.nix
           ./configuration.nix
+          ./secrets.nix
+          ./services.nix
           dotfiles.modules
           dotfiles.nixosModules.base
           dotfiles.nixosModules.ssh
