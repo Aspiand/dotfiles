@@ -17,7 +17,10 @@
       "mcp__plugin_claude-code-home-manager_deepwiki__ask_question",
       "mcp__plugin_claude-code-home-manager_fetch__fetch",
       "mcp__plugin_claude-code-home-manager_codegraph__codegraph_explore",
-      "mcp__plugin_claude-code-home-manager_victorialogs__documentation"
+      "mcp__plugin_claude-code-home-manager_victorialogs__documentation",
+      "mcp__plugin_claude-code-home-manager_victoriametrics__metrics",
+      "mcp__plugin_claude-code-home-manager_victoriametrics__query",
+      "Skill(mempalace)"
     ]
   }
 }
