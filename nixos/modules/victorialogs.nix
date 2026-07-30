@@ -9,6 +9,7 @@
             enable = true;
             listenAddress = "0.0.0.0:9428";
             extraOptions = [
+              "-retentionPeriod=4y"
               "-retention.maxDiskUsagePercent=80"
             ];
           };

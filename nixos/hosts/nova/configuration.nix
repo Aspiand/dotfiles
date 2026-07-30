@@ -298,6 +298,8 @@
           "/var/lib/9router"
           "/var/lib/hermes"
           "/var/lib/tsdproxy"
+          "/var/lib/victoriametrics"
+          "/var/lib/victorialogs"
         ];
         environmentFile = config.sops.secrets."rustic/services".path;
         settings = {

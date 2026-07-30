@@ -11,7 +11,7 @@
           enable = true;
 
           listenAddress = "0.0.0.0:8428";
-          retentionPeriod = "30d";
+          retentionPeriod = "4y";
 
           prometheusConfig = {
             scrape_configs = [
