@@ -105,6 +105,16 @@
 
     postgresql = {
       enable = true;
+      settings = {
+        wal_level = "replica";
+        wal_compression = "on";
+      };
+    };
+
+    prometheus.exporters.postgres = {
+      enable = true;
+      runAsLocalSuperUser = true;
+      openFirewall = false;
     };
 
     immich = {
