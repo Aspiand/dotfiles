@@ -21,7 +21,7 @@
           globalConfig = {
             scrape_interval = "15s";
             evaluation_interval = "15s";
-            scrape_timeout = "10s";
+            scrape_timeout = "30s";
           };
 
           ruleFiles = [ ];

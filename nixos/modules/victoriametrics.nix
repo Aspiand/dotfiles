@@ -40,7 +40,7 @@
             ++ lib.optionals (config.services.prometheus.exporters.process.enable or false) [
               {
                 job_name = "process-exporter";
-                scrape_interval = "60s";
+                scrape_interval = "10s";
                 static_configs = [
                   {
                     targets = [
@@ -56,7 +56,7 @@
             ++ lib.optionals (config.services.prometheus.exporters.node.enable or false) [
               {
                 job_name = "node-exporter";
-                scrape_interval = "60s";
+                scrape_interval = "10s";
                 static_configs = [
                   {
                     targets = [
@@ -76,7 +76,7 @@
             ++ lib.optionals (config.services.prometheus.pushgateway.enable or false) [
               {
                 job_name = "pushgateway";
-                scrape_interval = "60s";
+                scrape_interval = "10s";
                 static_configs = [
                   {
                     targets = [ config.services.prometheus.pushgateway.web.listen-address ];

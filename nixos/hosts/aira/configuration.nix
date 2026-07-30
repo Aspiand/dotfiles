@@ -178,7 +178,10 @@
 
     journald.upload = {
       enable = true;
-      settings.Upload.URL = "http://nova:9428/insert/journald";
+      settings.Upload = {
+        URL = "http://nova:9428/insert/journald";
+        NetworkTimeoutSec = "60s";
+      };
     };
 
     xserver = {
