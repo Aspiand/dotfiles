@@ -35,6 +35,11 @@ in
       command = "${pkgs.mcp-victorialogs}/bin/mcp-victorialogs";
       env.VL_INSTANCE_ENTRYPOINT = "https://victorialogs.astrapia-kokanue.ts.net";
     };
+    victoriametrics = {
+      command = "${pkgs.mcp-victoriametrics}/bin/mcp-victoriametrics";
+      env.VM_INSTANCE_ENTRYPOINT = "https://victoriametrics.astrapia-kokanue.ts.net";
+      env.VM_INSTANCE_TYPE = "single";
+    };
   };
 
   home.packages = mkIf cfg.enable (
@@ -45,6 +50,7 @@ in
       mempalace
       mcp-nixos
       mcp-server-fetch
+      mcp-victoriametrics
       mcp-searxng
       mcp-victorialogs
     ]
