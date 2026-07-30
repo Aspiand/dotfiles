@@ -105,6 +105,8 @@
 
     postgresql = {
       enable = true;
+      package = pkgs.postgresql_17;
+      initdbArgs = [ "--data-checksums" ];
       settings = {
         wal_level = "replica";
         wal_compression = "on";
