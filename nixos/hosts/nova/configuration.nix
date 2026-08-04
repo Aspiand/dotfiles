@@ -223,8 +223,8 @@
           environmentFiles = [ config.sops.secrets.tsdproxy.path ];
           volumes = [
             "/var/lib/tsdproxy:/data"
-            "${toString ./tsdproxy.yaml}:/config/tsdproxy.yaml:ro"
-            "${toString ./tsdproxy-svc.yaml}:/config/services.yaml:ro"
+            "${pkgs.writeText "tsdproxy.yaml" (builtins.readFile ./tsdproxy.yaml)}:/config/tsdproxy.yaml:ro"
+            "${pkgs.writeText "tsdproxy-svc.yaml" (builtins.readFile ./tsdproxy-svc.yaml)}:/config/services.yaml:ro"
           ];
           extraOptions = [
             "--network=host"

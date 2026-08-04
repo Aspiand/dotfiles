@@ -3,6 +3,7 @@
     "allow": [
       "WebSearch",
       "WebFetch",
+      "Skill(mempalace)",
       "Bash(nix eval *)",
       "Bash(nix build *)",
       "mcp__nixos__nix",
@@ -20,7 +21,8 @@
       "mcp__plugin_claude-code-home-manager_victorialogs__documentation",
       "mcp__plugin_claude-code-home-manager_victoriametrics__metrics",
       "mcp__plugin_claude-code-home-manager_victoriametrics__query",
-      "Skill(mempalace)"
+      "mcp__plugin_claude-code-home-manager_victorialogs__streams",
+      "mcp__plugin_claude-code-home-manager_victorialogs__query"
     ]
   }
 }
