@@ -321,6 +321,14 @@
           VL_INSTANCE_ENTRYPOINT = "http://localhost:9428";
         };
       };
+
+      victoriametrics = {
+        command = "${pkgs.mcp-victoriametrics}/bin/mcp-victoriametrics";
+        env = {
+          VM_INSTANCE_ENTRYPOINT = "http://localhost:8428";
+          VM_INSTANCE_TYPE = "single";
+        };
+      };
     };
 
     extraPackages = with pkgs; [
@@ -360,6 +368,7 @@
       mcp-nixos
       markitdown-mcp
       mcp-victorialogs
+      mcp-victoriametrics
       # context7-mcp
       # headroom # context compression MCP server
       actual-mcp # Actual Budget MCP server
