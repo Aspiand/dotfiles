@@ -61,7 +61,7 @@ let
 
       appPackageLock = mkPackageLock {
         name = "${pname}-app-package-lock-${version}";
-        outputHash = "sha256-FeoSg/Wj3SiyZK7Dw4GSY2O2PWk+cFXmNmfQptUEwwA=";
+        outputHash = "sha256-VpOdV+zRa0ezYkXpRKiJfV5FbIZt9WcefngRb7IFvo4=";
       };
 
       cliPackageLock = mkPackageLock {
@@ -73,7 +73,7 @@ let
       appNpmDeps = pkgs.fetchNpmDeps {
         inherit src;
         name = "${pname}-app-npm-deps-${version}";
-        hash = "sha256-SOrOUY4IoIuJFcwbgOs/rOWhCmplea9cAThCcCY2LhM=";
+        hash = "sha256-1fZ3NXL+f3ks7GImSmAvWNKKY1Ldq9kToyl+V1Aq8DQ=";
         postPatch = ''
           cp ${appPackageLock} package-lock.json
         '';
