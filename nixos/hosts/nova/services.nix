@@ -1,9 +1,4 @@
-{
-  config,
-  pkgs,
-  pkgs-unstable,
-  ...
-}:
+{ config, pkgs, pkgs-unstable, ... }:
 
 {
   services = {
@@ -138,8 +133,6 @@
       environment = {
         IMMICH_LOG_LEVEL = "log";
         IMMICH_TELEMETRY_INCLUDE = "all";
-        THUMB_LOCATION = "/var/cache/immich/thumbs";
-        ENCODED_VIDEO_LOCATION = "/var/cache/immich/encoded-video";
       };
     };
 
@@ -209,18 +202,4 @@
       };
     };
   };
-
-  systemd.tmpfiles.rules = [
-    "d /var/cache/immich 0755 immich immich -"
-    "d /var/cache/immich/thumbs 0755 immich immich -"
-    "d /var/cache/immich/encoded-video 0755 immich immich -"
-    "f /var/cache/immich/thumbs/.immich 0644 immich immich -"
-    "f /var/cache/immich/encoded-video/.immich 0644 immich immich -"
-  ];
 }
-
-# TODO:
-# jika disk tidak di mount apa yang terjadi
-# immich jalan? (tidak)
-# boot (yes)
-# gocryptfs dan copyparty juga sama
