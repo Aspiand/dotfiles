@@ -1,3 +1,9 @@
+/*
+  TODO:
+
+  - handle backup overlap
+*/
+
 { ... }: {
   flake.customModules.rustic =
     {
@@ -14,6 +20,8 @@
         filterAttrs
         mapAttrs'
         nameValuePair
+        mapAttrsToList
+        optionalString
         types
         ;
 
@@ -21,41 +29,20 @@
 
       cfg = config.services.rustic;
 
-      # Merge profile options into a TOML attrset.
-      # `snapshot` key from settings → injected into `backup.snapshots` (array of tables).
-      # `label` and `sources` come from profile options, not from settings.
-      genProfileConfig =
+      # Resolve timer config: null → global default, else → override.
+      effectiveTimerConfig = p: if p.timerConfig == null then cfg.timerConfig else p.timerConfig;
+
+      enabled = filterAttrs (_: p: p.enable) cfg.backups;
+
+      mkWrapper =
         name: p:
-        let
-          label = if p.label == null then name else p.label;
-          baseCfg = builtins.removeAttrs p.settings [ "snapshot" ];
-          snapEntry = {
-            inherit label;
-            sources = p.sources;
-          }
-          // (builtins.removeAttrs (p.settings.snapshot or { }) [
-            "label"
-            "sources"
-          ]);
-        in
-        baseCfg
-        // {
-          backup = (baseCfg.backup or { }) // {
-            snapshots = [ snapEntry ];
-          };
-        };
-
-      # Resolve timer config: null → global default, {} → disabled, else → override.
-      effectiveTimerConfig =
-        p:
-        if p.timerConfig == null then
-          cfg.timerConfig
-        else if p.timerConfig == { } then
-          null
-        else
-          p.timerConfig;
-
-      rusticBin = "${cfg.package}/bin/rustic";
+        pkgs.writeShellScriptBin "rustic-${name}" ''
+          set -a
+          ${optionalString (p.environmentFile != null) ". ${p.environmentFile}"}
+          set +a
+          export RUSTIC_CACHE_DIR=/var/cache/rustic
+          exec ${cfg.package}/bin/rustic -P ${name} "$@"
+        '';
     in
     {
       options.services.rustic = {
@@ -69,21 +56,15 @@
         };
 
         prometheus = {
-          enable = mkEnableOption "prometheus metrics push to VictoriaMetrics";
+          enable = mkEnableOption "rustic Prometheus metrics push";
           address = mkOption {
             type = types.str;
-            default = "http://127.0.0.1:8428/api/v1/import/prometheus";
-            description = "Prometheus remote write URL (VictoriaMetrics endpoint).";
+            description = "Prometheus remote write URL";
           };
           user = mkOption {
             type = types.nullOr types.str;
             default = null;
-            description = "Basic auth user for Prometheus Pushgateway (env RUSTIC_PROMETHEUS_USER).";
-          };
-          passwordFile = mkOption {
-            type = types.nullOr types.path;
-            default = null;
-            description = "File containing basic auth password for Prometheus Pushgateway (env RUSTIC_PROMETHEUS_PASS).";
+            description = "Basic auth user (env RUSTIC_PROMETHEUS_USER).";
           };
         };
 
@@ -93,13 +74,9 @@
             OnCalendar = "daily";
             Persistent = true;
           };
-          example = {
-            OnCalendar = "0/4:00:00";
-            Persistent = true;
-          };
           description = ''
-            Default systemd timer config. Used by profiles without their own timerConfig.
-            Set profile's timerConfig to {} to disable timer (manual only).
+            Default systemd timer config, e.g. { OnCalendar = "0/4:00:00"; Persistent = true; }.
+            Used by profiles without their own timerConfig.
           '';
         };
 
@@ -110,26 +87,10 @@
                 options = {
                   enable = mkEnableOption "this backup profile";
 
-                  label = mkOption {
-                    type = types.nullOr types.str;
-                    default = null;
-                    example = "services";
-                    description = "Snapshot label. Falls back to profile attribute name.";
-                  };
-
-                  sources = mkOption {
-                    type = types.listOf types.path;
-                    example = [ "/var/lib/9router" ];
-                    description = "Paths to back up.";
-                  };
-
                   environmentFile = mkOption {
                     type = types.nullOr types.path;
                     default = null;
-                    description = ''
-                      Path to environment file with RUSTIC_REPOSITORY, RUSTIC_PASSWORD,
-                      RUSTIC_REPOSITORY_OPTIONS_*. Usually a sops-decrypted dotenv file.
-                    '';
+                    description = "Path to environment file.";
                   };
 
                   timerConfig = mkOption {
@@ -145,8 +106,6 @@
                     '';
                   };
 
-                  # Free-form rustic TOML — each top-level key becomes a [section].
-                  # Use `snapshot = { ... }` for [[snapshot]] entries; sources auto-injected.
                   settings = mkOption {
                     type = types.attrsOf types.anything;
                     default = { };
@@ -154,16 +113,18 @@
                       global.check-index = true;
                       backup.skip-if-unchanged = true;
                       backup."exclude-if-present" = [ ".nobackup" ];
+                      backup.snapshots = [
+                        {
+                          label = "services";
+                          sources = [ "/var/lib/9router" ];
+                        }
+                      ];
                       forget."keep-daily" = 14;
                       forget."keep-weekly" = 8;
                       forget."keep-monthly" = 24;
-                      snapshot = {
-                        label = "services";
-                      };
                     };
                     description = ''
-                      Full rustic TOML config. Each top-level attr = TOML section.
-                      Use `snapshot` for [[snapshot]] entries (sources auto-injected).
+                      Full rustic TOML config, written verbatim to /etc/rustic/<name>.toml.
                     '';
                   };
                 };
@@ -171,20 +132,20 @@
             )
           );
           default = { };
-          description = "Attribute set of backup profiles. Key = profile name.";
+          description = "Attribute set of backup profiles. Key is profile name.";
         };
       };
 
       config = mkIf cfg.enable {
-        environment.systemPackages = [ cfg.package ];
+        environment.systemPackages = [ cfg.package ] ++ mapAttrsToList mkWrapper enabled;
 
         environment.etc = mapAttrs' (
           name: p:
           nameValuePair "rustic/${name}.toml" {
-            source = format.generate "rustic-${name}.toml" (genProfileConfig name p);
+            source = format.generate "rustic-${name}.toml" p.settings;
             mode = "0440";
           }
-        ) (filterAttrs (_: p: p.enable) cfg.backups);
+        ) enabled;
 
         systemd.services = mapAttrs' (
           name: p:
@@ -196,7 +157,7 @@
 
             serviceConfig = {
               Type = "oneshot";
-              ExecStart = "${rusticBin} backup -P ${name}";
+              ExecStart = "${cfg.package}/bin/rustic backup -P ${name}";
               Environment = [
                 "RUSTIC_CONFIG_DIR=/etc/rustic"
                 "RUSTIC_CACHE_DIR=/var/cache/rustic"
@@ -205,12 +166,7 @@
               ++ lib.optional (
                 cfg.prometheus.enable && cfg.prometheus.user != null
               ) "RUSTIC_PROMETHEUS_USER=${cfg.prometheus.user}";
-              EnvironmentFile =
-                lib.optionals (cfg.prometheus.enable && cfg.prometheus.passwordFile != null) [
-                  cfg.prometheus.passwordFile
-                ]
-                ++ lib.optional (p.environmentFile != null) p.environmentFile;
-              ReadOnlyPaths = p.sources;
+              EnvironmentFile = lib.optional (p.environmentFile != null) p.environmentFile;
               ReadWritePaths = [ "/var/cache/rustic" ];
               CacheDirectory = "rustic";
               NoNewPrivileges = true;
