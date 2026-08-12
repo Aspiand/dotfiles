@@ -158,18 +158,23 @@
           OnCalendar = "*:00:00";
           Persistent = true;
         };
-        sources = [
-          "/var/lib/9router"
-          "/var/lib/hermes"
-          "/var/lib/tsdproxy"
-          "/var/lib/victoriametrics"
-          "/var/lib/victorialogs"
-        ];
         environmentFile = config.sops.secrets."rustic/services".path;
         settings = {
           global.check-index = true;
           backup.skip-if-unchanged = true;
           backup."exclude-if-present" = [ ".nobackup" ];
+          backup.snapshots = [
+            {
+              label = "services";
+              sources = [
+                "/var/lib/9router"
+                "/var/lib/hermes"
+                "/var/lib/tsdproxy"
+                "/var/lib/victoriametrics"
+                "/var/lib/victorialogs"
+              ];
+            }
+          ];
           forget."keep-daily" = 14;
           forget."keep-weekly" = 8;
           forget."keep-monthly" = 24;
@@ -182,9 +187,6 @@
           OnCalendar = "*:30:00";
           Persistent = true;
         };
-        sources = [
-          "/mnt/adata_su650_500/data/immich"
-        ];
         settings = {
           backup = {
             skip-if-unchanged = true;
@@ -193,6 +195,12 @@
               "!encoded-video"
               "!thumbs"
               # "!backups"
+            ];
+            snapshots = [
+              {
+                label = "media";
+                sources = [ "/mnt/adata_su650_500/data/immich" ];
+              }
             ];
           };
           forget."keep-daily" = 14;
