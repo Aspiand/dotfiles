@@ -1,4 +1,9 @@
-{ config, pkgs, pkgs-unstable, ... }:
+{
+  config,
+  pkgs,
+  pkgs-unstable,
+  ...
+}:
 
 {
   services = {
@@ -44,8 +49,9 @@
       tunnels."50687d84-87ea-4d7c-a635-548cb7dec14c" = {
         credentialsFile = config.sops.secrets.cloudflared.path;
         ingress = {
-          "gallery.aspian.my.id" = "http://localhost:2283";
-          "couchdb.aspian.my.id" = "http://localhost:5984";
+          "gallery.aspian.my.id" = "http://127.0.0.1:2283";
+          "couchdb.aspian.my.id" = "http://127.0.0.1:5984";
+          "vault.aspian.my.id" = "http://127.0.0.1:8222";
         };
         default = "http_status:404";
       };
@@ -137,6 +143,20 @@
     };
 
     redis.servers.immich.logLevel = "warning";
+
+    vaultwarden = {
+      enable = false;
+      dbBackend = "postgresql";
+      configurePostgres = true;
+      domain = "vault.aspian.my.id";
+      config = {
+        ROCKET_ADDRESS = "127.0.0.1";
+        ROCKET_PORT = 8222;
+        ENABLE_WEBSOCKET = true;
+        # SIGNUPS_ALLOWED = true; # first registration = admin; disable after invite
+        ROCKET_LOG = "critical";
+      };
+    };
 
     swapspace = {
       enable = true;
