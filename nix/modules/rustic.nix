@@ -36,12 +36,31 @@
 
       mkWrapper =
         name: p:
-        pkgs.writeShellScriptBin "rustic-${name}" ''
-          set -a
-          ${optionalString (p.environmentFile != null) ". ${p.environmentFile}"}
-          set +a
-          export RUSTIC_CACHE_DIR=/var/cache/rustic
-          exec ${cfg.package}/bin/rustic -P ${name} "$@"
+        let
+          bin = pkgs.writeShellScriptBin "rustic-${name}" ''
+            set -a
+            ${optionalString (p.environmentFile != null) ". ${p.environmentFile}"}
+            set +a
+            export RUSTIC_CACHE_DIR=/var/cache/rustic
+            exec ${cfg.package}/bin/rustic -P ${name} "$@"
+          '';
+          # Remap wrapper → rustic so clap's `_rustic` dispatch works.
+          # Load rustic's own completion lazily (bash-completion only sources this file on first TAB).
+          completion = pkgs.writeText "rustic-${name}.bash" ''
+            _rustic_${name}() {
+              if ! declare -F _rustic >/dev/null && [[ -f ${cfg.package}/share/bash-completion/completions/rustic.bash ]]; then
+                . ${cfg.package}/share/bash-completion/completions/rustic.bash
+              fi
+              COMP_WORDS[0]=rustic
+              _rustic rustic "$2" "$3"
+            }
+            complete -F _rustic_${name} -o nosort -o bashdefault -o default rustic-${name}
+          '';
+        in
+        pkgs.runCommand "rustic-${name}" { } ''
+          mkdir -p $out/bin $out/share/bash-completion/completions
+          ln -s ${bin}/bin/rustic-${name} $out/bin/rustic-${name}
+          ln -s ${completion} $out/share/bash-completion/completions/rustic-${name}.bash
         '';
     in
     {
