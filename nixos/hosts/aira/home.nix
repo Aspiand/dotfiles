@@ -83,6 +83,7 @@ in
         # sqlmap
         # steam-run
         sops
+        traceroute
         # umu-launcher
         # winePackages.wayland
         wl-clipboard
