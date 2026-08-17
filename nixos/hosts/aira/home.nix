@@ -46,9 +46,9 @@ in
         # gnome-extension-manager
         gradia
         # heroic
-        kdePackages.kdenlive
+        # kdePackages.kdenlive
         # libreoffice
-        obs-studio
+        # obs-studio
         # onlyoffice-desktopeditors
         # planify
         # postman
@@ -77,7 +77,7 @@ in
         # lazydocker
         nmap
         nvtopPackages.intel
-        restic
+        # restic
         rustic
         # s3fs
         # sqlmap
