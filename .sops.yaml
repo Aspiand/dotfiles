@@ -5,6 +5,8 @@ keys:
   - &akira age19zncvgma25nmfuc8cef94z39qwwc5kgw8pj54s3u63ldr6q7746stdruy6
 
 creation_rules:
+  - path_regex: secrets/rustic/.*\.json$
+    pgp: *ao
   - path_regex: secrets/hermes\.yml$
     pgp: *ao
     age:
