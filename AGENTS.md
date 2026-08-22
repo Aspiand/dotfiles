@@ -9,10 +9,9 @@
 │   ├── packages/            # Package derivations (auto-imported)
 │   ├── wrappers/            # Wrapped CLI tools (bundled config, auto-imported)
 │   └── modules/             # Custom NixOS module definitions
-├── nixos/
-│   ├── modules/             # Shared NixOS modules (auto-imported)
-│   └── hosts/{aira,azel,delta}/  # Standalone host flakes
-└── AGENTS.md
+└── nixos/
+    ├── modules/             # Shared NixOS modules (auto-imported)
+    └── hosts/*/  			 # Standalone host flakes
 ```
 
 Root flake auto-imports `./nix/packages` + `./nix/wrappers` + `./nixos/modules` via `importTree`.
