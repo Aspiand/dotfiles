@@ -61,6 +61,7 @@
             dotfiles.nixosModules.desktop
             dotfiles.nixosModules.ssh
             dotfiles.nixosModules.node-exporter
+            dotfiles.nixosModules.github-token
             {
               system.nixos.revision = nixpkgs.lib.mkDefault (self.rev or self.dirtyRev or "Unknown");
               nixpkgs.overlays = [ inputs.dotfiles.overlays.default ];
