@@ -47,7 +47,7 @@ in
         gradia
         # heroic
         # kdePackages.kdenlive
-        # libreoffice
+        libreoffice
         # obs-studio
         # onlyoffice-desktopeditors
         # planify
@@ -55,6 +55,7 @@ in
         protonplus
         # spotify
         tor-browser
+        winboat
 
         # CLI
         python314Packages.markitdown
