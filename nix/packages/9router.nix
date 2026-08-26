@@ -5,8 +5,8 @@ let
     pkgs:
     let
       pname = "9router";
-      version = "0.5.45";
-      rev = "v0.5.45";
+      version = "0.5.55";
+      rev = "v0.5.55";
       nodejs = pkgs.nodejs_22;
       runtimePath = pkgs.lib.makeBinPath [
         nodejs
@@ -23,7 +23,7 @@ let
         owner = "decolua";
         repo = "9router";
         inherit rev;
-        hash = "sha256-bsErClYTPyFwzeLXUhcsjA4KzTLgOrtTSN38mVru0Is=";
+        hash = "sha256-jjjPFhhKfXB7qjnK+tqkQeKw/s5xZUXWwaCJzMwWAGw=";
       };
 
       mkPackageLock =
@@ -61,19 +61,19 @@ let
 
       appPackageLock = mkPackageLock {
         name = "${pname}-app-package-lock-${version}";
-        outputHash = "sha256-VpOdV+zRa0ezYkXpRKiJfV5FbIZt9WcefngRb7IFvo4=";
+        outputHash = "sha256-TtV+rcljbqOrbdwQiulYHq8LU0tzAqR/DAzg2bo+L4E=";
       };
 
       cliPackageLock = mkPackageLock {
         name = "${pname}-cli-package-lock-${version}";
         sourceRoot = "source/cli";
-        outputHash = "sha256-lUAa/BWy8o7owqQAGNt3BWECbpaiCl5eBVQwngrIje0=";
+        outputHash = "sha256-DEUdV0vd79gWnQkEORIqApiaqBwXVQx4r074k1hVlYA=";
       };
 
       appNpmDeps = pkgs.fetchNpmDeps {
         inherit src;
         name = "${pname}-app-npm-deps-${version}";
-        hash = "sha256-1fZ3NXL+f3ks7GImSmAvWNKKY1Ldq9kToyl+V1Aq8DQ=";
+        hash = "sha256-9OsV2qjW1eE6e58w9raec6PZvwZBgwLi7JDU3IJ3dsM=";
         postPatch = ''
           cp ${appPackageLock} package-lock.json
         '';
@@ -86,7 +86,7 @@ let
         inherit src;
         name = "${pname}-cli-npm-deps-${version}";
         sourceRoot = "source/cli";
-        hash = "sha256-/SVsHAZk1oLbMbINOjw9WLm2az6SyQIFsB6tn8RDVpw=";
+        hash = "sha256-oEjFLciRgZgSD+hi8gJV7ifHkl2EBB4kAFEFSwcxaHQ=";
         postPatch = ''
           cp ${cliPackageLock} package-lock.json
         '';
@@ -125,20 +125,6 @@ const inter = Inter({
 });
 ' \
           ""
-
-        substituteInPlace cli/scripts/build-cli.js \
-          --replace-fail \
-          'const standaloneApp = fs.existsSync(path.join(standaloneRootToUse, "server.js"))
-  ? standaloneRootToUse
-  : path.join(standaloneRootToUse, "app");' \
-          'const standaloneCandidates = [
-  standaloneRootToUse,
-  path.join(standaloneRootToUse, "app"),
-  path.join(standaloneRootToUse, path.basename(appDir)),
-];
-const standaloneApp = standaloneCandidates.find((candidate) =>
-  fs.existsSync(path.join(candidate, "server.js"))
-);'
 
         substituteInPlace cli/hooks/sqliteRuntime.js \
           --replace-fail \
