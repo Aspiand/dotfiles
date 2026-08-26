@@ -55,7 +55,7 @@ in
         protonplus
         # spotify
         tor-browser
-        winboat
+        # winboat
 
         # CLI
         python314Packages.markitdown
