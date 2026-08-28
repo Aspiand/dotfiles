@@ -123,15 +123,18 @@
     compsize
     curl
     ethtool
+    eza
     gitMinimal
     gitui
+    gocryptfs
     htop
     micro
     python3Minimal
-    restic
+    # restic
     rustic
-    gocryptfs
+    tmux
     wget
+    zoxide
   ];
 
   hardware.alsa.enablePersistence = true;
