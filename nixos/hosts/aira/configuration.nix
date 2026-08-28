@@ -219,4 +219,8 @@
   # specialisation = {
   #   gaming.configuration = import ./gaming.nix;
   # };
+
+  fonts.packages = with pkgs; [
+  	corefonts
+  ];
 }
