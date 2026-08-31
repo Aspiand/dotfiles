@@ -119,6 +119,7 @@
   # };
 
   environment.systemPackages = with pkgs; [
+  	bottom
     btrfs-progs
     compsize
     curl
