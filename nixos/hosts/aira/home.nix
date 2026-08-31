@@ -108,7 +108,7 @@ in
 
         # Programming
         # bun
-        # gcc
+        gcc
         # go
         # jdk
         # maven
