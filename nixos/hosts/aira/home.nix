@@ -187,6 +187,7 @@ in
     git.lfs.enable = true;
     lutris.enable = true;
     mycli.enable = false;
+    opencode.enable = true;
     # ssh.control = true;
     # ssh.enableDefaultConfig = false; # later
     tmux.enable = true;
