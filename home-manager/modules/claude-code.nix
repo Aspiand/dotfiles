@@ -113,10 +113,6 @@
       };
       effortLevel = "low";
       skipWorkflowUsageWarning = true;
-      # statusLine = {
-      #   command = "bun x ccstatusline";
-      # };
-
       theme = "dark";
       editorMode = "normal";
       preferredNotifChannel = "notifications_disabled";

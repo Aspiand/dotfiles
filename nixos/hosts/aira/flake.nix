@@ -29,6 +29,10 @@
     hermes-agent = {
       url = "github:nousresearch/hermes-agent";
     };
+
+    # llm-agents = {
+    #   url = "github:numtide/llm-agents.nix";
+    # };
   };
 
   outputs =

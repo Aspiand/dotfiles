@@ -116,8 +116,8 @@ in
         # deploy-rs # deploy nixos to remote hosts
         nodejs
         # rustc
-        # php85
-        # php85Packages.composer
+        php85
+        php85Packages.composer
         # (python3.withPackages (
         #   ps: with ps; [
         #     pip
@@ -150,6 +150,9 @@ in
       ++ (with pkgs.nerd-fonts; [
         _0xproto
         caskaydia-cove
+        # ])
+        # ++ (with inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}; [
+        #   dsh
       ]);
 
     activation.backup = lib.hm.dag.entryBefore [ "preActivation" ] ''
@@ -232,7 +235,9 @@ in
     Comment=Hermes AI desktop client
     Exec=${lib.getExe inputs.hermes-agent.packages.${pkgs.stdenv.hostPlatform.system}.desktop}
     TryExec=${lib.getExe inputs.hermes-agent.packages.${pkgs.stdenv.hostPlatform.system}.desktop}
-    Icon=${inputs.hermes-agent.packages.${pkgs.stdenv.hostPlatform.system}.desktop}/share/hermes-desktop/dist/hermes.png
+    Icon=${
+      inputs.hermes-agent.packages.${pkgs.stdenv.hostPlatform.system}.desktop
+    }/share/hermes-desktop/dist/hermes.png
     Terminal=false
     Categories=Utility;
   '';
