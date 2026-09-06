@@ -4,7 +4,16 @@
   programs.opencode = {
     enableMcpIntegration = true;
 
+    extraPackages = with pkgs; [
+      codegraph
+      mempalace
+    ];
+
     settings = {
+      autoshare = false;
+      autoupdate = true;
+      effortLevel = "low";
+      skipWorkflowUsageWarning = true;
       # permission = {
       #   bash = true;
       #   read = true;
@@ -61,19 +70,24 @@
           };
         };
       };
-      effortLevel = "low";
-      skipWorkflowUsageWarning = true;
+
+      providers = {
+        "9router" = {
+          npm = "@ai-sdk/openai-compatible";
+          name = "My 9router";
+          options = {
+            baseURL = "https://9router.astrapia-kokanue.ts.net/v1";
+            apiKey = "{env:NINEROUTER_API_KEY}"; # TODO: sops
+          };
+        };
+      };
     };
 
     tui = {
       theme = "dark";
       editorMode = "normal";
-      preferredNotifChannel = "notifications_disabled";
+      # preferredNotifChannel = "notifications_disabled";
     };
-
-    extraPackages = with pkgs; [
-      mempalace
-    ];
 
     context = ''
       You are Aspian's opencode agent.
