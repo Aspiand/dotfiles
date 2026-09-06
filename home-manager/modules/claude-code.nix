@@ -6,8 +6,6 @@
     configDir = "${config.xdg.configHome}/claude";
 
     settings = {
-      agentDefaultModel = "oc/deepseek-v4-flash-free";
-      model = "oc/deepseek-v4-flash-free";
       permissions = {
         allow = [
           "Bash(nix build *)"
@@ -78,6 +76,7 @@
         "ponytail@ponytail" = true;
         "mempalace@mempalace" = true;
         "understand-anything@understand-anything" = true;
+        "planning-with-files@planning-with-files" = true;
       };
       extraKnownMarketplaces = {
         impeccable = {
@@ -108,6 +107,12 @@
           source = {
             source = "github";
             repo = "addyosmani/agent-skills";
+          };
+        };
+        planning-with-files = {
+          source = {
+            source = "github";
+            repo = "OthmanAdi/planning-with-files";
           };
         };
       };
