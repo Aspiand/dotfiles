@@ -1,3 +1,8 @@
+/*
+  tags:
+    - unmaintained
+*/
+
 {
   flake.nixosModules.caddy =
     { lib, ... }:
