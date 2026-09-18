@@ -186,7 +186,8 @@
       stt = {
         enabled = true;
         provider = "local";
-        local.model = "base";
+        local.model = "large-v3";
+        groq.model = "whisper-large-v3";
       };
 
       tts = {
