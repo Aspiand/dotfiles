@@ -77,6 +77,8 @@
         "mempalace@mempalace" = true;
         "understand-anything@understand-anything" = true;
         "planning-with-files@planning-with-files" = true;
+        "pyright-lsp@claude-plugins-official" = true;
+        "firecrawl@claude-plugins-official" = true;
       };
       extraKnownMarketplaces = {
         impeccable = {
