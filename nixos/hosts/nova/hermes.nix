@@ -168,16 +168,31 @@
       #   personality = "kawaii";
       # };
 
-      # stt = {
-      #   enabled = true;
-      #   provider = "local";
-      #   local.model = "base";
-      # };
+      voice = {
+        record_key = "ctrl+b";
+        submit_mode = "direct";
+        max_recording_seconds = 120;
+        auto_tts = false;
+        beep_enabled = true;
+        silence_threshold = 200;
+        silence_duration = 3.0;
+        stop_phrases = [
+          "stop"
+          "goodbye hermes"
+        ];
+        client_direct = false;
+      };
 
-      # tts = {
-      #   provider = "edge";
-      #   edge.voice = "en-US-AriaNeural";
-      # };
+      stt = {
+        enabled = true;
+        provider = "local";
+        local.model = "base";
+      };
+
+      tts = {
+        provider = "edge";
+        edge.voice = "en-US-AriaNeural";
+      };
 
       curator = {
         enabled = true;
@@ -362,6 +377,13 @@
       # Runtime
       nodejs-slim
       bun
+
+      # Voice
+      portaudio
+      ffmpeg
+      opus
+      espeak-ng
+      python314Packages.faster-whisper
 
       # MCP servers
       mcp-server-fetch
