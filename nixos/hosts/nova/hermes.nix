@@ -41,6 +41,11 @@
       ];
     };
 
+    # backend = {
+    #   mode = "dashboard";
+    #   port = 9119;
+    # };
+
     settings = {
       model = {
         default = "deepseek-flash";
@@ -178,9 +183,25 @@
         silence_duration = 3.0;
         stop_phrases = [
           "stop"
-          "goodbye hermes"
+          "goodbye"
         ];
         client_direct = false;
+      };
+
+      wake_word = {
+        enabled = true;
+        capture = "client";
+        surface = "auto";
+        input_device = null;
+        provider = "openwakeword";
+        phrase = "yanagi";
+        sensitivity = 0.6;
+        confirmation_frames = 3;
+        start_new_session = true;
+        openwakeword = {
+          model = "hey_hermes";
+          inference_framework = "";
+        };
       };
 
       stt = {
@@ -414,8 +435,14 @@
       # Code intelligence
       codegraph # pre-indexed code knowledge graph for AI agents
     ];
-    # restart = "always";
-    # restartSec = 5;
+
+    extraDependencyGroups = [
+      # "wake"
+      # "voice"
+      # "messaging"
+      # "neutts[all]"
+      # [all]
+    ];
   };
 
   users.users.hermes = {
