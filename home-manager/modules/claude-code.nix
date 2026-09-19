@@ -70,15 +70,16 @@
         baseRef = "fresh";
       };
       enabledPlugins = {
-        "impeccable@impeccable" = true;
         "agent-skills@addy-agent-skills" = true;
-        "context7@claude-plugins-official" = true;
-        "ponytail@ponytail" = true;
-        "mempalace@mempalace" = true;
-        "understand-anything@understand-anything" = true;
-        "planning-with-files@planning-with-files" = true;
-        "pyright-lsp@claude-plugins-official" = true;
+        "context7@upstash" = true;
         "firecrawl@claude-plugins-official" = true;
+        "impeccable@impeccable" = true;
+        "mempalace@mempalace" = true;
+        "planning-with-files@planning-with-files" = true;
+        "ponytail@ponytail" = true;
+        "pyright-lsp@claude-plugins-official" = true;
+        "superpowers@claude-plugins-official" = true;
+        "understand-anything@understand-anything" = true;
       };
       extraKnownMarketplaces = {
         impeccable = {
@@ -115,6 +116,12 @@
           source = {
             source = "github";
             repo = "OthmanAdi/planning-with-files";
+          };
+        };
+        upstash = {
+          source = {
+            source = "github";
+            repo = "upstash/context7";
           };
         };
       };

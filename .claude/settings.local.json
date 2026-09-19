@@ -40,7 +40,10 @@
       "mcp__plugin_claude-code-home-manager_victorialogs__query",
       "mcp__plugin_claude-code-home-manager_victoriametrics__query_range",
       "mcp__plugin_claude-code-home-manager_victorialogs__field_names",
-      "mcp__plugin_claude-code-home-manager_victorialogs__hits"
+      "mcp__plugin_claude-code-home-manager_victorialogs__hits",
+      "mcp__plugin_hm_codegraph__codegraph_explore",
+      "mcp__plugin_hm_nixos__nix",
+      "mcp__plugin_hm_fetch__fetch"
     ]
   }
 }

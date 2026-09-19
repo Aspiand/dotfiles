@@ -27,10 +27,6 @@ in
     };
     nixos.command = "${pkgs.mcp-nixos}/bin/mcp-nixos";
     fetch.command = "${pkgs.mcp-server-fetch}/bin/mcp-server-fetch";
-    searxng = {
-      command = "${pkgs.mcp-searxng}/bin/mcp-searxng";
-      env.SEARXNG_URL = "https://searxng.astrapia-kokanue.ts.net";
-    };
     victorialogs = {
       command = "${pkgs.mcp-victorialogs}/bin/mcp-victorialogs";
       env.VL_INSTANCE_ENTRYPOINT = "https://victorialogs.astrapia-kokanue.ts.net";
