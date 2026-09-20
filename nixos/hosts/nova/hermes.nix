@@ -206,7 +206,7 @@
 
       stt = {
         enabled = true;
-        provider = "local";
+        provider = "groq";
         local.model = "large-v3";
         groq.model = "whisper-large-v3";
       };
