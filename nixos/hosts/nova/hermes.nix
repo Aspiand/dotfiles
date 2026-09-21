@@ -414,7 +414,6 @@
       mcp-victorialogs
       mcp-victoriametrics
       # context7-mcp
-      # headroom # context compression MCP server
       actual-mcp # Actual Budget MCP server
       mcp-server-trello # Trello MCP server
       github-mcp-server # GitHub MCP server

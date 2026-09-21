@@ -1,5 +1,3 @@
-# TODO: persistent directory for downloaded ai model or pre download on nix
-
 { ... }: {
   flake.customModules.headroom =
     {
@@ -10,24 +8,11 @@
     }:
     let
       cfg = config.services.headroom;
-      inherit (lib) mkIf mkOption mkRemovedOptionModule types;
+      inherit (lib) mkIf mkOption types;
     in
     {
       options.services.headroom = {
         enable = lib.mkEnableOption "headroom — context optimization layer for LLM applications";
-
-        mode = mkOption {
-          type = types.enum [
-            "proxy"
-            "mcp"
-          ];
-          default = "proxy";
-          description = ''
-            Headroom operation mode.
-            - proxy: daemonised proxy server at listenAddress:port
-            - mcp:   MCP server on stdio (for hermes-agent integration)
-          '';
-        };
 
         package = mkOption {
           type = types.package;
@@ -87,10 +72,12 @@
         };
 
         optimizationMode = mkOption {
-          type = types.nullOr (types.enum [
-            "token"
-            "cache"
-          ]);
+          type = types.nullOr (
+            types.enum [
+              "token"
+              "cache"
+            ]
+          );
           default = null;
           description = ''
             Headroom proxy optimization strategy (--mode).
@@ -161,31 +148,27 @@
           serviceConfig = {
             Type = "simple";
             DynamicUser = true;
+            CacheDirectory = "headroom";
 
             ExecStart =
               let
-                baseCmd = lib.getExe cfg.package;
-                modeArgs =
-                  if cfg.mode == "proxy" then
-                    [
-                      "proxy"
-                      "--host"
-                      cfg.listenAddress
-                      "--port"
-                      (toString cfg.port)
-                    ]
-                  else
-                    [
-                      "mcp"
-                      "serve"
-                    ];
                 # Build optional flag pairs: [flag, value] or nothing
-                optFlag = flag: value:
-                  lib.optionals (value != null) [ flag (toString value) ];
+                optFlag =
+                  flag: value:
+                  lib.optionals (value != null) [
+                    flag
+                    (toString value)
+                  ];
               in
               lib.escapeShellArgs (
-                [ baseCmd ]
-                ++ modeArgs
+                [
+                  (lib.getExe cfg.package)
+                  "proxy"
+                  "--host"
+                  cfg.listenAddress
+                  "--port"
+                  (toString cfg.port)
+                ]
                 ++ optFlag "--backend" cfg.backend
                 ++ optFlag "--mode" cfg.optimizationMode
                 ++ optFlag "--budget" cfg.budget
@@ -222,7 +205,7 @@
           environment = cfg.environment;
         };
 
-        networking.firewall = mkIf (cfg.openFirewall && cfg.mode == "proxy") {
+        networking.firewall = mkIf cfg.openFirewall {
           allowedTCPPorts = [ cfg.port ];
         };
       };
