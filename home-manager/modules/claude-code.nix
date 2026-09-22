@@ -1,6 +1,30 @@
 { config, pkgs, ... }:
 
 {
+  # home.packages = [
+  #   (pkgs.python3.withPackages (ps: with ps; [
+  #     pyyaml
+  #     python-pptx
+  #     xlsxwriter
+  #     skia-pathops
+  #     uharfbuzz
+  #     edge-tts
+  #     pymupdf
+  #     mammoth
+  #     markdownify
+  #     ebooklib
+  #     nbconvert
+  #     openpyxl
+  #     pillow
+  #     numpy
+  #     requests
+  #     beautifulsoup4
+  #     curl-cffi
+  #     google-genai
+  #     flask
+  #   ]))
+  # ];
+
   programs.claude-code = {
     enableMcpIntegration = true;
     configDir = "${config.xdg.configHome}/claude";
@@ -75,11 +99,13 @@
         "firecrawl@claude-plugins-official" = true;
         "impeccable@impeccable" = true;
         "mempalace@mempalace" = true;
+        # "open-code-review@open-code-review" = true;
         "planning-with-files@planning-with-files" = true;
         "ponytail@ponytail" = true;
         "pyright-lsp@claude-plugins-official" = true;
         "superpowers@claude-plugins-official" = true;
         "understand-anything@understand-anything" = true;
+        # "ppt-master@ppt-master" = true;
       };
       extraKnownMarketplaces = {
         impeccable = {
@@ -118,10 +144,22 @@
             repo = "OthmanAdi/planning-with-files";
           };
         };
+        ppt-master = {
+          source = {
+            source = "github";
+            repo = "hugohe3/ppt-master";
+          };
+        };
         upstash = {
           source = {
             source = "github";
             repo = "upstash/context7";
+          };
+        };
+        open-code-review = {
+          source = {
+            source = "github";
+            repo = "alibaba/open-code-review";
           };
         };
       };
