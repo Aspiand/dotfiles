@@ -143,11 +143,13 @@ jobs:
               EVAL_FLAKE="."
               EXTRA_ARGS=(--accept-flake-config)
               ACCEPT_CONFIG=true
+              SOURCE="local"
             else
               FLAKE=$(resolve_flake "$REPO" "$REF") || continue
               EVAL_FLAKE="$FLAKE"
               EXTRA_ARGS=()  # never trust an external flake's nixConfig
               ACCEPT_CONFIG=false
+              SOURCE=$(owner_repo "$REPO")
             fi
 
             echo "=== Eval $EVAL_FLAKE ==="
@@ -183,8 +185,8 @@ jobs:
 
             for n in $NAMES; do
               [ -z "$n" ] && continue
-              MATRIX=$(jq -c --arg flake "$FLAKE" --arg pkg "$n" --arg sys "$ARCH" --argjson accept "$ACCEPT_CONFIG" \
-                '. + [{flake: $flake, package: $pkg, system: $sys, accept: $accept}]' <<< "$MATRIX")
+              MATRIX=$(jq -c --arg flake "$FLAKE" --arg pkg "$n" --arg sys "$ARCH" --argjson accept "$ACCEPT_CONFIG" --arg src "$SOURCE" \
+                '. + [{flake: $flake, package: $pkg, system: $sys, accept: $accept, source: $src}]' <<< "$MATRIX")
             done
           done < <(jq -c '.[]' /tmp/targets.json)
 
@@ -199,7 +201,7 @@ jobs:
   build:
     needs: generate-matrix
     if: needs.generate-matrix.outputs.has_packages == 'true'
-    name: ${{ matrix.package }}
+    name: ${{ matrix.source }} / ${{ matrix.package }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
