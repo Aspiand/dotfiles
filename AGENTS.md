@@ -134,7 +134,7 @@ See [docs/SECRETS.md](docs/SECRETS.md) for setup.
 - `build.yml` — scheduled R2 nix cache build (config: `cache.yml`, report: `docs/cache-report.md`)
 - `check.yml` — flake check on push
 
-See [docs/R2_CACHE_GUIDE.md](docs/R2_CACHE_GUIDE.md) and [docs/AUTO_UPDATE.md](docs/AUTO_UPDATE.md).
+See [docs/cache.md](docs/cache.md) and [docs/AUTO_UPDATE.md](docs/AUTO_UPDATE.md).
 
 ## Testing
 

@@ -1,0 +1,15 @@
+packages:
+  arch: 
+    - x86_64-linux
+  ignore:
+    - 9router
+
+watch:
+  # url: github:<owner>/<repo>  (or owner/repo)
+  # ref: optional — default HEAD (default branch)
+  #   branch:<name> | tag:<name> | rev:<sha> | latest-tag | latest-release | lock:<host>
+  # package: "all" (default) | [pkg, ...] | "pkg1,pkg2"
+  - url: github:NousResearch/hermes-agent
+    package: all
+    ref: lock:nova
+  - url: github:Mic92/sops-nix

@@ -1,0 +1,240 @@
+name: Build Nix Cache
+
+on:
+  schedule:
+    - cron: "7 0 * * *" # every midnight (00:07 UTC)
+  workflow_dispatch:
+    inputs:
+      repository:
+        description: "External repo (owner/repo or github:owner/repo). Empty = this repo + cache.yml watch list"
+        type: string
+        required: false
+        default: ""
+      ref:
+        description: "Branch/tag/commit for the external repo"
+        type: string
+        required: false
+        default: ""
+      package:
+        description: "Package(s) — comma-separated, or ALL"
+        type: string
+        required: false
+        default: "ALL"
+
+env:
+  NIXPKGS_ALLOW_UNFREE: "1"
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
+  AWS_ENDPOINT_URL: ${{ secrets.AWS_ENDPOINT_URL }}
+  NIX_SECRET_KEY: ${{ secrets.NIX_SECRET_KEY }}
+
+jobs:
+  generate-matrix:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      matrix: ${{ steps.matrix.outputs.matrix }}
+      has_packages: ${{ steps.matrix.outputs.has_packages }}
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: DeterminateSystems/nix-installer-action@v22
+
+      # ────────────────────────────────────────────────
+      # Read config from cache.yml
+      # ────────────────────────────────────────────────
+      - name: Read cache.yml
+        id: config
+        run: |
+          yq -o=json '.' cache.yml > /tmp/cache.json
+          echo "arch=$(jq -r '.packages.arch[0] // "x86_64-linux"' /tmp/cache.json)" >> "$GITHUB_OUTPUT"
+          echo "ignore=$(jq -c '.packages.ignore // []' /tmp/cache.json)" >> "$GITHUB_OUTPUT"
+
+      # ────────────────────────────────────────────────
+      # Resolve targets:
+      #   manual repository input → that repo only
+      #   else                     → this repo + cache.yml watch list
+      # ────────────────────────────────────────────────
+      - name: Resolve targets
+        env:
+          INPUT_REPOSITORY: ${{ inputs.repository }}
+          INPUT_REF: ${{ inputs.ref }}
+          INPUT_PACKAGE: ${{ inputs.package || 'ALL' }}
+        run: |
+          if [ -n "$INPUT_REPOSITORY" ]; then
+            jq -n --arg repo "$INPUT_REPOSITORY" --arg ref "$INPUT_REF" --arg pkg "$INPUT_PACKAGE" \
+              '[{repository: $repo, ref: $ref, package: $pkg}]' > /tmp/targets.json
+          else
+            jq -n --argjson watch "$(jq -c '.watch // []' /tmp/cache.json)" \
+              '[{repository: "", ref: "", package: "all"}] + [ $watch[] | {repository: .url, ref: (.ref // ""), package: (.package // "all")} ]' \
+              > /tmp/targets.json
+          fi
+          echo "Targets:"
+          cat /tmp/targets.json
+
+      # ────────────────────────────────────────────────
+      # Eval each target's packages → build matrix
+      # ────────────────────────────────────────────────
+      - name: Eval packages
+        id: matrix
+        env:
+          ARCH: ${{ steps.config.outputs.arch }}
+          IGNORE: ${{ steps.config.outputs.ignore }}
+        run: |
+          # Parse owner/repo from a url: github:owner/repo | owner/repo
+          owner_repo() {
+            local u="$1"
+            u="${u#github:}"
+            case "$u" in
+              /*|.) echo "" ;;   # local path — no gh API
+              */*) echo "$u" ;;
+              *) echo "" ;;
+            esac
+          }
+
+          # Resolve ref: to an immutable flake ref. "github:<o>/<r>" base + "/<ref>".
+          # ref: omitted → HEAD (default branch); branch:x | tag:x | rev:x → direct;
+          #      latest-tag | latest-release → resolve via gh api; lock:<host> → flake.lock rev.
+          resolve_flake() {
+            local url="$1" ref="$2" base owner repo or="" tag=""
+            case "$url" in
+              github:*) base="$url" ;;
+              /*|.) base="$url" ;;
+              */*) base="github:$url" ;;
+              *) base="$url" ;;
+            esac
+            or=$(owner_repo "$url")
+            case "$ref" in
+              "") : ;;
+              branch:*|tag:*|rev:*) base="$base/${ref#*:}" ;;
+              latest-tag)
+                [ -z "$or" ] && { echo "::error::latest-tag needs a github url: $url"; return 1; }
+                tag=$(gh api "repos/$or/tags" --jq '.[0].name')
+                base="$base/$tag" ;;
+              latest-release)
+                [ -z "$or" ] && { echo "::error::latest-release needs a github url: $url"; return 1; }
+                tag=$(gh api "repos/$or/releases/latest" --jq '.tag_name')
+                base="$base/$tag" ;;
+              lock:*)
+                local host="${ref#lock:}"
+                owner=$(echo "$or" | cut -d/ -f1); repo=$(echo "$or" | cut -d/ -f2)
+                local rev
+                rev=$(jq -r --arg o "$owner" --arg r "$repo" \
+                  '.nodes[] | select(.original.owner == $o and .original.repo == $r) | .locked.rev' \
+                  "nixos/hosts/$host/flake.lock" | head -1)
+                [ -z "$rev" ] && { echo "::error::lock:$host: $or not found in flake.lock"; return 1; }
+                base="$base/$rev" ;;
+              *)
+                echo "::error::unknown ref form: $ref"; return 1 ;;
+            esac
+            echo "$base"
+          }
+
+          MATRIX="[]"
+          while IFS= read -r T; do
+            [ -z "$T" ] && continue
+            REPO=$(jq -r '.repository' <<< "$T")
+            REF=$(jq -r '.ref' <<< "$T")
+
+            if [ -z "$REPO" ]; then
+              FLAKE="github:${GITHUB_REPOSITORY}/${GITHUB_SHA}"
+              EVAL_FLAKE="."
+              EXTRA_ARGS=(--accept-flake-config)
+              ACCEPT_CONFIG=true
+            else
+              FLAKE=$(resolve_flake "$REPO" "$REF") || continue
+              EVAL_FLAKE="$FLAKE"
+              EXTRA_ARGS=()  # never trust an external flake's nixConfig
+              ACCEPT_CONFIG=false
+            fi
+
+            echo "=== Eval $EVAL_FLAKE ==="
+            if ! nix eval "$EVAL_FLAKE#packages.$ARCH" --json --impure "${EXTRA_ARGS[@]}" > /tmp/pkgs.json 2>/tmp/eval.err; then
+              echo "::warning::Eval failed for $EVAL_FLAKE — skipping target"
+              cat /tmp/eval.err
+              continue
+            fi
+
+            ALL_NAMES=$(jq -r 'keys[]' /tmp/pkgs.json)
+            PKG=$(jq -c '.package' <<< "$T")
+
+            # package selection: "all" → every key; ["a","b"] → that list; "a,b" → names
+            if [ "$PKG" = '"all"' ]; then
+              NAMES="$ALL_NAMES"
+            elif [ "${PKG:0:1}" = "[" ]; then
+              NAMES=$(jq -r '.[]' <<< "$PKG")
+            else
+              PAT=$(jq -r '.' <<< "$PKG" | tr '[:upper:]' '[:lower:]' | tr ',' '|')
+              NAMES=$(echo "$ALL_NAMES" | grep -Ex "$PAT" || true)
+              if [ -z "$NAMES" ]; then
+                echo "::warning::$PAT not found in $EVAL_FLAKE — skipping target"
+                continue
+              fi
+            fi
+
+            # ignore list applies to the local repo only
+            if [ -z "$REPO" ] && [ "$IGNORE" != "[]" ]; then
+              NAMES=$(for n in $NAMES; do
+                jq -e --arg p "$n" 'index($p) != null' <<< "$IGNORE" >/dev/null 2>&1 || echo "$n"
+              done)
+            fi
+
+            for n in $NAMES; do
+              [ -z "$n" ] && continue
+              MATRIX=$(jq -c --arg flake "$FLAKE" --arg pkg "$n" --arg sys "$ARCH" --argjson accept "$ACCEPT_CONFIG" \
+                '. + [{flake: $flake, package: $pkg, system: $sys, accept: $accept}]' <<< "$MATRIX")
+            done
+          done < <(jq -c '.[]' /tmp/targets.json)
+
+          COUNT=$(jq length <<< "$MATRIX")
+          echo "Packages to build: $COUNT"
+          echo "matrix={\"include\":$MATRIX}" >> "$GITHUB_OUTPUT"
+          echo "has_packages=$([ "$COUNT" -gt 0 ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+
+  # ────────────────────────────────────────────────
+  # Build each package, sign, upload to S3-compatible cache
+  # ────────────────────────────────────────────────
+  build:
+    needs: generate-matrix
+    if: needs.generate-matrix.outputs.has_packages == 'true'
+    name: ${{ matrix.package }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.generate-matrix.outputs.matrix) }}
+
+    steps:
+      - uses: DeterminateSystems/nix-installer-action@v22
+
+      - name: Build
+        run: |
+          if [ "${{ matrix.accept }}" = "true" ]; then
+            nix build "${{ matrix.flake }}#packages.${{ matrix.system }}.${{ matrix.package }}" \
+              --print-build-logs --impure --accept-flake-config
+          else
+            nix build "${{ matrix.flake }}#packages.${{ matrix.system }}.${{ matrix.package }}" \
+              --print-build-logs --impure
+          fi
+          readlink -f result > /tmp/store-path
+
+      - name: Sign & upload
+        run: |
+          STORE_PATH=$(cat /tmp/store-path)
+          echo "$NIX_SECRET_KEY" > .sign-key
+          chmod 600 .sign-key
+          nix store sign --key-file .sign-key "$STORE_PATH"
+          rm -f .sign-key
+
+          nix copy --to "s3://${AWS_S3_BUCKET}?endpoint=${AWS_ENDPOINT_URL}&region=auto" "$STORE_PATH"
+
+      - name: Summary
+        if: always()
+        run: |
+          if [ -f /tmp/store-path ]; then
+            SIZE=$(nix path-info -Sh "$(cat /tmp/store-path)" 2>/dev/null | awk '{print $2}')
+            echo "- ✓ **${{ matrix.package }}** · ${SIZE}" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "- ✗ **${{ matrix.package }}** · failed" >> "$GITHUB_STEP_SUMMARY"
+          fi
