@@ -67,9 +67,15 @@ jobs:
             jq -n --arg repo "$INPUT_REPOSITORY" --arg ref "$INPUT_REF" --arg pkg "$INPUT_PACKAGE" \
               '[{repository: $repo, ref: $ref, package: $pkg}]' > /tmp/targets.json
           else
-            jq -n --argjson watch "$(jq -c '.watch // []' /tmp/cache.json)" \
-              '[{repository: "", ref: "", package: "all"}] + [ $watch[] | {repository: .url, ref: (.ref // ""), package: (.package // "all")} ]' \
-              > /tmp/targets.json
+            # package explicitly set (≠ ALL) → only those local packages, skip watch list
+            if [ -n "$INPUT_PACKAGE" ] && [ "$INPUT_PACKAGE" != "ALL" ]; then
+              jq -n --arg pkg "$INPUT_PACKAGE" \
+                '[{repository: "", ref: "", package: $pkg}]' > /tmp/targets.json
+            else
+              jq -n --argjson watch "$(jq -c '.watch // []' /tmp/cache.json)" \
+                '[{repository: "", ref: "", package: "all"}] + [ $watch[] | {repository: .url, ref: (.ref // ""), package: (.package // "all")} ]' \
+                > /tmp/targets.json
+            fi
           fi
           echo "Targets:"
           cat /tmp/targets.json
