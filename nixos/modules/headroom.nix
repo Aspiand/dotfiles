@@ -9,9 +9,6 @@
         services.headroom = {
           enable = true;
           optimizationMode = "cache";
-          environment = {
-            HEADROOM_CACHE_DIR = "/var/cache/headroom";
-          };
         };
       };
     };
