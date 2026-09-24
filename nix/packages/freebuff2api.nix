@@ -1,7 +1,7 @@
 { ... }:
 
 let
-  mkFreebuff2api =
+  mkPackage =
     pkgs:
     let
       pname = "freebuff2api";
@@ -35,12 +35,12 @@ let
 in
 {
   flake.overlays.freebuff2api = final: _: {
-    freebuff2api = mkFreebuff2api final;
+    freebuff2api = mkPackage final;
   };
 
   perSystem =
     { pkgs, ... }:
     {
-      packages.freebuff2api = mkFreebuff2api pkgs;
+      packages.freebuff2api = mkPackage pkgs;
     };
 }

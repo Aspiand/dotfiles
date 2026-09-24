@@ -19,7 +19,7 @@
 { ... }:
 
 let
-  mkActualMcp =
+  mkPackage =
     pkgs:
     pkgs.buildNpmPackage rec {
       pname = "actual-mcp";
@@ -58,12 +58,12 @@ let
 in
 {
   flake.overlays.actual-mcp = final: _: {
-    actual-mcp = mkActualMcp final;
+    actual-mcp = mkPackage final;
   };
 
   perSystem =
     { pkgs, ... }:
     {
-      packages.actual-mcp = mkActualMcp pkgs;
+      packages.actual-mcp = mkPackage pkgs;
     };
 }

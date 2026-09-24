@@ -1,7 +1,7 @@
 { ... }:
 
 let
-  mkMcpServerTrello =
+  mkPackage =
     pkgs:
     pkgs.stdenv.mkDerivation rec {
       pname = "mcp-server-trello";
@@ -35,12 +35,12 @@ let
 in
 {
   flake.overlays.mcp-server-trello = final: _: {
-    mcp-server-trello = mkMcpServerTrello final;
+    mcp-server-trello = mkPackage final;
   };
 
   perSystem =
     { pkgs, ... }:
     {
-      packages.mcp-server-trello = mkMcpServerTrello pkgs;
+      packages.mcp-server-trello = mkPackage pkgs;
     };
 }

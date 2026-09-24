@@ -1,7 +1,7 @@
 { ... }:
 
 let
-  mkMcpSearxng =
+  mkPackage =
     pkgs:
     pkgs.stdenv.mkDerivation rec {
       pname = "mcp-searxng";
@@ -35,12 +35,12 @@ let
 in
 {
   flake.overlays.mcp-searxng = final: _: {
-    mcp-searxng = mkMcpSearxng final;
+    mcp-searxng = mkPackage final;
   };
 
   perSystem =
     { pkgs, ... }:
     {
-      packages.mcp-searxng = mkMcpSearxng pkgs;
+      packages.mcp-searxng = mkPackage pkgs;
     };
 }

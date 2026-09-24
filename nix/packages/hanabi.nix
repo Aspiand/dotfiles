@@ -3,7 +3,7 @@
 { ... }:
 
 let
-  mkHanabi =
+  mkPackage =
     pkgs:
     pkgs.callPackage (
       {
@@ -93,13 +93,13 @@ let
 in
 {
   flake.overlays.hanabi = final: _: {
-    hanabi = mkHanabi final;
+    hanabi = mkPackage final;
   };
 
   perSystem =
     { pkgs, ... }:
     let
-      hanabi = mkHanabi pkgs;
+      hanabi = mkPackage pkgs;
     in
     {
       packages = {

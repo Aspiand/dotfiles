@@ -1,7 +1,7 @@
 { ... }:
 
 let
-  mkMempalace =
+  mkPackage =
     pkgs:
     pkgs.python3Packages.buildPythonPackage rec {
       pname = "mempalace";
@@ -47,12 +47,12 @@ let
 in
 {
   flake.overlays.mempalace = final: _: {
-    mempalace = mkMempalace final;
+    mempalace = mkPackage final;
   };
 
   perSystem =
     { pkgs, ... }:
     {
-      packages.mempalace = mkMempalace pkgs;
+      packages.mempalace = mkPackage pkgs;
     };
 }

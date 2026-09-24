@@ -1,7 +1,7 @@
 { ... }:
 
 let
-  mkMcpVictorialogs =
+  mkPackage =
     pkgs:
     pkgs.buildGoModule rec {
       pname = "mcp-victorialogs";
@@ -27,12 +27,12 @@ let
 in
 {
   flake.overlays.mcp-victorialogs = final: _: {
-    mcp-victorialogs = mkMcpVictorialogs final;
+    mcp-victorialogs = mkPackage final;
   };
 
   perSystem =
     { pkgs, ... }:
     {
-      packages.mcp-victorialogs = mkMcpVictorialogs pkgs;
+      packages.mcp-victorialogs = mkPackage pkgs;
     };
 }

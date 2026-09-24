@@ -1,7 +1,7 @@
 { ... }:
 
 let
-  mkN8nMcp =
+  mkPackage =
     pkgs:
     pkgs.buildNpmPackage rec {
       pname = "n8n-mcp";
@@ -56,12 +56,12 @@ let
 in
 {
   flake.overlays.n8n-mcp = final: _: {
-    n8n-mcp = mkN8nMcp final;
+    n8n-mcp = mkPackage final;
   };
 
   perSystem =
     { pkgs, ... }:
     {
-      packages.n8n-mcp = mkN8nMcp pkgs;
+      packages.n8n-mcp = mkPackage pkgs;
     };
 }

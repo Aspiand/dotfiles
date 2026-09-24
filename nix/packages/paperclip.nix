@@ -1,7 +1,7 @@
 { ... }:
 
 let
-  mkPaperclip =
+  mkPackage =
     pkgs:
     let
       pname = "paperclip";
@@ -93,12 +93,12 @@ let
 in
 {
   flake.overlays.paperclip = final: _: {
-    paperclip = mkPaperclip final;
+    paperclip = mkPackage final;
   };
 
   perSystem =
     { pkgs, ... }:
     {
-      packages.paperclip = mkPaperclip pkgs;
+      packages.paperclip = mkPackage pkgs;
     };
 }

@@ -1,7 +1,7 @@
 { ... }:
 
 let
-  mkCodegraph =
+  mkPackage =
     pkgs:
     pkgs.buildNpmPackage rec {
       pname = "codegraph";
@@ -41,13 +41,13 @@ let
 in
 {
   flake.overlays.codegraph = final: _: {
-    codegraph = mkCodegraph final;
+    codegraph = mkPackage final;
   };
 
   perSystem =
     { pkgs, ... }:
     let
-      codegraph = mkCodegraph pkgs;
+      codegraph = mkPackage pkgs;
     in
     {
       packages = {

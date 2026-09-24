@@ -1,7 +1,7 @@
 { ... }:
 
 let
-  mkPake =
+  mkPackage =
     pkgs:
     pkgs.stdenv.mkDerivation (finalAttrs: {
       pname = "pake";
@@ -56,12 +56,12 @@ let
 in
 {
   flake.overlays.pake = final: _: {
-    pake = mkPake final;
+    pake = mkPackage final;
   };
 
   perSystem =
     { pkgs, ... }:
     {
-      packages.pake = mkPake pkgs;
+      packages.pake = mkPackage pkgs;
     };
 }

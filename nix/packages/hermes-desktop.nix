@@ -1,7 +1,7 @@
 { ... }:
 
 let
-  mkHermesDesktop =
+  mkPackage =
     pkgs:
     let
       version = "0.5.1";
@@ -154,13 +154,13 @@ let
 in
 {
   flake.overlays.hermes-desktop = final: _: {
-    hermes-desktop = mkHermesDesktop final;
+    hermes-desktop = mkPackage final;
   };
 
   perSystem =
     { pkgs, ... }:
     let
-      hermes-desktop = mkHermesDesktop pkgs;
+      hermes-desktop = mkPackage pkgs;
     in
     {
       packages = {
