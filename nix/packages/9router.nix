@@ -1,12 +1,12 @@
 { ... }:
 
 let
-  mk9router =
+  mkPackage =
     pkgs:
     let
       pname = "9router";
-      version = "0.5.81";
-      rev = "v0.5.81";
+      version = "0.5.86";
+      rev = "v0.5.86";
       nodejs = pkgs.nodejs_22;
       runtimePath = pkgs.lib.makeBinPath [
         nodejs
@@ -23,7 +23,7 @@ let
         owner = "decolua";
         repo = "9router";
         inherit rev;
-        hash = "sha256-F52CUWHp2TjB5pVtHyDVzu7kjDYjcPmbrNPU6LVt6SE=";
+        hash = "sha256-WXob9QYhSWfEi4T65mkkunYyOXjn99laAd1FtElHttQ=";
       };
 
       mkPackageLock =
@@ -61,19 +61,19 @@ let
 
       appPackageLock = mkPackageLock {
         name = "${pname}-app-package-lock-${version}";
-        outputHash = "sha256-wL3b6u2pP2YHnSEpK2ix7dRNF79cywmCw+our1Bh8gg=";
+        outputHash = "sha256-65J39Z6TaDDAu5OD3sM3IswlSyVqTLdAgVasdzuH06g=";
       };
 
       cliPackageLock = mkPackageLock {
         name = "${pname}-cli-package-lock-${version}";
         sourceRoot = "source/cli";
-        outputHash = "sha256-5DpSQv5LQpyuLMsUaULzSjO6YA03HN1Hejoa7vF0LTE=";
+        outputHash = "sha256-zAFEzjcHw/tqIGHtarjtlPDKN190Ktt3F5D+HD3LJz8=";
       };
 
       appNpmDeps = pkgs.fetchNpmDeps {
         inherit src;
         name = "${pname}-app-npm-deps-${version}";
-        hash = "sha256-uknLs7SpxsCSwkcyPmc87nOJsGTIA1VgKqpt6VF5nW4=";
+        hash = "sha256-6gEJG3EwWtprxLgVC0Ntbq9quU2J+DlZxo2zESWOd2s=";
         postPatch = ''
           cp ${appPackageLock} package-lock.json
         '';
@@ -86,7 +86,7 @@ let
         inherit src;
         name = "${pname}-cli-npm-deps-${version}";
         sourceRoot = "source/cli";
-        hash = "sha256-1TAS+AUYvivLZF/B4ji2M5tqLcUR8cIsMi3zB/ZHIKE=";
+        hash = "sha256-pY3U/EstiuNQrEpCdpOgvbKoo/WaZNBiR49hJAN44Ww=";
         postPatch = ''
           cp ${cliPackageLock} package-lock.json
         '';
@@ -215,12 +215,12 @@ const inter = Inter({
 in
 {
   flake.overlays."9router" = final: _: {
-    "9router" = mk9router final;
+    "9router" = mkPackage final;
   };
 
   perSystem =
     { pkgs, ... }:
     {
-      packages."9router" = mk9router pkgs;
+      packages."9router" = mkPackage pkgs;
     };
 }
