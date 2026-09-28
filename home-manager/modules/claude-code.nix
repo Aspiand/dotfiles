@@ -105,7 +105,7 @@
         "pyright-lsp@claude-plugins-official" = true;
         "superpowers@claude-plugins-official" = true;
         "understand-anything@understand-anything" = true;
-        # "ppt-master@ppt-master" = true;
+        "ppt-master@ppt-master" = true;
       };
       extraKnownMarketplaces = {
         impeccable = {

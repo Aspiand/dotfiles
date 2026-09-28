@@ -13,3 +13,8 @@ watch:
     package: all
     ref: lock:nova
   - url: github:Mic92/sops-nix
+    package:
+      - sops-install-secrets
+      - sops-init-gpg-key
+      - sops-pgp-hook
+      - sops-import-keys-hook

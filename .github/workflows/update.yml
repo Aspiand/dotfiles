@@ -1,0 +1,134 @@
+name: Auto-Update Nix Packages
+
+on:
+  schedule:
+    - cron: "37 18 * * *" # daily 18:37 UTC
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "Force test — commit empty change and run build+promote"
+        type: boolean
+        required: false
+        default: false
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    outputs:
+      has_changes: ${{ steps.commit.outputs.has_changes }}
+      packages_json: ${{ steps.nix-update.outputs.packages_json }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: main
+
+      - uses: DeterminateSystems/nix-installer-action@v22
+
+      - name: Install nix-update
+        run: nix profile install nixpkgs#nix-update
+
+      - name: Update packages with nix-update
+        id: nix-update
+        env:
+          NIXPKGS_ALLOW_UNFREE: "1"
+        run: |
+          IGNORE=$(yq -o=json '.packages.ignore // []' cache.yml)
+
+          UPDATED=""
+          FAILED=""
+
+          for nixfile in nix/packages/*.nix; do
+            pkg=$(basename "$nixfile" .nix)
+            if jq -e --arg p "$pkg" 'index($p) != null' <<< "$IGNORE" >/dev/null 2>&1; then
+              echo "::notice::skipping $pkg (cache.yml packages.ignore)"
+              continue
+            fi
+            if nix-update "$pkg" --flake; then
+              UPDATED="$UPDATED $pkg"
+            else
+              FAILED="$FAILED $pkg"
+            fi
+          done
+
+          if [ -z "$UPDATED" ]; then
+            echo "packages_json=[]" >> "$GITHUB_OUTPUT"
+          else
+            echo "packages_json=$(printf '%s' "$UPDATED" | jq -Rc 'split(" ") | map(select(length > 0))')" >> "$GITHUB_OUTPUT"
+          fi
+          echo "updated=${UPDATED# }" >> "$GITHUB_OUTPUT"
+          echo "failed=${FAILED# }" >> "$GITHUB_OUTPUT"
+          echo "updated: ${UPDATED:-<none>}"
+          echo "failed:  ${FAILED:-<none>}"
+
+      - name: Commit to staging branch
+        id: commit
+        env:
+          UPDATED: ${{ steps.nix-update.outputs.updated }}
+          FAILED: ${{ steps.nix-update.outputs.failed }}
+          FORCE: ${{ inputs.force }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add -A
+          if git diff --cached --quiet; then
+            if [ "$FORCE" != "true" ]; then
+              echo "has_changes=false" >> "$GITHUB_OUTPUT"
+              echo "No changes — stopping"
+              exit 0
+            fi
+            git commit --allow-empty -m "chore: force-test auto-update pipeline"
+          else
+            {
+              echo "chore: auto-update nix packages"
+              echo ""
+              [ -n "$UPDATED" ] && echo "Updated:$UPDATED"
+              [ -n "$FAILED" ] && echo "Failed:$FAILED"
+            } > /tmp/commit-msg
+            git commit --file /tmp/commit-msg
+          fi
+
+          git push origin HEAD:refs/heads/auto-update/${{ github.run_id }}-${{ github.run_attempt }}
+          echo "has_changes=true" >> "$GITHUB_OUTPUT"
+
+  build:
+    needs: update
+    if: needs.update.outputs.has_changes == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: auto-update/${{ github.run_id }}-${{ github.run_attempt }}
+
+      - uses: DeterminateSystems/nix-installer-action@v22
+
+      - name: Build changed packages
+        env:
+          PACKAGES_JSON: ${{ needs.update.outputs.packages_json }}
+          NIXPKGS_ALLOW_UNFREE: "1"
+        run: |
+          for pkg in $(echo "$PACKAGES_JSON" | jq -r '.[]'); do
+            echo "::group::Building $pkg"
+            nix build ".#packages.x86_64-linux.$pkg" \
+              --print-build-logs --impure --accept-flake-config
+            echo "::endgroup::"
+          done
+
+  promote:
+    needs: [update, build]
+    if: needs.update.outputs.has_changes == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: main
+
+      - run: |
+          BRANCH="auto-update/${{ github.run_id }}-${{ github.run_attempt }}"
+          git fetch origin "$BRANCH"
+          git merge --ff-only FETCH_HEAD
+          git push origin main
+          git push origin --delete "$BRANCH"

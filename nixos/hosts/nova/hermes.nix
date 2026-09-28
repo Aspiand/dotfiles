@@ -212,8 +212,17 @@
       };
 
       tts = {
-        provider = "edge";
+        provider = "9router";
         edge.voice = "en-US-AriaNeural";
+        gemini = {
+          model = "gemini-3.1-flash-tts-preview";
+          voice = "Zephyr";
+          audio_tags = false;
+        };
+        "9router" = {
+          model = "google-tts/id";
+          base_url = "https://9router.astrapia-kokanue.ts.net/v1/audio/speech";
+        };
       };
 
       curator = {

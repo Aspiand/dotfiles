@@ -14,7 +14,7 @@
 │   ├── modules/            # Preconfigured NixOS modules (auto-imported)
 │   └── hosts/*/            # Standalone host flakes
 ├── home-manager/           # Standalone Home Manager flake (own inputs)
-├── docs/                   # Guides: secrets, cache, auto-update, rustic, cache-report
+├── docs/                   # Guides: secrets, cache, update, rustic, cache-report
 ├── secrets/                # SOPS-encrypted secrets (see docs/SECRETS.md)
 └── .github/workflows/      # CI: cache build, flake check, cache report
 ```
@@ -134,7 +134,7 @@ See [docs/SECRETS.md](docs/SECRETS.md) for setup.
 - `build.yml` — scheduled R2 nix cache build (config: `cache.yml`, report: `docs/cache-report.md`)
 - `check.yml` — flake check on push
 
-See [docs/cache.md](docs/cache.md) and [docs/AUTO_UPDATE.md](docs/AUTO_UPDATE.md).
+See [docs/cache.md](docs/cache.md) and [docs/update.md](docs/update.md).
 
 ## Testing
 
