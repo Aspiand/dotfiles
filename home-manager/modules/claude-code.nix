@@ -96,6 +96,7 @@
       enabledPlugins = {
         "agent-skills@addy-agent-skills" = true;
         "context7@upstash" = true;
+        "ecc@ecc" = true;
         "firecrawl@claude-plugins-official" = true;
         "impeccable@impeccable" = true;
         "mempalace@mempalace" = true;
@@ -154,6 +155,12 @@
           source = {
             source = "github";
             repo = "upstash/context7";
+          };
+        };
+        ecc = {
+          source = {
+            source = "github";
+            repo = "affaan-m/ECC";
           };
         };
         open-code-review = {
