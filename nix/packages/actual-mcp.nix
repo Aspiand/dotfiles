@@ -23,7 +23,7 @@ let
     pkgs:
     pkgs.buildNpmPackage rec {
       pname = "actual-mcp";
-      version = "main";
+      version = "1.14.0";
 
       src = pkgs.fetchFromGitHub {
         owner = "s-stefanov";

@@ -5,16 +5,16 @@ let
     pkgs:
     pkgs.buildNpmPackage rec {
       pname = "n8n-mcp";
-      version = "2.67.1";
+      version = "2.93.0";
 
       src = pkgs.fetchFromGitHub {
         owner = "czlonkowski";
         repo = "n8n-mcp";
         rev = "v${version}";
-        hash = "sha256-h+wokO/SwSMM5Dwrx1zXyFvkN29SgZkdu4Ughbyxi4g=";
+        hash = "sha256-/DVA9E/mOpjVcp+YC2BRka6PtSj2LGAA/1J0Z7Hzz9Q=";
       };
 
-      npmDepsHash = "sha256-oaK52l4qB7SVmRiRar016WksC63G+JZZ0VRh4/I+gRc=";
+      npmDepsHash = "sha256-0zJAcef4fTwvU4M4cq0JybgYaS2fSmKCZhQqj67ZkZE=";
       npmDepsFetcherVersion = 2;
 
       nativeBuildInputs = with pkgs; [

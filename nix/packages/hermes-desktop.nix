@@ -4,10 +4,10 @@ let
   mkPackage =
     pkgs:
     let
-      version = "0.5.1";
+      version = "0.7.7";
       src = pkgs.fetchurl {
         url = "https://github.com/fathah/hermes-desktop/releases/download/v${version}/hermes-desktop_${version}_amd64.deb";
-        hash = "sha256-EbLVm74EN6/mRyHknX6R5uy7QF5p+Xoe7+9jamaKSbE=";
+        hash = "sha256-R/PN75sZA9eIL25xYqdfc2oFAzgV90DrhdDymioPPS0=";
       };
     in
     pkgs.stdenv.mkDerivation rec {
