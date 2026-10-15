@@ -5,13 +5,13 @@ let
     pkgs:
     pkgs.python3Packages.buildPythonPackage rec {
       pname = "mempalace";
-      version = "3.5.0";
+      version = "3.11.0";
 
       src = pkgs.fetchFromGitHub {
         owner = "mempalace";
         repo = "mempalace";
         rev = "v${version}";
-        hash = "sha256-C4KPtHNTHTwQXgWUsiRWC0J16tj2wGI7XI/gKGjNgRE=";
+        hash = "sha256-flBz0bAL3X6dSTNedyKXnKSSonrb1kJQpy0XtjNyq6I=";
       };
 
       pyproject = true;
