@@ -18,7 +18,7 @@ let
     in
     pythonPackages.buildPythonPackage {
       pname = "headroom-ai";
-      version = "0.27.0";
+      version = "0.41.0";
       format = "wheel";
 
       src = pkgs.fetchurl {

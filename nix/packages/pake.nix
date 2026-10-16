@@ -5,7 +5,7 @@ let
     pkgs:
     pkgs.stdenv.mkDerivation (finalAttrs: {
       pname = "pake";
-      version = "3.11.7";
+      version = "V3.17.5";
 
       src = pkgs.fetchFromGitHub {
         owner = "tw93";
