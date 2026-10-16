@@ -1,21 +1,3 @@
-# ---------------------------------------------------------------------------
-# actual-mcp — Nix package for s-stefanov/actual-mcp (main branch)
-#
-# Using main branch (post-v1.11.3) instead of tagged release because:
-# - @actual-app/api bumped to 26.5.0 (fixes out-of-sync-migrations natively)
-# - Balance cutoff fix: getAccountBalance used Date.now(), excluding future
-#   transactions. Now uses 2999-01-01.
-# - Timezone fix: new Date(date).getMonth() was timezone-dependent (PST→Jan 31
-#   for "2024-02-01"). Now uses string split.
-# - transfer_id exposed in get-transactions output.
-# - 3 extra migration files are built into @actual-app/api@26.5.0, so no
-#   postInstall patch needed.
-#
-# WHEN TO GO BACK TO TAG:
-#   When s-stefanov tags a release including these fixes (v1.12.0+).
-#   Check: https://github.com/s-stefanov/actual-mcp/releases
-# ---------------------------------------------------------------------------
-
 { ... }:
 
 let
@@ -23,16 +5,16 @@ let
     pkgs:
     pkgs.buildNpmPackage rec {
       pname = "actual-mcp";
-      version = "main";
+      version = "1.15.0";
 
       src = pkgs.fetchFromGitHub {
         owner = "s-stefanov";
         repo = "actual-mcp";
-        rev = "24925803dff2dfb697cb6e53c06662ee66c94f01";
-        hash = "sha256-f1ktuVyhPbH1XFl384V+verWSs0TAzOUhweGE24tmug=";
+        rev = "eea266fd0c2d48628a0d9fe50e2568f9c82e779f";
+        hash = "sha256-1cqwWEBpwlY0lI+e6ao5lPBsOk7eEbJvf/tmt4ulhfA=";
       };
 
-      npmDepsHash = "sha256-/Nfw52YwlTftMbm+dVnx0CwoqLoJ4QyByUvrNrAphRI=";
+      npmDepsHash = "sha256-OSTLW6dTG/7136GiU6xNR010sg73MOxsqTLgE4wvdtY=";
 
       nativeBuildInputs = with pkgs; [
         python3
