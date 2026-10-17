@@ -14,6 +14,7 @@ in
   imports = [
     inputs.spicetify-nix.homeManagerModules.default
     inputs.home-config.homeModules.default
+    inputs.sops-nix.homeManagerModules.sops
   ];
 
   home = {
@@ -242,6 +243,9 @@ in
     Terminal=false
     Categories=Utility;
   '';
+
+  # TODO: move later
+  sops.gnupg.home = config.xdg.dataHome + "/gnupg";
 
   services = {
     kdeconnect = {
