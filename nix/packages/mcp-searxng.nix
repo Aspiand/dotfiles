@@ -5,11 +5,11 @@ let
     pkgs:
     pkgs.stdenv.mkDerivation rec {
       pname = "mcp-searxng";
-      version = "1.11.0";
+      version = "2.6.0";
 
       src = pkgs.fetchurl {
         url = "https://registry.npmjs.org/mcp-searxng/-/mcp-searxng-${version}.tgz";
-        hash = "sha256-7HsgXllmjOzwGTGVWVwX8nTG5YWOHxmq9H2tL3HiTJA=";
+        hash = "sha256-yYxc7sil19xGN0jl4tJBMs6TOpxljhTSrx7kC9PHCqk=";
       };
 
       sourceRoot = "package";

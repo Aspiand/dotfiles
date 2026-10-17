@@ -5,11 +5,11 @@ let
     pkgs:
     pkgs.stdenv.mkDerivation rec {
       pname = "mcp-server-trello";
-      version = "1.7.1";
+      version = "1.8.1";
 
       src = pkgs.fetchurl {
         url = "https://registry.npmjs.org/@delorenj/mcp-server-trello/-/mcp-server-trello-${version}.tgz";
-        hash = "sha256-JfjYy5CGJhtj5RCfMnrmFtqIXmPff9KbMl/0HPAj4l8=";
+        hash = "sha256-a+SQmO9I01SK5zVzjieTx7mNpIMFx7JV6NQm5bHu3kc=";
       };
 
       sourceRoot = "package";
