@@ -42,7 +42,6 @@ let
         pyyaml
         tomlkit
         truststore
-        ast-grep-cli
 
         # `[proxy]` dependencies. Keep this list in sync with upstream's
         # proxy extra; `headroom proxy` validates these imports at startup.

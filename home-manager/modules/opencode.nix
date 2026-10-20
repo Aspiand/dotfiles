@@ -4,11 +4,6 @@
   programs.opencode = {
     enableMcpIntegration = true;
 
-    extraPackages = with pkgs; [
-      codegraph
-      mempalace
-    ];
-
     settings = {
       autoshare = false;
       autoupdate = true;

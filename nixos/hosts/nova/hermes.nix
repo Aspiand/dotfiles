@@ -441,7 +441,7 @@
       exiftool # EXIF metadata read/write
 
       # Code intelligence
-      codegraph # pre-indexed code knowledge graph for AI agents
+      # codegraph # pre-indexed code knowledge graph for AI agents
     ];
 
     extraDependencyGroups = [

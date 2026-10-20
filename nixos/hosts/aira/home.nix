@@ -229,20 +229,6 @@ in
     };
   };
 
-  xdg.dataFile."applications/hermes.desktop".text = ''
-    [Desktop Entry]
-    Type=Application
-    Version=1.0
-    Name=Hermes
-    Comment=Hermes AI desktop client
-    Exec=${lib.getExe inputs.hermes-agent.packages.${pkgs.stdenv.hostPlatform.system}.desktop}
-    TryExec=${lib.getExe inputs.hermes-agent.packages.${pkgs.stdenv.hostPlatform.system}.desktop}
-    Icon=${
-      inputs.hermes-agent.packages.${pkgs.stdenv.hostPlatform.system}.desktop
-    }/share/hermes-desktop/dist/hermes.png
-    Terminal=false
-    Categories=Utility;
-  '';
 
   # TODO: move later
   sops.gnupg.home = config.xdg.dataHome + "/gnupg";

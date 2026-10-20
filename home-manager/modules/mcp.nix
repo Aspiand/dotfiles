@@ -21,9 +21,6 @@
         "stdio"
         "--read-only"
       ];
-      env.GITHUB_PERSONAL_ACCESS_TOKEN = {
-        file = config.sops.secrets."github-token".path;
-      };
     };
 
     markitdown.command = "${pkgs.markitdown-mcp}/bin/markitdown-mcp";
@@ -60,11 +57,4 @@
     mcp-victoriametrics
     mcp-victorialogs
   ];
-
-  sops.secrets = {
-    "github-token" = {
-      sopsFile = ../../secrets/common.yml;
-    };
-  };
-
 }

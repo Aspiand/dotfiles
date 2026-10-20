@@ -30,9 +30,7 @@
       url = "github:nousresearch/hermes-agent";
     };
 
-    # llm-agents = {
-    #   url = "github:numtide/llm-agents.nix";
-    # };
+    # llm-agents.url = "github:numtide/llm-agents.nix";
   };
 
   outputs =
@@ -43,6 +41,7 @@
       grub2-themes,
       spicetify-nix,
       sops-nix,
+      # llm-agents,
       dotfiles,
       ...
     }:
@@ -68,7 +67,10 @@
             dotfiles.nixosModules.github-token
             {
               system.nixos.revision = nixpkgs.lib.mkDefault (self.rev or self.dirtyRev or "Unknown");
-              nixpkgs.overlays = [ inputs.dotfiles.overlays.default ];
+              nixpkgs.overlays = [
+                inputs.dotfiles.overlays.default
+                # llm-agents.overlays.shared-nixpkgs
+              ];
               home-manager = {
                 extraSpecialArgs = { inherit inputs; };
                 useGlobalPkgs = true;
