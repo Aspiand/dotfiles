@@ -202,7 +202,10 @@
             EnvironmentFile = cfg.environmentFile;
           };
 
-          environment = cfg.environment;
+          environment = {
+            HOME = "/var/cache/headroom";
+            HEADROOM_WORKSPACE_DIR = "/var/cache/headroom";
+          } // cfg.environment;
         };
 
         networking.firewall = mkIf cfg.openFirewall {

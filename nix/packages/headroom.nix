@@ -1,64 +1,76 @@
 { ... }:
 
 let
-  wheelUrl = "https://github.com/headroomlabs-ai/headroom/releases/download/v0.27.0/headroom_ai-0.27.0-cp310-abi3-manylinux_2_28_x86_64.whl";
-  wheelHash = "sha256-ZA5npBdDJlN2WCqSaRoZKowkSO8LIWeg4UoqRYrb4t0=";
-  wheelAarch64Url = "https://github.com/headroomlabs-ai/headroom/releases/download/v0.27.0/headroom_ai-0.27.0-cp310-abi3-manylinux_2_28_aarch64.whl";
-  wheelAarch64Hash = "sha256-+GRVMswnAEPUP0DjFnYo2vKFC6FhCxFn30Cgy0LxQ4A=";
-
   mkHeadroom =
     pkgs:
     let
       python = pkgs.python313;
-      pythonPackages = pkgs.python313Packages;
-
-      isAarch64 = pkgs.stdenv.hostPlatform.isAarch64;
-      selectedUrl = if isAarch64 then wheelAarch64Url else wheelUrl;
-      selectedHash = if isAarch64 then wheelAarch64Hash else wheelHash;
+      pythonPackages = python.pkgs;
     in
-    pythonPackages.buildPythonPackage {
+    pythonPackages.buildPythonPackage rec {
       pname = "headroom-ai";
-      version = "0.27.0";
-      format = "wheel";
+      version = "0.41.0";
+      pyproject = true;
 
-      src = pkgs.fetchurl {
-        url = selectedUrl;
-        hash = selectedHash;
+      src = pkgs.fetchFromGitHub {
+        owner = "headroomlabs-ai";
+        repo = "headroom";
+        tag = "v${version}";
+        hash = "sha256-ITVrw5ruGnNI9t7pq+0Z6gsnqDDAB/5v7I3oOQM5AtE=";
       };
 
-      # cp310-abi3 wheel works with Python 3.10+ — including 3.13
-      dontBuild = true;
+      cargoDeps = pkgs.rustPlatform.fetchCargoVendor {
+        inherit pname version src;
+        hash = "sha256-RF1b24TIV3EASGfXKUHSrGgQGBUmJLYxzDEjb4fvKPo=";
+      };
 
-      # ponytail: proxy+mcp+code base deps only. ML/memory/image skipped.
-      # onnxruntime downloaded at runtime via ort-sys (permitted in Nix sandbox
-      # for wheel builds — no build-time network access needed).
-      propagatedBuildInputs = with pythonPackages; [
+      nativeBuildInputs = [
+        pkgs.pkg-config
+        pkgs.rustPlatform.cargoSetupHook
+        pkgs.rustPlatform.maturinBuildHook
+        pkgs.makeWrapper
+      ];
+
+      dependencies = with pythonPackages; [
+        # Base dependencies.
         tiktoken
         pydantic
         litellm
         click
         rich
         opentelemetry-api
+        pyyaml
+        tomlkit
+        truststore
+        ast-grep-cli
+
+        # `[proxy]` dependencies. Keep this list in sync with upstream's
+        # proxy extra; `headroom proxy` validates these imports at startup.
         fastapi
         uvicorn
+        orjson
         httpx
+        h2
         openai
         mcp
-        websockets
+        magika
         zstandard
-        h2
+        websockets
+        onnxruntime
+        transformers
       ];
 
-      # ponytail: ast-grep binary provided instead of python ast-grep-cli.
-      # Same CLI interface, nixpkgs pkgs.ast-grep maps to ast-grep-cli.
       postFixup = ''
         wrapProgram $out/bin/headroom \
           --prefix PATH : ${pkgs.lib.makeBinPath [ pkgs.ast-grep ]}
       '';
 
       doCheck = false;
-      dontCheckRuntimeDeps = true;
-      pythonImportsCheck = [ "headroom" ];
+      pythonImportsCheck = [
+        "headroom"
+        "headroom.proxy"
+        "headroom.proxy.server"
+      ];
 
       meta = with pkgs.lib; {
         description = "Context optimization layer for LLM applications — 60-95% token reduction";
