@@ -16,7 +16,7 @@ let
 
       nativeBuildInputs = [
         pkgs.nodejs
-        pkgs.pnpm_10_29_2
+        pkgs.pnpm_10
         pkgs.pnpmConfigHook
         pkgs.jq
       ];
@@ -24,7 +24,7 @@ let
       pnpmDeps = pkgs.fetchPnpmDeps {
         inherit (finalAttrs) pname version src;
         hash = "sha256-YZZTzZQe2U/Uxu90yWHdamfKPByl8kl72/gata0LQpA=";
-        pnpm = pkgs.pnpm_10_29_2;
+        pnpm = pkgs.pnpm_10;
         fetcherVersion = 3;
       };
 
