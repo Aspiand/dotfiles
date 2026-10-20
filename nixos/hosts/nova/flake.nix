@@ -60,7 +60,7 @@
 
           # AI
           hermes-agent.nixosModules.default
-          dotfiles.nixosModules.searxng
+          # dotfiles.nixosModules.searxng
           dotfiles.nixosModules.headroom
           ./hermes.nix
 

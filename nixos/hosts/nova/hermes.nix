@@ -21,10 +21,6 @@
       # HERMES_DASHBOARD = "1";
       # HERMES_DASHBOARD_HOST = "0.0.0.0";
       # HERMES_DASHBOARD_PORT = "9119";
-
-      SEARXNG_URL = "http://${config.services.searx.settings.server.bind_address or "127.0.0.1"}:${
-        toString (config.services.searx.settings.server.port or 8888)
-      }";
     };
 
     container = {
@@ -275,9 +271,8 @@
       # TODO: configure later
       web = {
         # search_backend = "ddgs";
-        search_backend = "searxng";
+        search_backend = "firecrawl";
         extract_backend = "firecrawl";
-        searxng_url = "http://127.0.0.1:8888";
       };
 
       logging = {
