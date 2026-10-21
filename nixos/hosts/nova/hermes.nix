@@ -43,19 +43,12 @@
     # };
 
     settings = {
-      model = {
-        default = "deepseek-flash";
-        context_length = 1000000;
-        provider = "9router";
-      };
+      model = { };
 
       providers = {
         "9router" = {
           base_url = "http://127.0.0.1:20128/v1";
           api_key = "\${NINEROUTER_API_KEY}";
-          default_model = "deepseek-flash";
-
-          "deepseek-flash".context_length = 1000000;
         };
 
         "openrouter" = {
@@ -64,12 +57,7 @@
         };
       };
 
-      model_aliases = {
-        # "deepseek-pro" = {
-        #   model = "sp/deepseek-v4-pro";
-        #   provider = "9router";
-        # };
-      };
+      model_aliases = { };
 
       # fallback_providers = [
       #   {
@@ -79,26 +67,26 @@
       # ];
 
       auxiliary = {
-        web_extract = {
-          provider = "9router";
-          model = "web-extract";
-        };
+        # web_extract = {
+        #   provider = "9router";
+        #   model = "web-extract";
+        # };
 
-        vision = {
-          provider = "9router";
-          model = "vision";
-        };
+        # vision = {
+        #   provider = "9router";
+        #   model = "vision";
+        # };
 
-        compression = {
-          provider = "9router";
-          model = "deepseek-flash";
-        };
+        # compression = {
+        #   provider = "9router";
+        #   model = "deepseek-flash";
+        # };
 
-        curator = {
-          provider = "9router";
-          model = "deepseek-flash";
-          timeout = 600;
-        };
+        # curator = {
+        #   provider = "9router";
+        #   model = "deepseek-flash";
+        #   timeout = 600;
+        # };
       };
 
       discord = {
@@ -348,14 +336,6 @@
         url = "https://mcp.deepwiki.com/mcp";
       };
 
-      codegraph = {
-        command = "codegraph";
-        args = [
-          "serve"
-          "--mcp"
-        ];
-      };
-
       victorialogs = {
         command = "${pkgs.mcp-victorialogs}/bin/mcp-victorialogs";
         env = {
@@ -395,7 +375,7 @@
       # Version control
       gh
       git
-      gitui
+      # gitui
 
       # Nix
       nix # nix eval, flake check, nix-shell
