@@ -60,7 +60,7 @@
             };
           appPackageLock = mkPackageLock {
             name = "${pname}-app-package-lock-${version}";
-            outputHash = "sha256-pFOUD0zCZF/W9izbOWX8AGr1B3vweLr8MAoMaOfKfcI=";
+            outputHash = "sha256-ioONXb1b8zcIANVwaXAeNjQa2p9q2Kxna530zEs7P5M=";
           };
           cliPackageLock = mkPackageLock {
             name = "${pname}-cli-package-lock-${version}";
@@ -70,7 +70,7 @@
           appNpmDeps = pkgs.fetchNpmDeps {
             inherit src;
             name = "${pname}-app-npm-deps-${version}";
-            hash = "sha256-lTWK9wpdBOj84S5K1OxV1uy+F+4IvT1QG8dVO7nHUo4=";
+            hash = "sha256-BP/44Lb3ApQ6/so4B9WDiM8cwInQn8n5PYRuO63dd7c=";
             postPatch = ''
               cp ${appPackageLock} package-lock.json
             '';
