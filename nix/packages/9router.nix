@@ -24,7 +24,7 @@
             owner = "decolua";
             repo = "9router";
             inherit rev;
-            hash = "sha256-HDB2UCPa58IWivLC551SWusfguLyR1DP5UNJnoDVgjw=";
+            hash = "sha256-X/8BZRBpcIcNLt4i091/LaNxcMW7RIiAqH1jk+ODF9Y=";
           };
           mkPackageLock =
             {
