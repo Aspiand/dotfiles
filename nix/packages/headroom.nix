@@ -52,6 +52,8 @@
           websockets
           onnxruntime
           transformers
+          # Declared in the wheel's Requires-Dist; pythonRuntimeDepsCheckHook fails without it.
+          ast-grep-cli
         ];
         postFixup = ''
           wrapProgram $out/bin/headroom \
