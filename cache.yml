@@ -1,8 +1,6 @@
 packages:
   arch:
     - x86_64-linux
-  ignore:
-    - 9router
 
 watch:
   # url: github:<owner>/<repo>  (or owner/repo)
