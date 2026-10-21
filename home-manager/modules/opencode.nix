@@ -1,81 +1,94 @@
 { config, pkgs, ... }:
 
 {
+  # Live-editable config, merged over the Nix-generated one.
+  # opencode merges ~/.config/opencode/opencode.json (from HM) then OPENCODE_CONFIG.
+  home.sessionVariables.OPENCODE_CONFIG = "${./../../.config/opencode/opencode.json}";
+
   programs.opencode = {
     enableMcpIntegration = true;
+    # OPENCODE_EXPERIMENTAL_LSP_TOOL=true
 
     settings = {
-      autoshare = false;
-      autoupdate = true;
-      effortLevel = "low";
-      skipWorkflowUsageWarning = true;
-      # permission = {
-      #   bash = true;
-      #   read = true;
-      #   write = true;
-      #   websearch = true;
+      autoupdate = false;
+      lsp = true;
+      formatter = true;
+      compaction.auto = true;
+      snapshot = true;
+      snapshots = true;
+      subagent_depth = 1;
+      plugin = [
+        "@firecrawl/opencode"
+        "opencode-wakatime"
+      ];
+
+      server.port = 4096;
+
+      # providers."9router" = {
+      #   npm = "@ai-sdk/openai-compatible";
+      #   name = "My 9router";
+      #   options = {
+      #     baseURL = "https://9router.astrapia-kokanue.ts.net/v1";
+      #     apiKey = "{env:NINEROUTER_API_KEY}"; # TODO: sops
+      #   };
       # };
-      worktree = {
-        baseRef = "fresh";
-      };
-      enabledPlugins = {
-        "impeccable@impeccable" = true;
-        "agent-skills@addy-agent-skills" = true;
-        "context7@claude-plugins-official" = true;
-        "ponytail@ponytail" = true;
-        "mempalace@mempalace" = true;
-        "understand-anything@understand-anything" = true;
-        "planning-with-files@planning-with-files" = true;
-      };
-      extraKnownMarketplaces = {
-        impeccable = {
-          source = {
-            source = "github";
-            repo = "pbakaus/impeccable";
+
+      websearch.provider = "firecrawl";
+
+      policies = [
+        {
+          action = "tool.use";
+          resource = {
+            shell = "sudo *";
+            effect = "deny";
           };
+        }
+      ];
+
+      permission = {
+        "*" = "ask";
+
+        edit = "allow";
+        grep = "allow";
+        glob = "allow";
+        lsp = "allow";
+        skill = "allow";
+        webfetch = "allow";
+        question = "allow";
+        websearch = "allow";
+        # task, doom_loop: left at "ask"
+
+        shell = {
+          "*" = "ask";
+          "git *" = "allow";
+          "git commit *" = "deny";
+          "git push *" = "deny";
+          "rm *" = "deny";
         };
-        ponytail = {
-          source = {
-            source = "github";
-            repo = "DietrichGebert/ponytail";
-          };
+
+        read = {
+          "*" = "allow";
+          "*.env" = "deny";
+          "*.env.*" = "deny";
+          "*.env.example" = "allow";
         };
-        mempalace = {
-          source = {
-            source = "github";
-            repo = "MemPalace/mempalace";
-          };
-        };
-        understand-anything = {
-          source = {
-            source = "github";
-            repo = "Egonex-AI/Understand-Anything";
-          };
-        };
-        addy-agent-skills = {
-          source = {
-            source = "github";
-            repo = "addyosmani/agent-skills";
-          };
-        };
-        planning-with-files = {
-          source = {
-            source = "github";
-            repo = "OthmanAdi/planning-with-files";
-          };
-        };
+
+        "codegraph_*" = "allow";
+        "deepwiki_*" = "allow";
+        "fetch_*" = "allow";
+        "github_*" = "allow";
+        "markitdown_*" = "allow";
+        "mempalace_*" = "allow";
+        "nixos_*" = "allow";
       };
 
-      providers = {
-        "9router" = {
-          npm = "@ai-sdk/openai-compatible";
-          name = "My 9router";
-          options = {
-            baseURL = "https://9router.astrapia-kokanue.ts.net/v1";
-            apiKey = "{env:NINEROUTER_API_KEY}"; # TODO: sops
-          };
-        };
-      };
+      # permissions = [
+      #   {
+      #     action = "websearch";
+      #     resource = "*";
+      #     effect = "allow";
+      #   }
+      # ];
     };
 
     tui = {
