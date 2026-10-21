@@ -2,108 +2,85 @@
 
 { ... }:
 
-let
-  mkPackage =
-    pkgs:
-    pkgs.callPackage (
-      {
-        lib,
-        stdenv,
-        meson,
-        ninja,
-        glib,
-        nodejs,
-        wrapGAppsHook4,
-        appstream-glib,
-        gobject-introspection,
-        shared-mime-info,
-        gst_all_1,
-        clapper,
-        gjs,
-        gtk4,
-        wayland,
-        wayland-protocols,
-      }:
-      let
-        extensionName = "hanabi";
-        extensionUuid = "hanabi-extension@jeffshee.github.io";
-      in
-      stdenv.mkDerivation rec {
-        pname = "gnome-ext-hanabi";
-        version = "unstable-2026-06-16";
-
-        src = pkgs.fetchFromGitHub {
-          owner = "jeffshee";
-          repo = "gnome-ext-hanabi";
-          rev = "1b2ba5938a536d208bed8a85eb2fb113537c6f02";
-          hash = "sha256-1I4mB6rJ7XBD+blBFsWcqGUPRXl2wFP/nT3ptV96JLY=";
-        };
-
-        nativeBuildInputs = [
-          meson
-          ninja
-          glib
-          nodejs
-          wrapGAppsHook4
-          appstream-glib
-          gobject-introspection
-          shared-mime-info
-        ];
-
-        buildInputs = [
-          gst_all_1.gstreamer
-          gst_all_1.gst-plugins-base
-          gst_all_1.gst-plugins-good
-          gst_all_1.gst-plugins-bad
-          gst_all_1.gst-plugins-ugly
-          gst_all_1.gst-libav
-          clapper
-          gjs
-          gtk4
-          glib
-          wayland
-          wayland-protocols
-        ];
-
-        dontWrapGApps = true;
-
-        postPatch = ''
-          patchShebangs build-aux/meson-postinstall.sh
-        '';
-
-        postFixup = ''
-          wrapGApp "$out/share/gnome-shell/extensions/${extensionUuid}/renderer/renderer.js"
-
-          ln -s "$out/share/gsettings-schemas/${pname}-${version}/glib-2.0/schemas" \
-            "$out/share/gnome-shell/extensions/${extensionUuid}/schemas"
-        '';
-
-        passthru = {
-          inherit extensionName extensionUuid;
-        };
-
-        meta = with lib; {
-          description = "GNOME Shell extension for animated video wallpapers";
-          homepage = "https://github.com/jeffshee/gnome-ext-hanabi";
-          license = licenses.gpl3Plus;
-          platforms = platforms.linux;
-        };
-      }
-    ) { };
-in
 {
-  flake.overlays.hanabi = final: _: {
-    hanabi = mkPackage final;
-  };
-
   perSystem =
     { pkgs, ... }:
-    let
-      hanabi = mkPackage pkgs;
-    in
     {
-      packages = {
-        inherit hanabi;
-      };
+      packages.hanabi = pkgs.callPackage (
+        {
+          lib,
+          stdenv,
+          meson,
+          ninja,
+          glib,
+          nodejs,
+          wrapGAppsHook4,
+          appstream-glib,
+          gobject-introspection,
+          shared-mime-info,
+          gst_all_1,
+          clapper,
+          gjs,
+          gtk4,
+          wayland,
+          wayland-protocols,
+        }:
+        let
+          extensionName = "hanabi";
+          extensionUuid = "hanabi-extension@jeffshee.github.io";
+        in
+        stdenv.mkDerivation rec {
+          pname = "gnome-ext-hanabi";
+          version = "unstable-2026-06-16";
+          src = pkgs.fetchFromGitHub {
+            owner = "jeffshee";
+            repo = "gnome-ext-hanabi";
+            rev = "1b2ba5938a536d208bed8a85eb2fb113537c6f02";
+            hash = "sha256-1I4mB6rJ7XBD+blBFsWcqGUPRXl2wFP/nT3ptV96JLY=";
+          };
+          nativeBuildInputs = [
+            meson
+            ninja
+            glib
+            nodejs
+            wrapGAppsHook4
+            appstream-glib
+            gobject-introspection
+            shared-mime-info
+          ];
+          buildInputs = [
+            gst_all_1.gstreamer
+            gst_all_1.gst-plugins-base
+            gst_all_1.gst-plugins-good
+            gst_all_1.gst-plugins-bad
+            gst_all_1.gst-plugins-ugly
+            gst_all_1.gst-libav
+            clapper
+            gjs
+            gtk4
+            glib
+            wayland
+            wayland-protocols
+          ];
+          dontWrapGApps = true;
+          postPatch = ''
+            patchShebangs build-aux/meson-postinstall.sh
+          '';
+          postFixup = ''
+            wrapGApp "$out/share/gnome-shell/extensions/${extensionUuid}/renderer/renderer.js"
+            ln -s "$out/share/gsettings-schemas/${pname}-${version}/glib-2.0/schemas" \
+              "$out/share/gnome-shell/extensions/${extensionUuid}/schemas"
+          '';
+          passthru = {
+            inherit extensionName extensionUuid;
+          };
+          meta = with lib; {
+            description = "GNOME Shell extension for animated video wallpapers";
+            homepage = "https://github.com/jeffshee/gnome-ext-hanabi";
+            license = licenses.gpl3Plus;
+            platforms = platforms.linux;
+          };
+        }
+      ) { };
     };
 }

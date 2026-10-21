@@ -39,21 +39,6 @@ let
     in
     builtins.foldl' (acc: m: acc // m) { } mods;
 
-  # Build the default overlay: merge all per-package overlays (from flake-parts)
-  # plus extend nixpkgs lib with `libExt` (usually `{ my = import ./lib ... }`).
-  mkDefaultOverlay =
-    { overlays, libExt }:
-    final: prev:
-    let
-      base = lib.foldl' (acc: overlay: acc // (overlay final acc)) { } (
-        lib.attrValues (lib.removeAttrs overlays [ "default" ])
-      );
-    in
-    base
-    // {
-      lib = prev.lib.extend (_: super: libExt super);
-    };
-
   # Run mylib tests (#[test]) and produce a pass/fail derivation.
   runTests =
     { pkgs, mylib }:
@@ -81,7 +66,6 @@ in
     mkDefaults
     importTree
     loadCustomModules
-    mkDefaultOverlay
     runTests
     ;
 }

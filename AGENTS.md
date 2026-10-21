@@ -1,11 +1,24 @@
 # Dotfiles — NixOS Configuration Repository
 
+## Rules
+
+- **DO NOT DECRYPT THE SECRETS.** Never run `sops -d`, `sops exec-env`, `sops edit` unless
+  asked, or any other command that opens the contents of `secrets/`. To reference a secret in
+  config, use its path (`config.sops.secrets.<name>.path`), never its contents.
+- **Never print secret contents** to chat, logs, new files, or commits — including anything
+  already decrypted by accident. If a secret is exposed, stop and report it.
+- **Never commit plaintext.** Every file under `secrets/` must be `sops` output (`.yml`,
+  `.json`, `.ini`, `.env`, `.enc`). A plaintext file there is a bug — do not stage it.
+- Changes to `.sops.yaml` (keys, recipients, `creation_rules`) are security changes: explain
+  the impact before touching it.
+- Everything else follows the repo conventions below.
+
 ## Architecture
 
 ```
 ./
 ├── flake.nix               # flake-parts + importTree + lib helpers
-├── lib/                    # lib helpers: mkDefaults, importTree, loadCustomModules, mkDefaultOverlay, runTests
+├── lib/                    # mkDefaults, importTree, loadCustomModules, runTests
 ├── nix/
 │   ├── packages/           # Package derivations (auto-imported, exposed as overlays)
 │   ├── wrappers/           # Wrapped CLI tools (auto-imported, `nix run .#<name>`)
@@ -14,9 +27,11 @@
 │   ├── modules/            # Preconfigured NixOS modules (auto-imported)
 │   └── hosts/*/            # Standalone host flakes
 ├── home-manager/           # Standalone Home Manager flake (own inputs)
-├── docs/                   # Guides: secrets, cache, update, rustic, cache-report
+├── docs/                   # Guides: SECRETS, cache, update, rustic, ci
 ├── secrets/                # SOPS-encrypted secrets (see docs/SECRETS.md)
-└── .github/workflows/      # CI: cache build, flake check, cache report
+├── cache.yml               # Package list + watch list for the CI cache build
+├── CACHE_REPORT.md         # Generated cache report (written by CI)
+└── .github/workflows/      # CI: build, check, update
 ```
 
 Root flake auto-imports `./nix/packages` + `./nix/wrappers` + `./nixos/modules` via `importTree`.
@@ -107,32 +122,54 @@ exposed as `nix run .#<name>`.
 }
 ```
 
-See `nix/wrappers/` for the current list of wrapped tools.
+Wrapper outputs live in `packages.<system>` too, but they are **not** injected into
+`overlays.default` — several share names with nixpkgs attrs (`git`, `tmux`, `fzf`) and would
+shadow them. Add them to a host's `environment.systemPackages` explicitly, or via `my-tools`.
 
 ## Packages (nix/packages/)
 
-Package derivations auto-import into the flake and are exposed as `nixpkgs.overlays.<name>`
-(plus a combined `overlays.default`). See `README.md` for consumption examples.
+Package derivations auto-import into the flake as `packages.<system>.<name>` only. The single
+`overlays.default` is generated from those packages, so `pkgs.<name>` on a host is the *same
+derivation* as `nix build .#<name>` — always built against the root flake's nixpkgs.
+
+That means a package does **not** see host-local pkgs tweaks (`allowUnfree`, extra overlays,
+`python3Packages` overrides). If one package genuinely needs them, give that file a `final:`
+overlay of its own instead of changing the pattern for everything.
+
+See `README.md` for consumption examples.
 
 ## Hosts (nixos/hosts/)
 
 Each directory under `nixos/hosts/` is a **standalone flake** — its own `flake.nix` referencing
 the root via `path:../../../`, plus host-local `.nix` config. Enumerate hosts: `ls nixos/hosts/`.
 
+Hosts pin their own `nixpkgs` channel; the root flake's `nixpkgs` is independent and can drift
+from it. `pkgs-unstable` is passed to hosts as a `specialArgs` extra where needed.
+
 ## Home Manager (home-manager/)
 
 Standalone Home Manager flake with its own inputs (home-manager, sops-nix). Not wired into the
-root flake.
+root flake. Layout: `flake.nix`, `default.nix`, `modules/`, `profiles/`.
 
 ## Secrets (secrets/ + docs/SECRETS.md)
 
 SOPS-encrypted per-environment files referenced by modules via `sops.secrets.*`.
-See [docs/SECRETS.md](docs/SECRETS.md) for setup.
+Recipients and `creation_rules` live in `.sops.yaml`. See [docs/SECRETS.md](docs/SECRETS.md).
 
-## CI (`.github/workflows/`) WIP
+Editing:
 
-- `build.yml` — scheduled R2 nix cache build (config: `cache.yml`, report: `docs/cache-report.md`)
-- `check.yml` — flake check on push
+```sh
+sops secrets/<file>
+```
+
+Never decrypt into the repo. See the Rules section at the top.
+
+## CI (`.github/workflows/`)
+
+- `build.yml` — scheduled R2 nix cache build (package list and watch list: `cache.yml`;
+  output report: `CACHE_REPORT.md`)
+- `check.yml` — `nix flake check` on every push
+- `update.yml` — daily auto-update of watched inputs; opens/merges an `auto-update/*` branch
 
 See [docs/cache.md](docs/cache.md) and [docs/update.md](docs/update.md).
 
@@ -140,6 +177,7 @@ See [docs/cache.md](docs/cache.md) and [docs/update.md](docs/update.md).
 
 ```sh
 nix flake check --no-build        # runs `checks.lib-tests` (lib/test.nix) + validates the flake
+nix build .#<package>             # build one package
 ```
 
 `lib/test.nix` unit-tests `mkDefaults` (flat/nested/deep attrs, lists, empty). Failures surface as
@@ -153,3 +191,18 @@ a failing derivation.
 3. Hosts consume per the table above — preconfigured: add `dotfiles.nixosModules.<name>` to the host
    module list; custom def: enabled automatically via `dotfiles.modules`.
 4. Run `nix flake check --no-build` to validate.
+
+## Adding a Package
+
+1. Create `nix/packages/<name>.nix`:
+
+   ```nix
+   { ... }: {
+     perSystem = { pkgs, ... }: {
+       packages.<name> = pkgs.<builder> { ... };
+     };
+   }
+   ```
+
+2. No overlay, no `mkPackage` wrapper — the root overlay picks it up automatically.
+3. Add the package name to `cache.yml` if CI should cache it.
