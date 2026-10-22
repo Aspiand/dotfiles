@@ -65,7 +65,7 @@
           cliPackageLock = mkPackageLock {
             name = "${pname}-cli-package-lock-${version}";
             sourceRoot = "source/cli";
-            outputHash = "sha256-gL7nYZ+1i9zjQLbRiDqheLoA/baryxd0kDg3a4+bers=";
+            outputHash = "sha256-bvbCXQs+MudREWNoQISUANICTORMldHlSYXYGSIx8q8=";
           };
           appNpmDeps = pkgs.fetchNpmDeps {
             inherit src;
