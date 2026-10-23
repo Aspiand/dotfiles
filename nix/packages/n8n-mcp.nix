@@ -6,14 +6,14 @@
     {
       packages.n8n-mcp = pkgs.buildNpmPackage rec {
         pname = "n8n-mcp";
-        version = "2.67.1";
+        version = "2.96.2";
         src = pkgs.fetchFromGitHub {
           owner = "czlonkowski";
           repo = "n8n-mcp";
           rev = "v${version}";
-          hash = "sha256-h+wokO/SwSMM5Dwrx1zXyFvkN29SgZkdu4Ughbyxi4g=";
+          hash = "sha256-muKAi0h63/6Rel+k1odq1IW+493+sIdpu1joUobefJ4=";
         };
-        npmDepsHash = "sha256-oaK52l4qB7SVmRiRar016WksC63G+JZZ0VRh4/I+gRc=";
+        npmDepsHash = "sha256-lofFs4OSTvG1PYzzLadZh8EDJ1PGqcNRq0E/ZBP54wM=";
         npmDepsFetcherVersion = 2;
         nativeBuildInputs = with pkgs; [
           python3
