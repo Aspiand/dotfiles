@@ -21,6 +21,7 @@
 
       plugins = [
         "@firecrawl/opencode"
+        "@upstash/context7-opencode"
         "opencode-wakatime"
         "opencode-models-discovery@2.0.0"
       ];
