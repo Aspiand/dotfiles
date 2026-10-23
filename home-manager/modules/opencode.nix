@@ -110,6 +110,27 @@
 
     context = ''
       You are Aspian's opencode agent.
+
+      ## Code comments
+      - Write inline comments in English.
+      - Only comment where the code genuinely needs it. Prefer no comment over a
+        redundant one.
+
+      ## External knowledge
+      - context7 is the default for library, framework and API documentation.
+      - For anything nixpkgs / NixOS / home-manager / flakes related, use the
+        nixos tools instead of guessing from memory (nixpkgs moves fast).
+      - deepwiki is the fastest way to understand a specific GitHub repository:
+        call read_wiki_structure first to see available topics, then use
+        read_wiki_contents or ask_wiki_question.
+      - A deepwiki page is an index-time snapshot, not the live repo. Always
+        check when that index was last updated (the date shown by the wiki /
+        repo metadata) and compare it with today's date. If the index is old,
+        or the repo has clearly moved on since then, say so explicitly and
+        verify the answer against the actual source (read files via codegraph /
+        github tools, or fetch the upstream page) before relying on it.
+      - Never present stale deepwiki-derived facts as current without that
+        freshness caveat.
     '';
   };
 }
