@@ -84,6 +84,7 @@
         };
 
         "codegraph_*" = "allow";
+        "context7_*" = "allow";
         "deepwiki_*" = "allow";
         "fetch_*" = "allow";
         "github_*" = "allow";
