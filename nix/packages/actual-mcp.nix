@@ -6,7 +6,7 @@
     {
       packages.actual-mcp = pkgs.buildNpmPackage rec {
         pname = "actual-mcp";
-        version = "1.15.0";
+        version = "1.15.1";
         src = pkgs.fetchFromGitHub {
           owner = "s-stefanov";
           repo = "actual-mcp";
