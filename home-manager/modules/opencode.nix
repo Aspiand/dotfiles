@@ -17,21 +17,30 @@
       snapshot = true;
       snapshots = true;
       subagent_depth = 1;
-      plugin = [
-        "@firecrawl/opencode"
-        "opencode-wakatime"
-      ];
-
       server.port = 4096;
 
-      # providers."9router" = {
-      #   npm = "@ai-sdk/openai-compatible";
-      #   name = "My 9router";
-      #   options = {
-      #     baseURL = "https://9router.astrapia-kokanue.ts.net/v1";
-      #     apiKey = "{env:NINEROUTER_API_KEY}"; # TODO: sops
-      #   };
-      # };
+      plugins = [
+        "@firecrawl/opencode"
+        "opencode-wakatime"
+        "opencode-models-discovery@2.0.0"
+      ];
+
+      providers."9router" = {
+        name = "9router";
+        package = "@opencode-ai/ai/providers/openai-compatible";
+        settings = {
+          baseURL = "https://9router.astrapia-kokanue.ts.net/v1";
+          # apiKey = "{env:NINEROUTER_API_KEY}"; # TODO: sops
+          apiKey = "sk-dc180c793b48d514-ex6dld-418a87bd";
+          modelsDiscovery = {
+            enabled = true;
+            cache = {
+              enabled = true;
+              ttlSeconds = 86400;
+            };
+          };
+        };
+      };
 
       websearch.provider = "firecrawl";
 

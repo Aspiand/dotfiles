@@ -36,7 +36,8 @@
       "mcp__plugin_mempalace_mempalace__mempalace_status",
       "mcp__plugin_hm_deepwiki__read_wiki_structure",
       "mcp__plugin_hm_deepwiki__read_wiki_contents",
-      "Skill(update-config)"
+      "Skill(update-config)",
+      "Bash(gh search *)"
     ]
   }
 }
