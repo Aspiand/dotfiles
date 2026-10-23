@@ -35,6 +35,7 @@
           apiKey = "sk-dc180c793b48d514-ex6dld-418a87bd";
           modelsDiscovery = {
             enabled = true;
+            modelInfoFormat = "openrouter";
             cache = {
               enabled = true;
               ttlSeconds = 86400;
