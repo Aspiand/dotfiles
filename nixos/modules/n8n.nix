@@ -2,21 +2,14 @@
   Secrets live in secrets/n8n.yml as YAML key `env`, containing dotenv text:
 
     env: |
-      N8N_ENCRYPTION_KEY=...
-      WEBHOOK_URL=https://n8n.example.com/
-
-  tags:
-    - untested
+      N8N_ENCRYPTION_KEY=... # openssl rand -hex 32
+      N8N_WEBHOOK_URL=https://n8n.example.com/
 */
 
 {
   flake.nixosModules.n8n =
     { config, lib, ... }:
-    let
-      mkDefaults = (import ../../lib { inherit lib; }).mkDefaults;
-    in
     {
-
       services.n8n = {
         enable = true;
         openFirewall = false;
@@ -25,15 +18,15 @@
           N8N_USER_FOLDER = "/var/lib/n8n";
           N8N_LISTEN_ADDRESS = "127.0.0.1";
           N8N_PROTOCOL = "https";
+          N8N_PROXY_HOPS = 1;
           N8N_DIAGNOSTICS_ENABLED = false;
-          N8N_VERSION_NOTIFICATIONS_ENABLED = true;
+          N8N_VERSION_NOTIFICATIONS_ENABLED = false;
           N8N_SECURE_COOKIE = true;
           DB_TYPE = "sqlite";
           DB_SQLITE_POOL_SIZE = 2;
           DB_SQLITE_VACUUM_ON_STARTUP = true;
           EXECUTIONS_MODE = "regular";
           N8N_RUNNERS_ENABLED = true;
-          OFFLOAD_MANUAL_EXECUTIONS_TO_WORKERS = true;
 
           N8N_LOG_LEVEL = "warn";
           N8N_METRICS = true;
