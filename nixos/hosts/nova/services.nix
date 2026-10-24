@@ -52,6 +52,7 @@
           "gallery.aspian.my.id" = "http://127.0.0.1:2283";
           "couchdb.aspian.my.id" = "http://127.0.0.1:5984";
           "vault.aspian.my.id" = "http://127.0.0.1:8222";
+          "n8n.aspian.my.id" = "http://127.0.0.1:5678";
         };
         default = "http_status:404";
       };

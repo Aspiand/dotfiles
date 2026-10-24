@@ -57,6 +57,7 @@
           dotfiles.modules
           dotfiles.nixosModules.base
           dotfiles.nixosModules.ssh
+          dotfiles.nixosModules.n8n
 
           # AI
           hermes-agent.nixosModules.default
