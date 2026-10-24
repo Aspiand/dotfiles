@@ -14,7 +14,6 @@
         openFirewall = false;
         environment = {
           N8N_PORT = 5678;
-          N8N_USER_FOLDER = "/var/lib/n8n";
           N8N_LISTEN_ADDRESS = "127.0.0.1";
           N8N_PROTOCOL = "http";
           N8N_PROXY_HOPS = 1;
@@ -26,8 +25,7 @@
           DB_SQLITE_VACUUM_ON_STARTUP = true;
           EXECUTIONS_MODE = "regular";
           N8N_RUNNERS_ENABLED = true;
-          N8N_WEBHOOK_URL=n8n.aspian.my.id
-
+          N8N_WEBHOOK_URL = "https://n8n.aspian.my.id/";
           N8N_LOG_LEVEL = "warn";
           N8N_METRICS = true;
           QUEUE_HEALTH_CHECK_ACTIVE = true;
