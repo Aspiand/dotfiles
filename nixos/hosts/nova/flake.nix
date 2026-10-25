@@ -57,12 +57,13 @@
           dotfiles.modules
           dotfiles.nixosModules.base
           dotfiles.nixosModules.ssh
-          dotfiles.nixosModules.n8n
+          # dotfiles.nixosModules.n8n
 
           # AI
           hermes-agent.nixosModules.default
           # dotfiles.nixosModules.searxng
           dotfiles.nixosModules.headroom
+          dotfiles.nixosModules.searxng
           ./hermes.nix
 
           # Monitoring
