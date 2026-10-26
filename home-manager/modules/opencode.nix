@@ -72,6 +72,15 @@
         shell = {
           "*" = "ask";
           "git *" = "allow";
+          "nix flake check *" = "allow";
+          "nix flake show *" = "allow";
+          "nix flake metadata *" = "allow";
+          "nix eval *" = "allow";
+          "nix fmt *" = "allow";
+          "nix print-dev *" = "allow";
+          "nix path *" = "allow";
+          "nix hash *" = "allow";
+          "nix log *" = "allow";
           "git commit *" = "deny";
           "git push *" = "deny";
           "rm *" = "deny";
@@ -133,6 +142,12 @@
         github tools, or fetch the upstream page) before relying on it.
       - Never present stale deepwiki-derived facts as current without that
         freshness caveat.
+
+      ## Questions
+      - When the user asks a question, answer it FIRST. Do not skip ahead
+        and continue previous work before answering. After answering, only
+        continue work if the user's intent is to continue; otherwise stop
+        and wait.
     '';
   };
 }
