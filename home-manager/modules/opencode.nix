@@ -75,6 +75,7 @@
           "git commit *" = "deny";
           "git push *" = "deny";
           "rm *" = "deny";
+          "ssh *" = "deny";
         };
 
         read = {
