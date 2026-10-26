@@ -63,6 +63,7 @@
           hermes-agent.nixosModules.default
           # dotfiles.nixosModules.searxng
           dotfiles.nixosModules.headroom
+          dotfiles.nixosModules.hindsight
           ./hermes.nix
 
           # Monitoring

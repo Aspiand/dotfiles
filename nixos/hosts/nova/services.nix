@@ -11,6 +11,11 @@
       enable = true;
     };
 
+    # No LLM is wired yet: retain uses chunk storage and recall works, but
+    # reflect/consolidation stay disabled. Point this at 9router or another
+    # provider and add the key through environmentFiles when ready.
+    hindsight.environment.HINDSIGHT_API_LLM_PROVIDER = "none";
+
     couchdb = {
       enable = true;
       bindAddress = "127.0.0.1";
