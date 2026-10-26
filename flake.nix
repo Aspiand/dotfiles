@@ -48,7 +48,7 @@
           ++ (flakeLib.importTree ./nix/wrappers);
 
         perSystem = { pkgs, lib, ... }: {
-          formatter = pkgs.nixpkgs-fmt;
+          formatter = pkgs.nixfmt;
 
           checks.lib-tests = flakeLib.runTests {
             inherit pkgs;

@@ -18,9 +18,19 @@
 
   The Assistant sandbox is the n8n-sandbox service: an API that n8n reaches on
   127.0.0.1:8090 plus a privileged Docker-in-Docker runner that spawns one
-  container per Assistant session. n8n-sandbox-certs mints the mTLS material
-  into /var/lib/n8n-sandbox/tls; delete that directory and restart that unit to
-  rotate it.
+  container per Assistant session. The mTLS material is generated into
+  /var/lib/n8n-sandbox/tls before the API container starts. To rotate it, stop
+  docker-sandbox-runner-1 and docker-sandbox-api, delete that directory, then
+  start docker-sandbox-api (it regenerates the material) and the runner again.
+
+  The model provider and web search are configured in the UI (Settings >
+  Assistant / AI settings), not here: no N8N_INSTANCE_AI_MODEL_API_KEY or
+  INSTANCE_AI_BRAVE_SEARCH_API_KEY is required. For web search the bundled
+  SearXNG instance is reachable at http://127.0.0.1:8888 (its JSON API is on).
+
+  Verify after a rebuild:
+    curl -fsS http://127.0.0.1:8090/healthz        # {"status":"ok"}
+    journalctl -u docker-sandbox-api -u docker-sandbox-runner-1 -f
 */
 
 {
@@ -46,7 +56,11 @@
         ${docker} network inspect n8n-sandbox >/dev/null 2>&1 || ${docker} network create n8n-sandbox
       '';
 
-      # bootstrap-mtls.sh is idempotent and keeps an existing CA.
+      # bootstrap-mtls.sh is idempotent and keeps an existing CA. Keys stay at
+      # 0600: the API container's copy is chowned to its own user, and the
+      # runner runs as root inside its (privileged) container, so neither needs
+      # --world-readable. Do not add it: it would also expose the CA key on the
+      # host.
       certsScript = pkgs.writeShellScript "n8n-sandbox-certs" ''
         exec ${docker} run --rm --user 0:0 -e NUM_RUNNERS=1 \
           -v ${sandboxStateDir}/tls:/tls \
@@ -116,24 +130,11 @@
         };
       };
 
-      systemd.services.n8n-sandbox-certs = {
-        description = "mTLS material for the n8n Assistant sandbox";
-        after = [ "docker.service" ];
-        requires = [ "docker.service" ];
-        before = [
-          "docker-sandbox-api.service"
-          "docker-sandbox-runner-1.service"
-        ];
-        requiredBy = [
-          "docker-sandbox-api.service"
-          "docker-sandbox-runner-1.service"
-        ];
-        serviceConfig = {
-          Type = "oneshot";
-          RemainAfterExit = true;
-          ExecStart = certsScript;
-        };
-      };
+      # Generate the mTLS material before the API container starts. Running this
+      # in ExecStartPre instead of a separate unit makes the container's restart
+      # loop self-healing: a failed image pull or a wiped cert directory is
+      # retried on the next start attempt.
+      systemd.services.docker-sandbox-api.serviceConfig.ExecStartPre = lib.mkBefore [ certsScript ];
 
       systemd.tmpfiles.rules = [
         "d ${sandboxStateDir} 0755 root root -"
