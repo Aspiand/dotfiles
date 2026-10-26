@@ -81,6 +81,7 @@
           "nix path *" = "allow";
           "nix hash *" = "allow";
           "nix log *" = "allow";
+          "git add *" = "deny";
           "git commit *" = "deny";
           "git push *" = "deny";
           "rm *" = "deny";
