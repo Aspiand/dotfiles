@@ -7,6 +7,10 @@
 
   programs.opencode = {
     enableMcpIntegration = true;
+    extraPackages = with pkgs; [
+      yq
+    ];
+
     # OPENCODE_EXPERIMENTAL_LSP_TOOL=true
 
     settings = {
@@ -93,6 +97,8 @@
           "nix path *" = "allow";
           "nix print-dev *" = "allow";
 
+          "yq *" = "allow";
+
           "git add *" = "deny";
           "git commit *" = "deny";
           "git push *" = "deny";
@@ -139,6 +145,9 @@
       - Write inline comments in English.
       - Only comment where the code genuinely needs it. Prefer no comment over a
         redundant one.
+
+      ## Shell tools
+      - yq is available for JSON/YAML processing. Prefer it over jq/python one-liners.
 
       ## External knowledge
       - context7 is the default for library, framework and API documentation.
