@@ -25,10 +25,11 @@
 { ... }:
 {
   flake.customModules.hindsight =
-    { config
-    , lib
-    , pkgs
-    , ...
+    {
+      config,
+      lib,
+      pkgs,
+      ...
     }:
     let
       cfg = config.services.hindsight;
@@ -43,6 +44,20 @@
       inherit (cfg) database controlPlane;
 
       isSocket = lib.hasPrefix "/" database.host;
+
+      # Loopback binds need no firewall opening; "127.0.0.1" alone is not
+      # enough because "::1"/"localhost" are just as unreachable from outside.
+      isLoopback =
+        host:
+        builtins.elem host [
+          "127.0.0.1"
+          "::1"
+          "[::1]"
+          "localhost"
+        ];
+
+      # Double-quote a PostgreSQL identifier, escaping embedded quotes.
+      sqlIdent = name: "\"" + lib.replaceStrings [ "\"" ] [ "\"\"" ] name + "\"";
 
       # Peer authentication over the Unix socket. asyncpg accepts `host` as a
       # query parameter pointing at the socket directory.
@@ -300,14 +315,28 @@
 
           port = mkOption {
             type = types.port;
-            default = 5432;
-            description = "Database port.";
+            default = if database.enable then config.services.postgresql.settings.port else 5432;
+            defaultText = lib.literalExpression ''
+              if config.services.hindsight.database.enable then
+                config.services.postgresql.settings.port
+              else
+                5432
+            '';
+            description = ''
+              Database port. Follows `services.postgresql.settings.port` for a
+              managed local database, so changing the server port does not
+              leave the socket URL and the setup hook pointing at the old one.
+            '';
           };
 
           user = mkOption {
             type = types.str;
             default = "hindsight";
-            description = "Database role. Should match the service user for peer authentication.";
+            description = ''
+              Database role. With a Unix socket host it must match the service
+              user (`hindsight`) because PostgreSQL peer authentication compares
+              the two.
+            '';
           };
 
           passwordFile = mkOption {
@@ -425,15 +454,19 @@
       config = mkIf cfg.enable {
         assertions = [
           {
-            assertion = !usePasswordWrapper || database.passwordFile != null;
-            message = "services.hindsight.database.passwordFile must be set when the database host is TCP.";
-          }
-          {
             assertion =
               isSocket || database.url != null || database.passwordFile != null || cfg.environmentFiles != [ ];
             message = ''
               services.hindsight.database: a TCP database host needs passwordFile,
               url, or a HINDSIGHT_API_DATABASE_URL in environmentFiles.
+            '';
+          }
+          {
+            assertion = !isSocket || database.user == "hindsight";
+            message = ''
+              services.hindsight.database.user must be "hindsight" with a Unix-socket
+              host: the service runs as that user and PostgreSQL peer authentication
+              requires the role name to match.
             '';
           }
           {
@@ -443,6 +476,14 @@
           {
             assertion = !controlPlane.enable || cfg.port != controlPlane.port;
             message = "services.hindsight.port and services.hindsight.controlPlane.port must differ.";
+          }
+          {
+            assertion = !cfg.localModels.enable || cfg.package != pkgs.hindsight-api-slim;
+            message = ''
+              services.hindsight.localModels.enable = true requires a package with
+              local ML dependencies. Set localModels.enable = false when using
+              pkgs.hindsight-api-slim.
+            '';
           }
         ];
 
@@ -457,7 +498,10 @@
           ensureUsers = mkIf database.createDB [
             {
               name = database.user;
-              ensureDBOwnership = true;
+              # ensureDBOwnership re-owns the database named after the *user*,
+              # not `database.name`, so only use it when both agree. A differing
+              # name is re-owned by the setup hook below.
+              ensureDBOwnership = database.name == database.user;
               ensureClauses.login = true;
             }
           ];
@@ -470,13 +514,35 @@
                 CREATE EXTENSION IF NOT EXISTS vector;
                 CREATE EXTENSION IF NOT EXISTS pg_trgm;
                 CREATE EXTENSION IF NOT EXISTS btree_gin;
+                ALTER DATABASE ${sqlIdent database.name} OWNER TO ${sqlIdent database.user};
               '';
+
+              # SQL literal, quotes doubled. Kept separate so the identifier
+              # quoting of the script above is not reused for a value.
+              dbNameLiteral = "'" + lib.replaceStrings [ "'" ] [ "''" ] database.name + "'";
+
+              connectArgs =
+                "-p ${toString database.port}"
+                + lib.optionalString isSocket " -h ${lib.escapeShellArg database.host}";
             in
-            ''
-              ${lib.getExe' database.package "psql"} \
-                -p ${toString database.port} \
-                -d ${lib.escapeShellArg database.name} \
-                -f ${sql}
+            pkgs.writeShellScript "hindsight-postgres-setup" ''
+              set -eu
+              psql=${lib.getExe' database.package "psql"}
+
+              # createDB = false may leave the database to the operator: skip
+              # instead of failing postgresql-setup (and the whole target).
+              exists="$(
+                "$psql" ${connectArgs} -d postgres -tAc \
+                  ${lib.escapeShellArg "SELECT 1 FROM pg_database WHERE datname = ${dbNameLiteral}"} \
+                  | tr -d '[:space:]'
+              )"
+              if [ "$exists" != 1 ]; then
+                echo "hindsight: database '${database.name}' does not exist; skipping extension setup" >&2
+                exit 0
+              fi
+
+              "$psql" ${connectArgs} -d ${lib.escapeShellArg database.name} \
+                -v ON_ERROR_STOP=1 -f ${sql}
             ''
           )
         ];
@@ -496,6 +562,10 @@
           wants = [ "network-online.target" ];
           after = [ "network-online.target" ] ++ optional database.enable "postgresql.target";
           requires = optional database.enable "postgresql.target";
+          # Restart with PostgreSQL instead of staying down after a database
+          # restart (a propagated stop is not a failure, so Restart=on-failure
+          # would not bring the API back).
+          partOf = optional database.enable "postgresql.target";
 
           environment = {
             HINDSIGHT_API_HOST = cfg.host;
@@ -567,12 +637,10 @@
         };
 
         networking.firewall.allowedTCPPorts =
-          optional (cfg.openFirewall && cfg.host != "127.0.0.1") cfg.port
-          ++ optional
-            (
-              controlPlane.enable && controlPlane.openFirewall && controlPlane.host != "127.0.0.1"
-            )
-            controlPlane.port;
+          optional (cfg.openFirewall && !isLoopback cfg.host) cfg.port
+          ++ optional (
+            controlPlane.enable && controlPlane.openFirewall && !isLoopback controlPlane.host
+          ) controlPlane.port;
       };
     };
 }
