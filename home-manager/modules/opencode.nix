@@ -71,16 +71,28 @@
 
         shell = {
           "*" = "ask";
-          "git *" = "allow";
-          "nix flake check *" = "allow";
-          "nix flake show *" = "allow";
-          "nix flake metadata *" = "allow";
+
+          "cat *" = "allow";
+
+          "git branch *" = "allow";
+          "git diff *" = "allow";
+          "git log *" = "allow";
+          "git remote -v" = "allow";
+          "git rev-parse *" = "allow";
+          "git show *" = "allow";
+          "git status *" = "allow";
+
+          "nix diff *" = "allow";
           "nix eval *" = "allow";
+          "nix flake check *" = "allow";
+          "nix flake metadata *" = "allow";
+          "nix flake show *" = "allow";
           "nix fmt *" = "allow";
-          "nix print-dev *" = "allow";
-          "nix path *" = "allow";
           "nix hash *" = "allow";
           "nix log *" = "allow";
+          "nix path *" = "allow";
+          "nix print-dev *" = "allow";
+
           "git add *" = "deny";
           "git commit *" = "deny";
           "git push *" = "deny";
