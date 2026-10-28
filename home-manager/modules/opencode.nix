@@ -1,11 +1,8 @@
 { config, pkgs, ... }:
 
 {
-  # Live-editable config, merged over the Nix-generated one.
-  # opencode merges ~/.config/opencode/opencode.json (from HM) then OPENCODE_CONFIG.
-  home.sessionVariables.OPENCODE_CONFIG = "${./../../.config/opencode/opencode.json}";
-
   programs.opencode = {
+    mutableSettings = true;
     enableMcpIntegration = true;
     extraPackages = with pkgs; [
       yq
@@ -85,6 +82,8 @@
           "git rev-parse *" = "allow";
           "git show *" = "allow";
           "git status *" = "allow";
+
+          "gpg *" = "deny";
 
           "nix diff *" = "allow";
           "nix eval *" = "allow";
