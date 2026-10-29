@@ -1,4 +1,9 @@
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 
 # https://github.com/NixOS/nixpkgs/blob/b8ec4fd2a4edc4e30d02ba7b1a2cc1358f3db1d5/nixos/modules/services/x11/desktop-managers/gnome.nix#L329-L348
 # https://nixos.org/manual/nixos/stable/#sec-gnome-without-the-apps
@@ -53,6 +58,7 @@
 
   boot = {
     kernelPackages = pkgs.linuxPackages_zen;
+    supportedFilesystems = [ "ntfs" ];
     tmp.useTmpfs = false;
     binfmt.emulatedSystems = [ "aarch64-linux" ];
 
@@ -122,6 +128,7 @@
     systemPackages = with pkgs; [
       btrfs-progs
       gparted
+      ntfs3g
       # system-config-printer
     ];
 
