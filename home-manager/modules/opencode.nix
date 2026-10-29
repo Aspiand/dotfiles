@@ -2,7 +2,7 @@
 
 {
   programs.opencode = {
-    mutableSettings = true;
+    mutableSettings = false;
     enableMcpIntegration = true;
     extraPackages = with pkgs; [
       yq
