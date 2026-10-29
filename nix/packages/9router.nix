@@ -18,11 +18,11 @@
     {
       packages."9router" = pkgs.stdenv.mkDerivation rec {
         pname = "9router";
-        version = "0.5.111";
+        version = "0.5.112";
 
         src = pkgs.fetchurl {
           url = "https://registry.npmjs.org/9router/-/9router-${version}.tgz";
-          hash = "sha256-LT1F9TVXoVZaytfX56cHF1KL5aQ+g3W22CflxJl7y6M=";
+          hash = "sha256-QAc4wZGw+qtzoi8JkLfr6g5sk1gYBxxYnKeUI5DKruE=";
         };
 
         nativeBuildInputs = [ pkgs.makeWrapper ];
