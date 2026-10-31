@@ -53,6 +53,8 @@
           "couchdb.aspian.my.id" = "http://127.0.0.1:5984";
           "vault.aspian.my.id" = "http://127.0.0.1:8222";
           "n8n.aspian.my.id" = "http://127.0.0.1:5678";
+          "minecraft.aspian.my.id" = "tcp://127.0.0.1:25565";
+          "minecraft-be.aspian.my.id" = "udp://127.0.0.1:19132";
         };
         default = "http_status:404";
       };
