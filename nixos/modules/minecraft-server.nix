@@ -4,9 +4,33 @@
     {
       lib,
       pkgs,
-      pkgs-unstable,
+      pkgs-unstable ? pkgs,
       ...
     }:
+    let
+      plugins = [
+        {
+          jar = "AuthMe.jar";
+          url = "https://github.com/AuthMe/AuthMeReloaded/releases/download/6.0.1/AuthMe-6.0.1-Paper.jar";
+          hash = "sha256-dwQzXp5zpjTZ2SY0T3eJf0x094+CRTpZ9aoPjSciRQo=";
+        }
+        {
+          jar = "FastLogin.jar";
+          url = "https://github.com/TuxCoding/FastLogin/releases/download/1.12-kick-toggle/FastLoginBukkit.jar";
+          hash = "sha256-91jQw74omQhg0zTJznmy80LJmPfS+0xCPUHxR5pYZxo=";
+        }
+      ];
+
+      installPlugins = lib.concatMapStringsSep "\n" (
+        p:
+        "install -Dm444 ${
+          pkgs.fetchurl {
+            inherit (p) url hash;
+            name = "plugins/${p.jar}";
+          }
+        } plugins/${p.jar}"
+      ) plugins;
+    in
     {
       services.minecraft-server = {
         enable = true;
@@ -74,9 +98,7 @@
 
       systemd.services.minecraft-server = {
         # Installed on every start so a wiped dataDir still gets the plugin.
-        preStart = lib.mkAfter ''
-          install -Dm444 ${pkgs.authme} plugins/AuthMe.jar
-        '';
+        preStart = lib.mkAfter installPlugins;
 
         # 3 GiB heap + ~1.5 GiB JVM overhead, leaving the rest of the box
         # untouched even under a leak.
