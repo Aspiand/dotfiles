@@ -25,6 +25,18 @@
           url = "https://ci.dmulloy2.net/job/ProtocolLib/766/artifact/build/libs/ProtocolLib.jar";
           hash = "sha256-mbcoGrifQiGbzXB511pfxXz5XFuun+fRsXEP2Fc2PIY=";
         }
+        {
+          # Bedrock support (translates Bedrock protocol to Java)
+          jar = "Geyser-Spigot.jar";
+          url = "https://cdn.modrinth.com/data/wKkoqHrH/versions/eeAiA9hr/Geyser-Spigot.jar";
+          hash = "sha256-I0+kZ6MrvHgL1JUpbrGPoPvXr42rQfE37V96Raq/u5A=";
+        }
+        {
+          # Bedrock auth (lets Xbox accounts join offline-mode server)
+          jar = "floodgate-spigot.jar";
+          url = "https://download.geysermc.org/v2/projects/floodgate/versions/2.2.5/builds/141/downloads/spigot";
+          hash = "sha256-IVcK/5zhfWmDko6FUnd3YOHt5QUAJrBMaGsK4RLm/X4=";
+        }
       ];
 
       installPlugins = lib.concatMapStringsSep "\n" (
