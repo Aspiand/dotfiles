@@ -77,6 +77,7 @@
 
           "git branch *" = "allow";
           "git diff *" = "allow";
+          "git ls-files *" = "allow";
           "git log *" = "allow";
           "git remote -v" = "allow";
           "git rev-parse *" = "allow";
