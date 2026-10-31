@@ -97,6 +97,8 @@
           "nix path *" = "allow";
           "nix print-dev *" = "allow";
 
+          "rg *" = "allow";
+
           "yq *" = "allow";
 
           "git add *" = "deny";
