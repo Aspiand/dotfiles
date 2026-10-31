@@ -19,6 +19,12 @@
           url = "https://github.com/TuxCoding/FastLogin/releases/download/1.12-kick-toggle/FastLoginBukkit.jar";
           hash = "sha256-91jQw74omQhg0zTJznmy80LJmPfS+0xCPUHxR5pYZxo=";
         }
+        {
+          # AuthMe dependency (packet handling)
+          jar = "ProtocolLib.jar";
+          url = "https://ci.dmulloy2.net/job/ProtocolLib/766/artifact/build/libs/ProtocolLib.jar";
+          hash = "sha256-mbcoGrifQiGbzXB511pfxXz5XFuun+fRsXEP2Fc2PIY=";
+        }
       ];
 
       installPlugins = lib.concatMapStringsSep "\n" (
