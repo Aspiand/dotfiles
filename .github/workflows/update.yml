@@ -4,12 +4,6 @@ on:
   schedule:
     - cron: "37 18 * * *" # daily 18:37 UTC
   workflow_dispatch:
-    inputs:
-      force:
-        description: "Force test — commit empty change and open PR"
-        type: boolean
-        required: false
-        default: false
 
 permissions:
   contents: write
@@ -22,6 +16,7 @@ jobs:
       has_changes: ${{ steps.commit.outputs.has_changes }}
       updated: ${{ steps.nix-update.outputs.updated }}
       failed: ${{ steps.nix-update.outputs.failed }}
+      versions: ${{ steps.nix-update.outputs.versions }}
       packages_json: ${{ steps.nix-update.outputs.packages_json }}
       files: ${{ steps.commit.outputs.files }}
     steps:
@@ -64,15 +59,42 @@ jobs:
           fi
           echo "updated=${UPDATED# }" >> "$GITHUB_OUTPUT"
           echo "failed=${FAILED# }" >> "$GITHUB_OUTPUT"
+
+          # Version diff per package from git diff — only packages whose
+          # version/rev line actually changed count as truly updated.
+          # nix-update exit 0 can also mean flake.lock-only or rehash.
+          VERSIONS="[]"
+          for pkg in $UPDATED; do
+            [ -z "$pkg" ] && continue
+            diff=$(git diff -- "nix/packages/$pkg.nix")
+            [ -z "$diff" ] && continue
+            old_v=$(grep '^-' <<< "$diff" | grep 'version = ' | head -1 | sed -E 's/.*version = "([^"]+)".*/\1/')
+            new_v=$(grep '^+' <<< "$diff" | grep 'version = ' | head -1 | sed -E 's/.*version = "([^"]+)".*/\1/')
+            if [ -n "$old_v" ] && [ -n "$new_v" ] && [ "$old_v" != "$new_v" ]; then
+              VERSIONS=$(jq -c --arg p "$pkg" --arg o "$old_v" --arg n "$new_v" \
+                '. + [{pkg: $p, old: $o, new: $n}]' <<< "$VERSIONS")
+              continue
+            fi
+            # no version change — check rev/tag (git-based pkgs, rehash)
+            old_r=$(grep '^-' <<< "$diff" | grep -oE '(rev|tag) = "[^"]+"' | head -1 | sed -E 's/.*= "(.*)"/\1/')
+            new_r=$(grep '^+' <<< "$diff" | grep -oE '(rev|tag) = "[^"]+"' | head -1 | sed -E 's/.*= "(.*)"/\1/')
+            if [ -n "$old_r" ] && [ -n "$new_r" ] && [ "$old_r" != "$new_r" ]; then
+              VERSIONS=$(jq -c --arg p "$pkg" --arg o "$(echo "$old_r" | cut -c1-12)" --arg n "$(echo "$new_r" | cut -c1-12)" \
+                '. + [{pkg: $p, old: $o, new: $n}]' <<< "$VERSIONS")
+            fi
+          done
+          echo "versions<<EOF" >> "$GITHUB_OUTPUT"
+          echo "$VERSIONS" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
+          echo "versions: $VERSIONS"
           echo "updated: ${UPDATED:-<none>}"
           echo "failed:  ${FAILED:-<none>}"
 
       - name: Commit to staging branch
         id: commit
         env:
-          UPDATED: ${{ steps.nix-update.outputs.updated }}
+          VERSIONS: ${{ steps.nix-update.outputs.versions }}
           FAILED: ${{ steps.nix-update.outputs.failed }}
-          FORCE: ${{ inputs.force }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -82,24 +104,23 @@ jobs:
           git add -A
           if git diff --cached --quiet; then
             echo "files=" >> "$GITHUB_OUTPUT"
-            if [ "$FORCE" != "true" ]; then
-              echo "has_changes=false" >> "$GITHUB_OUTPUT"
-              echo "No changes — stopping"
-              exit 0
-            fi
-            git commit --allow-empty -m "chore: force-test auto-update pipeline"
-          else
-            FILES=$(git diff --cached --name-only | tr '\n' ' ' | sed 's/ *$//')
-            {
-              echo "chore: auto-update nix packages"
-              echo ""
-              [ -n "$UPDATED" ] && echo "Updated:$UPDATED"
-              [ -n "$FAILED" ] && echo "Failed:$FAILED"
-              echo "Files: $FILES"
-            } > /tmp/commit-msg
-            git commit --file /tmp/commit-msg
-            echo "files=$FILES" >> "$GITHUB_OUTPUT"
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+            echo "No changes — stopping"
+            exit 0
           fi
+
+          FILES=$(git diff --cached --name-only | tr '\n' ' ' | sed 's/ *$//')
+          {
+            echo "chore: auto-update nix packages"
+            echo ""
+            if [ -n "$VERSIONS" ] && [ "$VERSIONS" != "[]" ]; then
+              echo "$VERSIONS" | jq -r '.[] | "Updated: \(.pkg): \(.old) -> \(.new)"'
+            fi
+            [ -n "$FAILED" ] && echo "Failed:$FAILED"
+            echo "Files: $FILES"
+          } > /tmp/commit-msg
+          git commit --file /tmp/commit-msg
+          echo "files=$FILES" >> "$GITHUB_OUTPUT"
 
           git push --force origin "HEAD:refs/heads/$BRANCH"
           echo "has_changes=true" >> "$GITHUB_OUTPUT"
@@ -149,6 +170,7 @@ jobs:
       - name: Create or update PR
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSIONS: ${{ needs.update.outputs.versions }}
           UPDATED: ${{ needs.update.outputs.updated }}
           FAILED: ${{ needs.update.outputs.failed }}
           FILES: ${{ needs.update.outputs.files }}
@@ -158,28 +180,37 @@ jobs:
           TITLE="chore: auto-update nix packages"
           RUN_URL="https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
           RESULTS="${RESULTS:-[]}"
+          VERSIONS="${VERSIONS:-[]}"
 
           {
             echo "## Auto-update \`${{ github.run_id }}-${{ github.run_attempt }}\`"
             echo ""
-            echo "### nix-update"
+            echo "### Update"
             echo ""
-            echo "| Package | Status |"
-            echo "|---|---|"
-            if [ -z "$UPDATED" ] && [ -z "$FAILED" ]; then
-              echo "| _none_ | _no updates_ |"
+            echo "| Package | Old | New |"
+            echo "|---|---|---|"
+            if [ "$VERSIONS" = "[]" ]; then
+              echo "| _none_ | — | — |"
             else
-              for p in $UPDATED; do
-                [ -z "$p" ] && continue
-                echo "| \`$p\` | ✓ updated |"
-              done
-              for p in $FAILED; do
-                [ -z "$p" ] && continue
-                echo "| \`$p\` | ✗ nix-update failed (skipped) |"
-              done
+              echo "$VERSIONS" | jq -r '.[] | "| `\(.pkg)` | `\(.old)` | `\(.new)` |"'
+            fi
+            if [ -n "$FAILED" ]; then
+              echo ""
+              echo "**nix-update failed (skipped):** $FAILED"
+            fi
+            EXTRAS=""
+            for p in $UPDATED; do
+              [ -z "$p" ] && continue
+              if ! jq -e --arg p "$p" '.[] | select(.pkg == $p)' <<< "$VERSIONS" >/dev/null 2>&1; then
+                EXTRAS="$EXTRAS $p"
+              fi
+            done
+            if [ -n "$EXTRAS" ]; then
+              echo ""
+              echo "_Touched by nix-update but version unchanged (lock-only/rehash):${EXTRAS}_"
             fi
             echo ""
-            echo "### Build (\`nix build .#packages.x86_64-linux.<pkg>\`, failures skipped)"
+            echo "### Build"
             echo ""
             echo "| Package | Build |"
             echo "|---|---|"
@@ -201,7 +232,7 @@ jobs:
             echo "### Changed files"
             echo ""
             if [ -z "$FILES" ]; then
-              echo "_none (force-test empty commit)_"
+              echo "_none_"
             else
               for f in $FILES; do
                 echo "- \`$f\`"
@@ -212,7 +243,6 @@ jobs:
             echo ""
             echo "- Run: $RUN_URL"
             echo "- Staging branch: \`$BRANCH\`"
-            echo "- Merge this PR to trigger \`build.yml\` (runs automatically on merge)."
           } > /tmp/pr-body.md
 
           EXISTING=$(gh pr list -R "$GITHUB_REPOSITORY" --head "$BRANCH" --base main --json number --jq '.[0].number // empty')
