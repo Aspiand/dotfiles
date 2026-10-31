@@ -6,20 +6,24 @@ on:
   workflow_dispatch:
     inputs:
       force:
-        description: "Force test — commit empty change and run build+promote"
+        description: "Force test — commit empty change and open PR"
         type: boolean
         required: false
         default: false
 
 permissions:
   contents: write
+  pull-requests: write
 
 jobs:
   update:
     runs-on: ubuntu-latest
     outputs:
       has_changes: ${{ steps.commit.outputs.has_changes }}
+      updated: ${{ steps.nix-update.outputs.updated }}
+      failed: ${{ steps.nix-update.outputs.failed }}
       packages_json: ${{ steps.nix-update.outputs.packages_json }}
+      files: ${{ steps.commit.outputs.files }}
     steps:
       - uses: actions/checkout@v5
         with:
@@ -73,8 +77,11 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
+          BRANCH="auto-update/${{ github.run_id }}-${{ github.run_attempt }}"
+
           git add -A
           if git diff --cached --quiet; then
+            echo "files=" >> "$GITHUB_OUTPUT"
             if [ "$FORCE" != "true" ]; then
               echo "has_changes=false" >> "$GITHUB_OUTPUT"
               echo "No changes — stopping"
@@ -82,22 +89,27 @@ jobs:
             fi
             git commit --allow-empty -m "chore: force-test auto-update pipeline"
           else
+            FILES=$(git diff --cached --name-only | tr '\n' ' ' | sed 's/ *$//')
             {
               echo "chore: auto-update nix packages"
               echo ""
               [ -n "$UPDATED" ] && echo "Updated:$UPDATED"
               [ -n "$FAILED" ] && echo "Failed:$FAILED"
+              echo "Files: $FILES"
             } > /tmp/commit-msg
             git commit --file /tmp/commit-msg
+            echo "files=$FILES" >> "$GITHUB_OUTPUT"
           fi
 
-          git push origin HEAD:refs/heads/auto-update/${{ github.run_id }}-${{ github.run_attempt }}
+          git push --force origin "HEAD:refs/heads/$BRANCH"
           echo "has_changes=true" >> "$GITHUB_OUTPUT"
 
   build:
     needs: update
     if: needs.update.outputs.has_changes == 'true'
     runs-on: ubuntu-latest
+    outputs:
+      results: ${{ steps.build-pkgs.outputs.results }}
     steps:
       - uses: actions/checkout@v5
         with:
@@ -105,30 +117,108 @@ jobs:
 
       - uses: DeterminateSystems/nix-installer-action@v22
 
-      - name: Build changed packages
+      - name: Build changed packages (failures skipped)
+        id: build-pkgs
         env:
           PACKAGES_JSON: ${{ needs.update.outputs.packages_json }}
           NIXPKGS_ALLOW_UNFREE: "1"
         run: |
+          RESULTS="[]"
           for pkg in $(echo "$PACKAGES_JSON" | jq -r '.[]'); do
             echo "::group::Building $pkg"
-            nix build ".#packages.x86_64-linux.$pkg" \
-              --print-build-logs --impure --accept-flake-config
+            if nix build ".#packages.x86_64-linux.$pkg" \
+              --print-build-logs --impure --accept-flake-config; then
+              echo "::notice::build ok: $pkg"
+              RESULTS=$(jq -c --arg p "$pkg" '. + [{pkg: $p, ok: true}]' <<< "$RESULTS")
+            else
+              echo "::warning::build failed (skipped): $pkg"
+              RESULTS=$(jq -c --arg p "$pkg" '. + [{pkg: $p, ok: false}]' <<< "$RESULTS")
+            fi
             echo "::endgroup::"
           done
+          echo "results<<EOF" >> "$GITHUB_OUTPUT"
+          echo "$RESULTS" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
+          echo "$RESULTS" | jq .
 
-  promote:
+  open-pr:
     needs: [update, build]
     if: needs.update.outputs.has_changes == 'true'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
-        with:
-          ref: main
-
-      - run: |
+      - name: Create or update PR
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          UPDATED: ${{ needs.update.outputs.updated }}
+          FAILED: ${{ needs.update.outputs.failed }}
+          FILES: ${{ needs.update.outputs.files }}
+          RESULTS: ${{ needs.build.outputs.results }}
+        run: |
           BRANCH="auto-update/${{ github.run_id }}-${{ github.run_attempt }}"
-          git fetch origin "$BRANCH"
-          git merge --ff-only FETCH_HEAD
-          git push origin main
-          git push origin --delete "$BRANCH"
+          TITLE="chore: auto-update nix packages"
+          RUN_URL="https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+          RESULTS="${RESULTS:-[]}"
+
+          {
+            echo "## Auto-update \`${{ github.run_id }}-${{ github.run_attempt }}\`"
+            echo ""
+            echo "### nix-update"
+            echo ""
+            echo "| Package | Status |"
+            echo "|---|---|"
+            if [ -z "$UPDATED" ] && [ -z "$FAILED" ]; then
+              echo "| _none_ | _no updates_ |"
+            else
+              for p in $UPDATED; do
+                [ -z "$p" ] && continue
+                echo "| \`$p\` | ✓ updated |"
+              done
+              for p in $FAILED; do
+                [ -z "$p" ] && continue
+                echo "| \`$p\` | ✗ nix-update failed (skipped) |"
+              done
+            fi
+            echo ""
+            echo "### Build (\`nix build .#packages.x86_64-linux.<pkg>\`, failures skipped)"
+            echo ""
+            echo "| Package | Build |"
+            echo "|---|---|"
+            if [ "$RESULTS" = "[]" ]; then
+              echo "| _none_ | _nothing built_ |"
+            else
+              while IFS= read -r row; do
+                [ -z "$row" ] && continue
+                p=$(jq -r '.pkg' <<< "$row")
+                ok=$(jq -r '.ok' <<< "$row")
+                if [ "$ok" = "true" ]; then
+                  echo "| \`$p\` | ✓ ok |"
+                else
+                  echo "| \`$p\` | ✗ failed |"
+                fi
+              done < <(echo "$RESULTS" | jq -c '.[]')
+            fi
+            echo ""
+            echo "### Changed files"
+            echo ""
+            if [ -z "$FILES" ]; then
+              echo "_none (force-test empty commit)_"
+            else
+              for f in $FILES; do
+                echo "- \`$f\`"
+              done
+            fi
+            echo ""
+            echo "### CI"
+            echo ""
+            echo "- Run: $RUN_URL"
+            echo "- Staging branch: \`$BRANCH\`"
+            echo "- Merge this PR to trigger \`build.yml\` (runs automatically on merge)."
+          } > /tmp/pr-body.md
+
+          EXISTING=$(gh pr list -R "$GITHUB_REPOSITORY" --head "$BRANCH" --base main --json number --jq '.[0].number // empty')
+          if [ -n "$EXISTING" ]; then
+            gh pr edit "$EXISTING" -R "$GITHUB_REPOSITORY" --title "$TITLE" --body-file /tmp/pr-body.md
+            echo "Updated existing PR #$EXISTING"
+          else
+            gh pr create -R "$GITHUB_REPOSITORY" --base main --head "$BRANCH" --title "$TITLE" --body-file /tmp/pr-body.md
+          fi
