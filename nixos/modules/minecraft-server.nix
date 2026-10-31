@@ -15,9 +15,9 @@
           hash = "sha256-dwQzXp5zpjTZ2SY0T3eJf0x094+CRTpZ9aoPjSciRQo=";
         }
         {
-          jar = "FastLogin.jar";
-          url = "https://github.com/TuxCoding/FastLogin/releases/download/1.12-kick-toggle/FastLoginBukkit.jar";
-          hash = "sha256-91jQw74omQhg0zTJznmy80LJmPfS+0xCPUHxR5pYZxo=";
+          jar = "FastLoginPlus.jar";
+          url = "https://cdn.modrinth.com/data/dmpkLjdL/versions/qOMYvsFm/FastLoginPlusBukkit-1.0.0-27aa0db.jar";
+          hash = "sha256-2Qda7O5nkwOi2OBX80EUOLutbxrQV5c4lUR/TcYed/Q=";
         }
         {
           # AuthMe dependency (packet handling)
