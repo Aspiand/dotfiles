@@ -4,12 +4,13 @@
     {
       lib,
       pkgs,
+      pkgs-unstable,
       ...
     }:
     {
       services.minecraft-server = {
         enable = true;
-        package = pkgs.papermc;
+        package = pkgs-unstable.papermc;
         eula = true;
         declarative = true;
         openFirewall = false;
@@ -44,7 +45,8 @@
           server-ip = "0.0.0.0";
           motd = "aspian's minecraft server";
           max-players = 10;
-          online-mode = true;
+          online-mode = false;
+          enforce-secure-profile = false;
           white-list = false;
           enforce-whitelist = false;
           difficulty = "normal";
@@ -71,6 +73,11 @@
       };
 
       systemd.services.minecraft-server = {
+        # Installed on every start so a wiped dataDir still gets the plugin.
+        preStart = lib.mkAfter ''
+          install -Dm444 ${pkgs.authme} plugins/AuthMe.jar
+        '';
+
         # 3 GiB heap + ~1.5 GiB JVM overhead, leaving the rest of the box
         # untouched even under a leak.
         serviceConfig = {
