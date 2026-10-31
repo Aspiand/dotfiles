@@ -30,6 +30,10 @@
       url = "github:nousresearch/hermes-agent";
     };
 
+    elyprismlauncher = {
+      url = "github:ElyPrismLauncher/Launcher";
+    };
+
     # llm-agents.url = "github:numtide/llm-agents.nix";
   };
 

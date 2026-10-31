@@ -63,6 +63,8 @@ minecraft:
     25565/tcp:
       targets:
         - tcp://127.0.0.1:25565
+      tailscale:
+        funnel: true
   dashboard:
     label: Minecraft
 

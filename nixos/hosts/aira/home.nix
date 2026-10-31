@@ -101,6 +101,7 @@ in
         # Gaming
         # rpcs3
         # gpu-viewer
+        inputs.elyprismlauncher.packages.${pkgs.stdenv.hostPlatform.system}.prismlauncher
         mangohud
         # lutris
         vulkan-tools
@@ -228,7 +229,6 @@ in
       browsers = [ "firefox" ];
     };
   };
-
 
   # TODO: move later
   sops.gnupg.home = config.xdg.dataHome + "/gnupg";
