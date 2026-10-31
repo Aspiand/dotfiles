@@ -117,7 +117,7 @@ jobs:
 
       - uses: DeterminateSystems/nix-installer-action@v22
 
-      - name: Build changed packages (failures skipped)
+      - name: Build changed packages
         id: build-pkgs
         env:
           PACKAGES_JSON: ${{ needs.update.outputs.packages_json }}
