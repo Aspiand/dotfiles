@@ -195,6 +195,7 @@
                 "/var/lib/tsdproxy"
                 "/var/lib/victoriametrics"
                 "/var/lib/victorialogs"
+                "/var/lib/minecraft"
               ];
             }
           ];
