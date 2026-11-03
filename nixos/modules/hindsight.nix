@@ -32,6 +32,7 @@
           HINDSIGHT_API_LLM_REASONING_EFFORT = "high";
           HINDSIGHT_API_LOG_LEVEL = "warn";
           HINDSIGHT_API_AUDIT_LOG_ENABLED = true;
+          HINDSIGHT_API_ENABLE_OBSERVATIONS = true;
 
           # HINDSIGHT_API_LLM_CACHE_AFFINITY = "none";
           # Fail fast when 9router down instead of burning full LLM timeout.
