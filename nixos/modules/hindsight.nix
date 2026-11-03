@@ -1,8 +1,10 @@
 {
   flake.nixosModules.hindsight =
     { config, lib, ... }:
+    let
+      cfg = config.services.hindsight;
+    in
     {
-
       services.hindsight = {
         enable = true;
 
@@ -47,15 +49,15 @@
         environmentFiles = [ config.sops.secrets."hindsight/env".path ];
       };
 
-      # Control plane at /, API mounted under /_/ (prefix stripped, /_/mcp -> /mcp).
-      # Was bare `virtualHosts` (no such top-level option) -> Caddy never rendered it.
       services.caddy = {
         enable = lib.mkDefault true;
+
         virtualHosts."http://127.0.0.1:8089".extraConfig = ''
+          reverse_proxy http://${cfg.controlPlane.port}:${toString cfg.controlPlane.port}
+
           handle_path /_/* {
-            reverse_proxy http://127.0.0.1:8890
+            reverse_proxy http://${cfg.host}:${toString cfg.port}
           }
-          reverse_proxy http://127.0.0.1:9999
         '';
       };
 
