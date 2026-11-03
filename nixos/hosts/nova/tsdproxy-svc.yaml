@@ -1,3 +1,12 @@
+hindsight:
+  proxyProvider: default
+  ports:
+    443/https:
+      targets:
+        - http://127.0.0.1:8081
+  dashboard:
+    label: Hindsight
+
 grafana:
   proxyProvider: default
   ports:

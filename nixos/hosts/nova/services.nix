@@ -11,6 +11,8 @@
       enable = true;
     };
 
+    caddy.enable = true;
+
     couchdb = {
       enable = true;
       bindAddress = "127.0.0.1";
