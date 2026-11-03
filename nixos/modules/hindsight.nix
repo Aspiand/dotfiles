@@ -53,7 +53,7 @@
         enable = lib.mkDefault true;
 
         virtualHosts."http://127.0.0.1:8089".extraConfig = ''
-          reverse_proxy http://${cfg.controlPlane.port}:${toString cfg.controlPlane.port}
+          reverse_proxy http://${cfg.controlPlane.host}:${toString cfg.controlPlane.port}
 
           handle_path /_/* {
             reverse_proxy http://${cfg.host}:${toString cfg.port}
