@@ -52,13 +52,14 @@
       services.caddy = {
         enable = lib.mkDefault true;
 
-        virtualHosts."http://127.0.0.1:8089".extraConfig = ''
+        virtualHosts."http://hindsight.astrapia-kokanue.ts.net:8089".extraConfig = ''
           reverse_proxy http://${cfg.controlPlane.host}:${toString cfg.controlPlane.port}
 
           handle_path /_/* {
             reverse_proxy http://${cfg.host}:${toString cfg.port}
           }
         '';
+
       };
 
       sops.secrets."hindsight/env" = {
