@@ -20,6 +20,9 @@ on:
         type: string
         required: false
         default: "ALL"
+  pull_request_target:
+    types: [closed]
+    branches: [main]
 
 env:
   NIXPKGS_ALLOW_UNFREE: "1"
@@ -30,7 +33,39 @@ env:
   NIX_SECRET_KEY: ${{ secrets.NIX_SECRET_KEY }}
 
 jobs:
+  check-merge:
+    runs-on: ubuntu-latest
+    outputs:
+      proceed: ${{ steps.gate.outputs.proceed }}
+    steps:
+      - name: Gate PR-merge trigger
+        id: gate
+        run: |
+          if [ "${{ github.event_name }}" != "pull_request_target" ]; then
+            echo "proceed=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          MERGED="${{ github.event.pull_request.merged }}"
+          HEAD="${{ github.event.pull_request.head.ref }}"
+          case "$HEAD" in
+            auto-update/*) ;;
+            *)
+              echo "Not an auto-update PR ($HEAD) — skipping"
+              echo "proceed=false" >> "$GITHUB_OUTPUT"
+              exit 0
+              ;;
+          esac
+          if [ "$MERGED" = "true" ]; then
+            echo "auto-update PR merged — proceeding"
+            echo "proceed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "PR closed without merge — skipping"
+            echo "proceed=false" >> "$GITHUB_OUTPUT"
+          fi
+
   generate-matrix:
+    needs: check-merge
+    if: needs.check-merge.outputs.proceed == 'true'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -39,6 +74,9 @@ jobs:
       has_packages: ${{ steps.matrix.outputs.has_packages }}
     steps:
       - uses: actions/checkout@v5
+        with:
+          # pull_request_target defaults to the PR merge ref — want post-merge main instead
+          ref: ${{ github.event_name == 'pull_request_target' && 'main' || '' }}
 
       - uses: DeterminateSystems/nix-installer-action@v22
 

@@ -58,12 +58,13 @@
           dotfiles.nixosModules.base
           dotfiles.nixosModules.ssh
           dotfiles.nixosModules.n8n
+          dotfiles.nixosModules.minecraft-server
 
           # AI
           hermes-agent.nixosModules.default
-          # dotfiles.nixosModules.searxng
           dotfiles.nixosModules.headroom
           dotfiles.nixosModules.hindsight
+          dotfiles.nixosModules.searxng
           ./hermes.nix
 
           # Monitoring

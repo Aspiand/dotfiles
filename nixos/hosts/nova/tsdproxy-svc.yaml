@@ -57,6 +57,15 @@ hermes:
     label: Hermes Dashboard
     icon: si/robot
 
+minecraft:
+  proxyProvider: default
+  ports:
+    25565/tcp:
+      targets:
+        - tcp://127.0.0.1:25565
+  dashboard:
+    label: Minecraft
+
 immich:
   proxyProvider: default
   hostname: gallery
