@@ -1,6 +1,25 @@
 { config, pkgs, ... }:
 
 {
+  # TODO: remove
+  # home.file.".hindsight/coding-agent.json".source =
+  #   (pkgs.formats.json { }).generate "coding-agent.json"
+  #     {
+  #       apiUrl = "https://hindsight.astrapia-kokanue.ts.net";
+  #       bankId = "agents";
+  #       autoUpdate = false;
+  #       # apiToken = "";
+  #       # HINDSIGHT_API_TOKEN
+  #     };
+
+  home.file.".hindsight/coding-agent.json".text = builtins.toJSON {
+    apiUrl = "https://hindsight.astrapia-kokanue.ts.net/_";
+    bankId = "agents";
+    autoUpdate = false;
+    # apiToken = "";
+    # HINDSIGHT_API_TOKEN
+  };
+
   programs.opencode = {
     mutableSettings = false;
     enableMcpIntegration = true;
@@ -25,6 +44,7 @@
         "@upstash/context7-opencode"
         "opencode-wakatime"
         "opencode-models-discovery@2.0.0"
+        "@vectorize-io/hindsight-coding-agents"
       ];
 
       providers."9router" = {
@@ -74,6 +94,7 @@
           "*" = "ask";
 
           "cat *" = "allow";
+          "echo *" = "allow";
 
           "git branch *" = "allow";
           "git diff *" = "allow";
@@ -97,8 +118,12 @@
           "nix path *" = "allow";
           "nix print-dev *" = "allow";
 
+          "sort *" = "allow";
+          "tail *" = "allow";
+
           "rg *" = "allow";
 
+          "jq *" = "allow";
           "yq *" = "allow";
 
           "git add *" = "deny";
@@ -120,6 +145,7 @@
         "deepwiki_*" = "allow";
         "fetch_*" = "allow";
         "github_*" = "allow";
+        "hindsight_*" = "allow";
         "markitdown_*" = "allow";
         "mempalace_*" = "allow";
         "nixos_*" = "allow";
