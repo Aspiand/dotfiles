@@ -13,13 +13,12 @@
   service runs as the `hindsight` user and PostgreSQL peer authentication is
   used, so no password is needed.
 
-  With a TCP host, `database.passwordFile` (or a full `HINDSIGHT_API_DATABASE_URL`
-  in `environmentFiles`) is required. Credentials are never written to the Nix
-  store by this module.
+  With a TCP host, provide a full `HINDSIGHT_API_DATABASE_URL` through
+  `environmentFiles`. The module cannot inspect environment-file contents.
 
   The slim package has no local embedding/reranker models. Set
   HINDSIGHT_API_EMBEDDINGS_PROVIDER and HINDSIGHT_API_RERANKER_PROVIDER through
-  `environment`/`environmentFiles`, or use the future `hindsight-api` package.
+  `environment`/`environmentFiles`, or use the full `hindsight-api` package.
   See docs/hindsight.md for the full design, phases and operational notes.
 */
 { ... }:
@@ -44,17 +43,7 @@
       inherit (cfg) database controlPlane;
 
       isSocket = lib.hasPrefix "/" database.host;
-
-      # Loopback binds need no firewall opening; "127.0.0.1" alone is not
-      # enough because "::1"/"localhost" are just as unreachable from outside.
-      isLoopback =
-        host:
-        builtins.elem host [
-          "127.0.0.1"
-          "::1"
-          "[::1]"
-          "localhost"
-        ];
+      envValue = value: if lib.isBool value then lib.boolToString value else toString value;
 
       # Double-quote a PostgreSQL identifier, escaping embedded quotes.
       sqlIdent = name: "\"" + lib.replaceStrings [ "\"" ] [ "\"\"" ] name + "\"";
@@ -63,13 +52,7 @@
       # query parameter pointing at the socket directory.
       socketURL = "postgresql://${database.user}@/${database.name}?host=${database.host}&port=${toString database.port}";
 
-      databaseEnv =
-        if database.url != null then
-          { HINDSIGHT_API_DATABASE_URL = database.url; }
-        else if isSocket then
-          { HINDSIGHT_API_DATABASE_URL = socketURL; }
-        else
-          { };
+      databaseEnv = if isSocket then { HINDSIGHT_API_DATABASE_URL = socketURL; } else { };
 
       localModelEnv = optionalAttrs cfg.localModels.enable {
         HINDSIGHT_API_EMBEDDINGS_PROVIDER = "local";
@@ -78,20 +61,6 @@
         HINDSIGHT_API_RERANKER_LOCAL_MODEL = cfg.localModels.rerankerModel;
         HF_HOME = "/var/cache/hindsight/hf";
       };
-
-      # TCP + passwordFile: build the URL at runtime so the password never
-      # enters the store. HINDSIGHT_API_DATABASE_URL from an EnvironmentFile
-      # wins when it is already set.
-      passwordStartScript = pkgs.writeShellScript "hindsight-api-start" ''
-        set -eu
-        if [ -z "''${HINDSIGHT_API_DATABASE_URL:-}" ]; then
-          password="$(cat ${lib.escapeShellArg database.passwordFile})"
-          password="''${password%$'\n'}"
-          encoded="$(printf '%s' "$password" | ${lib.getExe pkgs.jq} -Rr '@uri')"
-          export HINDSIGHT_API_DATABASE_URL="postgresql://${database.user}:$encoded@${database.host}:${toString database.port}/${database.name}"
-        fi
-        exec ${lib.escapeShellArgs ([ (lib.getExe cfg.package) ] ++ apiArgs)}
-      '';
 
       apiArgs =
         optionals (cfg.workers != null) [
@@ -104,13 +73,9 @@
         ]
         ++ cfg.extraArgs;
 
-      usePasswordWrapper = !isSocket && database.url == null && database.passwordFile != null;
+      apiCommand = [ (lib.getExe cfg.package) ] ++ apiArgs;
 
-      apiExecStart =
-        if usePasswordWrapper then
-          lib.escapeShellArgs [ passwordStartScript ]
-        else
-          lib.escapeShellArgs ([ (lib.getExe cfg.package) ] ++ apiArgs);
+      apiExecStart = lib.escapeShellArgs apiCommand;
 
       commonHardening = {
         NoNewPrivileges = true;
@@ -134,8 +99,8 @@
         RestrictRealtime = true;
         RestrictSUIDSGID = true;
         UMask = "0077";
-        CapabilityBoundingSet = [ ];
-        AmbientCapabilities = [ ];
+        CapabilityBoundingSet = "";
+        AmbientCapabilities = "";
       };
     in
     {
@@ -173,7 +138,7 @@
         };
 
         workers = mkOption {
-          type = types.nullOr types.int;
+          type = types.nullOr types.ints.positive;
           default = 1;
           example = null;
           description = ''
@@ -237,7 +202,10 @@
             Environment files loaded by systemd (EnvironmentFile=), e.g. the
             path of a sops secret. Use this for the LLM API key and, when the
             database is reached over TCP, for a complete
-            HINDSIGHT_API_DATABASE_URL (it overrides the generated one).
+              HINDSIGHT_API_DATABASE_URL (it overrides the generated one).
+              With a TCP database host, one of these files must define
+              HINDSIGHT_API_DATABASE_URL; this cannot be validated from the
+              file path alone.
           '';
         };
 
@@ -279,9 +247,12 @@
               services.postgresql, install pgvector, create the database and
               role (if createDB), and create the required extensions.
 
-              Set to false to use an external database. In that case this
-              module does not touch services.postgresql and you must create the
-              database, role, and `CREATE EXTENSION vector` yourself.
+              Set to false to use an external database. In that case configure
+              a TCP `host` and credentials in `environmentFiles`, this module does not touch
+              services.postgresql, and you must create the database, role, and
+              `CREATE EXTENSION vector` yourself. This option defaults to true
+              while Hindsight is enabled, so explicitly set it to false for an
+              external database.
             '';
           };
 
@@ -290,8 +261,10 @@
             default = true;
             description = ''
               Create the database and role automatically. Only meaningful when
-              `database.enable = true`. Existing databases and roles are never
-              removed by the NixOS PostgreSQL module.
+              `database.enable = true`. When false, the operator must provide
+              the database and role; the local setup hook still installs the
+              required extensions into an existing database. Existing databases
+              and roles are never removed by the NixOS PostgreSQL module.
             '';
           };
 
@@ -308,7 +281,7 @@
             description = ''
               Database host. An absolute path is interpreted as a Unix socket
               directory and uses peer authentication (no password). Anything
-              else is treated as TCP and requires `passwordFile`, `url`, or a
+              else is treated as TCP and requires a complete
               HINDSIGHT_API_DATABASE_URL in `environmentFiles`.
             '';
           };
@@ -336,28 +309,6 @@
               Database role. With a Unix socket host it must match the service
               user (`hindsight`) because PostgreSQL peer authentication compares
               the two.
-            '';
-          };
-
-          passwordFile = mkOption {
-            type = types.nullOr types.str;
-            default = null;
-            example = "/run/secrets/hindsight/db-password";
-            description = ''
-              File containing the password for a TCP connection. Read at
-              service start and URL-encoded; never added to the Nix store.
-            '';
-          };
-
-          url = mkOption {
-            type = types.nullOr types.str;
-            default = null;
-            example = "postgresql://hindsight@db.example.com:5432/hindsight?sslmode=require";
-            description = ''
-              Complete PostgreSQL URL. Overrides host/port/name/user.
-              Do not put credentials in this option: it is stored in the Nix
-              store. Use `passwordFile`, or put HINDSIGHT_API_DATABASE_URL in
-              an `environmentFiles` entry instead.
             '';
           };
 
@@ -415,9 +366,9 @@
             example = "https://hindsight.example.com";
             description = ''
               URL the browser uses to reach the API (--api-url /
-              HINDSIGHT_CP_DATAPLANE_API_URL). This is not necessarily the
-              internal address: when the UI is accessed from another machine,
-              point it at the public API URL.
+              HINDSIGHT_CP_DATAPLANE_API_URL). Default works when browser and
+              control plane are on the same machine; for remote browser access,
+              set this to the externally reachable API URL.
             '';
           };
 
@@ -454,11 +405,27 @@
       config = mkIf cfg.enable {
         assertions = [
           {
-            assertion =
-              isSocket || database.url != null || database.passwordFile != null || cfg.environmentFiles != [ ];
+            assertion = !database.enable || isSocket;
             message = ''
-              services.hindsight.database: a TCP database host needs passwordFile,
-              url, or a HINDSIGHT_API_DATABASE_URL in environmentFiles.
+              Managed local PostgreSQL currently supports Unix-socket peer
+              authentication only. Use a socket host, or set
+              services.hindsight.database.enable = false for an external TCP database.
+            '';
+          }
+          {
+            assertion = isSocket || cfg.environmentFiles != [ ];
+            message = ''
+              services.hindsight.database: a TCP database host needs an
+              environmentFiles entry containing HINDSIGHT_API_DATABASE_URL.
+              The URL cannot be validated from the file path. For an external
+              database, set database.enable = false.
+            '';
+          }
+          {
+            assertion = database.enable || !isSocket;
+            message = ''
+              services.hindsight.database.enable = false selects external database mode;
+              set services.hindsight.database.host to a TCP host, not a Unix socket path.
             '';
           }
           {
@@ -478,7 +445,7 @@
             message = "services.hindsight.port and services.hindsight.controlPlane.port must differ.";
           }
           {
-            assertion = !cfg.localModels.enable || cfg.package != pkgs.hindsight-api-slim;
+            assertion = !cfg.localModels.enable || (cfg.package.passthru.hasLocalModels or false);
             message = ''
               services.hindsight.localModels.enable = true requires a package with
               local ML dependencies. Set localModels.enable = false when using
@@ -492,7 +459,7 @@
 
           # A default so hosts with other modules defining `extensions` (for
           # example immich, which already includes pgvector) keep theirs.
-          extensions = lib.mkDefault (ps: [ ps.pgvector ]);
+          extensions = lib.mkAfter (ps: [ ps.pgvector ]);
 
           ensureDatabases = mkIf database.createDB [ database.name ];
           ensureUsers = mkIf database.createDB [
@@ -514,7 +481,7 @@
                 CREATE EXTENSION IF NOT EXISTS vector;
                 CREATE EXTENSION IF NOT EXISTS pg_trgm;
                 CREATE EXTENSION IF NOT EXISTS btree_gin;
-                ALTER DATABASE ${sqlIdent database.name} OWNER TO ${sqlIdent database.user};
+                ${lib.optionalString database.createDB "ALTER DATABASE ${sqlIdent database.name} OWNER TO ${sqlIdent database.user};"}
               '';
 
               # SQL literal, quotes doubled. Kept separate so the identifier
@@ -526,7 +493,7 @@
                 + lib.optionalString isSocket " -h ${lib.escapeShellArg database.host}";
             in
             pkgs.writeShellScript "hindsight-postgres-setup" ''
-              set -eu
+              set -euo pipefail
               psql=${lib.getExe' database.package "psql"}
 
               # createDB = false may leave the database to the operator: skip
@@ -575,7 +542,7 @@
           }
           // localModelEnv
           // databaseEnv
-          // lib.mapAttrs (_: toString) cfg.environment;
+          // lib.mapAttrs (_: envValue) cfg.environment;
 
           serviceConfig = {
             Type = "simple";
@@ -607,7 +574,7 @@
             HINDSIGHT_CP_DATAPLANE_API_URL = controlPlane.apiURL;
             HOME = "/var/lib/hindsight-control-plane";
           }
-          // lib.mapAttrs (_: toString) controlPlane.environment;
+          // lib.mapAttrs (_: envValue) controlPlane.environment;
 
           serviceConfig = {
             Type = "simple";
@@ -637,10 +604,8 @@
         };
 
         networking.firewall.allowedTCPPorts =
-          optional (cfg.openFirewall && !isLoopback cfg.host) cfg.port
-          ++ optional (
-            controlPlane.enable && controlPlane.openFirewall && !isLoopback controlPlane.host
-          ) controlPlane.port;
+          optional cfg.openFirewall cfg.port
+          ++ optional (controlPlane.enable && controlPlane.openFirewall) controlPlane.port;
       };
     };
 }

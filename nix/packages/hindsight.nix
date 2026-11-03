@@ -241,7 +241,9 @@
 
           pythonImportsCheck = [ "hindsight_api.main" ];
 
-          passthru.category = "AI Assistants";
+          passthru = {
+            hasLocalModels = localMl;
+          };
 
           meta = with lib; {
             description =
@@ -316,8 +318,6 @@
 
           runHook postInstall
         '';
-
-        passthru.category = "AI Assistants";
 
         meta = with lib; {
           description = "Web UI for the Hindsight agent memory server";
