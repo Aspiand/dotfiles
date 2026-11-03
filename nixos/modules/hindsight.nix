@@ -51,7 +51,7 @@
       # Was bare `virtualHosts` (no such top-level option) -> Caddy never rendered it.
       services.caddy = {
         enable = lib.mkDefault true;
-        virtualHosts."http://127.0.0.1:8081".extraConfig = ''
+        virtualHosts."http://127.0.0.1:8089".extraConfig = ''
           handle_path /_/* {
             reverse_proxy http://127.0.0.1:8890
           }
