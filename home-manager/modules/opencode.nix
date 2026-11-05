@@ -1,17 +1,6 @@
 { config, pkgs, ... }:
 
 {
-  # TODO: remove
-  # home.file.".hindsight/coding-agent.json".source =
-  #   (pkgs.formats.json { }).generate "coding-agent.json"
-  #     {
-  #       apiUrl = "https://hindsight.astrapia-kokanue.ts.net";
-  #       bankId = "agents";
-  #       autoUpdate = false;
-  #       # apiToken = "";
-  #       # HINDSIGHT_API_TOKEN
-  #     };
-
   home.file.".hindsight/coding-agent.json".text = builtins.toJSON {
     apiUrl = "https://hindsight.astrapia-kokanue.ts.net/_";
     bankId = "agents";
