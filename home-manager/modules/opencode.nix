@@ -16,6 +16,10 @@
       yq
     ];
 
+    skills = {
+      "karpathy-guidelines" = ../../.config/opencode/skills/karpathy-guidelines/SKILL.md;
+    };
+
     # OPENCODE_EXPERIMENTAL_LSP_TOOL=true
 
     settings = {
@@ -34,6 +38,7 @@
         "opencode-wakatime"
         "opencode-models-discovery@2.0.0"
         "@vectorize-io/hindsight-coding-agents"
+        "superpowers@git+https://github.com/obra/superpowers.git#v7.0.2"
       ];
 
       providers."9router" = {
