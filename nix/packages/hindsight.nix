@@ -329,6 +329,26 @@
           platforms = platforms.unix;
         };
       };
+
+      hindsight-hermes-plugin = pkgs.stdenvNoCC.mkDerivation {
+        pname = "hindsight-hermes-plugin";
+        inherit version src;
+
+        dontBuild = true;
+        installPhase = "cp -r hindsight-integrations/hermes $out";
+
+        passthru = {
+          category = "hermes-plugin";
+          pluginName = "hindsight";
+        };
+
+        meta = with lib; {
+          description = "Hindsight memory provider plugin for Hermes Agent";
+          homepage = "https://github.com/vectorize-io/hindsight/tree/main/hindsight-integrations/hermes";
+          license = licenses.mit;
+          platforms = platforms.all;
+        };
+      };
     in
     {
       packages = {
@@ -336,6 +356,7 @@
           hindsight-api
           hindsight-api-slim
           hindsight-control-plane
+          hindsight-hermes-plugin
           ;
       };
     };
