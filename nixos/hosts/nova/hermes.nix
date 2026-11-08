@@ -129,6 +129,8 @@
         allow_lazy_installs = true;
       };
 
+      plugins.enabled = [ "hermes-lcm" ];
+
       memory = {
         provider = "hindsight";
         memory_enabled = true;
@@ -435,7 +437,10 @@
       # [all]
     ];
 
-    extraPlugins = [ ];
+    extraPlugins = [
+      pkgs.hermes-lcm
+      pkgs.hindsight-hermes-plugin
+    ];
   };
 
   users.users.hermes = {
