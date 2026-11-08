@@ -126,19 +126,13 @@
       security = {
         redact_secrets = true;
         tirith_enabled = true;
-        allow_lazy_installs = false;
+        allow_lazy_installs = true;
       };
 
       memory = {
+        provider = "hindsight";
         memory_enabled = true;
         user_profile_enabled = true;
-        provider = "holographic";
-      };
-
-      plugins = {
-        hermes-memory-store = {
-          auto_extract = true;
-        };
       };
 
       compression = {
@@ -275,6 +269,19 @@
     };
 
     # documents.USER.md = ./USER.md;
+
+    hermesHomeFiles = {
+      "hindsight/config.json" = builtins.toJSON {
+        mode = "local_external";
+        api_url = "http://${config.services.hindsight.host}:${toString config.services.hindsight.port}";
+        bank_id = "assistance";
+        timeout = 120;
+        recall_budget = "mid";
+        memory_mode = "hybrid";
+        auto_recall = true;
+        auto_retain = true;
+      };
+    };
 
     mcpServers = {
       markitdown = {
@@ -426,6 +433,8 @@
       # "neutts[all]"
       # [all]
     ];
+
+    extraPlugins = [ ];
   };
 
   users.users.hermes = {
