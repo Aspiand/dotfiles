@@ -1,4 +1,4 @@
-name: Auto-Update Nix Packages
+name: Update Nix Packages
 
 on:
   schedule:
@@ -12,13 +12,6 @@ permissions:
 jobs:
   update:
     runs-on: ubuntu-latest
-    outputs:
-      has_changes: ${{ steps.commit.outputs.has_changes }}
-      updated: ${{ steps.nix-update.outputs.updated }}
-      failed: ${{ steps.nix-update.outputs.failed }}
-      versions: ${{ steps.nix-update.outputs.versions }}
-      packages_json: ${{ steps.nix-update.outputs.packages_json }}
-      files: ${{ steps.commit.outputs.files }}
     steps:
       - uses: actions/checkout@v5
         with:
@@ -29,16 +22,24 @@ jobs:
       - name: Install nix-update
         run: nix profile install nixpkgs#nix-update
 
-      - name: Update packages with nix-update
-        id: nix-update
+      - name: Update, build, and open PR
         env:
           NIXPKGS_ALLOW_UNFREE: "1"
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           IGNORE=$(yq -o=json '.packages.ignore // []' cache.yml)
 
+          versions() {
+            nix eval --json --impure --expr '
+              builtins.mapAttrs (_: v: if v ? version then v.version else "?")
+                (builtins.getFlake (toString ./.)).packages.x86_64-linux
+            ' 2>/dev/null || echo "{}"
+          }
+
+          BEFORE=$(versions)
+
           UPDATED=""
           FAILED=""
-
           for nixfile in nix/packages/*.nix; do
             pkg=$(basename "$nixfile" .nix)
             if jq -e --arg p "$pkg" 'index($p) != null' <<< "$IGNORE" >/dev/null 2>&1; then
@@ -52,140 +53,64 @@ jobs:
             fi
           done
 
-          if [ -z "$UPDATED" ]; then
-            echo "packages_json=[]" >> "$GITHUB_OUTPUT"
-          else
-            echo "packages_json=$(printf '%s' "$UPDATED" | jq -Rc 'split(" ") | map(select(length > 0))')" >> "$GITHUB_OUTPUT"
-          fi
-          echo "updated=${UPDATED# }" >> "$GITHUB_OUTPUT"
-          echo "failed=${FAILED# }" >> "$GITHUB_OUTPUT"
-
-          # Version diff per package from git diff — only packages whose
-          # version/rev line actually changed count as truly updated.
-          # nix-update exit 0 can also mean flake.lock-only or rehash.
-          VERSIONS="[]"
+          BROKEN=""
           for pkg in $UPDATED; do
-            [ -z "$pkg" ] && continue
-            diff=$(git diff -- "nix/packages/$pkg.nix")
-            [ -z "$diff" ] && continue
-            old_v=$(grep '^-' <<< "$diff" | grep 'version = ' | head -1 | sed -E 's/.*version = "([^"]+)".*/\1/')
-            new_v=$(grep '^+' <<< "$diff" | grep 'version = ' | head -1 | sed -E 's/.*version = "([^"]+)".*/\1/')
-            if [ -n "$old_v" ] && [ -n "$new_v" ] && [ "$old_v" != "$new_v" ]; then
-              VERSIONS=$(jq -c --arg p "$pkg" --arg o "$old_v" --arg n "$new_v" \
-                '. + [{pkg: $p, old: $o, new: $n}]' <<< "$VERSIONS")
+            echo "::group::Building $pkg"
+            if nix build ".#packages.x86_64-linux.$pkg" \
+              --print-build-logs --impure --accept-flake-config; then
+              echo "::notice::build ok: $pkg"
+            else
+              echo "::warning::build failed, reverting $pkg"
+              git checkout -- "nix/packages/$pkg.nix"
+              BROKEN="$BROKEN $pkg"
+            fi
+            echo "::endgroup::"
+          done
+
+          VERSIONS="[]"
+          EXTRAS=""
+          AFTER=$(versions)
+          for pkg in $UPDATED; do
+            if [[ " $BROKEN " == *" $pkg "* ]]; then
               continue
             fi
-            # no version change — check rev/tag (git-based pkgs, rehash)
-            old_r=$(grep '^-' <<< "$diff" | grep -oE '(rev|tag) = "[^"]+"' | head -1 | sed -E 's/.*= "(.*)"/\1/')
-            new_r=$(grep '^+' <<< "$diff" | grep -oE '(rev|tag) = "[^"]+"' | head -1 | sed -E 's/.*= "(.*)"/\1/')
-            if [ -n "$old_r" ] && [ -n "$new_r" ] && [ "$old_r" != "$new_r" ]; then
-              VERSIONS=$(jq -c --arg p "$pkg" --arg o "$(echo "$old_r" | cut -c1-12)" --arg n "$(echo "$new_r" | cut -c1-12)" \
+            old=$(jq -r --arg p "$pkg" '.[$p] // "?"' <<< "$BEFORE")
+            new=$(jq -r --arg p "$pkg" '.[$p] // "?"' <<< "$AFTER")
+            if [ "$old" = "$new" ]; then
+              EXTRAS="$EXTRAS $pkg"
+            else
+              VERSIONS=$(jq -c --arg p "$pkg" --arg o "$old" --arg n "$new" \
                 '. + [{pkg: $p, old: $o, new: $n}]' <<< "$VERSIONS")
             fi
           done
-          echo "versions<<EOF" >> "$GITHUB_OUTPUT"
-          echo "$VERSIONS" >> "$GITHUB_OUTPUT"
-          echo "EOF" >> "$GITHUB_OUTPUT"
-          echo "versions: $VERSIONS"
-          echo "updated: ${UPDATED:-<none>}"
-          echo "failed:  ${FAILED:-<none>}"
 
-      - name: Commit to staging branch
-        id: commit
-        env:
-          VERSIONS: ${{ steps.nix-update.outputs.versions }}
-          FAILED: ${{ steps.nix-update.outputs.failed }}
-        run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          BRANCH="auto-update/${{ github.run_id }}-${{ github.run_attempt }}"
-
           git add -A
           if git diff --cached --quiet; then
-            echo "files=" >> "$GITHUB_OUTPUT"
-            echo "has_changes=false" >> "$GITHUB_OUTPUT"
             echo "No changes — stopping"
             exit 0
           fi
 
           FILES=$(git diff --cached --name-only | tr '\n' ' ' | sed 's/ *$//')
+          N=$(jq 'length' <<< "$VERSIONS")
+          [ "$N" -eq 0 ] && SUBJECT="chore: update nix packages" \
+                         || SUBJECT="chore: update $N packages"
           {
-            echo "chore: auto-update nix packages"
+            echo "$SUBJECT"
             echo ""
-            if [ -n "$VERSIONS" ] && [ "$VERSIONS" != "[]" ]; then
-              echo "$VERSIONS" | jq -r '.[] | "Updated: \(.pkg): \(.old) -> \(.new)"'
-            fi
-            [ -n "$FAILED" ] && echo "Failed:$FAILED"
-            echo "Files: $FILES"
+            jq -r '.[] | "\(.pkg): \(.old) -> \(.new)"' <<< "$VERSIONS"
           } > /tmp/commit-msg
           git commit --file /tmp/commit-msg
-          echo "files=$FILES" >> "$GITHUB_OUTPUT"
 
-          git push --force origin "HEAD:refs/heads/$BRANCH"
-          echo "has_changes=true" >> "$GITHUB_OUTPUT"
-
-  build:
-    needs: update
-    if: needs.update.outputs.has_changes == 'true'
-    runs-on: ubuntu-latest
-    outputs:
-      results: ${{ steps.build-pkgs.outputs.results }}
-    steps:
-      - uses: actions/checkout@v5
-        with:
-          ref: auto-update/${{ github.run_id }}-${{ github.run_attempt }}
-
-      - uses: DeterminateSystems/nix-installer-action@v22
-
-      - name: Build changed packages
-        id: build-pkgs
-        env:
-          PACKAGES_JSON: ${{ needs.update.outputs.packages_json }}
-          NIXPKGS_ALLOW_UNFREE: "1"
-        run: |
-          RESULTS="[]"
-          for pkg in $(echo "$PACKAGES_JSON" | jq -r '.[]'); do
-            echo "::group::Building $pkg"
-            if nix build ".#packages.x86_64-linux.$pkg" \
-              --print-build-logs --impure --accept-flake-config; then
-              echo "::notice::build ok: $pkg"
-              RESULTS=$(jq -c --arg p "$pkg" '. + [{pkg: $p, ok: true}]' <<< "$RESULTS")
-            else
-              echo "::warning::build failed (skipped): $pkg"
-              RESULTS=$(jq -c --arg p "$pkg" '. + [{pkg: $p, ok: false}]' <<< "$RESULTS")
-            fi
-            echo "::endgroup::"
-          done
-          echo "results<<EOF" >> "$GITHUB_OUTPUT"
-          echo "$RESULTS" >> "$GITHUB_OUTPUT"
-          echo "EOF" >> "$GITHUB_OUTPUT"
-          echo "$RESULTS" | jq .
-
-  open-pr:
-    needs: [update, build]
-    if: needs.update.outputs.has_changes == 'true'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Create or update PR
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VERSIONS: ${{ needs.update.outputs.versions }}
-          UPDATED: ${{ needs.update.outputs.updated }}
-          FAILED: ${{ needs.update.outputs.failed }}
-          FILES: ${{ needs.update.outputs.files }}
-          RESULTS: ${{ needs.build.outputs.results }}
-        run: |
           BRANCH="auto-update/${{ github.run_id }}-${{ github.run_attempt }}"
-          TITLE="chore: auto-update nix packages"
-          RUN_URL="https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
-          RESULTS="${RESULTS:-[]}"
-          VERSIONS="${VERSIONS:-[]}"
+          git push --force origin "HEAD:refs/heads/$BRANCH"
 
           {
-            echo "## Auto-update \`${{ github.run_id }}-${{ github.run_attempt }}\`"
+            echo "## Nix packages update"
             echo ""
-            echo "### Update"
+            echo "### Updated"
             echo ""
             echo "| Package | Old | New |"
             echo "|---|---|---|"
@@ -196,59 +121,24 @@ jobs:
             fi
             if [ -n "$FAILED" ]; then
               echo ""
-              echo "**nix-update failed (skipped):** $FAILED"
+              echo "**nix-update failed (skipped):**$FAILED"
             fi
-            EXTRAS=""
-            for p in $UPDATED; do
-              [ -z "$p" ] && continue
-              if ! jq -e --arg p "$p" '.[] | select(.pkg == $p)' <<< "$VERSIONS" >/dev/null 2>&1; then
-                EXTRAS="$EXTRAS $p"
-              fi
-            done
+            if [ -n "$BROKEN" ]; then
+              echo ""
+              echo "**Build failed:**$BROKEN"
+            fi
             if [ -n "$EXTRAS" ]; then
               echo ""
-              echo "_Touched by nix-update but version unchanged (lock-only/rehash):${EXTRAS}_"
-            fi
-            echo ""
-            echo "### Build"
-            echo ""
-            echo "| Package | Build |"
-            echo "|---|---|"
-            if [ "$RESULTS" = "[]" ]; then
-              echo "| _none_ | _nothing built_ |"
-            else
-              while IFS= read -r row; do
-                [ -z "$row" ] && continue
-                p=$(jq -r '.pkg' <<< "$row")
-                ok=$(jq -r '.ok' <<< "$row")
-                if [ "$ok" = "true" ]; then
-                  echo "| \`$p\` | ✓ ok |"
-                else
-                  echo "| \`$p\` | ✗ failed |"
-                fi
-              done < <(echo "$RESULTS" | jq -c '.[]')
+              echo "_Touched by nix-update but version unchanged (lock-only/rehash):$EXTRAS_"
             fi
             echo ""
             echo "### Changed files"
             echo ""
-            if [ -z "$FILES" ]; then
-              echo "_none_"
-            else
-              for f in $FILES; do
-                echo "- \`$f\`"
-              done
-            fi
+            for f in $FILES; do
+              echo "- \`$f\`"
+            done
             echo ""
-            echo "### CI"
-            echo ""
-            echo "- Run: $RUN_URL"
-            echo "- Staging branch: \`$BRANCH\`"
           } > /tmp/pr-body.md
 
-          EXISTING=$(gh pr list -R "$GITHUB_REPOSITORY" --head "$BRANCH" --base main --json number --jq '.[0].number // empty')
-          if [ -n "$EXISTING" ]; then
-            gh pr edit "$EXISTING" -R "$GITHUB_REPOSITORY" --title "$TITLE" --body-file /tmp/pr-body.md
-            echo "Updated existing PR #$EXISTING"
-          else
-            gh pr create -R "$GITHUB_REPOSITORY" --base main --head "$BRANCH" --title "$TITLE" --body-file /tmp/pr-body.md
-          fi
+          gh pr create -R "$GITHUB_REPOSITORY" --base main --head "$BRANCH" \
+            --title "chore: auto-update nix packages" --body-file /tmp/pr-body.md

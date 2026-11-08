@@ -1,6 +1,10 @@
 packages:
   arch:
     - x86_64-linux
+  ignore:
+  - codegraph
+  - hanabi
+  - hindsight
 
 watch:
   # url: github:<owner>/<repo>  (or owner/repo)
