@@ -440,12 +440,18 @@
     after = [
       "network-online.target"
       "docker.service"
+      "hermes-agent.service"
     ];
-    wants = [ "network-online.target" ];
+    wants = [
+      "network-online.target"
+      "hermes-agent.service"
+    ];
     requires = [ "docker.service" ];
     wantedBy = [ "multi-user.target" ];
 
-    environment.HERMES_HOME = "/var/lib/hermes/.hermes";
+    environment = {
+      HERMES_HOME = "${config.services.hermes-agent.stateDir}/.hermes";
+    };
 
     path = [ pkgs.docker ];
 
@@ -453,6 +459,14 @@
       User = "hermes";
       Group = "hermes";
       SupplementaryGroups = [ "docker" ];
+      WorkingDirectory = config.services.hermes-agent.stateDir;
+
+      UMask = "0007";
+      NoNewPrivileges = true;
+      ProtectSystem = "strict";
+      ReadWritePaths = [ config.services.hermes-agent.stateDir ];
+      PrivateTmp = true;
+
       ExecStart = "${config.services.hermes-agent.package}/bin/hermes dashboard --host 0.0.0.0 --port 9119 --no-open";
       Restart = "always";
       RestartSec = 10;
