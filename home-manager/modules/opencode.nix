@@ -99,7 +99,7 @@
 
           "gpg *" = "deny";
 
-          "head *" = "deny";
+          "head *" = "allow";
 
           "nix diff *" = "allow";
           "nix eval *" = "allow";
@@ -112,10 +112,10 @@
           "nix path *" = "allow";
           "nix print-dev *" = "allow";
 
+          "readlink *" = "allow";
+          "rg *" = "allow";
           "sort *" = "allow";
           "tail *" = "allow";
-
-          "rg *" = "allow";
 
           "jq *" = "allow";
           "yq *" = "allow";
@@ -145,13 +145,28 @@
         "nixos_*" = "allow";
       };
 
-      # permissions = [
-      #   {
-      #     action = "websearch";
-      #     resource = "*";
-      #     effect = "allow";
-      #   }
-      # ];
+      permissions = [
+        {
+          action = "websearch";
+          resource = "*";
+          effect = "allow";
+        }
+        {
+          action = "external_directory";
+          resource = "*";
+          effect = "ask";
+        }
+        {
+          action = "external_directory";
+          resource = "/nix/*";
+          effect = "allow";
+        }
+        {
+          action = "external_directory";
+          resource = "/tmp";
+          effect = "allow";
+        }
+      ];
     };
 
     cli = {
