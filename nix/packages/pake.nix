@@ -6,7 +6,7 @@
     {
       packages.pake = pkgs.stdenv.mkDerivation (finalAttrs: {
         pname = "pake";
-        version = "V3.17.6";
+        version = "V3.18.0";
         src = pkgs.fetchFromGitHub {
           owner = "tw93";
           repo = "Pake";

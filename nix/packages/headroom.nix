@@ -9,17 +9,17 @@
     {
       packages.headroom = pythonPackages.buildPythonPackage rec {
         pname = "headroom-ai";
-        version = "0.41.0";
+        version = "0.43.1";
         pyproject = true;
         src = pkgs.fetchFromGitHub {
           owner = "headroomlabs-ai";
           repo = "headroom";
           tag = "v${version}";
-          hash = "sha256-ITVrw5ruGnNI9t7pq+0Z6gsnqDDAB/5v7I3oOQM5AtE=";
+          hash = "sha256-lZNB0v5nheQyiZF4EoRgqqsjmGjg7n98OgiWQCZejXQ=";
         };
         cargoDeps = pkgs.rustPlatform.fetchCargoVendor {
           inherit pname version src;
-          hash = "sha256-RF1b24TIV3EASGfXKUHSrGgQGBUmJLYxzDEjb4fvKPo=";
+          hash = "sha256-NkbMkyCc2i64nhKBE7ZdSAjefvhQac+InWDjlbQg474=";
         };
         nativeBuildInputs = [
           pkgs.pkg-config
