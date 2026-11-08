@@ -101,6 +101,8 @@
 
           "gpg *" = "deny";
 
+          "head *" = "deny";
+
           "nix diff *" = "allow";
           "nix eval *" = "allow";
           "nix flake check *" = "allow";
