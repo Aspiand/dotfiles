@@ -252,7 +252,6 @@
 
       # TODO: configure later
       web = {
-        # search_backend = "ddgs";
         search_backend = "firecrawl";
         extract_backend = "firecrawl";
       };
