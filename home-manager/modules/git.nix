@@ -19,6 +19,7 @@
         "tmp/"
         "vendor/"
         "node_modules/"
+        ".codegraph"
         ".venv/"
         ".vscode/"
         "__pycache__/"
