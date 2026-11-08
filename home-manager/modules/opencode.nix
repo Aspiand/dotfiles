@@ -20,8 +20,6 @@
       "karpathy-guidelines" = ../../.config/opencode/skills/karpathy-guidelines/SKILL.md;
     };
 
-    # OPENCODE_EXPERIMENTAL_LSP_TOOL=true
-
     settings = {
       autoupdate = false;
       lsp = true;
@@ -156,10 +154,11 @@
       # ];
     };
 
-    tui = {
-      theme = "dark";
-      editorMode = "normal";
-      # preferredNotifChannel = "notifications_disabled";
+    cli = {
+      theme = {
+        name = "vercel";
+        mode = "dark";
+      };
     };
 
     context = ''
