@@ -279,6 +279,8 @@
         memory_mode = "hybrid";
         auto_recall = true;
         auto_retain = true;
+        # retain_async = true;
+        retain_indicator = true;
       };
     };
 

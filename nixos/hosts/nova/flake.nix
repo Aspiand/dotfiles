@@ -57,8 +57,8 @@
           dotfiles.modules
           dotfiles.nixosModules.base
           dotfiles.nixosModules.ssh
-          dotfiles.nixosModules.n8n
-          dotfiles.nixosModules.minecraft-server
+          # dotfiles.nixosModules.n8n
+          # dotfiles.nixosModules.minecraft-server
 
           # AI
           hermes-agent.nixosModules.default
