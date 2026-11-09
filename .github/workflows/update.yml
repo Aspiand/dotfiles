@@ -26,6 +26,11 @@ jobs:
         env:
           NIXPKGS_ALLOW_UNFREE: "1"
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
+          AWS_ENDPOINT_URL: ${{ secrets.AWS_ENDPOINT_URL }}
+          NIX_SECRET_KEY: ${{ secrets.NIX_SECRET_KEY }}
         run: |
           IGNORE=$(yq -o=json '.packages.ignore // []' cache.yml)
 
@@ -53,12 +58,21 @@ jobs:
             fi
           done
 
+          echo "$NIX_SECRET_KEY" > .sign-key
+          chmod 600 .sign-key
+
           BROKEN=""
           for pkg in $UPDATED; do
             echo "::group::Building $pkg"
             if nix build ".#packages.x86_64-linux.$pkg" \
               --print-build-logs --impure --accept-flake-config; then
-              echo "::notice::build ok: $pkg"
+              STORE_PATH=$(readlink -f result)
+              nix store sign --key-file .sign-key "$STORE_PATH"
+              if nix copy --to "s3://${AWS_S3_BUCKET}?endpoint=${AWS_ENDPOINT_URL}&region=auto" "$STORE_PATH"; then
+                echo "::notice::build ok + pushed to cache: $pkg"
+              else
+                echo "::warning::cache push failed: $pkg"
+              fi
             else
               echo "::warning::build failed, reverting $pkg"
               git checkout -- "nix/packages/$pkg.nix"
@@ -66,6 +80,7 @@ jobs:
             fi
             echo "::endgroup::"
           done
+          rm -f .sign-key
 
           VERSIONS="[]"
           EXTRAS=""

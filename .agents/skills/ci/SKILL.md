@@ -17,24 +17,13 @@ and cache details. Read it first when you need a quick reference.
 
 | File | What | Trigger |
 |---|---|---|
-| `build.yml` | Build, sign, push to R2 | Push main (nix/**, flake.*), dispatch, call |
-| `verify.yml` | Check R2 cache integrity (list narinfos, parse signatures, check NAR files exist, cross-ref packages) | Dispatch, call |
-| `gc.yml` | Smart prune: orphan NARs, stale packages, age-based (>30d), keep latest 2 per package | Cron Sun 06:00, dispatch (supports `dry-run`) |
-| `clean-package.yml` | Remove all but latest version of a specific package | Dispatch (`package` input) |
-| `cache-report.yml` | Generate package table with sizes, hashes, timestamps | Dispatch |
-| `update.yml` | nvfetcher → staging branch → build.yml → promote to main | Cron Mon 06:00, dispatch |
+| `build.yml` | Build, sign, push to R2 | Push main (`nix/packages/**`, `flake.nix`, `flake.lock`), cron, dispatch |
 | `check.yml` | `nix flake check` on all flakes in repo | Every push |
-| `build-external.yml` | Thin wrapper calling build.yml on an external flake | Dispatch |
 
-### secrets: inherit
+### secrets
 
-Workflows calling other workflows via `workflow_call` MUST include
-`secrets: inherit` to pass R2 credentials and NIX_SECRET_KEY through.
-Currently used in:
-- `update.yml` — calls `build.yml` after nvfetcher runs
-- `build-external.yml` — calls `build.yml` for external flakes
-
-Forgetting this is the #1 cause of "build passes but push to R2 fails silently."
+No workflow calls another via `workflow_call` anymore. Each workflow sets
+R2 credentials + `NIX_SECRET_KEY` in its own job `env:`.
 
 ### check.yml quirks
 
@@ -94,15 +83,14 @@ markdown table to `GITHUB_STEP_SUMMARY` and saves raw data as an artifact.
 
 ### update.yml
 
-1. Save old `_generated.json`
-2. `nix run github:berberman/nvfetcher` → regenerate sources
-3. Rename `generated.nix` → `_generated.nix`, `generated.json` → `_generated.json`
-4. Build changelog via jq diff (added/removed/updated packages)
-5. Commit to `auto-update/${{ github.run_id }}` branch, push
-6. Call `build.yml` via `workflow_call` — if all pass, ff-merge to main
-7. If build fails: staging branch left dangling, no main commit
+1. Loop `nix/packages/*.nix`, skip `cache.yml` `packages.ignore`
+2. `nix-update "$pkg" --flake` — gagal → masuk `$FAILED`
+3. Per paket yang berubah: `nix build` → `nix store sign` → `nix copy` ke R2
+4. Build gagal → `git checkout --` revert paket itu, masuk `$BROKEN`
+5. Build changelog via jq diff, commit ke `auto-update/<run_id>-<attempt>`, push
+6. `gh pr create` ke `main` — tidak panggil `build.yml`
 
-`force: true` dispatch input creates empty commit for end-to-end pipeline test.
+Merge PR ke `main` memicu `build.yml` via `push` (paths `nix/packages/**`, `flake.nix`, `flake.lock`).
 
 ## Excluded packages
 
