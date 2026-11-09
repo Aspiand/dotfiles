@@ -5,13 +5,13 @@
     {
       packages.hermes-lcm = pkgs.stdenvNoCC.mkDerivation rec {
         pname = "hermes-lcm";
-        version = "0.7.0";
+        version = "0.20.0";
 
         src = pkgs.fetchFromGitHub {
           owner = "stephenschoettler";
           repo = "hermes-lcm";
           tag = "v${version}";
-          hash = "sha256-0D5htaT/Y7uhYfI0yV1L7tiPjGf4kOJDdTMsb96uvhk=";
+          hash = "sha256-yJ1Nn+su7YbKd+cgVOizXChzLbKHqTprSprF1p9/HYk=";
         };
 
         dontBuild = true;
