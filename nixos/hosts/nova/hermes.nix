@@ -66,6 +66,10 @@
       #   }
       # ];
 
+      gateway = {
+      	multiplex_profiles = true;
+      };
+
       auxiliary = {
         # web_extract = {
         #   provider = "9router";
