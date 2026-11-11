@@ -116,6 +116,7 @@
           "rg *" = "allow";
           "sort *" = "allow";
           "tail *" = "allow";
+          "timeout *" = "allow";
 
           "jq *" = "allow";
           "yq *" = "allow";
