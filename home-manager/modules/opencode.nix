@@ -14,10 +14,12 @@
     enableMcpIntegration = true;
     extraPackages = with pkgs; [
       yq
+      trash-cli
     ];
 
     skills = {
       "karpathy-guidelines" = ../../.config/opencode/skills/karpathy-guidelines/SKILL.md;
+      trash = ../../.agents/skills/trash;
     };
 
     settings = {
@@ -118,13 +120,45 @@
           "tail *" = "allow";
           "timeout *" = "allow";
 
+          "trash *" = "allow";
+          "trash-put *" = "allow";
+          "trash-list *" = "allow";
+          "trash-restore *" = "allow";
+
           "jq *" = "allow";
           "yq *" = "allow";
 
           "git add *" = "deny";
+          "git clean *" = "deny";
           "git commit *" = "deny";
           "git push *" = "deny";
+          "git rm *" = "deny";
+          "find *-delete*" = "deny";
+          "find *-exec*rm *" = "deny";
+          "find *-exec*unlink *" = "deny";
+          "find *-exec*shred *" = "deny";
           "rm *" = "deny";
+          "rmdir *" = "deny";
+          "shred *" = "deny";
+          "trash-empty *" = "deny";
+          "trash-rm *" = "deny";
+          "unlink *" = "deny";
+          "xargs *rm*" = "deny";
+          "xargs *unlink*" = "deny";
+          "xargs *shred*" = "deny";
+
+          # Shell rules match the whole command string and the scanner splits on
+          # && | ; so `rm *` alone is enough for `a && rm b`. It does NOT unwrap
+          # interpreters, so `sh -c 'rm x'`, `eval 'rm x'` and
+          # `python -c 'os.remove(...)'` reach deletion under a different
+          # command name. These close that hole.
+          "sh *" = "deny";
+          "bash *" = "deny";
+          "eval *" = "deny";
+          "python *" = "deny";
+          "python3 *" = "deny";
+          "perl *" = "deny";
+
           "ssh *" = "deny";
         };
 
