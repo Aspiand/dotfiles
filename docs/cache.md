@@ -41,7 +41,7 @@ watch:
 ### `url`
 
 `github:<owner>/<repo>` or plain `<owner>/<repo>`. A local path (`.`, `/abs`) is also
-accepted but has no GitHub API (so `latest-*` / `lock:` are unavailable).
+accepted but has no GitHub API (so `latest-*` is unavailable).
 
 ### `ref` (optional — default `HEAD` / default branch)
 
@@ -53,9 +53,8 @@ accepted but has no GitHub API (so `latest-*` / `lock:` are unavailable).
 | `rev:<sha>`       | pin a commit                  |
 | `latest-tag`      | newest tag (by date)          |
 | `latest-release`  | latest GitHub release tag     |
-| `lock:<host>`     | follow `nixos/hosts/<host>/flake.lock` rev |
 
-`latest-tag` / `latest-release` / `lock:<host>` are resolved to an immutable rev in
+`latest-tag` / `latest-release` are resolved to an immutable rev in
 `generate-matrix`, so the actual build is always pinned. `latest-tag` = newest by
 date (GitHub tags API order), not highest semver.
 

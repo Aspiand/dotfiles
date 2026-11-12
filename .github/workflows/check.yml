@@ -25,15 +25,58 @@ jobs:
           echo "### flake check" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
 
+          # Read into an array first: a `while` on a pipeline runs in a subshell,
+          # so FAILED would never escape it.
           FAILED=0
-          find . -name "flake.nix" -print0 | while IFS= read -r -d '' file; do
-            dir=$(dirname "$file")
+          mapfile -t FLAKES < <(find . -name "flake.nix" -print0 | xargs -0 -n1 dirname | sort -u)
+          for dir in "${FLAKES[@]}"; do
             echo "--- Checking flake in $dir ---"
             nix flake check "$dir" --impure --accept-flake-config 2>&1 || {
               echo "::warning::flake check failed in $dir"
               FAILED=$((FAILED + 1))
             }
           done
+
+          [ "$FAILED" -eq 0 ] || { echo "::error::$FAILED flake(s) failed to check"; exit 1; }
+
+      # Hosts and home profiles live in the root flake now, so `flake check`
+      # above does not reach them. Evaluate every configuration instead —
+      # drvPath only, no builds.
+      - name: Eval every configuration
+        run: |
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "### nixosConfigurations + homeConfigurations" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+
+          FAILED=0
+
+          hosts=$(nix eval --json .#nixosConfigurations --apply builtins.attrNames --impure)
+          for h in $(echo "$hosts" | jq -r '.[]'); do
+            printf '%-14s ' "$h"
+            if nix eval --raw --impure ".#nixosConfigurations.$h.config.system.build.toplevel.drvPath" >/dev/null 2>/tmp/err; then
+              echo "✓"
+            else
+              echo "✗"
+              echo "| \`$h\` | failed |" >> "$GITHUB_STEP_SUMMARY"
+              cat /tmp/err
+              FAILED=$((FAILED + 1))
+            fi
+          done
+
+          homes=$(nix eval --json .#homeConfigurations --apply builtins.attrNames --impure)
+          for u in $(echo "$homes" | jq -r '.[]'); do
+            printf 'hm:%-11s ' "$u"
+            if nix eval --raw --impure ".#homeConfigurations.$u.activationPackage.drvPath" >/dev/null 2>/tmp/err; then
+              echo "✓"
+            else
+              echo "✗"
+              echo "| \`hm:$u\` | failed |" >> "$GITHUB_STEP_SUMMARY"
+              cat /tmp/err
+              FAILED=$((FAILED + 1))
+            fi
+          done
+
+          [ "$FAILED" -eq 0 ] || { echo "::error::$FAILED configuration(s) failed to evaluate"; exit 1; }
 
       - name: Eval all packages
         id: eval

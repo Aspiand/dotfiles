@@ -18,10 +18,10 @@ in
     })
 
     (mkIf cfg.ssh.control {
-      programs.ssh = {
-        controlMaster = "auto";
-        controlPersist = "30m";
-        controlPath = "~/.ssh/control/%r@%n:%p";
+      programs.ssh.settings."*" = {
+        ControlMaster = "auto";
+        ControlPersist = "30m";
+        ControlPath = "~/.ssh/control/%r@%n:%p";
       };
     })
   ];

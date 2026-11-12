@@ -56,7 +56,7 @@
   };
 
   programs = {
-    git.extraConfig.core.editor = "${pkgs.vscode}/bin/code --wait";
+    git.settings.core.editor = "${pkgs.vscode}/bin/code --wait";
 
     mycli.enable = true;
     tmux.enable = true;

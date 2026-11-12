@@ -108,9 +108,9 @@ jobs:
 
           # Resolve ref: to an immutable flake ref. "github:<o>/<r>" base + "/<ref>".
           # ref: omitted → HEAD (default branch); branch:x | tag:x | rev:x → direct;
-          #      latest-tag | latest-release → resolve via gh api; lock:<host> → flake.lock rev.
+          #      latest-tag | latest-release → resolve via gh api.
           resolve_flake() {
-            local url="$1" ref="$2" base owner repo or="" tag=""
+            local url="$1" ref="$2" base or="" tag=""
             case "$url" in
               github:*) base="$url" ;;
               /*|.) base="$url" ;;
@@ -129,15 +129,6 @@ jobs:
                 [ -z "$or" ] && { echo "::error::latest-release needs a github url: $url"; return 1; }
                 tag=$(gh api "repos/$or/releases/latest" --jq '.tag_name')
                 base="$base/$tag" ;;
-              lock:*)
-                local host="${ref#lock:}"
-                owner=$(echo "$or" | cut -d/ -f1); repo=$(echo "$or" | cut -d/ -f2)
-                local rev
-                rev=$(jq -r --arg o "$owner" --arg r "$repo" \
-                  '.nodes[] | select(.original.owner == $o and .original.repo == $r) | .locked.rev' \
-                  "nixos/hosts/$host/flake.lock" | head -1)
-                [ -z "$rev" ] && { echo "::error::lock:$host: $or not found in flake.lock"; return 1; }
-                base="$base/$rev" ;;
               *)
                 echo "::error::unknown ref form: $ref"; return 1 ;;
             esac

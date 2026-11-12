@@ -26,7 +26,7 @@
   };
 
   programs = {
-    git.extraConfig.core.editor = "${pkgs.micro}/bin/micro";
+    git.settings.core.editor = "${pkgs.micro}/bin/micro";
 
     bash.enable = true;
     tmux.enable = true;

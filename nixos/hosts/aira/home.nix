@@ -1,4 +1,5 @@
 {
+  self,
   inputs,
   config,
   pkgs,
@@ -13,7 +14,7 @@ in
 {
   imports = [
     inputs.spicetify-nix.homeManagerModules.default
-    inputs.home-config.homeModules.default
+    self.homeModules.default
     inputs.sops-nix.homeManagerModules.sops
   ];
 
@@ -59,7 +60,6 @@ in
         winboat
 
         # CLI
-        python314Packages.markitdown
         # act
         # android-tools
         # ansible
@@ -101,7 +101,7 @@ in
         # Gaming
         # rpcs3
         # gpu-viewer
-        inputs.elyprismlauncher.packages.${pkgs.stdenv.hostPlatform.system}.prismlauncher
+        prismlauncher
         mangohud
         # lutris
         vulkan-tools
@@ -136,7 +136,7 @@ in
         hanabi
         codegraph
         mcp-nixos
-        mempalace
+        # mempalace
         inputs.hermes-agent.packages.${pkgs.stdenv.hostPlatform.system}.desktop
       ])
       ++ (with pkgs.gnomeExtensions; [

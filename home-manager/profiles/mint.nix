@@ -87,7 +87,7 @@
   };
 
   programs = {
-    git.extraConfig.core.editor = "${pkgs.vscode}/bin/code --wait";
+    git.settings.core.editor = "${pkgs.vscode}/bin/code --wait";
 
     bash.enable = true;
     clamav.enable = true;

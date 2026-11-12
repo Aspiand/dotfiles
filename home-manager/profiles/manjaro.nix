@@ -7,7 +7,10 @@
   nixpkgs.config.allowUnfree = true;
   nix = {
     package = pkgs.nix;
-    settings.experimental-features = [ "nix-command" "flakes" ];
+    settings.experimental-features = [
+      "nix-command"
+      "flakes"
+    ];
   };
 
   home = {
@@ -86,7 +89,7 @@
       # immich-cli
       # immich-go
       # mkp224o
-      neofetch
+      fastfetch
       nix-bash-completions
       # ollama
       # qemu
@@ -104,7 +107,7 @@
   };
 
   programs = {
-    git.extraConfig.core.editor = "${pkgs.vscode}/bin/code --wait";
+    git.settings.core.editor = "${pkgs.vscode}/bin/code --wait";
 
     bash.enable = true;
     clamav.enable = true;
@@ -128,7 +131,7 @@
 
     gpg-agent = {
       enable = true;
-      pinentryPackage = pkgs.pinentry-tty;
+      pinentry.package = pkgs.pinentry-tty;
     };
   };
 }

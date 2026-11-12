@@ -20,22 +20,40 @@
   security.rtkit.enable = true;
 
   # TODO: remove later
+  # nixpkgs is migrating Rust crates from vendored copies to system libraries
+  # (#570943, #570938). Packages that still vendor a crate but are already
+  # forced to link the system library fail at build time, e.g.
+  #   rustic: "AWS_LC_SYS_USE_SYSTEM=1 requires a system-installed AWS-LC"
+  #   fresh:  "Unable to find oniguruma in pkg-config, and
+  #            RUSTONIG_SYSTEM_LIBONIG is set"
+  # Once the per-package "use system X" PRs land in nixos-unstable, delete the
+  # matching entry below.
+  #   https://github.com/NixOS/nixpkgs/issues/570938  (aws-lc)
+  #   https://github.com/NixOS/nixpkgs/issues/570943  (oniguruma, zstd, sqlite, ...)
   nixpkgs.overlays = [
-    # (final: prev: {
-    #   openldap = prev.openldap.overrideAttrs (old: {
-    #     doCheck = false;
-    #   });
-    #   # python3Packages = prev.python3Packages.overrideScope (pfinal: pprev: {
-    #   #   pandas-stubs = pprev.pandas-stubs.overrideAttrs (old: {
-    #   #     doCheck = false;
-    #   #   });
-    #   # });
-    #   # python314Packages = prev.python314Packages.overrideScope (pfinal: pprev: {
-    #   #   pandas-stubs = pprev.pandas-stubs.overrideAttrs (old: {
-    #   #     doCheck = false;
-    #   #   });
-    #   # });
-    # })
+    (
+      final: prev:
+      let
+        withSystemLibs =
+          pkg: libs:
+          pkg.overrideAttrs (old: {
+            buildInputs = (old.buildInputs or [ ]) ++ libs;
+            nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ [ final.pkg-config ];
+          });
+      in
+      {
+        rustic = withSystemLibs prev.rustic [
+          final.aws-lc
+          final.zstd
+          final.sqlite
+        ];
+        # TODO(mempalace): chromadb fails first with
+        #   ld.bfd: cannot find -lsqlite3  (libsqlite3-sys via sqlx_sqlite)
+        # so the sqlite buildInputs below are never reached. Add them once
+        # chromadb is fixed upstream or replaced.
+        # fresh-editor = withSystemLibs prev.fresh-editor [ final.oniguruma ];
+      }
+    )
   ];
 
   nixpkgs.config.permittedInsecurePackages = [
