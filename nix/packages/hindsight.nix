@@ -9,12 +9,49 @@
   - the control-plane font patch is inlined below instead of a separate file;
   - dropped the `flake` argument and flake.lib.maintainers;
   - the control plane duplicates version/src instead of inheriting them from
-      the API package (same fetch, same store path).
+      the API package (same fetch, same store path);
+  - `hindsight-hermes-plugin` moved out to nix/packages/hindsight-hermes-plugin.nix.
 
   The slim API deliberately has no local ML dependencies. Set
   HINDSIGHT_API_EMBEDDINGS_PROVIDER and HINDSIGHT_API_RERANKER_PROVIDER to a
   remote provider, or build the future `hindsight-api` variant (see
   docs/hindsight.md) which adds torch/sentence-transformers.
+
+  --------------------------------------------------------------------------
+  UPSTREAM BREAKAGE WE ARE WORKING AROUND (waiting on nixpkgs)
+
+  Dependency chain: hindsight-api -> fastmcp -> fastmcp-slim -> mcp
+
+  nixpkgs marks `python3Packages.fastmcp-slim` broken as soon as
+  `python3Packages.mcp` reaches 2.x:
+
+      meta.broken = lib.versionAtLeast mcp.version "2";
+
+  `fastmcp` has not been ported to mcp 2 yet, so nixpkgs takes the whole
+  fastmcp-slim package down instead of shipping a broken build. Current state
+  of nixpkgs `nixos-unstable`:
+
+      mcp        2.3.0        <- broken trigger
+      mcp_1      1.29.0       <- the 1.x line, still shipped
+      fastmcp    3.4.7
+      fastmcp-slim  broken = true
+
+  (measured 2026-11-12; re-check `nix eval` if this looks stale)
+  The workaround below scopes `mcp` back to the 1.x line for this package only,
+  mirroring numtide/llm-agents.nix. It is guarded on `fastmcp-slim` actually
+  being broken, so it disappears on its own once nixpkgs ports fastmcp to mcp 2
+  (NixOS/nixpkgs#563493). Do NOT un-break fastmcp-slim with `meta.broken =
+  false`: it would still be built against mcp 2.3.0 and fail later in
+  pythonImportsCheck instead of failing fast here.
+
+  Known limitation on the 26.05 channel: nixpkgs-26.05 has `mcp 1.26.0` but
+  neither `mcp_1` nor `fastmcp-slim`, and its `markitdown` has no optional
+  dependency groups, so this file cannot build there. nova and delta run 26.05
+  and still get hindsight from the root nixpkgs through overlays.default — a
+  mixed closure that predates the single-flake migration. Fixing it needs
+  hindsight packaged per channel, which is blocked on the same upstream work.
+  See docs/single-flake.md ("Overlay caveat").
+  --------------------------------------------------------------------------
 */
 { ... }:
 {
@@ -22,7 +59,22 @@
     { pkgs, ... }:
     let
       inherit (pkgs) lib;
-      pythonPackages = pkgs.python3Packages;
+
+      # fastmcp-slim is marked broken upstream while python3Packages.mcp is 2.x
+      # (its meta is `broken = lib.versionAtLeast mcp.version "2"`). fastmcp has
+      # not ported to mcp 2 yet. nixpkgs still ships the 1.x line as `mcp_1`,
+      # so scope it back for this package only — the host's python set is
+      # untouched. Guarded on the breakage itself, so it retires by itself once
+      # nixpkgs moves fastmcp to mcp 2. `or prev.mcp` covers nixpkgs revisions
+      # that predate `mcp_1` and still carry 1.x as `mcp`.
+      pythonPackages =
+        let
+          base = pkgs.python3Packages;
+        in
+        if (base."fastmcp-slim".meta.broken or false) then
+          base.overrideScope (final: prev: { mcp = final.mcp_1 or prev.mcp; })
+        else
+          base;
 
       version = "1.1.0";
       src = pkgs.fetchFromGitHub {
@@ -329,26 +381,6 @@
           platforms = platforms.unix;
         };
       };
-
-      hindsight-hermes-plugin = pkgs.stdenvNoCC.mkDerivation {
-        pname = "hindsight-hermes-plugin";
-        inherit version src;
-
-        dontBuild = true;
-        installPhase = "cp -r hindsight-integrations/hermes $out";
-
-        passthru = {
-          category = "hermes-plugin";
-          pluginName = "hindsight";
-        };
-
-        meta = with lib; {
-          description = "Hindsight memory provider plugin for Hermes Agent";
-          homepage = "https://github.com/vectorize-io/hindsight/tree/main/hindsight-integrations/hermes";
-          license = licenses.mit;
-          platforms = platforms.all;
-        };
-      };
     in
     {
       packages = {
@@ -356,7 +388,6 @@
           hindsight-api
           hindsight-api-slim
           hindsight-control-plane
-          hindsight-hermes-plugin
           ;
       };
     };

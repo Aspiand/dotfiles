@@ -23,7 +23,6 @@
       ];
     };
 
-    markitdown.command = "${pkgs.markitdown-mcp}/bin/markitdown-mcp";
     mempalace = {
       command = "${pkgs.mempalace}/bin/mempalace";
       args = [ "mcp" ];
@@ -34,8 +33,7 @@
 
   home.packages = with pkgs; [
     codegraph
-    markitdown-mcp
-    mempalace
+    # mempalace
     mcp-nixos
     mcp-server-fetch
     mcp-searxng

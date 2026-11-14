@@ -175,7 +175,6 @@
         "fetch_*" = "allow";
         "github_*" = "allow";
         "hindsight_*" = "allow";
-        "markitdown_*" = "allow";
         "mempalace_*" = "allow";
         "nixos_*" = "allow";
       };
