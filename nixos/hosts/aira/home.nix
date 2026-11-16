@@ -67,7 +67,7 @@ in
         # codex
         copyparty-most
         delta
-        # distrobox
+        distrobox
         # gallery-dl
         # gemini-cli
         gh
