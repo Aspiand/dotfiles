@@ -37,7 +37,5 @@
     mcp-nixos
     mcp-server-fetch
     mcp-searxng
-    mcp-victoriametrics
-    mcp-victorialogs
   ];
 }
